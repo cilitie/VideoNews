@@ -1,1088 +1,607 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>archiveVersion</key>
-	<string>1</string>
-	<key>classes</key>
-	<dict/>
-	<key>objectVersion</key>
-	<string>46</string>
-	<key>objects</key>
-	<dict>
-		<key>02F297BE7E804D8DA6632605</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E00FF5A8750C4FA0814704DC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>207592E1A377467090931202</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Check Pods Manifest.lock</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
-if [[ $? != 0 ]] ; then
-    cat &lt;&lt; EOM
-error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
-EOM
-    exit 1
-fi
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>51F25034AC6D403D91690FF3</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Copy Pods Resources</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Pods-VideoNews-resources.sh"
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>CC7C0720D5F047B7B4DBA24C</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-VideoNews.xcconfig</string>
-			<key>path</key>
-			<string>Pods/Pods-VideoNews.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED741195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED753195AC1C100AD10E0</string>
-				<string>D6FED772195AC1C100AD10E0</string>
-				<string>D6FED74C195AC1C100AD10E0</string>
-				<string>D6FED74B195AC1C100AD10E0</string>
-				<string>CC7C0720D5F047B7B4DBA24C</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED742195AC1C100AD10E0</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>CLASSPREFIX</key>
-				<string>VN</string>
-				<key>LastUpgradeCheck</key>
-				<string>0510</string>
-				<key>ORGANIZATIONNAME</key>
-				<string>Manyu Zhu</string>
-				<key>TargetAttributes</key>
-				<dict>
-					<key>D6FED76A195AC1C100AD10E0</key>
-					<dict>
-						<key>TestTargetID</key>
-						<string>D6FED749195AC1C100AD10E0</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>D6FED745195AC1C100AD10E0</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>en</string>
-				<string>Base</string>
-			</array>
-			<key>mainGroup</key>
-			<string>D6FED741195AC1C100AD10E0</string>
-			<key>productRefGroup</key>
-			<string>D6FED74B195AC1C100AD10E0</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
-			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>D6FED749195AC1C100AD10E0</string>
-				<string>D6FED76A195AC1C100AD10E0</string>
-			</array>
-		</dict>
-		<key>D6FED745195AC1C100AD10E0</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>D6FED77A195AC1C100AD10E0</string>
-				<string>D6FED77B195AC1C100AD10E0</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>D6FED746195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED75E195AC1C100AD10E0</string>
-				<string>D6FED75A195AC1C100AD10E0</string>
-				<string>D6FED784195BC50000AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED747195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED750195AC1C100AD10E0</string>
-				<string>D6FED752195AC1C100AD10E0</string>
-				<string>D6FED74E195AC1C100AD10E0</string>
-				<string>02F297BE7E804D8DA6632605</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED748195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED766195AC1C100AD10E0</string>
-				<string>D6FED758195AC1C100AD10E0</string>
-				<string>D6FED761195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED749195AC1C100AD10E0</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>D6FED77C195AC1C100AD10E0</string>
-			<key>buildPhases</key>
-			<array>
-				<string>207592E1A377467090931202</string>
-				<string>D6FED746195AC1C100AD10E0</string>
-				<string>D6FED747195AC1C100AD10E0</string>
-				<string>D6FED748195AC1C100AD10E0</string>
-				<string>51F25034AC6D403D91690FF3</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>VideoNews</string>
-			<key>productName</key>
-			<string>VideoNews</string>
-			<key>productReference</key>
-			<string>D6FED74A195AC1C100AD10E0</string>
-			<key>productType</key>
-			<string>com.apple.product-type.application</string>
-		</dict>
-		<key>D6FED74A195AC1C100AD10E0</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.application</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>VideoNews.app</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>D6FED74B195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED74A195AC1C100AD10E0</string>
-				<string>D6FED76B195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED74C195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED74D195AC1C100AD10E0</string>
-				<string>D6FED74F195AC1C100AD10E0</string>
-				<string>D6FED751195AC1C100AD10E0</string>
-				<string>D6FED76C195AC1C100AD10E0</string>
-				<string>E00FF5A8750C4FA0814704DC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED74D195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Foundation.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/Foundation.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>D6FED74E195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED74D195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED74F195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>CoreGraphics.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/CoreGraphics.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>D6FED750195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED74F195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED751195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>UIKit.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/UIKit.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>D6FED752195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED751195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED753195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED75C195AC1C100AD10E0</string>
-				<string>D6FED75D195AC1C100AD10E0</string>
-				<string>D6FED782195BC50000AD10E0</string>
-				<string>D6FED783195BC50000AD10E0</string>
-				<string>D6FED75F195AC1C100AD10E0</string>
-				<string>D6FED765195AC1C100AD10E0</string>
-				<string>D6FED754195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>VideoNews</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED754195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED755195AC1C100AD10E0</string>
-				<string>D6FED756195AC1C100AD10E0</string>
-				<string>D6FED759195AC1C100AD10E0</string>
-				<string>D6FED75B195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED755195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>VideoNews-Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED756195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED757195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED757195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.strings</string>
-			<key>name</key>
-			<string>en</string>
-			<key>path</key>
-			<string>en.lproj/InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED758195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED756195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED759195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>main.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED75A195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED759195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED75B195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>VideoNews-Prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED75C195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>VNAppDelegate.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED75D195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>VNAppDelegate.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED75E195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED75D195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED75F195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED760195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>Main.storyboard</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED760195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file.storyboard</string>
-			<key>name</key>
-			<string>Base</string>
-			<key>path</key>
-			<string>Base.lproj/Main.storyboard</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED761195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED75F195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED765195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>folder.assetcatalog</string>
-			<key>path</key>
-			<string>Images.xcassets</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED766195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED765195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED767195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED779195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED768195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED76D195AC1C100AD10E0</string>
-				<string>D6FED76F195AC1C100AD10E0</string>
-				<string>D6FED76E195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED769195AC1C100AD10E0</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D6FED777195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D6FED76A195AC1C100AD10E0</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>D6FED77F195AC1C200AD10E0</string>
-			<key>buildPhases</key>
-			<array>
-				<string>D6FED767195AC1C100AD10E0</string>
-				<string>D6FED768195AC1C100AD10E0</string>
-				<string>D6FED769195AC1C100AD10E0</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>D6FED771195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>VideoNewsTests</string>
-			<key>productName</key>
-			<string>VideoNewsTests</string>
-			<key>productReference</key>
-			<string>D6FED76B195AC1C100AD10E0</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>D6FED76B195AC1C100AD10E0</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>VideoNewsTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>D6FED76C195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>XCTest.framework</string>
-			<key>path</key>
-			<string>Library/Frameworks/XCTest.framework</string>
-			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
-		</dict>
-		<key>D6FED76D195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED76C195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED76E195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED74D195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED76F195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED751195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED770195AC1C100AD10E0</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>D6FED742195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D6FED749195AC1C100AD10E0</string>
-			<key>remoteInfo</key>
-			<string>VideoNews</string>
-		</dict>
-		<key>D6FED771195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D6FED749195AC1C100AD10E0</string>
-			<key>targetProxy</key>
-			<string>D6FED770195AC1C100AD10E0</string>
-		</dict>
-		<key>D6FED772195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED778195AC1C100AD10E0</string>
-				<string>D6FED773195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>VideoNewsTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED773195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED774195AC1C100AD10E0</string>
-				<string>D6FED775195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED774195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>VideoNewsTests-Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED775195AC1C100AD10E0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D6FED776195AC1C100AD10E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED776195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.strings</string>
-			<key>name</key>
-			<string>en</string>
-			<key>path</key>
-			<string>en.lproj/InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED777195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED775195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED778195AC1C100AD10E0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>VideoNewsTests.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED779195AC1C100AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED778195AC1C100AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6FED77A195AC1C100AD10E0</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
-				<string>iPhone Developer</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-				<string>NO</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.1</string>
-				<key>ONLY_ACTIVE_ARCH</key>
-				<string>YES</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>D6FED77B195AC1C100AD10E0</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
-				<string>iPhone Developer</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>ENABLE_NS_ASSERTIONS</key>
-				<string>NO</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.1</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>D6FED77C195AC1C100AD10E0</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>D6FED77D195AC1C100AD10E0</string>
-				<string>D6FED77E195AC1C100AD10E0</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>D6FED77D195AC1C100AD10E0</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>CC7C0720D5F047B7B4DBA24C</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME</key>
-				<string>LaunchImage</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>VideoNews/VideoNews-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>VideoNews/VideoNews-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>app</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>D6FED77E195AC1C100AD10E0</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>CC7C0720D5F047B7B4DBA24C</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME</key>
-				<string>LaunchImage</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>VideoNews/VideoNews-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>VideoNews/VideoNews-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>app</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>D6FED77F195AC1C200AD10E0</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>D6FED780195AC1C200AD10E0</string>
-				<string>D6FED781195AC1C200AD10E0</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>D6FED780195AC1C200AD10E0</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(BUILT_PRODUCTS_DIR)/VideoNews.app/VideoNews</string>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>$(SDKROOT)/Developer/Library/Frameworks</string>
-					<string>$(inherited)</string>
-					<string>$(DEVELOPER_FRAMEWORKS_DIR)</string>
-				</array>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>VideoNews/VideoNews-Prefix.pch</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>INFOPLIST_FILE</key>
-				<string>VideoNewsTests/VideoNewsTests-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>TEST_HOST</key>
-				<string>$(BUNDLE_LOADER)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>xctest</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>D6FED781195AC1C200AD10E0</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(BUILT_PRODUCTS_DIR)/VideoNews.app/VideoNews</string>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>$(SDKROOT)/Developer/Library/Frameworks</string>
-					<string>$(inherited)</string>
-					<string>$(DEVELOPER_FRAMEWORKS_DIR)</string>
-				</array>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>VideoNews/VideoNews-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>VideoNewsTests/VideoNewsTests-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>TEST_HOST</key>
-				<string>$(BUNDLE_LOADER)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>xctest</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>D6FED782195BC50000AD10E0</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>VNTabBarViewController.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED783195BC50000AD10E0</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>VNTabBarViewController.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D6FED784195BC50000AD10E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D6FED783195BC50000AD10E0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>E00FF5A8750C4FA0814704DC</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-VideoNews.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-	</dict>
-	<key>rootObject</key>
-	<string>D6FED742195AC1C100AD10E0</string>
-</dict>
-</plist>
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
+		D6FED750195AC1C100AD10E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */; };
+		D6FED752195AC1C100AD10E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED751195AC1C100AD10E0 /* UIKit.framework */; };
+		D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D6FED756195AC1C100AD10E0 /* InfoPlist.strings */; };
+		D6FED75A195AC1C100AD10E0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED759195AC1C100AD10E0 /* main.m */; };
+		D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED75D195AC1C100AD10E0 /* VNAppDelegate.m */; };
+		D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6FED75F195AC1C100AD10E0 /* Main.storyboard */; };
+		D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6FED765195AC1C100AD10E0 /* Images.xcassets */; };
+		D6FED76D195AC1C100AD10E0 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED76C195AC1C100AD10E0 /* XCTest.framework */; };
+		D6FED76E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
+		D6FED76F195AC1C100AD10E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED751195AC1C100AD10E0 /* UIKit.framework */; };
+		D6FED777195AC1C100AD10E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D6FED775195AC1C100AD10E0 /* InfoPlist.strings */; };
+		D6FED779195AC1C100AD10E0 /* VideoNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED778195AC1C100AD10E0 /* VideoNewsTests.m */; };
+		D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED783195BC50000AD10E0 /* VNTabBarViewController.m */; };
+		D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */; };
+		D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED78E195C017500AD10E0 /* VNHTTPRequestManager.m */; };
+		D6FED792195C030D00AD10E0 /* VNKey.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED791195C030D00AD10E0 /* VNKey.m */; };
+		D6FED796195C07E100AD10E0 /* VNObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED795195C07E100AD10E0 /* VNObject.m */; };
+		D6FED799195C08D000AD10E0 /* VNNews.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED798195C08D000AD10E0 /* VNNews.m */; };
+		D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED79B195C0A6D00AD10E0 /* VNUser.m */; };
+		D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED79E195C121D00AD10E0 /* VNMedia.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D6FED770195AC1C100AD10E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6FED742195AC1C100AD10E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D6FED749195AC1C100AD10E0;
+			remoteInfo = VideoNews;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
+		D6FED74A195AC1C100AD10E0 /* VideoNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6FED74D195AC1C100AD10E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		D6FED751195AC1C100AD10E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		D6FED755195AC1C100AD10E0 /* VideoNews-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VideoNews-Info.plist"; sourceTree = "<group>"; };
+		D6FED757195AC1C100AD10E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D6FED759195AC1C100AD10E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D6FED75B195AC1C100AD10E0 /* VideoNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VideoNews-Prefix.pch"; sourceTree = "<group>"; };
+		D6FED75C195AC1C100AD10E0 /* VNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VNAppDelegate.h; sourceTree = "<group>"; };
+		D6FED75D195AC1C100AD10E0 /* VNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VNAppDelegate.m; sourceTree = "<group>"; };
+		D6FED760195AC1C100AD10E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D6FED765195AC1C100AD10E0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D6FED76B195AC1C100AD10E0 /* VideoNewsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VideoNewsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6FED76C195AC1C100AD10E0 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		D6FED774195AC1C100AD10E0 /* VideoNewsTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VideoNewsTests-Info.plist"; sourceTree = "<group>"; };
+		D6FED776195AC1C100AD10E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D6FED778195AC1C100AD10E0 /* VideoNewsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoNewsTests.m; sourceTree = "<group>"; };
+		D6FED782195BC50000AD10E0 /* VNTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNTabBarViewController.h; sourceTree = "<group>"; };
+		D6FED783195BC50000AD10E0 /* VNTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNTabBarViewController.m; sourceTree = "<group>"; };
+		D6FED789195BFF7D00AD10E0 /* VNHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNHomeViewController.h; sourceTree = "<group>"; };
+		D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNHomeViewController.m; sourceTree = "<group>"; };
+		D6FED78D195C017500AD10E0 /* VNHTTPRequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNHTTPRequestManager.h; sourceTree = "<group>"; };
+		D6FED78E195C017500AD10E0 /* VNHTTPRequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNHTTPRequestManager.m; sourceTree = "<group>"; };
+		D6FED790195C030D00AD10E0 /* VNKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNKey.h; sourceTree = "<group>"; };
+		D6FED791195C030D00AD10E0 /* VNKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNKey.m; sourceTree = "<group>"; };
+		D6FED794195C07E100AD10E0 /* VNObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNObject.h; sourceTree = "<group>"; };
+		D6FED795195C07E100AD10E0 /* VNObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNObject.m; sourceTree = "<group>"; };
+		D6FED797195C08D000AD10E0 /* VNNews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNews.h; sourceTree = "<group>"; };
+		D6FED798195C08D000AD10E0 /* VNNews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNews.m; sourceTree = "<group>"; };
+		D6FED79A195C0A6D00AD10E0 /* VNUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUser.h; sourceTree = "<group>"; };
+		D6FED79B195C0A6D00AD10E0 /* VNUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUser.m; sourceTree = "<group>"; };
+		D6FED79D195C121D00AD10E0 /* VNMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMedia.h; sourceTree = "<group>"; };
+		D6FED79E195C121D00AD10E0 /* VNMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMedia.m; sourceTree = "<group>"; };
+		E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VideoNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D6FED747195AC1C100AD10E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED750195AC1C100AD10E0 /* CoreGraphics.framework in Frameworks */,
+				D6FED752195AC1C100AD10E0 /* UIKit.framework in Frameworks */,
+				D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */,
+				02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6FED768195AC1C100AD10E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED76D195AC1C100AD10E0 /* XCTest.framework in Frameworks */,
+				D6FED76F195AC1C100AD10E0 /* UIKit.framework in Frameworks */,
+				D6FED76E195AC1C100AD10E0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D6FED741195AC1C100AD10E0 = {
+			isa = PBXGroup;
+			children = (
+				D6FED753195AC1C100AD10E0 /* VideoNews */,
+				D6FED772195AC1C100AD10E0 /* VideoNewsTests */,
+				D6FED74C195AC1C100AD10E0 /* Frameworks */,
+				D6FED74B195AC1C100AD10E0 /* Products */,
+				CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		D6FED74B195AC1C100AD10E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED74A195AC1C100AD10E0 /* VideoNews.app */,
+				D6FED76B195AC1C100AD10E0 /* VideoNewsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D6FED74C195AC1C100AD10E0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED74D195AC1C100AD10E0 /* Foundation.framework */,
+				D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */,
+				D6FED751195AC1C100AD10E0 /* UIKit.framework */,
+				D6FED76C195AC1C100AD10E0 /* XCTest.framework */,
+				E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED793195C076500AD10E0 /* Model */,
+				D6FED78C195C009F00AD10E0 /* Data */,
+				D6FED785195BFF5F00AD10E0 /* Home */,
+				D6FED786195BFF5F00AD10E0 /* Notification */,
+				D6FED787195BFF5F00AD10E0 /* Profile */,
+				D6FED788195BFF5F00AD10E0 /* Search */,
+				D6FED75C195AC1C100AD10E0 /* VNAppDelegate.h */,
+				D6FED75D195AC1C100AD10E0 /* VNAppDelegate.m */,
+				D6FED782195BC50000AD10E0 /* VNTabBarViewController.h */,
+				D6FED783195BC50000AD10E0 /* VNTabBarViewController.m */,
+				D6FED75F195AC1C100AD10E0 /* Main.storyboard */,
+				D6FED765195AC1C100AD10E0 /* Images.xcassets */,
+				D6FED754195AC1C100AD10E0 /* Supporting Files */,
+			);
+			path = VideoNews;
+			sourceTree = "<group>";
+		};
+		D6FED754195AC1C100AD10E0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED755195AC1C100AD10E0 /* VideoNews-Info.plist */,
+				D6FED756195AC1C100AD10E0 /* InfoPlist.strings */,
+				D6FED759195AC1C100AD10E0 /* main.m */,
+				D6FED75B195AC1C100AD10E0 /* VideoNews-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D6FED772195AC1C100AD10E0 /* VideoNewsTests */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED778195AC1C100AD10E0 /* VideoNewsTests.m */,
+				D6FED773195AC1C100AD10E0 /* Supporting Files */,
+			);
+			path = VideoNewsTests;
+			sourceTree = "<group>";
+		};
+		D6FED773195AC1C100AD10E0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED774195AC1C100AD10E0 /* VideoNewsTests-Info.plist */,
+				D6FED775195AC1C100AD10E0 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D6FED785195BFF5F00AD10E0 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED789195BFF7D00AD10E0 /* VNHomeViewController.h */,
+				D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		D6FED786195BFF5F00AD10E0 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		D6FED787195BFF5F00AD10E0 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		D6FED788195BFF5F00AD10E0 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		D6FED78C195C009F00AD10E0 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED78D195C017500AD10E0 /* VNHTTPRequestManager.h */,
+				D6FED78E195C017500AD10E0 /* VNHTTPRequestManager.m */,
+				D6FED790195C030D00AD10E0 /* VNKey.h */,
+				D6FED791195C030D00AD10E0 /* VNKey.m */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		D6FED793195C076500AD10E0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D6FED794195C07E100AD10E0 /* VNObject.h */,
+				D6FED795195C07E100AD10E0 /* VNObject.m */,
+				D6FED797195C08D000AD10E0 /* VNNews.h */,
+				D6FED798195C08D000AD10E0 /* VNNews.m */,
+				D6FED79A195C0A6D00AD10E0 /* VNUser.h */,
+				D6FED79B195C0A6D00AD10E0 /* VNUser.m */,
+				D6FED79D195C121D00AD10E0 /* VNMedia.h */,
+				D6FED79E195C121D00AD10E0 /* VNMedia.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D6FED749195AC1C100AD10E0 /* VideoNews */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6FED77C195AC1C100AD10E0 /* Build configuration list for PBXNativeTarget "VideoNews" */;
+			buildPhases = (
+				207592E1A377467090931202 /* Check Pods Manifest.lock */,
+				D6FED746195AC1C100AD10E0 /* Sources */,
+				D6FED747195AC1C100AD10E0 /* Frameworks */,
+				D6FED748195AC1C100AD10E0 /* Resources */,
+				51F25034AC6D403D91690FF3 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VideoNews;
+			productName = VideoNews;
+			productReference = D6FED74A195AC1C100AD10E0 /* VideoNews.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D6FED76A195AC1C100AD10E0 /* VideoNewsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6FED77F195AC1C200AD10E0 /* Build configuration list for PBXNativeTarget "VideoNewsTests" */;
+			buildPhases = (
+				D6FED767195AC1C100AD10E0 /* Sources */,
+				D6FED768195AC1C100AD10E0 /* Frameworks */,
+				D6FED769195AC1C100AD10E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D6FED771195AC1C100AD10E0 /* PBXTargetDependency */,
+			);
+			name = VideoNewsTests;
+			productName = VideoNewsTests;
+			productReference = D6FED76B195AC1C100AD10E0 /* VideoNewsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D6FED742195AC1C100AD10E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = VN;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Manyu Zhu";
+				TargetAttributes = {
+					D6FED76A195AC1C100AD10E0 = {
+						TestTargetID = D6FED749195AC1C100AD10E0;
+					};
+				};
+			};
+			buildConfigurationList = D6FED745195AC1C100AD10E0 /* Build configuration list for PBXProject "VideoNews" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D6FED741195AC1C100AD10E0;
+			productRefGroup = D6FED74B195AC1C100AD10E0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D6FED749195AC1C100AD10E0 /* VideoNews */,
+				D6FED76A195AC1C100AD10E0 /* VideoNewsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D6FED748195AC1C100AD10E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
+				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
+				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6FED769195AC1C100AD10E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED777195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		207592E1A377467090931202 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		51F25034AC6D403D91690FF3 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-VideoNews-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D6FED746195AC1C100AD10E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
+				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,
+				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
+				D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */,
+				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
+				D6FED792195C030D00AD10E0 /* VNKey.m in Sources */,
+				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
+				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
+				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
+				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6FED767195AC1C100AD10E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6FED779195AC1C100AD10E0 /* VideoNewsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D6FED771195AC1C100AD10E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D6FED749195AC1C100AD10E0 /* VideoNews */;
+			targetProxy = D6FED770195AC1C100AD10E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D6FED756195AC1C100AD10E0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6FED757195AC1C100AD10E0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		D6FED75F195AC1C100AD10E0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6FED760195AC1C100AD10E0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D6FED775195AC1C100AD10E0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6FED776195AC1C100AD10E0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D6FED77A195AC1C100AD10E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D6FED77B195AC1C100AD10E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D6FED77D195AC1C100AD10E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "VideoNews/VideoNews-Prefix.pch";
+				INFOPLIST_FILE = "VideoNews/VideoNews-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		D6FED77E195AC1C100AD10E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "VideoNews/VideoNews-Prefix.pch";
+				INFOPLIST_FILE = "VideoNews/VideoNews-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		D6FED780195AC1C200AD10E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/VideoNews.app/VideoNews";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "VideoNews/VideoNews-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "VideoNewsTests/VideoNewsTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		D6FED781195AC1C200AD10E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/VideoNews.app/VideoNews";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "VideoNews/VideoNews-Prefix.pch";
+				INFOPLIST_FILE = "VideoNewsTests/VideoNewsTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D6FED745195AC1C100AD10E0 /* Build configuration list for PBXProject "VideoNews" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6FED77A195AC1C100AD10E0 /* Debug */,
+				D6FED77B195AC1C100AD10E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D6FED77C195AC1C100AD10E0 /* Build configuration list for PBXNativeTarget "VideoNews" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6FED77D195AC1C100AD10E0 /* Debug */,
+				D6FED77E195AC1C100AD10E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D6FED77F195AC1C200AD10E0 /* Build configuration list for PBXNativeTarget "VideoNewsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6FED780195AC1C200AD10E0 /* Debug */,
+				D6FED781195AC1C200AD10E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D6FED742195AC1C100AD10E0 /* Project object */;
+}

@@ -22,10 +22,10 @@
             </objects>
             <point key="canvasLocation" x="701" y="-1153"/>
         </scene>
-        <!--View Controller-->
+        <!--Home View Controller-->
         <scene sceneID="jwy-yn-c17">
             <objects>
-                <viewController id="glU-f5-ipP" sceneMemberID="viewController">
+                <viewController id="glU-f5-ipP" customClass="VNHomeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="TD4-NY-dra"/>
                         <viewControllerLayoutGuide type="bottom" id="5ek-e9-AgS"/>
@@ -193,7 +193,7 @@
         <scene sceneID="p12-MY-hRl">
             <objects>
                 <tabBarController definesPresentationContext="YES" id="yvf-YO-3ud" customClass="VNTabBarViewController" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="gza-aE-3x2">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
