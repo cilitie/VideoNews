@@ -19,10 +19,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.tabBar setBarTintColor:[UIColor whiteColor]];
-    [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x51c4d4]]];
+    [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x3f3f3f]]];
     
-    NSArray *tabBarIcons = @[@"Home", @"Search", @"Add", @"Notification", @"Profile"];
-    NSArray *tabBarSelectedIcons = @[@"Home_A", @"Search_A", @"Add_A", @"Notification_A", @"Profile_A"];
+    NSArray *tabBarIcons = @[@"Home", @"Search", @"Camera", @"Notification", @"Profile"];
+    NSArray *tabBarSelectedIcons = @[@"Home_A", @"Search_A", @"Camera_A", @"Notification_A", @"Profile_A"];
     
     [self.tabBar.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UITabBarItem *item = obj;

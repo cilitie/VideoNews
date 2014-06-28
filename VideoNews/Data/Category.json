@@ -1,0 +1,31 @@
+{
+    "classes": [{
+                "cid": 1,
+                "name": "\u519b\u4e8b",
+                "img_url": "http:\/\/d.hiphotos.baidu.com\/image\/pic\/item\/a71ea8d3fd1f4134ac714774271f95cad1c85e71.jpg"
+                }, {
+                "cid": 2,
+                "name": "\u5929\u6587",
+                "img_url": "http:\/\/pic22.nipic.com\/20120626\/668573_152821201147_2.jpg"
+                }, {
+                "cid": 3,
+                "name": "\u670d\u9970",
+                "img_url": "http:\/\/h.hiphotos.baidu.com\/image\/pic\/item\/0eb30f2442a7d933678ae996af4bd11373f00130.jpg"
+                }, {
+                "cid": 4,
+                "name": "\u52a8\u6f2b",
+                "img_url": "http:\/\/h.hiphotos.baidu.com\/image\/w%3D230\/sign=9be8c3c3d01b0ef46ce89f5dedc551a1\/eac4b74543a98226f0d6a0ca8882b9014b90ebcc.jpg"
+                }, {
+                "cid": 5,
+                "name": "\u5bb6\u5c45",
+                "img_url": "http:\/\/g.hiphotos.baidu.com\/image\/pic\/item\/9345d688d43f8794d2aa2546d01b0ef41bd53a04.jpg"
+                }, {
+                "cid": 6,
+                "name": "\u6444\u5f71",
+                "img_url": "http:\/\/g.hiphotos.baidu.com\/image\/pic\/item\/7e3e6709c93d70cf251a00f7fadcd100bba12b63.jpg"
+                }, {
+                "cid": 7,
+                "name": "\u7f8e\u98df",
+                "img_url": "http:\/\/e.hiphotos.baidu.com\/image\/pic\/item\/4610b912c8fcc3ceef0e60459045d688d53f20fd.jpg"
+                }]
+}

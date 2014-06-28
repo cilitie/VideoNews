@@ -32,6 +32,7 @@ static CGFloat totleWidth = 145.0;
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         self.layer.cornerRadius = 10;
+        self.layer.masksToBounds = YES;
         
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectZero];
         _titleLabel.font = [UIFont systemFontOfSize:12.0];
@@ -39,7 +40,6 @@ static CGFloat totleWidth = 145.0;
         [_titleLabel setNumberOfLines:1000];
         
         _newsImageView = [[UIImageView alloc]initWithFrame:CGRectZero];
-        
         _thumbnailImageView = [[UIImageView alloc]initWithFrame:CGRectZero];
         
         _nameLabel = [[UILabel alloc]initWithFrame:CGRectZero];
@@ -48,7 +48,7 @@ static CGFloat totleWidth = 145.0;
         [_nameLabel setNumberOfLines:2];
         
         _line = [[UIView alloc] initWithFrame:CGRectZero];
-        [_line setBackgroundColor:[UIColor lightGrayColor]];
+        [_line setBackgroundColor:[UIColor colorWithRGBValue:0xced5d6]];
         
         [self addSubview:_titleLabel];
         [self addSubview:_newsImageView];
@@ -79,16 +79,7 @@ static CGFloat totleWidth = 145.0;
 - (void)reloadCell {
     //FIXME: Hard Code
     _newsImageView.frame=CGRectMake(0.0, 0.0, totleWidth, self.imageMedia.height);
-//    [_newsImageView setImage:[UIImage imageNamed:@"Profile"]];
     [_newsImageView setImageWithURL:[NSURL URLWithString:self.imageMedia.url] placeholderImage:[UIImage imageNamed:@"Profile"]];
-//    __weak typeof(self) weakSelf = self;
-//    NSURLRequest *newsImageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.imageMedia.url]];
-//    [_newsImageView setImageWithURLRequest:newsImageRequest placeholderImage:[UIImage imageNamed:@"Profile"] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-//        [weakSelf.newsImageView setImage:image];
-//    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-//        NSLog(@"%@", error.localizedDescription);
-//    }];
-//     _newsImageView.layer.cornerRadius = 10;
     
     _titleLabel.frame=CGRectMake(cellMargin, CGRectGetMaxY(_newsImageView.frame)+5, totleWidth-cellMargin*2, cellMargin*2);
     [_titleLabel setText:_news.title];

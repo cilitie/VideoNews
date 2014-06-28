@@ -19,9 +19,7 @@
     //FIXME: for test
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"HomeNews" ofType:@"json"];
-    NSLog(@"path:%@",path);
     NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
-    NSLog(@"length:%d",[jdata length]);
     NSError *error = nil;
     NSArray *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
     VNNews *news = nil;
@@ -80,6 +78,53 @@
             completion(nil, error);
         }
     }];
+}
+
++ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/class.php
+    NSString *URLStr = [VNHost stringByAppendingString:@"class.php"];
+    
+    //FIXME: for test
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Category" ofType:@"json"];
+    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
+    NSError *error = nil;
+    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
+    NSArray *responseArr = [responseObject objectForKey:@"classes"];
+    
+    VNCategory *category = nil;
+    NSMutableArray *categoryArr = [NSMutableArray array];
+    for (NSDictionary *categoryDic in responseArr) {
+        category = [[VNCategory alloc] initWithDict:categoryDic];
+        [categoryArr addObject:category];
+     }
+    if (completion) {
+        completion(categoryArr, nil);
+        return;
+    }
+
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        VNCategory *category = nil;
+        NSMutableArray *categoryArr = [NSMutableArray array];
+        
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            NSArray *responseArr = [responseObject objectForKey:@"classes"];
+            for (NSDictionary *categoryDic in responseArr) {
+                category = [[VNCategory alloc] initWithDict:categoryDic];
+                [categoryArr addObject:category];
+            }
+        }
+        if (completion) {
+            completion(categoryArr, nil);
+            return;
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+
 }
 
 @end

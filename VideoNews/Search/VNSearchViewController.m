@@ -7,18 +7,22 @@
 //
 
 #import "VNSearchViewController.h"
+#import "VNCategoryCollectionViewCell.h"
+#import "UIImageView+AFNetworking.h"
 
-@interface VNSearchViewController ()
+@interface VNSearchViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+
+@property (strong, nonatomic) NSMutableArray *categoryArr;
 
 @end
 
 @implementation VNSearchViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithCoder:coder];
     if (self) {
-        // Custom initialization
+        _categoryArr = [NSMutableArray array];
     }
     return self;
 }
@@ -27,6 +31,16 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    __weak typeof(self) weakSelf = self;
+    [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
+        if (error) {
+            NSLog(@"%@", [error localizedDescription]);
+        }
+        else {
+            [weakSelf.categoryArr addObjectsFromArray:categoryArr];
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -45,5 +59,29 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.categoryArr.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    VNCategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VNCategoryCollectionViewCellIdentifier" forIndexPath:indexPath];
+    VNCategory *category = [self.categoryArr objectAtIndex:indexPath.item];
+    
+    [cell.bgImageView setImageWithURL:[NSURL URLWithString:category.img_url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [cell.titleLabel setText:category.name];
+    return cell;
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"%d", indexPath.row);
+}
+
 
 @end

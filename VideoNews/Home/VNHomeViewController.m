@@ -35,7 +35,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.view setBackgroundColor:[UIColor colorWithRGBValue:0xb4b4b4]];
+    [self.view setBackgroundColor:[UIColor colorWithRGBValue:0xe1e1e1]];
     
     CGRect frame = self.view.bounds;
     frame.origin.y +=64;
@@ -134,6 +134,10 @@
 - (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     VNNews *news =[self.newsArr objectAtIndex:indexPath.row];
     return [self cellHeightFor:news];
+}
+
+- (CGFloat)quiltViewMargin:(TMQuiltView *)quilView marginType:(TMQuiltViewMarginType)marginType {
+    return 10.0;
 }
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {

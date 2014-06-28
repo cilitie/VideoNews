@@ -32,6 +32,9 @@
 		D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */; };
 		D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */; };
 		D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FED7A8195EA6E100AD10E0 /* HomeNews.json */; };
+		D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */; };
+		D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FED7AD195ED35D00AD10E0 /* Category.json */; };
+		D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7B0195ED38D00AD10E0 /* VNCategory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +87,11 @@
 		D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchViewController.h; sourceTree = "<group>"; };
 		D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchViewController.m; sourceTree = "<group>"; };
 		D6FED7A8195EA6E100AD10E0 /* HomeNews.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HomeNews.json; sourceTree = "<group>"; };
+		D6FED7AA195ECD2800AD10E0 /* VNCategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCategoryCollectionViewCell.h; sourceTree = "<group>"; };
+		D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCategoryCollectionViewCell.m; sourceTree = "<group>"; };
+		D6FED7AD195ED35D00AD10E0 /* Category.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Category.json; sourceTree = "<group>"; };
+		D6FED7AF195ED38D00AD10E0 /* VNCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCategory.h; sourceTree = "<group>"; };
+		D6FED7B0195ED38D00AD10E0 /* VNCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCategory.m; sourceTree = "<group>"; };
 		E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VideoNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -223,6 +231,8 @@
 			children = (
 				D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */,
 				D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */,
+				D6FED7AA195ECD2800AD10E0 /* VNCategoryCollectionViewCell.h */,
+				D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -235,6 +245,7 @@
 				D6FED790195C030D00AD10E0 /* VNKey.h */,
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
 				D6FED7A8195EA6E100AD10E0 /* HomeNews.json */,
+				D6FED7AD195ED35D00AD10E0 /* Category.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -250,6 +261,8 @@
 				D6FED79B195C0A6D00AD10E0 /* VNUser.m */,
 				D6FED79D195C121D00AD10E0 /* VNMedia.h */,
 				D6FED79E195C121D00AD10E0 /* VNMedia.m */,
+				D6FED7AF195ED38D00AD10E0 /* VNCategory.h */,
+				D6FED7B0195ED38D00AD10E0 /* VNCategory.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -333,6 +346,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
@@ -394,10 +408,12 @@
 				D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */,
 				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
 				D6FED792195C030D00AD10E0 /* VNKey.m in Sources */,
+				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
+				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 			);

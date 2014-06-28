@@ -11,9 +11,11 @@
 #import "VNNews.h"
 #import "VNUser.h"
 #import "VNMedia.h"
+#import "VNCategory.h"
 
 @interface VNHTTPRequestManager : NSObject
 
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
++ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
 
 @end
