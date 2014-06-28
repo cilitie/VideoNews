@@ -15,9 +15,44 @@
     //http://zmysp.sinaapp.com/viewnews.php?pagesize=10&timestamp=1403749840.499465
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
     NSDictionary *param = @{@"pagesize": @10, @"timestamp": time};
+    
+    //FIXME: for test
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"HomeNews" ofType:@"json"];
+    NSLog(@"path:%@",path);
+    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
+    NSLog(@"length:%d",[jdata length]);
+    NSError *error = nil;
+    NSArray *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
+    VNNews *news = nil;
+    VNMedia *media = nil;
+    NSMutableArray *newsArr = [NSMutableArray array];
+    for (NSDictionary *newsDic in responseObject) {
+        news = [[VNNews alloc] initWithDict:newsDic];
+        
+        NSDictionary *userDic = [newsDic objectForKey:@"author"];
+        news.author = [[VNUser alloc] initWithDict:userDic];
+        
+        NSArray *mediaArr = [newsDic objectForKey:@"media"];
+        NSMutableArray *mediaMutableArr = [NSMutableArray array];
+        for (NSDictionary *mediaDic in mediaArr) {
+            media = [[VNMedia alloc] initWithDict:mediaDic];
+            [mediaMutableArr addObject:media];
+        }
+        news.mediaArr = mediaMutableArr;
+        
+        [newsArr addObject:news];
+    }
+    if (completion) {
+        NSLog(@"%@", newsArr);
+        completion(newsArr, nil);
+        return;
+    }
+    
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         VNNews *news = nil;
+        VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSArray class]]) {
             for (NSDictionary *newsDic in responseObject) {
@@ -29,7 +64,8 @@
                 NSArray *mediaArr = [newsDic objectForKey:@"media"];
                 NSMutableArray *mediaMutableArr = [NSMutableArray array];
                 for (NSDictionary *mediaDic in mediaArr) {
-                    [mediaMutableArr addObject:[[VNMedia alloc] initWithDict:mediaDic]];
+                    media = [[VNMedia alloc] initWithDict:mediaDic];
+                    [mediaMutableArr addObject:media];
                 }
                 news.mediaArr = mediaMutableArr;
                 

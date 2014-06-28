@@ -29,6 +29,9 @@
 		D6FED799195C08D000AD10E0 /* VNNews.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED798195C08D000AD10E0 /* VNNews.m */; };
 		D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED79B195C0A6D00AD10E0 /* VNUser.m */; };
 		D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED79E195C121D00AD10E0 /* VNMedia.m */; };
+		D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */; };
+		D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */; };
+		D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FED7A8195EA6E100AD10E0 /* HomeNews.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +79,11 @@
 		D6FED79B195C0A6D00AD10E0 /* VNUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUser.m; sourceTree = "<group>"; };
 		D6FED79D195C121D00AD10E0 /* VNMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMedia.h; sourceTree = "<group>"; };
 		D6FED79E195C121D00AD10E0 /* VNMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMedia.m; sourceTree = "<group>"; };
+		D6FED7A0195D1BD400AD10E0 /* VNQuiltViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNQuiltViewCell.h; sourceTree = "<group>"; };
+		D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNQuiltViewCell.m; sourceTree = "<group>"; };
+		D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchViewController.h; sourceTree = "<group>"; };
+		D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchViewController.m; sourceTree = "<group>"; };
+		D6FED7A8195EA6E100AD10E0 /* HomeNews.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HomeNews.json; sourceTree = "<group>"; };
 		E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VideoNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -190,6 +198,8 @@
 			children = (
 				D6FED789195BFF7D00AD10E0 /* VNHomeViewController.h */,
 				D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */,
+				D6FED7A0195D1BD400AD10E0 /* VNQuiltViewCell.h */,
+				D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -211,6 +221,8 @@
 		D6FED788195BFF5F00AD10E0 /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */,
+				D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -222,6 +234,7 @@
 				D6FED78E195C017500AD10E0 /* VNHTTPRequestManager.m */,
 				D6FED790195C030D00AD10E0 /* VNKey.h */,
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
+				D6FED7A8195EA6E100AD10E0 /* HomeNews.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -323,6 +336,7 @@
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
+				D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,8 +396,10 @@
 				D6FED792195C030D00AD10E0 /* VNKey.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
+				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
+				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

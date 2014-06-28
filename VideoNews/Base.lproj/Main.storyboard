@@ -22,10 +22,10 @@
             </objects>
             <point key="canvasLocation" x="701" y="-1153"/>
         </scene>
-        <!--Home View Controller-->
+        <!--Home View Controller - 首页-->
         <scene sceneID="jwy-yn-c17">
             <objects>
-                <viewController id="glU-f5-ipP" customClass="VNHomeViewController" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="glU-f5-ipP" customClass="VNHomeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="TD4-NY-dra"/>
                         <viewControllerLayoutGuide type="bottom" id="5ek-e9-AgS"/>
@@ -35,7 +35,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="OEl-ei-TxF"/>
+                    <navigationItem key="navigationItem" title="首页" id="OEl-ei-TxF"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nYi-px-jno" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
