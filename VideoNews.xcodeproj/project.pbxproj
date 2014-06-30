@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
+		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
+		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
 		D6FED750195AC1C100AD10E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */; };
 		D6FED752195AC1C100AD10E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED751195AC1C100AD10E0 /* UIKit.framework */; };
@@ -49,6 +52,11 @@
 
 /* Begin PBXFileReference section */
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
+		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
+		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
+		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
+		D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNDetailHeaderView.m; sourceTree = "<group>"; };
+		D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNDetailHeaderView.xib; sourceTree = "<group>"; };
 		D6FED74A195AC1C100AD10E0 /* VideoNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6FED74D195AC1C100AD10E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -208,6 +216,11 @@
 				D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */,
 				D6FED7A0195D1BD400AD10E0 /* VNQuiltViewCell.h */,
 				D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */,
+				D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */,
+				D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */,
+				D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */,
+				D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */,
+				D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -348,6 +361,7 @@
 			files = (
 				D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
+				D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
 				D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */,
@@ -412,8 +426,10 @@
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
+				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
+				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 			);

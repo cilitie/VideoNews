@@ -10,6 +10,7 @@
 #import "SVPullToRefresh.h"
 #import "TMQuiltView.h"
 #import "VNQuiltViewCell.h"
+#import "VNNewsDetailViewController.h"
 
 @interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate> {
     TMQuiltView *newsQuiltView;
@@ -97,7 +98,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -105,8 +106,12 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewController"]) {
+        VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
+        newsDetailViewController.hidesBottomBarWhenPushed = YES;
+    }
 }
-*/
+
 #pragma mark - TMQuiltViewDataSource
 
 - (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)TMQuiltView {
@@ -142,6 +147,7 @@
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"index:%d",indexPath.row);
+    [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
 }
 
 #pragma mark - SEL

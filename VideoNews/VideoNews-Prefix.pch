@@ -16,4 +16,5 @@
     #import "ColorUtils.h"
     #import "VNKey.h"
     #import "VNHTTPRequestManager.h"
+    #define loadXib(name) [[[NSBundle mainBundle] loadNibNamed:name owner:nil options:nil] firstObject]
 #endif
