@@ -8,16 +8,13 @@
 
 #import "VNDetailHeaderView.h"
 
-@implementation VNDetailHeaderView
+@interface VNDetailHeaderView ()
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
+- (IBAction)click:(id)sender;
+
+@end
+
+@implementation VNDetailHeaderView
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -27,5 +24,11 @@
     // Drawing code
 }
 */
+
+- (IBAction)click:(id)sender {
+    if (self.moreHandler) {
+        self.moreHandler();
+    }
+}
 
 @end

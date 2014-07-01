@@ -8,10 +8,16 @@
 
 #import "VNNewsDetailViewController.h"
 #import "VNDetailHeaderView.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface VNNewsDetailViewController ()
 
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
+
+- (IBAction)popBack:(id)sender;
+- (IBAction)like:(id)sender;
+- (IBAction)share:(id)sender;
+
 @end
 
 @implementation VNNewsDetailViewController
@@ -21,8 +27,28 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIView *headerView = loadXib(@"VNDetailHeaderView");
-    self.commentTableView.tableHeaderView=headerView;
+    VNDetailHeaderView *headerView = loadXib(@"VNDetailHeaderView");
+    
+    [headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"Profile"]];
+    headerView.nameLabel.text = self.news.author.name;
+    
+    [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
+        if ([obj.type rangeOfString:@"image"].location != NSNotFound) {
+            self.media = obj;
+            *stop = YES;
+        }
+    }];
+    [headerView.newsImageView setImageWithURL:[NSURL URLWithString:self.media.url] placeholderImage:[UIImage imageNamed:@"Profile"]];
+    
+    headerView.titleLabel.text = self.news.title;
+    headerView.timeLabel.text = self.news.date;
+    headerView.tagLabel.text = self.news.tags;
+    headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
+    headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+    
+    self.commentTableView.tableHeaderView = headerView;
+    self.commentTableView.layer.cornerRadius = 5.0;
+    self.commentTableView.layer.masksToBounds = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -82,4 +108,13 @@
     
 }
 
+- (IBAction)popBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)like:(id)sender {
+}
+
+- (IBAction)share:(id)sender {
+}
 @end

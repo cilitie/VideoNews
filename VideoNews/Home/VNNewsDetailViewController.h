@@ -10,4 +10,7 @@
 
 @interface VNNewsDetailViewController : UIViewController
 
+@property (strong, nonatomic) VNNews *news;
+@property (strong, nonatomic) VNMedia *media;
+
 @end

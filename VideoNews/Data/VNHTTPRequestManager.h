@@ -17,5 +17,6 @@
 
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
 + (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
++ (void)commentListForNews:(int)nid completion:(void(^)(NSArray *categoryArr, NSError *error))completion;
 
 @end

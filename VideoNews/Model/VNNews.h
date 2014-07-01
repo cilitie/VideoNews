@@ -20,7 +20,7 @@
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *url;
 @property (assign, nonatomic, readonly) int share_count;
-@property (strong, nonatomic, readonly) NSArray *tags;
+@property (strong, nonatomic, readonly) NSString *tags;
 @property (strong, nonatomic, readonly) NSString *description;
 @property (strong, nonatomic) VNUser *author;
 @property (strong, nonatomic) NSArray *mediaArr;

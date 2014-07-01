@@ -20,6 +20,8 @@
 
 @end
 
+static int selectedItemIndex;
+
 @implementation VNHomeViewController
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -51,7 +53,7 @@
     [newsQuiltView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSString *refreshTimeStamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+            NSString *refreshTimeStamp = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]];
             [VNHTTPRequestManager newsListFromTime:refreshTimeStamp completion:^(NSArray *newsArr, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -108,6 +110,7 @@
     // Pass the selected object to the new view controller.
     if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewController"]) {
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
+        newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
     }
 }
@@ -123,7 +126,7 @@
     if (!cell) {
         cell = [[VNQuiltViewCell alloc] initWithReuseIdentifier:@"VNQuiltViewCellIdentifier"];
     }
-    VNNews *news =[self.newsArr objectAtIndex:indexPath.row];
+    VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
     cell.news=news;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
@@ -137,7 +140,7 @@
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    VNNews *news =[self.newsArr objectAtIndex:indexPath.row];
+    VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
     return [self cellHeightFor:news];
 }
 
@@ -146,7 +149,7 @@
 }
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"index:%d",indexPath.row);
+    selectedItemIndex = indexPath.item;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
 }
 

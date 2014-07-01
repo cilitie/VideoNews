@@ -58,7 +58,7 @@ static NSString *kClassid = @"classid";
     return [makeSureNotNull([self.basicDict objectForKey:kShare_count]) intValue];
 }
 
-- (NSArray *)tags {
+- (NSString *)tags {
     return makeSureNotNull([self.basicDict objectForKey:kTags]);
 }
 
