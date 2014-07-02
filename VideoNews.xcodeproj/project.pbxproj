@@ -11,6 +11,9 @@
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
+		D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A9D1963D78500EA72BC /* VNComment.m */; };
+		D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */; };
+		D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
 		D6FED750195AC1C100AD10E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */; };
 		D6FED752195AC1C100AD10E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED751195AC1C100AD10E0 /* UIKit.framework */; };
@@ -57,6 +60,11 @@
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
 		D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNDetailHeaderView.m; sourceTree = "<group>"; };
 		D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNDetailHeaderView.xib; sourceTree = "<group>"; };
+		D66F7A9C1963D78500EA72BC /* VNComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNComment.h; sourceTree = "<group>"; };
+		D66F7A9D1963D78500EA72BC /* VNComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNComment.m; sourceTree = "<group>"; };
+		D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCommentTableViewCell.h; sourceTree = "<group>"; };
+		D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCommentTableViewCell.m; sourceTree = "<group>"; };
+		D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCommentTableViewCell.xib; sourceTree = "<group>"; };
 		D6FED74A195AC1C100AD10E0 /* VideoNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6FED74D195AC1C100AD10E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D6FED74F195AC1C100AD10E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -221,6 +229,9 @@
 				D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */,
 				D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */,
 				D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */,
+				D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */,
+				D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */,
+				D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -276,6 +287,8 @@
 				D6FED79E195C121D00AD10E0 /* VNMedia.m */,
 				D6FED7AF195ED38D00AD10E0 /* VNCategory.h */,
 				D6FED7B0195ED38D00AD10E0 /* VNCategory.m */,
+				D66F7A9C1963D78500EA72BC /* VNComment.h */,
+				D66F7A9D1963D78500EA72BC /* VNComment.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -361,6 +374,7 @@
 			files = (
 				D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
+				D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */,
 				D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
@@ -429,7 +443,9 @@
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
+				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
+				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 			);

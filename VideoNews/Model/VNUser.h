@@ -13,11 +13,15 @@
 @property (assign, nonatomic, readonly) int uid;
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *avatar;
-@property (assign, nonatomic, readonly) BOOL isMainUser;
-@property (assign, nonatomic, readonly) BOOL isSearch;
-@property (strong, nonatomic, readonly) NSArray *collectNewsArr;
-@property (strong, nonatomic, readonly) NSArray *commentArr;
-@property (strong, nonatomic, readonly) NSArray *newsArr;
-@property (strong, nonatomic, readonly) NSArray *replyCommentArr;
+//@property (assign, nonatomic, readonly) BOOL isMainUser;
+//@property (assign, nonatomic, readonly) BOOL isSearch;
+//@property (strong, nonatomic, readonly) NSArray *collectNewsArr;
+//@property (strong, nonatomic, readonly) NSArray *commentArr;
+//@property (strong, nonatomic, readonly) NSArray *newsArr;
+//@property (strong, nonatomic, readonly) NSArray *replyCommentArr;
+//for comment author
+@property (strong, nonatomic, readonly) NSString *location;
+@property (strong, nonatomic, readonly) NSString *sex;
+@property (strong, nonatomic, readonly) NSString *main_uid;
 
 @end

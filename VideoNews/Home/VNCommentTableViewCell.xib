@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KGk-i7-Jjw" customClass="VNCommentTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="300" height="60"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="300" height="59"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RZb-ID-P1t">
+                        <rect key="frame" x="10" y="15" width="30" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="30" id="DSp-VU-pAJ"/>
+                            <constraint firstAttribute="height" constant="30" id="Ta8-1R-SKd"/>
+                        </constraints>
+                        <state key="normal">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jh4-iu-hd7">
+                        <rect key="frame" x="50" y="15" width="180" height="15"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="y3K-X1-Z6W"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.27843138575553894" green="0.27843138575553894" blue="0.27843138575553894" alpha="1" colorSpace="deviceRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2014-06-03" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p5B-T7-60V">
+                        <rect key="frame" x="240" y="42" width="55" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="55" id="gcz-vS-vYi"/>
+                            <constraint firstAttribute="height" constant="12" id="hSj-gg-xLX"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <color key="textColor" red="0.27843138575553894" green="0.27843138575553894" blue="0.27843138575553894" alpha="1" colorSpace="deviceRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="11s-NU-cHb">
+                        <rect key="frame" x="260" y="15" width="15" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" image="30-30reply">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="1000" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="180" translatesAutoresizingMaskIntoConstraints="NO" id="bpS-Z0-uJe">
+                        <rect key="frame" x="50" y="35" width="180" height="0.0"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.27843138575553894" green="0.27843138575553894" blue="0.27843138575553894" alpha="1" colorSpace="deviceRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="RZb-ID-P1t" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="5bO-eV-tiP"/>
+                    <constraint firstAttribute="trailing" secondItem="bpS-Z0-uJe" secondAttribute="trailing" constant="70" id="DPV-sc-LcE"/>
+                    <constraint firstItem="bpS-Z0-uJe" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="50" id="EEI-gm-rWU"/>
+                    <constraint firstItem="bpS-Z0-uJe" firstAttribute="top" secondItem="jh4-iu-hd7" secondAttribute="bottom" constant="5" id="F1i-pC-5R9"/>
+                    <constraint firstAttribute="trailing" secondItem="11s-NU-cHb" secondAttribute="trailing" constant="25" id="RRs-wg-NXB"/>
+                    <constraint firstItem="jh4-iu-hd7" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="50" id="SUs-IL-8Gk"/>
+                    <constraint firstItem="p5B-T7-60V" firstAttribute="top" secondItem="11s-NU-cHb" secondAttribute="bottom" constant="5" id="TUT-qc-aaA"/>
+                    <constraint firstAttribute="trailing" secondItem="jh4-iu-hd7" secondAttribute="trailing" constant="70" id="aJQ-sx-GAb"/>
+                    <constraint firstItem="11s-NU-cHb" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="i76-4a-PeL"/>
+                    <constraint firstItem="jh4-iu-hd7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="lRs-PR-Icb"/>
+                    <constraint firstAttribute="trailing" secondItem="p5B-T7-60V" secondAttribute="trailing" constant="5" id="lbK-g6-BhF"/>
+                    <constraint firstItem="RZb-ID-P1t" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="pU5-VV-Hmr"/>
+                </constraints>
+            </tableViewCellContentView>
+            <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+            <connections>
+                <outlet property="commentLabel" destination="bpS-Z0-uJe" id="lFD-mG-MNp"/>
+                <outlet property="nameLabel" destination="jh4-iu-hd7" id="CkP-Zv-b49"/>
+                <outlet property="replyBtn" destination="11s-NU-cHb" id="hFU-t9-qBz"/>
+                <outlet property="thumbnail" destination="RZb-ID-P1t" id="yDq-8Z-58p"/>
+                <outlet property="timeLabel" destination="p5B-T7-60V" id="hG5-ud-z3g"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="30-30reply" width="15" height="15"/>
+    </resources>
+</document>

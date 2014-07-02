@@ -49,11 +49,10 @@ static int selectedItemIndex;
     
     __weak typeof(newsQuiltView) weakQuiltView = newsQuiltView;
     __weak typeof(self) weakSelf = self;
-    
     [newsQuiltView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSString *refreshTimeStamp = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]];
+            NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager newsListFromTime:refreshTimeStamp completion:^(NSArray *newsArr, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -74,7 +73,7 @@ static int selectedItemIndex;
         moreTimeStamp = lastNews.timestamp;
     }
     else {
-        moreTimeStamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+        moreTimeStamp = [VNHTTPRequestManager timestamp];
     }
     
     [newsQuiltView addInfiniteScrollingWithActionHandler:^{

@@ -40,7 +40,9 @@ static CGFloat totleWidth = 145.0;
         [_titleLabel setNumberOfLines:1000];
         
         _newsImageView = [[UIImageView alloc]initWithFrame:CGRectZero];
-        _thumbnailImageView = [[UIImageView alloc]initWithFrame:CGRectZero];
+        _thumbnailImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30.0, 30.0)];
+        [self.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.thumbnailImageView bounds]) / 2];
+        self.thumbnailImageView.layer.masksToBounds = YES;
         
         _nameLabel = [[UILabel alloc]initWithFrame:CGRectZero];
         _nameLabel.font = [UIFont systemFontOfSize:10.0];
@@ -79,7 +81,7 @@ static CGFloat totleWidth = 145.0;
 - (void)reloadCell {
     //FIXME: Hard Code
     _newsImageView.frame=CGRectMake(0.0, 0.0, totleWidth, self.imageMedia.height);
-    [_newsImageView setImageWithURL:[NSURL URLWithString:self.imageMedia.url] placeholderImage:[UIImage imageNamed:@"Profile"]];
+    [_newsImageView setImageWithURL:[NSURL URLWithString:self.imageMedia.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     
     _titleLabel.frame=CGRectMake(cellMargin, CGRectGetMaxY(_newsImageView.frame)+5, totleWidth-cellMargin*2, cellMargin*2);
     [_titleLabel setText:_news.title];
@@ -92,7 +94,7 @@ static CGFloat totleWidth = 145.0;
     _line.frame = CGRectMake(0, CGRectGetMaxY(_titleLabel.frame)+cellMargin, totleWidth, 1.0);
     
     _thumbnailImageView.frame=CGRectMake(cellMargin, CGRectGetMaxY(_line.frame)+cellMargin, thumbnailHeight, thumbnailHeight);
-    [_thumbnailImageView setImageWithURL:[NSURL URLWithString:_news.author.avatar] placeholderImage:[UIImage imageNamed:@"Profile"]];
+    [_thumbnailImageView setImageWithURL:[NSURL URLWithString:_news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     NSLog(@"%@", _news.author.avatar);
     
     _nameLabel.frame=CGRectMake(CGRectGetMaxX(_thumbnailImageView.frame)+cellMargin, CGRectGetMaxY(_line.frame)+cellMargin, totleWidth-CGRectGetWidth(_thumbnailImageView.frame)-cellMargin*2, thumbnailHeight);

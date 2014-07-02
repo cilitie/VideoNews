@@ -56,34 +56,34 @@
     
     //FIXME: for test
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"HomeNews" ofType:@"json"];
-    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
-    NSError *error = nil;
-    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
-    VNNews *news = nil;
-    VNMedia *media = nil;
-    NSMutableArray *newsArr = [NSMutableArray array];
-    for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
-        news = [[VNNews alloc] initWithDict:newsDic];
-        
-        NSDictionary *userDic = [newsDic objectForKey:@"author"];
-        news.author = [[VNUser alloc] initWithDict:userDic];
-        
-        NSArray *mediaArr = [newsDic objectForKey:@"media"];
-        NSMutableArray *mediaMutableArr = [NSMutableArray array];
-        for (NSDictionary *mediaDic in mediaArr) {
-            media = [[VNMedia alloc] initWithDict:mediaDic];
-            [mediaMutableArr addObject:media];
-        }
-        news.mediaArr = mediaMutableArr;
-        
-        [newsArr addObject:news];
-    }
-    if (completion) {
-        NSLog(@"%@", newsArr);
-        completion(newsArr, nil);
-        return;
-    }
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"HomeNews" ofType:@"json"];
+//    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
+//    NSError *error = nil;
+//    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
+//    VNNews *news = nil;
+//    VNMedia *media = nil;
+//    NSMutableArray *newsArr = [NSMutableArray array];
+//    for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
+//        news = [[VNNews alloc] initWithDict:newsDic];
+//        
+//        NSDictionary *userDic = [newsDic objectForKey:@"author"];
+//        news.author = [[VNUser alloc] initWithDict:userDic];
+//        
+//        NSArray *mediaArr = [newsDic objectForKey:@"media"];
+//        NSMutableArray *mediaMutableArr = [NSMutableArray array];
+//        for (NSDictionary *mediaDic in mediaArr) {
+//            media = [[VNMedia alloc] initWithDict:mediaDic];
+//            [mediaMutableArr addObject:media];
+//        }
+//        news.mediaArr = mediaMutableArr;
+//        
+//        [newsArr addObject:news];
+//    }
+//    if (completion) {
+//        NSLog(@"%@", newsArr);
+//        completion(newsArr, nil);
+//        return;
+//    }
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
@@ -166,26 +166,28 @@
 
 }
 
-+ (void)commentListForNews:(int)nid completion:(void(^)(NSArray *categoryArr, NSError *error))completion {
++ (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/chat.php?nid=1&timestamp=1402826693&token=jshangabsjksjjagnn
     NSString *URLStr = [VNHost stringByAppendingString:@"chat.php"];
-    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": @20, @"token": [self token], @"timestamp": [self timestamp]};
+    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": @20, @"token": [self token], @"timestamp": timestamp};
     
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
-        VNCategory *category = nil;
-        NSMutableArray *categoryArr = [NSMutableArray array];
+        VNComment *comment = nil;
+        NSMutableArray *commentArr = [NSMutableArray array];
         
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-            NSArray *responseArr = [responseObject objectForKey:@"classes"];
-            for (NSDictionary *categoryDic in responseArr) {
-                category = [[VNCategory alloc] initWithDict:categoryDic];
-                [categoryArr addObject:category];
+            NSArray *responseArr = responseObject[@"list"][@"comment"];
+            for (NSDictionary *dic in responseArr) {
+                comment = [[VNComment alloc] initWithDict:dic];
+                NSDictionary *userDic = [dic objectForKey:@"author"];
+                comment.author = [[VNUser alloc] initWithDict:userDic];
+                [commentArr addObject:comment];
             }
         }
         if (completion) {
-            completion(categoryArr, nil);
+            completion(commentArr, nil);
             return;
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -198,14 +200,25 @@
 #pragma mark - SEL
 
 + (NSString *)timestamp {
-    return [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]];
+    NSLog(@"%@", [[self CCT_Date] description]);
+    return [NSString stringWithFormat:@"%f", [[self CCT_Date] timeIntervalSince1970]];
 }
 
 + (NSString *)token {
-    NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
+    NSString *originTokenStr = [[NSString stringFromDate:[self CCT_Date]] stringByAppendingString:@"#$@%!*zmy"];
     NSLog(@"%@", originTokenStr);
-    originTokenStr = @"2014-07-01-15#$@%!*zmy";
     return [originTokenStr md5];
+}
+
++ (NSDate *)CCT_Date {
+    NSDate* sourceDate = [NSDate date];
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"CCT"];
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
+    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
+    NSDate* destinationDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate];
+    return destinationDate;
 }
 
 @end

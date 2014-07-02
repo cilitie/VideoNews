@@ -11,6 +11,9 @@
 static NSString *kUid = @"uid";
 static NSString *kName = @"name";
 static NSString *kAvatar = @"avatar";
+static NSString *kLocation = @"location";
+static NSString *kSex = @"sex";
+static NSString *kMain_uid = @"main_uid";
 
 @implementation VNUser
 
@@ -24,6 +27,18 @@ static NSString *kAvatar = @"avatar";
 
 - (NSString *)avatar {
     return makeSureNotNull([self.basicDict objectForKey:kAvatar]);
+}
+
+- (NSString *)location {
+    return makeSureNotNull([self.basicDict objectForKey:kLocation]);
+}
+
+- (NSString *)sex {
+    return makeSureNotNull([self.basicDict objectForKey:kSex]);
+}
+
+- (NSString *)main_uid {
+    return makeSureNotNull([self.basicDict objectForKey:kMain_uid]);
 }
 
 @end
