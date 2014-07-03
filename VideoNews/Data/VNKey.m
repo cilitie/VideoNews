@@ -9,3 +9,7 @@
 #import "VNKey.h"
 
 NSString *const VNHost = @"http://zmysp.sinaapp.com/";
+//SearchHistory
+NSString *const kArchivingHistoryWord = @"kArchivingHistoryWord";
+NSString *const VNHistoryDidAddNotification = @"kVNHistoryDidAddNotification";
+NSString *const VNHistoryDidClearNotification = @"kVNHistoryDidClearNotification";

@@ -1,34 +1,35 @@
 //
-//  VNHomeViewController.m
+//  VNResultViewController.m
 //  VideoNews
 //
-//  Created by liuyi on 14-6-26.
+//  Created by liuyi on 14-7-3.
 //  Copyright (c) 2014年 Manyu Zhu. All rights reserved.
 //
 
-#import "VNHomeViewController.h"
+#import "VNResultViewController.h"
 #import "SVPullToRefresh.h"
 #import "TMQuiltView.h"
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
 
-@interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate> {
+@interface VNResultViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate> {
     TMQuiltView *newsQuiltView;
 }
 
-@property (strong, nonatomic) NSMutableArray *newsArr;
+@property (strong, nonatomic) NSMutableArray *categoryNewsArr;
+- (IBAction)popBack:(id)sender;
 
 @end
 
 static int selectedItemIndex;
 
-@implementation VNHomeViewController
+@implementation VNResultViewController
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super initWithCoder:coder];
     if (self) {
-        _newsArr = [NSMutableArray array];
+        _categoryNewsArr = [NSMutableArray array];
     }
     return self;
 }
@@ -53,13 +54,13 @@ static int selectedItemIndex;
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-            [VNHTTPRequestManager newsListFromTime:refreshTimeStamp completion:^(NSArray *newsArr, NSError *error) {
+            [VNHTTPRequestManager categoryNewsFromTime:refreshTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
-                    [weakSelf.newsArr removeAllObjects];
-                    [weakSelf.newsArr addObjectsFromArray:newsArr];
+                    [weakSelf.categoryNewsArr removeAllObjects];
+                    [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
                     [weakQuiltView reloadData];
                 }
                 [weakQuiltView.pullToRefreshView stopAnimating];
@@ -69,20 +70,20 @@ static int selectedItemIndex;
     
     [newsQuiltView addInfiniteScrollingWithActionHandler:^{
         NSString *moreTimeStamp = nil;
-        if (weakSelf.newsArr.count) {
-            VNNews *lastNews = [weakSelf.newsArr lastObject];
+        if (weakSelf.categoryNewsArr.count) {
+            VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
             moreTimeStamp = lastNews.timestamp;
         }
         else {
             moreTimeStamp = [VNHTTPRequestManager timestamp];
         }
         
-        [VNHTTPRequestManager newsListFromTime:moreTimeStamp completion:^(NSArray *newsArr, NSError *error) {
+        [VNHTTPRequestManager categoryNewsFromTime:moreTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
-                [weakSelf.newsArr addObjectsFromArray:newsArr];
+                [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
                 [weakQuiltView reloadData];
             }
             [weakQuiltView.infiniteScrollingView stopAnimating];
@@ -99,7 +100,6 @@ static int selectedItemIndex;
     // Dispose of any resources that can be recreated.
 }
 
-
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -107,18 +107,18 @@ static int selectedItemIndex;
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewController"]) {
+    if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewControllerForResult"]) {
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
-        newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
+        newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
+        newsDetailViewController.controllerType = SourceViewControllerTypeCategory;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
-        newsDetailViewController.controllerType = SourceViewControllerTypeHome;
     }
 }
 
 #pragma mark - TMQuiltViewDataSource
 
 - (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)TMQuiltView {
-    return self.newsArr.count;
+    return self.categoryNewsArr.count;
 }
 
 - (TMQuiltViewCell *)quiltView:(TMQuiltView *)quiltView cellAtIndexPath:(NSIndexPath *)indexPath {
@@ -126,7 +126,7 @@ static int selectedItemIndex;
     if (!cell) {
         cell = [[VNQuiltViewCell alloc] initWithReuseIdentifier:@"VNQuiltViewCellIdentifier"];
     }
-    VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
+    VNNews *news =[self.categoryNewsArr objectAtIndex:indexPath.item];
     cell.news=news;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
@@ -140,7 +140,7 @@ static int selectedItemIndex;
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
+    VNNews *news =[self.categoryNewsArr objectAtIndex:indexPath.item];
     return [self cellHeightFor:news];
 }
 
@@ -150,7 +150,7 @@ static int selectedItemIndex;
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
     selectedItemIndex = indexPath.item;
-    [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
+    [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
 }
 
 #pragma mark - SEL
@@ -173,4 +173,7 @@ static int selectedItemIndex;
     return cellHeight;
 }
 
+- (IBAction)popBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 @end

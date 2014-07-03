@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, SourceViewControllerType) {
+    SourceViewControllerTypeHome = 0,
+    SourceViewControllerTypeCategory = 1
+};
+
 @interface VNNewsDetailViewController : UIViewController
 
 @property (strong, nonatomic) VNNews *news;
 @property (strong, nonatomic) VNMedia *media;
+@property (assign, nonatomic) SourceViewControllerType controllerType;
 
 @end

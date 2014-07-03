@@ -16,9 +16,15 @@
 
 @interface VNHTTPRequestManager : NSObject
 
+#pragma mark - Home
+
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
-+ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion;
+
+#pragma mark - Search
+
++ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
++ (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion;
 
 + (NSString *)timestamp;
 

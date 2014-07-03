@@ -114,7 +114,13 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = NO;
+    switch (self.controllerType) {
+        case SourceViewControllerTypeCategory:
+            break;
+        default:
+            self.navigationController.navigationBarHidden = NO;
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning

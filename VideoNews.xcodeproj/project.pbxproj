@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		D64296C51964FB05004E218C /* VNResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C41964FB05004E218C /* VNResultViewController.m */; };
+		D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C719652AC4004E218C /* VNCacheDataManager.m */; };
+		D64296CB19652FB6004E218C /* VNSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CA19652FB6004E218C /* VNSearchField.m */; };
+		D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CD19653A27004E218C /* VNSearchWordViewController.m */; };
+		D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296D019653E51004E218C /* VNSearchTabHeaderView.m */; };
+		D64296D319653E62004E218C /* VNSearchTabHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64296D219653E62004E218C /* VNSearchTabHeaderView.xib */; };
+		D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296D519654C5B004E218C /* VNSearchResultTableViewCell.m */; };
+		D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64296D619654C5B004E218C /* VNSearchResultTableViewCell.xib */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -55,6 +63,20 @@
 
 /* Begin PBXFileReference section */
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
+		D64296C31964FB05004E218C /* VNResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNResultViewController.h; sourceTree = "<group>"; };
+		D64296C41964FB05004E218C /* VNResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNResultViewController.m; sourceTree = "<group>"; };
+		D64296C619652AC4004E218C /* VNCacheDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCacheDataManager.h; sourceTree = "<group>"; };
+		D64296C719652AC4004E218C /* VNCacheDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCacheDataManager.m; sourceTree = "<group>"; };
+		D64296C919652FB6004E218C /* VNSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchField.h; sourceTree = "<group>"; };
+		D64296CA19652FB6004E218C /* VNSearchField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchField.m; sourceTree = "<group>"; };
+		D64296CC19653A27004E218C /* VNSearchWordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchWordViewController.h; sourceTree = "<group>"; };
+		D64296CD19653A27004E218C /* VNSearchWordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchWordViewController.m; sourceTree = "<group>"; };
+		D64296CF19653E51004E218C /* VNSearchTabHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchTabHeaderView.h; sourceTree = "<group>"; };
+		D64296D019653E51004E218C /* VNSearchTabHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchTabHeaderView.m; sourceTree = "<group>"; };
+		D64296D219653E62004E218C /* VNSearchTabHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNSearchTabHeaderView.xib; sourceTree = "<group>"; };
+		D64296D419654C5B004E218C /* VNSearchResultTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchResultTableViewCell.h; sourceTree = "<group>"; };
+		D64296D519654C5B004E218C /* VNSearchResultTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchResultTableViewCell.m; sourceTree = "<group>"; };
+		D64296D619654C5B004E218C /* VNSearchResultTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNSearchResultTableViewCell.xib; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -255,8 +277,20 @@
 			children = (
 				D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */,
 				D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */,
+				D64296CC19653A27004E218C /* VNSearchWordViewController.h */,
+				D64296CD19653A27004E218C /* VNSearchWordViewController.m */,
 				D6FED7AA195ECD2800AD10E0 /* VNCategoryCollectionViewCell.h */,
 				D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */,
+				D64296C31964FB05004E218C /* VNResultViewController.h */,
+				D64296C41964FB05004E218C /* VNResultViewController.m */,
+				D64296C919652FB6004E218C /* VNSearchField.h */,
+				D64296CA19652FB6004E218C /* VNSearchField.m */,
+				D64296CF19653E51004E218C /* VNSearchTabHeaderView.h */,
+				D64296D019653E51004E218C /* VNSearchTabHeaderView.m */,
+				D64296D219653E62004E218C /* VNSearchTabHeaderView.xib */,
+				D64296D419654C5B004E218C /* VNSearchResultTableViewCell.h */,
+				D64296D519654C5B004E218C /* VNSearchResultTableViewCell.m */,
+				D64296D619654C5B004E218C /* VNSearchResultTableViewCell.xib */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -266,6 +300,8 @@
 			children = (
 				D6FED78D195C017500AD10E0 /* VNHTTPRequestManager.h */,
 				D6FED78E195C017500AD10E0 /* VNHTTPRequestManager.m */,
+				D64296C619652AC4004E218C /* VNCacheDataManager.h */,
+				D64296C719652AC4004E218C /* VNCacheDataManager.m */,
 				D6FED790195C030D00AD10E0 /* VNKey.h */,
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
 				D6FED7A8195EA6E100AD10E0 /* HomeNews.json */,
@@ -373,12 +409,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */,
+				D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */,
 				D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
 				D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */,
+				D64296D319653E62004E218C /* VNSearchTabHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,7 +468,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
+				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
+				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
+				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
 				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,
 				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
 				D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */,
@@ -439,6 +481,7 @@
 				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
+				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
@@ -446,6 +489,7 @@
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
+				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 			);

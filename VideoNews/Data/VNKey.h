@@ -9,3 +9,8 @@
 #import <Foundation/Foundation.h>
 
 extern NSString *const VNHost;
+
+//SearchHistory
+extern NSString *const kArchivingHistoryWord;
+extern NSString *const VNHistoryDidAddNotification;
+extern NSString *const VNHistoryDidClearNotification;

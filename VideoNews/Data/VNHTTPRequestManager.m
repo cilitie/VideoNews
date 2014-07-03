@@ -48,8 +48,9 @@
 
 @implementation VNHTTPRequestManager
 
+#pragma mark - Home
+
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion {
-    //http://zmysp.sinaapp.com/viewnews.php?timestamp=1402826693&pagesize=2&token=9183773661255
     //http://zmysp.sinaapp.com/viewnews.php?pagesize=10&timestamp=1404197350.213768&token=71cbc84008a7464a5df8b1da2e16aaae
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
     NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": time};
@@ -91,21 +92,24 @@
         VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-            for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
-                news = [[VNNews alloc] initWithDict:newsDic];
-                
-                NSDictionary *userDic = [newsDic objectForKey:@"author"];
-                news.author = [[VNUser alloc] initWithDict:userDic];
-                
-                NSArray *mediaArr = [newsDic objectForKey:@"media"];
-                NSMutableArray *mediaMutableArr = [NSMutableArray array];
-                for (NSDictionary *mediaDic in mediaArr) {
-                    media = [[VNMedia alloc] initWithDict:mediaDic];
-                    [mediaMutableArr addObject:media];
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
                 }
-                news.mediaArr = mediaMutableArr;
-                
-                [newsArr addObject:news];
             }
         }
         
@@ -117,53 +121,6 @@
             completion(nil, error);
         }
     }];
-}
-
-+ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion {
-    //http://zmysp.sinaapp.com/class.php?timestamp=1402826693&token=9183773661255
-    NSString *URLStr = [VNHost stringByAppendingString:@"class.php"];
-    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp]};
-    //FIXME: for test
-    
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Category" ofType:@"json"];
-//    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
-//    NSError *error = nil;
-//    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
-//    NSArray *responseArr = [responseObject objectForKey:@"classes"];
-//    
-//    VNCategory *category = nil;
-//    NSMutableArray *categoryArr = [NSMutableArray array];
-//    for (NSDictionary *categoryDic in responseArr) {
-//        category = [[VNCategory alloc] initWithDict:categoryDic];
-//        [categoryArr addObject:category];
-//     }
-//    if (completion) {
-//        completion(categoryArr, nil);
-//        return;
-//    }
-
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
-        VNCategory *category = nil;
-        NSMutableArray *categoryArr = [NSMutableArray array];
-        
-        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-            NSArray *responseArr = [responseObject objectForKey:@"classes"];
-            for (NSDictionary *categoryDic in responseArr) {
-                category = [[VNCategory alloc] initWithDict:categoryDic];
-                [categoryArr addObject:category];
-            }
-        }
-        if (completion) {
-            completion(categoryArr, nil);
-            return;
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (completion) {
-            completion(nil, error);
-        }
-    }];
-
 }
 
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
@@ -178,12 +135,15 @@
         NSMutableArray *commentArr = [NSMutableArray array];
         
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-            NSArray *responseArr = responseObject[@"list"][@"comment"];
-            for (NSDictionary *dic in responseArr) {
-                comment = [[VNComment alloc] initWithDict:dic];
-                NSDictionary *userDic = [dic objectForKey:@"author"];
-                comment.author = [[VNUser alloc] initWithDict:userDic];
-                [commentArr addObject:comment];
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                NSArray *responseArr = responseObject[@"list"][@"comment"];
+                for (NSDictionary *dic in responseArr) {
+                    comment = [[VNComment alloc] initWithDict:dic];
+                    NSDictionary *userDic = [dic objectForKey:@"author"];
+                    comment.author = [[VNUser alloc] initWithDict:userDic];
+                    [commentArr addObject:comment];
+                }
             }
         }
         if (completion) {
@@ -197,15 +157,120 @@
     }];
 }
 
+#pragma mark - Search
+
++ (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/class.php?timestamp=1402826693&token=9183773661255
+    NSString *URLStr = [VNHost stringByAppendingString:@"class.php"];
+    //FIXME: 接口有错误
+//    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp]};
+    //FIXME: for test
+    
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Category" ofType:@"json"];
+//    NSData *jdata = [[NSData alloc] initWithContentsOfFile:path];
+//    NSError *error = nil;
+//    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:jdata options:kNilOptions error:&error];
+//    NSArray *responseArr = [responseObject objectForKey:@"classes"];
+//    
+//    VNCategory *category = nil;
+//    NSMutableArray *categoryArr = [NSMutableArray array];
+//    for (NSDictionary *categoryDic in responseArr) {
+//        category = [[VNCategory alloc] initWithDict:categoryDic];
+//        [categoryArr addObject:category];
+//    }
+//    if (completion) {
+//        completion(categoryArr, nil);
+//        return;
+//    }
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        VNCategory *category = nil;
+        NSMutableArray *categoryArr = [NSMutableArray array];
+        
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                NSArray *responseArr = responseObject[@"list"][@"classes"];
+                //            NSLog(@"%@", responseArr);
+                for (NSDictionary *categoryDic in responseArr) {
+                    category = [[VNCategory alloc] initWithDict:categoryDic];
+                    [categoryArr addObject:category];
+                }
+            }
+        }
+        if (completion) {
+            completion(categoryArr, nil);
+            return;
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+    
+}
+
++ (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/viewnews.php?timestamp=1402826693&pagesize=2&cid=1&token=9183773661255
+    NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
+    NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": time, @"cid": [NSNumber numberWithInt:cid]};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                for (NSDictionary *newsDic in responseObject[@"list"][@"news"]) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        
+        if (completion) {
+            completion(newsArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
 #pragma mark - SEL
 
 + (NSString *)timestamp {
-    NSLog(@"%@", [[self CCT_Date] description]);
-    return [NSString stringWithFormat:@"%f", [[self CCT_Date] timeIntervalSince1970]];
+//    NSLog(@"%@", [[self CCT_Date] description]);
+//    return [NSString stringWithFormat:@"%f", [[self CCT_Date] timeIntervalSince1970]];
+    //http://zmysp.sinaapp.com/timestamp.php
+    NSString *URLStr = [VNHost stringByAppendingString:@"timestamp.php"];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:URLStr]];
+    [request setHTTPMethod:@"GET"];
+    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSError *error = nil;
+    NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:returnData options:kNilOptions error:&error];
+    return [NSString stringWithFormat:@"%d", [[responseObject objectForKey:@"timestamp"] intValue]];
 }
 
 + (NSString *)token {
-    NSString *originTokenStr = [[NSString stringFromDate:[self CCT_Date]] stringByAppendingString:@"#$@%!*zmy"];
+    NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];
 }
