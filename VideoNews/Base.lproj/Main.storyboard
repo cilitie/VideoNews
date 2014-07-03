@@ -268,7 +268,7 @@
         <!--Result View Controller-->
         <scene sceneID="zd7-6k-Eme">
             <objects>
-                <viewController id="lib-ei-pAS" customClass="VNResultViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VNResultViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lib-ei-pAS" customClass="VNResultViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0J1-Vi-PiT"/>
                         <viewControllerLayoutGuide type="bottom" id="vgZ-Pt-K5G"/>
@@ -299,6 +299,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="efE-Bm-Ze9"/>
                     <connections>
+                        <outlet property="backBtn" destination="4jE-xD-7Ap" id="1GT-tf-Uwj"/>
+                        <outlet property="navBar" destination="qEJ-w0-Tv9" id="NI5-1N-Cot"/>
                         <segue destination="pds-Bb-2jX" kind="push" identifier="pushVNNewsDetailViewControllerForResult" id="Xbb-ie-jFU"/>
                     </connections>
                 </viewController>

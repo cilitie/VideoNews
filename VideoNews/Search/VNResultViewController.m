@@ -11,10 +11,15 @@
 #import "TMQuiltView.h"
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
+#import "VNSearchField.h"
 
-@interface VNResultViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate> {
+@interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate> {
     TMQuiltView *newsQuiltView;
 }
+
+@property (weak, nonatomic) IBOutlet UIView *navBar;
+@property (weak, nonatomic) IBOutlet UIButton *backBtn;
+@property (strong, nonatomic) VNSearchField *searchField;
 
 @property (strong, nonatomic) NSMutableArray *categoryNewsArr;
 - (IBAction)popBack:(id)sender;
@@ -38,6 +43,16 @@ static int selectedItemIndex;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    if (self.type == ResultTypeSerach) {
+        self.searchField = [[VNSearchField alloc] init];
+        self.searchField.returnKeyType = UIReturnKeySearch;
+        self.searchField.delegate = self;
+        self.searchField.frame = CGRectMake(CGRectGetMaxX(self.backBtn.frame)+10, 20+(CGRectGetHeight(self.navBar.bounds)-20-30)/2, CGRectGetWidth(self.navBar.bounds)-CGRectGetMaxX(self.backBtn.frame)-10*2, 30);
+        NSLog(@"%@", NSStringFromCGRect(self.searchField.frame));
+        [self.navBar addSubview:self.searchField];
+    }
+    
     
     [self.view setBackgroundColor:[UIColor colorWithRGBValue:0xe1e1e1]];
     
@@ -174,6 +189,11 @@ static int selectedItemIndex;
 }
 
 - (IBAction)popBack:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.type == ResultTypeSerach) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 @end

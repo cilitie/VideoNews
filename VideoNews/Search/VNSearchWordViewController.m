@@ -10,6 +10,7 @@
 #import "VNSearchField.h"
 #import "VNSearchTabHeaderView.h"
 #import "VNSearchResultTableViewCell.h"
+#import "VNResultViewController.h"
 
 @interface VNSearchWordViewController () <UITextFieldDelegate>
 
@@ -34,6 +35,7 @@
     [self.resultTableView registerNib:[UINib nibWithNibName:@"VNSearchResultTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNSearchResultTableViewCellIdentifier"];
     
     self.searchField = [[VNSearchField alloc] init];
+    self.searchField.returnKeyType = UIReturnKeySearch;
     self.searchField.delegate = self;
     self.searchField.frame = CGRectMake(10, 20+(CGRectGetHeight(self.navBar.bounds)-20-30)/2, CGRectGetMinX(self.cancelBtn.frame)-10*2, 30);
     NSLog(@"%@", NSStringFromCGRect(self.searchField.frame));
@@ -122,6 +124,26 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     VNSearchTabHeaderView *headerView = loadXib(@"VNSearchTabHeaderView");
     return headerView;
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    NSLog(@"search pressed!!!");
+    NSString *str = textField.text;
+    NSMutableString *StringForSearch = [[NSMutableString alloc] init];
+    [StringForSearch setString:str];
+    CFStringTrimWhitespace((CFMutableStringRef)StringForSearch);
+    
+    if (!StringForSearch || [StringForSearch isEqualToString:@""]) {
+        return NO;
+    }
+    else {
+        VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
+        resultViewController.type = ResultTypeSerach;
+        [self.navigationController pushViewController:resultViewController animated:YES];
+    }
+    return YES;
 }
 
 @end

@@ -8,8 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, ResultType) {
+    ResultTypeCategory = 0,
+    ResultTypeSerach
+};
+
 @interface VNResultViewController : UIViewController
 
 @property (strong, nonatomic) VNCategory *category;
+@property (assign, nonatomic) ResultType type;
 
 @end
