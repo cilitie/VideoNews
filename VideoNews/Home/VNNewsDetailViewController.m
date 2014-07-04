@@ -14,7 +14,11 @@
 #import "SVPullToRefresh.h"
 #import "VNCommentTableViewCell.h"
 
-@interface VNNewsDetailViewController () {
+#import "UMSocialQQHandler.h"
+#import "UMSocialWechatHandler.h"
+#import "UMSocial.h"
+
+@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
 }
@@ -31,6 +35,9 @@
 - (IBAction)switchEmoji:(id)sender;
 
 @end
+
+#define kTagShare 101
+
 
 @implementation VNNewsDetailViewController
 
@@ -105,6 +112,31 @@
             [self.commentTableView reloadData];
         }
     }];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.commentTableView addInfiniteScrollingWithActionHandler:^{
+        NSString *moreTimeStamp = nil;
+        if (weakSelf.commentArr.count) {
+            VNComment *lastComent = [weakSelf.commentArr lastObject];
+//            NSLog(@"%@", lastComent.insert_time);
+            moreTimeStamp = lastComent.insert_time;
+        }
+        else {
+            moreTimeStamp = [VNHTTPRequestManager timestamp];
+        }
+        
+        [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:moreTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                [weakSelf.commentArr addObjectsFromArray:commemtArr];
+                [weakSelf.commentTableView reloadData];
+            }
+            [weakSelf.commentTableView.infiniteScrollingView stopAnimating];
+        }];
+    }];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -173,7 +205,7 @@
 //    NSLog(@"%@", NSStringFromCGRect(rect));
     CGRect titleLabelframe = cell.commentLabel.frame;
     titleLabelframe.size.height = CGRectGetHeight(rect);
-    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
+//    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
     cell.commentLabel.frame = titleLabelframe;
     
     cell.timeLabel.text = [comment.date substringToIndex:10];
@@ -219,6 +251,10 @@
 }
 
 - (IBAction)share:(id)sender {
+    UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:@"分享到" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
+    [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
+    shareActionSheet.tag = kTagShare;
+    shareActionSheet.delegate = self;
 }
 
 - (IBAction)sendComment:(id)sender {
@@ -226,6 +262,73 @@
 
 - (IBAction)switchEmoji:(id)sender {
 }
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
+    if (actionSheet.tag == kTagShare) {
+        NSString *plateformName = [actionSheet buttonTitleAtIndex:buttonIndex];
+        NSString *snsName = nil;
+        if ([plateformName isEqualToString:@"微信朋友圈"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+            [UMSocialWechatHandler setWXAppId:WXAppkey url:self.news.url];
+        }
+        else if ([plateformName isEqualToString:@"微信好友"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+            [UMSocialWechatHandler setWXAppId:WXAppkey url:self.news.url];
+        }
+        else if ([plateformName isEqualToString:@"新浪微博"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
+        }
+        else if ([plateformName isEqualToString:@"QQ空间"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:self.news.url];
+        }
+        else if ([plateformName isEqualToString:@"QQ好友"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:self.news.url];
+        }
+        else if ([plateformName isEqualToString:@"腾讯微博"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
+        }
+        else if ([plateformName isEqualToString:@"人人网"]) {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+        }
+        //设置分享内容，和回调对象
+        
+        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“刘毅”快来看看吧~", self.news.title];
+        UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
+        
+        [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+    }
+}
+
+#pragma mark - UMSocialUIDelegate
+
+-(void)didCloseUIViewController:(UMSViewControllerType)fromViewControllerType
+{
+    NSLog(@"didClose is %d",fromViewControllerType);
+}
+
+//下面得到分享完成的回调
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    NSLog(@"didFinishGetUMSocialDataInViewController with response is %@",response);
+    if (response.responseType == UMSResponseShareToMutilSNS) {
+        
+    }
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess)
+    {
+        //得到分享到的微博平台名
+        NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+    }
+}
+
 
 #pragma mark - UIKeyboardNotification
 

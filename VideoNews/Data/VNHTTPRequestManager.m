@@ -46,6 +46,8 @@
 #import "VNHTTPRequestManager.h"
 #import "AFNetworking.h"
 
+static int pagesize = 10;
+
 @implementation VNHTTPRequestManager
 
 #pragma mark - Home
@@ -53,7 +55,7 @@
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/viewnews.php?pagesize=10&timestamp=1404197350.213768&token=71cbc84008a7464a5df8b1da2e16aaae
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": time};
+    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time};
     
     //FIXME: for test
     
@@ -87,7 +89,7 @@
 //    }
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
         VNNews *news = nil;
         VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
@@ -126,15 +128,16 @@
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/chat.php?nid=1&timestamp=1402826693&token=jshangabsjksjjagnn
     NSString *URLStr = [VNHost stringByAppendingString:@"chat.php"];
-    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": @20, @"token": [self token], @"timestamp": timestamp};
+    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": timestamp};
     
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
         VNComment *comment = nil;
         NSMutableArray *commentArr = [NSMutableArray array];
         
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            //FIXME: Server Error, Fix Later
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
                 NSArray *responseArr = responseObject[@"list"][@"comment"];
@@ -184,7 +187,7 @@
 //    }
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
         VNCategory *category = nil;
         NSMutableArray *categoryArr = [NSMutableArray array];
         
@@ -214,10 +217,10 @@
 + (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/viewnews.php?timestamp=1402826693&pagesize=2&cid=1&token=9183773661255
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": time, @"cid": [NSNumber numberWithInt:cid]};
+    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time, @"cid": [NSNumber numberWithInt:cid]};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
         VNNews *news = nil;
         VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
@@ -256,10 +259,10 @@
 + (void)searchResultForKey:(NSString *)keyWord timestamp:(NSString *)timestamp searchType:(NSString *)searchType completion:(void(^)(NSArray *resultNewsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/so.php?key=lucy&token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&category=news
     NSString *URLStr = [VNHost stringByAppendingString:@"so.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": timestamp, @"key": keyWord, @"category": searchType};
+    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": timestamp, @"key": keyWord, @"category": searchType};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
         VNNews *news = nil;
         VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
@@ -313,7 +316,7 @@
 
 + (NSString *)token {
     NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
-    NSLog(@"%@", originTokenStr);
+//    NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];
 }
 

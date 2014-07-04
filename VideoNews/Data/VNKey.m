@@ -14,3 +14,8 @@ NSString *const kArchivingHistoryWord = @"kArchivingHistoryWord";
 NSString *const VNHistoryDidAddNotification = @"kVNHistoryDidAddNotification";
 NSString *const VNHistoryDidClearNotification = @"kVNHistoryDidClearNotification";
 NSString *const VNSearchTypeDidChangeNotification = @"kVNSearchTypeDidChangeNotification";
+
+NSString *const UmengAppkey = @"53a91faf56240bf2de0016ef";
+NSString *const WXAppkey = @"wxa4f4d3b396bb5297";
+NSString *const QQAppID = @"101132049";
+NSString *const QQAppKey = @"d728f0586854b2929b36780a77e5ab48";
