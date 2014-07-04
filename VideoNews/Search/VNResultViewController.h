@@ -17,5 +17,8 @@ typedef NS_ENUM(NSUInteger, ResultType) {
 
 @property (strong, nonatomic) VNCategory *category;
 @property (assign, nonatomic) ResultType type;
+//for ResultTypeSerach only
+@property (strong, nonatomic) NSString *searchKey;
+@property (strong, nonatomic) NSString *searchType;
 
 @end

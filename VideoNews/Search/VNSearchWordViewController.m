@@ -19,16 +19,32 @@
 @property (weak, nonatomic) IBOutlet UITableView *resultTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *resultTableViewBottonLC;
 @property (strong, nonatomic) VNSearchField *searchField;
+@property (strong, nonatomic) NSMutableArray *historyWordArr;
+@property (assign, nonatomic) SearchType searchType;
+
+
 - (IBAction)cancelSearch:(id)sender;
 
 @end
 
 @implementation VNSearchWordViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        _historyWordArr = [NSMutableArray array];
+        _searchType = SearchTypeVideo;
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeSearchType:) name:VNSearchTypeDidChangeNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
@@ -48,6 +64,17 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [VNCacheDataManager historyDataWithCompletion:^(NSArray *queryHistoryArr) {
+        if (self.historyWordArr.count) {
+            [self.historyWordArr removeAllObjects];
+        }
+        [self.historyWordArr addObjectsFromArray:queryHistoryArr];
+        [self.resultTableView reloadData];
+    }];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -56,6 +83,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNSearchTypeDidChangeNotification object:nil];
 }
 
 /*
@@ -85,6 +113,10 @@
     }
 }
 
+- (void)changeSearchType:(NSNotification *)notification {
+    self.searchType = [notification.object integerValue];
+}
+
 - (IBAction)cancelSearch:(id)sender {
     if ([self.searchField isFirstResponder]) {
         [self.searchField resignFirstResponder];
@@ -99,14 +131,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return self.historyWordArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"VNSearchResultTableViewCellIdentifier";
     VNSearchResultTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    cell.searchItemLabel.text = [NSString stringWithFormat:@"Cell %d", indexPath.row];
+    cell.searchItemLabel.text = [self.historyWordArr objectAtIndex:indexPath.row];
     
     return cell;
 }
@@ -114,7 +146,23 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSString *searchKey = [self.historyWordArr objectAtIndex:indexPath.row];
+    [VNCacheDataManager addHistoryData:searchKey completion:^(BOOL succeeded) {
+        if (succeeded) {
+            NSLog(@"save search history success!");
+        }
+    }];
+    VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
+    resultViewController.type = ResultTypeSerach;
+    resultViewController.searchKey = searchKey;
+    if (self.searchType == SearchTypeVideo) {
+        resultViewController.searchType = @"news";
+    }
+    else {
+        resultViewController.searchType = @"user";
+    }
+    [self.navigationController pushViewController:resultViewController animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -131,16 +179,28 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"search pressed!!!");
     NSString *str = textField.text;
-    NSMutableString *StringForSearch = [[NSMutableString alloc] init];
-    [StringForSearch setString:str];
-    CFStringTrimWhitespace((CFMutableStringRef)StringForSearch);
+    NSMutableString *searchKey = [[NSMutableString alloc] init];
+    [searchKey setString:str];
+    CFStringTrimWhitespace((CFMutableStringRef)searchKey);
     
-    if (!StringForSearch || [StringForSearch isEqualToString:@""]) {
+    if (!searchKey || [searchKey isEqualToString:@""]) {
         return NO;
     }
     else {
+        [VNCacheDataManager addHistoryData:searchKey completion:^(BOOL succeeded) {
+            if (succeeded) {
+                NSLog(@"save search history success!");
+            }
+        }];
         VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
         resultViewController.type = ResultTypeSerach;
+        resultViewController.searchKey = searchKey;
+        if (self.searchType == SearchTypeVideo) {
+            resultViewController.searchType = @"news";
+        }
+        else {
+            resultViewController.searchType = @"user";
+        }
         [self.navigationController pushViewController:resultViewController animated:YES];
     }
     return YES;

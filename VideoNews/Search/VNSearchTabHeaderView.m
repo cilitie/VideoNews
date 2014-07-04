@@ -30,7 +30,7 @@
         
         [self.userBtn setTitleColor:[UIColor colorWithRGBValue:0x484848] forState:UIControlStateNormal];
         [self.userBtn setBackgroundColor:[UIColor colorWithRGBValue:0x000000]];
-        self.searchType = SearchTypeVideo;
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNSearchTypeDidChangeNotification object:[NSNumber numberWithInt:SearchTypeVideo]];
     }
     else if (button.tag == 11) {
         [self.userBtn setTitleColor:[UIColor colorWithRGBValue:0xffffff] forState:UIControlStateNormal];
@@ -38,7 +38,7 @@
         
         [self.videoBtn setTitleColor:[UIColor colorWithRGBValue:0x484848] forState:UIControlStateNormal];
         [self.videoBtn setBackgroundColor:[UIColor colorWithRGBValue:0x000000]];
-        self.searchType = SearchTypeUser;
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNSearchTypeDidChangeNotification object:[NSNumber numberWithInt:SearchTypeUser]];
     }
 }
 

@@ -14,3 +14,4 @@ extern NSString *const VNHost;
 extern NSString *const kArchivingHistoryWord;
 extern NSString *const VNHistoryDidAddNotification;
 extern NSString *const VNHistoryDidClearNotification;
+extern NSString *const VNSearchTypeDidChangeNotification;

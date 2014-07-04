@@ -253,6 +253,48 @@
     }];
 }
 
++ (void)searchResultForKey:(NSString *)keyWord timestamp:(NSString *)timestamp searchType:(NSString *)searchType completion:(void(^)(NSArray *resultNewsArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/so.php?key=lucy&token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&category=news
+    NSString *URLStr = [VNHost stringByAppendingString:@"so.php"];
+    NSDictionary *param = @{@"token": [self token], @"pagesize": @20, @"timestamp": timestamp, @"key": keyWord, @"category": searchType};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                for (NSDictionary *newsDic in responseObject[@"list"][@"search"]) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        
+        if (completion) {
+            completion(newsArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
 #pragma mark - SEL
 
 + (NSString *)timestamp {

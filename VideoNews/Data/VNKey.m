@@ -13,3 +13,4 @@ NSString *const VNHost = @"http://zmysp.sinaapp.com/";
 NSString *const kArchivingHistoryWord = @"kArchivingHistoryWord";
 NSString *const VNHistoryDidAddNotification = @"kVNHistoryDidAddNotification";
 NSString *const VNHistoryDidClearNotification = @"kVNHistoryDidClearNotification";
+NSString *const VNSearchTypeDidChangeNotification = @"kVNSearchTypeDidChangeNotification";

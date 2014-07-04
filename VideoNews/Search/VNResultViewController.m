@@ -65,46 +65,83 @@ static int selectedItemIndex;
     
     __weak typeof(newsQuiltView) weakQuiltView = newsQuiltView;
     __weak typeof(self) weakSelf = self;
-    [newsQuiltView addPullToRefreshWithActionHandler:^{
-        // FIXME: Hard code
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-            [VNHTTPRequestManager categoryNewsFromTime:refreshTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else {
-                    [weakSelf.categoryNewsArr removeAllObjects];
-                    [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
-                    [weakQuiltView reloadData];
-                }
-                [weakQuiltView.pullToRefreshView stopAnimating];
-            }];
-        });
-    }];
     
-    [newsQuiltView addInfiniteScrollingWithActionHandler:^{
-        NSString *moreTimeStamp = nil;
-        if (weakSelf.categoryNewsArr.count) {
-            VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
-            moreTimeStamp = lastNews.timestamp;
-        }
-        else {
-            moreTimeStamp = [VNHTTPRequestManager timestamp];
-        }
-        
-        [VNHTTPRequestManager categoryNewsFromTime:moreTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
+    if (self.type == ResultTypeSerach) {
+        [VNHTTPRequestManager searchResultForKey:self.searchKey timestamp:[VNHTTPRequestManager timestamp] searchType:self.searchType completion:^(NSArray *resultNewsArr, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
-                [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
+                [weakSelf.categoryNewsArr addObjectsFromArray:resultNewsArr];
                 [weakQuiltView reloadData];
             }
-            [weakQuiltView.infiniteScrollingView stopAnimating];
         }];
-    }];
-    [newsQuiltView triggerPullToRefresh];
+        
+        [newsQuiltView addInfiniteScrollingWithActionHandler:^{
+            NSString *moreTimeStamp = nil;
+            if (weakSelf.categoryNewsArr.count) {
+                VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
+                NSLog(@"%@", lastNews.timestamp);
+                moreTimeStamp = lastNews.timestamp;
+            }
+            else {
+                moreTimeStamp = [VNHTTPRequestManager timestamp];
+            }
+            
+            [VNHTTPRequestManager searchResultForKey:weakSelf.searchKey timestamp:moreTimeStamp searchType:weakSelf.searchType completion:^(NSArray *resultNewsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.categoryNewsArr addObjectsFromArray:resultNewsArr];
+                    [weakQuiltView reloadData];
+                }
+                [weakQuiltView.infiniteScrollingView stopAnimating];
+            }];
+        }];
+    }
+    else if (self.type == ResultTypeCategory) {
+        [newsQuiltView addPullToRefreshWithActionHandler:^{
+            // FIXME: Hard code
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                [VNHTTPRequestManager categoryNewsFromTime:refreshTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        [weakSelf.categoryNewsArr removeAllObjects];
+                        [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
+                        [weakQuiltView reloadData];
+                    }
+                    [weakQuiltView.pullToRefreshView stopAnimating];
+                }];
+            });
+        }];
+        
+        [newsQuiltView addInfiniteScrollingWithActionHandler:^{
+            NSString *moreTimeStamp = nil;
+            if (weakSelf.categoryNewsArr.count) {
+                VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
+                moreTimeStamp = lastNews.timestamp;
+            }
+            else {
+                moreTimeStamp = [VNHTTPRequestManager timestamp];
+            }
+            
+            [VNHTTPRequestManager categoryNewsFromTime:moreTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
+                    [weakQuiltView reloadData];
+                }
+                [weakQuiltView.infiniteScrollingView stopAnimating];
+            }];
+        }];
+        [newsQuiltView triggerPullToRefresh];
+    }
     
     [self.view addSubview:newsQuiltView];
 }
@@ -166,6 +203,13 @@ static int selectedItemIndex;
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
     selectedItemIndex = indexPath.item;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [self.navigationController popViewControllerAnimated:NO];
+    return NO;
 }
 
 #pragma mark - SEL

@@ -25,6 +25,7 @@
 
 + (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
 + (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion;
++ (void)searchResultForKey:(NSString *)keyWord timestamp:(NSString *)timestamp searchType:(NSString *)searchType completion:(void(^)(NSArray *resultNewsArr, NSError *error))completion;
 
 + (NSString *)timestamp;
 
