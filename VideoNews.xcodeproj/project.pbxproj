@@ -42,6 +42,7 @@
 		D6429724196695B2004E218C /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6429723196695B2004E218C /* CoreTelephony.framework */; };
 		D6429726196695BE004E218C /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D6429725196695BE004E218C /* libstdc++.dylib */; };
 		D6429728196695C6004E218C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D6429727196695C6004E218C /* libz.dylib */; };
+		D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F41196A3ADB00F484FE /* VNLoginViewController.m */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -147,6 +148,8 @@
 		D6429723196695B2004E218C /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		D6429725196695BE004E218C /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		D6429727196695C6004E218C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		D6676F40196A3ADB00F484FE /* VNLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNLoginViewController.h; sourceTree = "<group>"; };
+		D6676F41196A3ADB00F484FE /* VNLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNLoginViewController.m; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -349,6 +352,15 @@
 			path = Wechat;
 			sourceTree = "<group>";
 		};
+		D6676F3F196A3ABE00F484FE /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				D6676F40196A3ADB00F484FE /* VNLoginViewController.h */,
+				D6676F41196A3ADB00F484FE /* VNLoginViewController.m */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		D6FED741195AC1C100AD10E0 = {
 			isa = PBXGroup;
 			children = (
@@ -391,6 +403,7 @@
 		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
 			isa = PBXGroup;
 			children = (
+				D6676F3F196A3ABE00F484FE /* Login */,
 				D6FED793195C076500AD10E0 /* Model */,
 				D6FED78C195C009F00AD10E0 /* Data */,
 				D6FED785195BFF5F00AD10E0 /* Home */,
@@ -683,6 +696,7 @@
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
+				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
 				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
 				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,

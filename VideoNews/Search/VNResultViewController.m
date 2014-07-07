@@ -15,6 +15,10 @@
 
 @interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate> {
     TMQuiltView *newsQuiltView;
+    BOOL userScrolling;
+    CGPoint initialScrollOffset;
+    CGPoint previousScrollOffset;
+    BOOL isToBottom;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *navBar;
@@ -240,4 +244,106 @@ static int selectedItemIndex;
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
+
+- (void)hideTabBar {
+    if (self.tabBarController.tabBar.hidden == YES) {
+        return;
+    }
+    UIView *contentView;
+    if ([[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]]) {
+        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
+    }
+    else {
+        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        contentView.frame = CGRectMake(contentView.bounds.origin.x, contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height + self.tabBarController.tabBar.frame.size.height);
+        self.tabBarController.tabBar.hidden = YES;
+    } completion:nil];
+}
+
+- (void)showTabBar
+
+{
+    if (self.tabBarController.tabBar.hidden == NO) {
+        return;
+    }
+    UIView *contentView;
+    if ([[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]]) {
+        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
+    }
+    else {
+        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        contentView.frame = CGRectMake(contentView.bounds.origin.x, contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height - self.tabBarController.tabBar.frame.size.height);
+        self.tabBarController.tabBar.hidden = NO;
+    } completion:nil];
+}
+
+#pragma mark - Scrollview Delegate
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    [self showTabBar];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    userScrolling = YES;
+    initialScrollOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!userScrolling) return;
+    
+    //initialize
+    if (scrollView.contentSize.height <= scrollView.bounds.size.height) {
+        [self showTabBar];
+        return;
+    }
+    
+    if (scrollView.contentOffset.y <= 0) {
+        //Scrolling above the page
+        [self showTabBar];
+        return;
+    }
+    
+    //contentOffset
+    CGFloat contentOffset = scrollView.contentOffset.y - initialScrollOffset.y;
+    
+    if (scrollView.contentOffset.y <= 24) {
+        contentOffset = scrollView.contentOffset.y;
+    } else {
+        if (contentOffset < 0 && (scrollView.contentOffset.y - previousScrollOffset.y) > 0) {
+            initialScrollOffset = scrollView.contentOffset;
+        }
+    }
+    
+    contentOffset = roundf(contentOffset);
+    
+    if (contentOffset >= 0 && (scrollView.contentOffset.y + newsQuiltView.frame.size.height < scrollView.contentSize.height) && scrollView.contentOffset.y > 24) {
+        [self hideTabBar];
+    }
+    
+    //scroll to bottom, quit fullScreen
+    if (scrollView.contentOffset.y + newsQuiltView.frame.size.height >= scrollView.contentSize.height+49) {
+        [self showTabBar];
+    }
+    
+    if (scrollView.contentOffset.y + scrollView.frame.size.height <= scrollView.contentSize.height) {
+        previousScrollOffset = scrollView.contentOffset;
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (velocity.y < -0.5) {
+        userScrolling = NO;
+        [self showTabBar];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    userScrolling = NO;
+    initialScrollOffset = CGPointMake(0, 0);
+}
+
 @end

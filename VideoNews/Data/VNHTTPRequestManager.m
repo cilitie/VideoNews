@@ -166,7 +166,7 @@ static int pagesize = 10;
     //http://zmysp.sinaapp.com/class.php?timestamp=1402826693&token=9183773661255
     NSString *URLStr = [VNHost stringByAppendingString:@"class.php"];
     //FIXME: 接口有错误
-//    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp]};
+    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp]};
     //FIXME: for test
     
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"Category" ofType:@"json"];
@@ -186,8 +186,8 @@ static int pagesize = 10;
 //        return;
 //    }
     
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
         VNCategory *category = nil;
         NSMutableArray *categoryArr = [NSMutableArray array];
         
@@ -316,7 +316,7 @@ static int pagesize = 10;
 
 + (NSString *)token {
     NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
-//    NSLog(@"%@", originTokenStr);
+    NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];
 }
 
