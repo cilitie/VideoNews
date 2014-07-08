@@ -11,9 +11,22 @@
 extern CGFloat const cellMargin;
 extern CGFloat const thumbnailHeight;
 
+@protocol VNQuiltViewDelegate <NSObject>
+
+@optional
+
+-(void)TapImageView:(VNNews *)news;
+
+-(void)TapUserView:(VNNews *)news;
+
+@end
+
+
 @interface VNQuiltViewCell : TMQuiltViewCell
 
 @property (strong, nonatomic) VNNews *news;
+
+@property (nonatomic, assign) id<VNQuiltViewDelegate> delegate;
 
 - (void)reloadCell;
 

@@ -217,6 +217,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
+    [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
+    shareActionSheet.tag = kTagShare+1;
+    shareActionSheet.delegate = self;
+
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -312,6 +317,10 @@
         [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
         UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
         snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+    }
+    else if (actionSheet.tag==kTagShare+1)
+    {
+        
     }
 }
 

@@ -12,7 +12,7 @@
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
 
-@interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate> {
+@interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewDelegate> {
     TMQuiltView *newsQuiltView;
     BOOL userScrolling;
     CGPoint initialScrollOffset;
@@ -21,6 +21,8 @@
 }
 
 @property (strong, nonatomic) NSMutableArray *newsArr;
+
+@property (strong, nonatomic) VNNews *curNews;
 
 @end
 
@@ -113,7 +115,8 @@ static int selectedItemIndex;
     // Pass the selected object to the new view controller.
     if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewController"]) {
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
-        newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
+        //newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
+        newsDetailViewController.news=_curNews;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
         newsDetailViewController.controllerType = SourceViewControllerTypeHome;
     }
@@ -132,6 +135,7 @@ static int selectedItemIndex;
     }
     VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
     cell.news=news;
+    cell.delegate=self;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
     return cell;
@@ -152,11 +156,22 @@ static int selectedItemIndex;
     return 10.0;
 }
 
-- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
-    selectedItemIndex = indexPath.item;
+-(void)TapImageView:(VNNews *)news
+{
+    //selectedItemIndex = indexPath.item;
+    _curNews=news;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
 }
 
+-(void)TapUserView:(VNNews *)news
+{
+    NSLog(@"Tap user View");
+}
+/*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
+    selectedItemIndex = indexPath.item;
+    [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
+}
+*/
 #pragma mark - SEL
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
