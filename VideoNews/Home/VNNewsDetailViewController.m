@@ -268,33 +268,41 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
+    NSLog(@"%@", self.news.url);
+    NSString *shareURL = self.news.url;
+    if (!shareURL || [shareURL isEqualToString:@""]) {
+        shareURL = @"http://www.baidu.com";
+    }
     if (actionSheet.tag == kTagShare) {
         NSString *plateformName = [actionSheet buttonTitleAtIndex:buttonIndex];
         NSString *snsName = nil;
         if ([plateformName isEqualToString:@"微信朋友圈"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
-            [UMSocialWechatHandler setWXAppId:WXAppkey url:self.news.url];
+//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"微信好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
-            [UMSocialWechatHandler setWXAppId:WXAppkey url:self.news.url];
+//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"新浪微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
         }
         else if ([plateformName isEqualToString:@"QQ空间"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
-            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:self.news.url];
+//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"QQ好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
-            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:self.news.url];
+//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"腾讯微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
         }
         else if ([plateformName isEqualToString:@"人人网"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+        }
+        else {
+            return;
         }
         //设置分享内容，和回调对象
         

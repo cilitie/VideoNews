@@ -170,7 +170,7 @@
         <!--Login View Controller-->
         <scene sceneID="Jgg-ec-lVr">
             <objects>
-                <viewController id="go2-I1-A0T" customClass="VNLoginViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VNLoginViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="go2-I1-A0T" customClass="VNLoginViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ryn-Zh-fYe"/>
                         <viewControllerLayoutGuide type="bottom" id="8tm-HS-JCI"/>
@@ -190,7 +190,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="popBack:" destination="lib-ei-pAS" eventType="touchUpInside" id="yai-Xu-bjw"/>
+                                            <action selector="dismiss:" destination="go2-I1-A0T" eventType="touchUpInside" id="tek-Fc-iA5"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="登  录" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tqp-b9-u2k">
@@ -216,6 +216,9 @@
                                 <state key="normal" image="150-150weChat">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="wechatLogin:" destination="go2-I1-A0T" eventType="touchUpInside" id="tgn-T6-5tt"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FaL-az-Nfj">
                                 <rect key="frame" x="123" y="169" width="75" height="75"/>
@@ -223,6 +226,9 @@
                                 <state key="normal" image="150-150weibo">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="weiboLogin:" destination="go2-I1-A0T" eventType="touchUpInside" id="tVS-Cc-fAm"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DfU-Fl-imL">
                                 <rect key="frame" x="220" y="169" width="75" height="75"/>
@@ -230,6 +236,9 @@
                                 <state key="normal" image="150-150QQ">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="qqLogin:" destination="go2-I1-A0T" eventType="touchUpInside" id="q2B-Ze-GKg"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.88627457618713379" green="0.88627457618713379" blue="0.88627457618713379" alpha="1" colorSpace="deviceRGB"/>

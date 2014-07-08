@@ -16,9 +16,14 @@ extern NSString *const VNHistoryDidAddNotification;
 extern NSString *const VNHistoryDidClearNotification;
 extern NSString *const VNSearchTypeDidChangeNotification;
 
+//NSUserDefault
+extern NSString *const VNLoginUser;
+extern NSString *const VNPushToken;
+extern NSString *const VNUserToken;
+
 //友盟相关
 extern NSString *const UmengAppkey;
-//FIXME: 以下id用的新闻地图的
 extern NSString *const WXAppkey;
+extern NSString *const WXAppScrectkey;
 extern NSString *const QQAppID;
 extern NSString *const QQAppKey;

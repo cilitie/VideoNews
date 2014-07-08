@@ -13,6 +13,7 @@
 #import "VNMedia.h"
 #import "VNCategory.h"
 #import "VNComment.h"
+#import "VNAuthUser.h"
 
 @interface VNHTTPRequestManager : NSObject
 
@@ -26,6 +27,12 @@
 + (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion;
 + (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion;
 + (void)searchResultForKey:(NSString *)keyWord timestamp:(NSString *)timestamp searchType:(NSString *)searchType completion:(void(^)(NSArray *resultNewsArr, NSError *error))completion;
+
+#pragma mark - Login
+
++ (void)loginWithUser:(VNAuthUser *)user completion:(void(^)(BOOL succeed, NSError *error))completion;
+
+#pragma mark - Utility
 
 + (NSString *)timestamp;
 

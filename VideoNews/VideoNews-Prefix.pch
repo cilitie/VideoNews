@@ -17,5 +17,6 @@
     #import "VNKey.h"
     #import "VNHTTPRequestManager.h"
     #import "VNCacheDataManager.h"
+    #import "VNUtility.h"
     #define loadXib(name) [[[NSBundle mainBundle] loadNibNamed:name owner:nil options:nil] firstObject]
 #endif

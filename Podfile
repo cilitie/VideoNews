@@ -7,6 +7,7 @@ pod 'ColorUtils'
 pod 'SVPullToRefresh'
 pod 'TMQuiltView'
 pod 'Reachability'
+pod 'MBProgressHUD'
 
 end
 

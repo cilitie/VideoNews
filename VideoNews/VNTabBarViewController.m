@@ -7,8 +7,10 @@
 //
 
 #import "VNTabBarViewController.h"
+#import "VNAuthUser.h"
+#import "VNLoginViewController.h"
 
-@interface VNTabBarViewController ()
+@interface VNTabBarViewController () <UIAlertViewDelegate>
 
 @end
 
@@ -29,6 +31,31 @@
         [item setImage:[[UIImage imageNamed:[tabBarIcons objectAtIndex:idx]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
         [item setSelectedImage:[[UIImage imageNamed:[tabBarSelectedIcons objectAtIndex:idx]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     }];
+    
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    VNAuthUser *authUser = nil;
+    if (userInfo.count) {
+        authUser = [[VNAuthUser alloc] initWithDict:userInfo];
+    }
+    
+    if (authUser) {
+        [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if (succeed) {
+                [VNUtility showHUDText:@"登录成功!" forView:self.view];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+            else {
+                [VNUtility showHUDText:@"登录失败!" forView:self.view];
+            }
+        }];
+    }
+    else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否登录应用？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,6 +87,18 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
+        VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
 }
 
 @end
