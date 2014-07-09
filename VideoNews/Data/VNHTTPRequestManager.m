@@ -55,7 +55,7 @@ static int pagesize = 10;
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/viewnews.php?pagesize=10&timestamp=1404197350.213768&token=71cbc84008a7464a5df8b1da2e16aaae
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time};
+    NSDictionary *param = @{@"token": [self tokenFromTimestamp:time], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time};
     
     //FIXME: for test
     
@@ -128,7 +128,7 @@ static int pagesize = 10;
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/chat.php?nid=1&timestamp=1402826693&token=jshangabsjksjjagnn
     NSString *URLStr = [VNHost stringByAppendingString:@"chat.php"];
-    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": timestamp};
+    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
     
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -156,6 +156,33 @@ static int pagesize = 10;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(nil, error);
+        }
+    }];
+}
+
++ (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //http://zmysp.sinaapp.com/op.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=add&id=1&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"op.php"];
+    NSDictionary *param = @{@"id": [NSNumber numberWithInt:nid], @"uid": uid, @"cmd": operation, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        BOOL operationSuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                operationSuccess = [[responseObject objectForKey:@"success"] boolValue];
+//                if (operationSuccess) {
+//                    [[NSUserDefaults standardUserDefaults] setObject:user.basicDict forKey:VNLoginUser];
+//                    [[NSUserDefaults standardUserDefaults] synchronize];
+//                }
+            }
+        }
+        if (completion) {
+            completion(operationSuccess, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
         }
     }];
 }
@@ -217,7 +244,7 @@ static int pagesize = 10;
 + (void)categoryNewsFromTime:(NSString *)time category:(int)cid completion:(void(^)(NSArray *categoryNewsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/viewnews.php?timestamp=1402826693&pagesize=2&cid=1&token=9183773661255
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time, @"cid": [NSNumber numberWithInt:cid]};
+    NSDictionary *param = @{@"token": [self tokenFromTimestamp:time], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time, @"cid": [NSNumber numberWithInt:cid]};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //        NSLog(@"%@", responseObject);
@@ -259,7 +286,7 @@ static int pagesize = 10;
 + (void)searchResultForKey:(NSString *)keyWord timestamp:(NSString *)timestamp searchType:(NSString *)searchType completion:(void(^)(NSArray *resultNewsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/so.php?key=lucy&token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&category=news
     NSString *URLStr = [VNHost stringByAppendingString:@"so.php"];
-    NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": timestamp, @"key": keyWord, @"category": searchType};
+    NSDictionary *param = @{@"token": [self tokenFromTimestamp:timestamp], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": timestamp, @"key": keyWord, @"category": searchType};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //        NSLog(@"%@", responseObject);
@@ -351,6 +378,13 @@ static int pagesize = 10;
 
 + (NSString *)token {
     NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
+    NSLog(@"%@", originTokenStr);
+    return [originTokenStr md5];
+}
+
++ (NSString *)tokenFromTimestamp:(NSString *)timestamp {
+    NSDate *destDate = [NSDate dateWithTimeIntervalSince1970:[timestamp doubleValue]];
+    NSString *originTokenStr = [[NSString stringFromDate:destDate] stringByAppendingString:@"#$@%!*zmy"];
     NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];
 }

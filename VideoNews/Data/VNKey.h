@@ -18,6 +18,7 @@ extern NSString *const VNSearchTypeDidChangeNotification;
 
 //NSUserDefault
 extern NSString *const VNLoginUser;
+extern NSString *const isLogin;
 extern NSString *const VNPushToken;
 extern NSString *const VNUserToken;
 

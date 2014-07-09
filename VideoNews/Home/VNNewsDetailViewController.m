@@ -17,8 +17,9 @@
 #import "UMSocialQQHandler.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocial.h"
+#import "VNLoginViewController.h"
 
-@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate> {
+@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
 }
@@ -114,6 +115,25 @@
     }];
     
     __weak typeof(self) weakSelf = self;
+    
+    [self.commentTableView addPullToRefreshWithActionHandler:^{
+        // FIXME: Hard code
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+            [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:refreshTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.commentArr removeAllObjects];
+                    [weakSelf.commentArr addObjectsFromArray:commemtArr];
+                    [weakSelf.commentTableView reloadData];
+                }
+                [weakSelf.commentTableView.pullToRefreshView stopAnimating];
+            }];;
+        });
+    }];
+    
     [self.commentTableView addInfiniteScrollingWithActionHandler:^{
         NSString *moreTimeStamp = nil;
         if (weakSelf.commentArr.count) {
@@ -253,6 +273,50 @@
 }
 
 - (IBAction)like:(id)sender {
+    __block UIButton *button = sender;
+    VNAuthUser *authUser = nil;
+    NSString *user_token = @"";
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:isLogin] boolValue]) {
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        if (userInfo.count) {
+            authUser = [[VNAuthUser alloc] initWithDict:userInfo];
+        }
+        user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    }
+    else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否登录应用？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+        return;
+    }
+    
+    if (button.isSelected) {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if (succeed) {
+                [button setSelected:NO];
+                [VNUtility showHUDText:@"取消收藏成功!" forView:self.view];
+            }
+            else {
+                [VNUtility showHUDText:@"取消收藏失败!" forView:self.view];
+            }
+        }];
+    }
+    else {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if (succeed) {
+                [button setSelected:YES];
+                [VNUtility showHUDText:@"收藏成功!" forView:self.view];
+            }
+            else {
+                [VNUtility showHUDText:@"收藏失败!" forView:self.view];
+            }
+        }];
+    }
 }
 
 - (IBAction)share:(id)sender {
@@ -399,6 +463,18 @@
                          
                          keyboardHeight = 0;
                      }];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
+        VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
 }
 
 @end

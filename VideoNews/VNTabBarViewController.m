@@ -33,6 +33,8 @@
     }];
     
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:isLogin];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     VNAuthUser *authUser = nil;
     if (userInfo.count) {
         authUser = [[VNAuthUser alloc] initWithDict:userInfo];
@@ -45,6 +47,8 @@
             }
             else if (succeed) {
                 [VNUtility showHUDText:@"登录成功!" forView:self.view];
+                [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                [[NSUserDefaults standardUserDefaults] synchronize];
                 [self dismissViewControllerAnimated:YES completion:nil];
             }
             else {
