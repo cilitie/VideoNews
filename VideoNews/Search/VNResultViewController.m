@@ -261,39 +261,32 @@
 }
 
 - (void)hideTabBar {
-    if (self.tabBarController.tabBar.hidden == YES) {
-        return;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds), view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, CGRectGetHeight(self.view.bounds))];
+        }
     }
-    UIView *contentView;
-    if ([[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]]) {
-        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
-    }
-    else {
-        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
-    }
-    [UIView animateWithDuration:0.3 animations:^{
-        contentView.frame = CGRectMake(contentView.bounds.origin.x, contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height + self.tabBarController.tabBar.frame.size.height);
-        self.tabBarController.tabBar.hidden = YES;
-    } completion:nil];
+    [UIView commitAnimations];
 }
 
-- (void)showTabBar
-
-{
-    if (self.tabBarController.tabBar.hidden == NO) {
-        return;
+- (void)showTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds)-49, view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width,  CGRectGetHeight(self.view.bounds)-49)];
+        }
     }
-    UIView *contentView;
-    if ([[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]]) {
-        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
-    }
-    else {
-        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
-    }
-    [UIView animateWithDuration:0.3 animations:^{
-        contentView.frame = CGRectMake(contentView.bounds.origin.x, contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height - self.tabBarController.tabBar.frame.size.height);
-        self.tabBarController.tabBar.hidden = NO;
-    } completion:nil];
+    [UIView commitAnimations];
 }
 
 #pragma mark - Scrollview Delegate

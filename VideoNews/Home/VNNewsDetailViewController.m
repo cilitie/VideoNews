@@ -364,22 +364,22 @@
         NSString *snsName = nil;
         if ([plateformName isEqualToString:@"微信朋友圈"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
-            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
+//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"微信好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
-            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
+//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"新浪微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
         }
         else if ([plateformName isEqualToString:@"QQ空间"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
-            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
+//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"QQ好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
-            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
+//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"腾讯微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
