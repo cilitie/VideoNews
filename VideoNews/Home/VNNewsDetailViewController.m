@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *inputTextField;
 @property (weak, nonatomic) IBOutlet UIToolbar *inputBar;
 @property (strong, nonatomic) NSMutableArray *commentArr;
+@property (strong,nonatomic)VNComment *curComment;
 
 - (IBAction)popBack:(id)sender;
 - (IBAction)like:(id)sender;
@@ -237,16 +238,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VNComment *comment=[self.commentArr objectAtIndex:indexPath.row];
+    _curComment=comment;
     UIActionSheet * shareActionSheet;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     //NSLog(@"openid:%@",[userInfo objectForKey:@"openid"]);
-    //NSLog(@"author:%d",comment.author.uid);
-    if (comment.author.uid==[userInfo objectForKey:@"openid"]) {
+    //NSLog(@"author:%@",comment.author.uid);
+    if ([comment.author.uid isEqualToString:[userInfo objectForKey:@"openid"]]) {
         shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
     }
-    else
+    else if([comment.author.uid isEqualToString:@"1"])
     {
-        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"举报评论", nil];
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
+    }
+    else{
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
     }
     [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
     shareActionSheet.tag = kTagShare+1;
@@ -347,7 +352,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
-    NSLog(@"%@", self.news.url);
+    //NSLog(@"%@", self.news.url);
     NSString *shareURL = self.news.url;
     if (!shareURL || [shareURL isEqualToString:@""]) {
         //shareURL = @"http://www.baidu.com";
@@ -396,7 +401,24 @@
     }
     else if (actionSheet.tag==kTagShare+1)
     {
-        
+        NSString *cmdName = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([cmdName isEqualToString:@"查看个人主页"]) {
+            
+            NSLog(@"user:%@",_curComment.author.uid);
+        }
+        else if([cmdName isEqualToString:@"删除评论"])
+        {
+        }
+        else if([cmdName isEqualToString:@"举报评论"])
+        {
+        }
+        else if([cmdName isEqualToString:@"回复"])
+        {
+        }
+        else
+        {
+            return;
+        }
     }
 }
 
