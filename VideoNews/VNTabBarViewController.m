@@ -57,7 +57,7 @@
         }];
     }
     else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否登录应用？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
         [alert show];
     }
 }
