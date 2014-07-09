@@ -17,8 +17,9 @@ static NSString *kMain_uid = @"main_uid";
 
 @implementation VNUser
 
-- (int)uid {
-    return [makeSureNotNull([self.basicDict objectForKey:kUid]) intValue];
+- (NSString *)uid {
+    //return [makeSureNotNull([self.basicDict objectForKey:kUid]) intValue];
+    return makeSureNotNull([self.basicDict objectForKey:kUid]);
 }
 
 - (NSString *)name {

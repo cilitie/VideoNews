@@ -10,7 +10,7 @@
 
 @interface VNUser : VNObject
 
-@property (assign, nonatomic, readonly) int uid;
+@property (assign, nonatomic, readonly) NSString *uid;
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *avatar;
 //@property (assign, nonatomic, readonly) BOOL isMainUser;

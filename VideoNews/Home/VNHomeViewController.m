@@ -12,7 +12,7 @@
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
 
-@interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewDelegate> {
+@interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
     BOOL userScrolling;
     CGPoint initialScrollOffset;

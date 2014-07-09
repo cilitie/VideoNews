@@ -13,7 +13,7 @@
 #import "VNNewsDetailViewController.h"
 #import "VNSearchField.h"
 
-@interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate> {
+@interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
     BOOL userScrolling;
     CGPoint initialScrollOffset;
@@ -26,11 +26,12 @@
 @property (strong, nonatomic) VNSearchField *searchField;
 
 @property (strong, nonatomic) NSMutableArray *categoryNewsArr;
+@property (strong,nonatomic)VNNews *curNews;
 - (IBAction)popBack:(id)sender;
 
 @end
 
-static int selectedItemIndex;
+//static int selectedItemIndex;
 
 @implementation VNResultViewController
 
@@ -165,7 +166,8 @@ static int selectedItemIndex;
     // Pass the selected object to the new view controller.
     if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewControllerForResult"]) {
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
-        newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
+        //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
+        newsDetailViewController.news=_curNews;
         newsDetailViewController.controllerType = SourceViewControllerTypeCategory;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
     }
@@ -183,6 +185,7 @@ static int selectedItemIndex;
         cell = [[VNQuiltViewCell alloc] initWithReuseIdentifier:@"VNQuiltViewCellIdentifier"];
     }
     VNNews *news =[self.categoryNewsArr objectAtIndex:indexPath.item];
+    cell.delegate=self;
     cell.news=news;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
@@ -204,10 +207,22 @@ static int selectedItemIndex;
     return 10.0;
 }
 
-- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
-    selectedItemIndex = indexPath.item;
+-(void)TapImageView:(VNNews *)news
+{
+    //selectedItemIndex = indexPath.item;
+    _curNews=news;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
 }
+
+-(void)TapUserView:(VNNews *)news
+{
+    NSLog(@"Tap user View");
+}
+
+/*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
+    selectedItemIndex = indexPath.item;
+    [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
+}*/
 
 #pragma mark - UITextFieldDelegate
 

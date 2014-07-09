@@ -236,8 +236,18 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"举报评论", nil];
+    VNComment *comment=[self.commentArr objectAtIndex:indexPath.row];
+    UIActionSheet * shareActionSheet;
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    //NSLog(@"openid:%@",[userInfo objectForKey:@"openid"]);
+    //NSLog(@"author:%d",comment.author.uid);
+    if (comment.author.uid==[userInfo objectForKey:@"openid"]) {
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+    }
+    else
+    {
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"举报评论", nil];
+    }
     [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
     shareActionSheet.tag = kTagShare+1;
     shareActionSheet.delegate = self;
@@ -340,29 +350,31 @@
     NSLog(@"%@", self.news.url);
     NSString *shareURL = self.news.url;
     if (!shareURL || [shareURL isEqualToString:@""]) {
-        shareURL = @"http://www.baidu.com";
+        //shareURL = @"http://www.baidu.com";
+        shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.news.nid];
+        //NSLog(@"url:%@",shareURL);
     }
     if (actionSheet.tag == kTagShare) {
         NSString *plateformName = [actionSheet buttonTitleAtIndex:buttonIndex];
         NSString *snsName = nil;
         if ([plateformName isEqualToString:@"微信朋友圈"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
-//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
+            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"微信好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
-//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
+            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"新浪微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
         }
         else if ([plateformName isEqualToString:@"QQ空间"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
-//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
+            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"QQ好友"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
-//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
+            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
         }
         else if ([plateformName isEqualToString:@"腾讯微博"]) {
             snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
@@ -375,7 +387,7 @@
         }
         //设置分享内容，和回调对象
         
-        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“刘毅”快来看看吧~", self.news.title];
+        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.news.title,_news.author.name,_news.url];
         UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
         
         [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
