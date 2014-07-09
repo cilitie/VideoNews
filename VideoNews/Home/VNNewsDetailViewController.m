@@ -216,8 +216,18 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"举报评论", nil];
+    VNComment *comment=[self.commentArr objectAtIndex:indexPath.row];
+    UIActionSheet * shareActionSheet;
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    //NSLog(@"openid:%@",[userInfo objectForKey:@"openid"]);
+    //NSLog(@"author:%d",comment.author.uid);
+    if (comment.author.uid==[userInfo objectForKey:@"openid"]) {
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+    }
+    else
+    {
+        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"举报评论", nil];
+    }
     [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
     shareActionSheet.tag = kTagShare+1;
     shareActionSheet.delegate = self;
