@@ -20,8 +20,8 @@
     [UMSocialData setAppKey:UmengAppkey];
     
     [UMSocialConfig setSupportSinaSSO:YES appRedirectUrl:@"http://sns.whalecloud.com/sina2/callback"];
-    [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
-    [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
+    //[UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
+    //[UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setSupportQzoneSSO:YES];
     // Override point for customization after application launch.
     return YES;
