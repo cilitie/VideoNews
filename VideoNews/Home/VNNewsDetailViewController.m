@@ -45,7 +45,7 @@
 #define kTagCommentAnybody 103
 #define kTagCommentOtherUser 104
 #define kTagNews 105
-
+static NSString *shareStr;
 
 @implementation VNNewsDetailViewController
 
@@ -554,6 +554,7 @@
         if (buttonIndex < 7) {
             NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.news.title,_news.author.name,_news.url];
             UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
+            shareStr = shareText;
             
             [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
             UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
@@ -716,14 +717,19 @@
 -(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
 {
     NSLog(@"didFinishGetUMSocialDataInViewController with response is %@",response);
-    if (response.responseType == UMSResponseShareToMutilSNS) {
-        
-    }
     //根据`responseCode`得到发送结果,如果分享成功
-    if(response.responseCode == UMSResponseCodeSuccess)
-    {
+    if(response.responseCode == UMSResponseCodeSuccess) {
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+        [VNUtility showHUDText:@"分享成功!" forView:self.view];
+        [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if (succeed) {
+                [self.commentTableView triggerPullToRefresh];
+            }
+        }];
     }
 }
 
