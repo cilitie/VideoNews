@@ -71,7 +71,7 @@
         [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToSina completion:^(UMSocialResponseEntity *respose){
             NSLog(@"response is %@",respose);
             VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-            authUser.openid = [respose.data objectForKey:@"uid"];
+            authUser.openid = [[respose.data objectForKey:@"uid"] stringValue];
             authUser.nickname = [respose.data objectForKey:@"screen_name"];
             authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
 //            if ([[respose.data objectForKey:@"gender"] intValue] == 1) {
