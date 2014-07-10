@@ -508,6 +508,54 @@
                 break;
         }
     }
+    else if (actionSheet.tag == kTagCommentAnybody) {
+        NSLog(@"%d", buttonIndex);
+        switch (buttonIndex) {
+                //回复
+            case 0: {
+                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复匿名:"]];
+                [self.inputTextField becomeFirstResponder];
+            }
+                break;
+                //举报评论
+            case 1: {
+                NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                if (userInfo && userInfo.count) {
+                    NSString *uid = [userInfo objectForKey:@"openid"];
+                    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                    if (uid && user_token) {
+                        [VNHTTPRequestManager deleteComment:self.curComment.cid news:self.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                            if (error) {
+                                NSLog(@"%@", error.localizedDescription);
+                            }
+                            else if (succeed) {
+                                [VNUtility showHUDText:@"举报成功!" forView:self.view];
+                                self.inputTextField.text = @"";
+                                [self.commentTableView triggerPullToRefresh];
+                            }
+                            else {
+                                [VNUtility showHUDText:@"举报失败或您已举报" forView:self.view];
+                            }
+                        }];
+                    }
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                    [alert show];
+                    return;
+                }
+            }
+                break;
+                //取消
+            case 2: {
+                return ;
+            }
+                break;
+        }
+    }
+    else if (actionSheet.tag == kTagCommentOtherUser) {
+        
+    }
 }
 
 #pragma mark - UMSocialUIDelegate
