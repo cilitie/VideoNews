@@ -20,7 +20,7 @@
 #import "VNLoginViewController.h"
 #import "MediaPlayer/MPMoviePlayerController.h"
 
-@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
+@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate,VNCommentTableViewCellDelegate> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
 }
@@ -45,6 +45,7 @@
 #define kTagCommentAnybody 103
 #define kTagCommentOtherUser 104
 #define kTagNews 105
+#define KReplyButton 1000
 static NSString *shareStr;
 
 @implementation VNNewsDetailViewController
@@ -183,6 +184,24 @@ static NSString *shareStr;
 
 }
 
+-(void) replyButtonClicked:(UIButton *)sender
+{
+    int row=sender.tag;
+    _curComment=_commentArr[row-KReplyButton];
+    
+    [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
+    [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+    [self.inputTextField becomeFirstResponder];
+    
+}
+
+-(void) thumbnailClicked:(UIButton *)sender
+{
+    int row=sender.tag;
+    _curComment=_commentArr[row-KReplyButton];
+    NSLog(@"nid:%@",_curComment.author.uid);
+    
+}
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
@@ -240,7 +259,9 @@ static NSString *shareStr;
     [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
     cell.thumbnail.layer.masksToBounds = YES;
     cell.nameLabel.text = comment.author.name;
-    
+    cell.delegate=self;
+    cell.replyBtn.tag=KReplyButton+indexPath.row;
+    cell.thumbnail.tag=KReplyButton+indexPath.row;
     cell.commentLabel.text = comment.content;
 //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
 //    cell.commentLabel.text = testString;
@@ -338,10 +359,10 @@ static NSString *shareStr;
             }
             if (succeed) {
                 [button setSelected:NO];
-                [VNUtility showHUDText:@"取消收藏成功!" forView:self.view];
+                [VNUtility showHUDText:@"已取消!" forView:self.view];
             }
             else {
-                [VNUtility showHUDText:@"取消收藏失败!" forView:self.view];
+                [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
             }
         }];
     }
@@ -352,10 +373,10 @@ static NSString *shareStr;
             }
             if (succeed) {
                 [button setSelected:YES];
-                [VNUtility showHUDText:@"收藏成功!" forView:self.view];
+                [VNUtility showHUDText:@"点赞成功!" forView:self.view];
             }
             else {
-                [VNUtility showHUDText:@"收藏失败!" forView:self.view];
+                [VNUtility showHUDText:@"已点赞!" forView:self.view];
             }
         }];
     }
