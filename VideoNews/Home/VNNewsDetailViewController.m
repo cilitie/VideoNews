@@ -39,6 +39,9 @@
 @end
 
 #define kTagShare 101
+#define kTagCommentMine 102
+#define kTagCommentAnybody 103
+#define kTagCommentOtherUser 103
 
 
 @implementation VNNewsDetailViewController
@@ -237,26 +240,28 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    VNComment *comment=[self.commentArr objectAtIndex:indexPath.row];
-    _curComment=comment;
-    UIActionSheet * shareActionSheet;
+    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+    self.curComment = comment;
+    UIActionSheet *actionSheet = nil;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    //NSLog(@"openid:%@",[userInfo objectForKey:@"openid"]);
-    //NSLog(@"author:%@",comment.author.uid);
-    if ([comment.author.uid isEqualToString:[userInfo objectForKey:@"openid"]]) {
-        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+    NSString *mineID = [userInfo objectForKey:@"openid"];
+    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
+    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
+    if ([comment.author.uid isEqualToString:mineID]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+        actionSheet.tag = kTagCommentMine;
     }
     else if([comment.author.uid isEqualToString:@"1"])
     {
-        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
+        actionSheet.tag = kTagCommentAnybody;
     }
     else{
-        shareActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
+        actionSheet.tag = kTagCommentOtherUser;
     }
-    [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
-    shareActionSheet.tag = kTagShare+1;
-    shareActionSheet.delegate = self;
-
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    actionSheet.delegate = self;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -342,6 +347,31 @@
 }
 
 - (IBAction)sendComment:(id)sender {
+    NSString *str = self.inputTextField.text;
+    NSMutableString *commentStr = [[NSMutableString alloc] init];
+    [commentStr setString:str];
+    CFStringTrimWhitespace((CFMutableStringRef)commentStr);
+    
+    if (commentStr.length == 0) {
+        [VNUtility showHUDText:@"发送内容为空!" forView:self.view];
+        return;
+    }
+    else {
+        [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if (succeed) {
+                [VNUtility showHUDText:@"评论成功!" forView:self.view];
+                self.inputTextField.text = @"";
+                [self.inputTextField resignFirstResponder];
+                [self.commentTableView triggerPullToRefresh];
+            }
+            else {
+                [VNUtility showHUDText:@"评论失败!" forView:self.view];
+            }
+        }];
+    }
 }
 
 - (IBAction)switchEmoji:(id)sender {
@@ -351,44 +381,57 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
-    //NSLog(@"%@", self.news.url);
-    NSString *shareURL = self.news.url;
-    if (!shareURL || [shareURL isEqualToString:@""]) {
-        //shareURL = @"http://www.baidu.com";
-        shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.news.nid];
-        //NSLog(@"url:%@",shareURL);
-    }
     if (actionSheet.tag == kTagShare) {
-        NSString *plateformName = [actionSheet buttonTitleAtIndex:buttonIndex];
+        NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
+        //NSLog(@"%@", self.news.url);
+        NSString *shareURL = self.news.url;
+        if (!shareURL || [shareURL isEqualToString:@""]) {
+            //shareURL = @"http://www.baidu.com";
+            shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.news.nid];
+            //NSLog(@"url:%@",shareURL);
+        }
         NSString *snsName = nil;
-        if ([plateformName isEqualToString:@"微信朋友圈"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
-//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
-        }
-        else if ([plateformName isEqualToString:@"微信好友"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
-//            [UMSocialWechatHandler setWXAppId:WXAppkey url:shareURL];
-        }
-        else if ([plateformName isEqualToString:@"新浪微博"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
-        }
-        else if ([plateformName isEqualToString:@"QQ空间"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
-//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
-        }
-        else if ([plateformName isEqualToString:@"QQ好友"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
-//            [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:shareURL];
-        }
-        else if ([plateformName isEqualToString:@"腾讯微博"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
-        }
-        else if ([plateformName isEqualToString:@"人人网"]) {
-            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
-        }
-        else {
-            return;
+        switch (buttonIndex) {
+                //微信朋友圈
+            case 0: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+            }
+                break;
+                //微信好友
+            case 1: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+            }
+                break;
+                //新浪微博
+            case 2: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
+            }
+                break;
+                //QQ空间
+            case 3: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+            }
+                break;
+                //QQ好友
+            case 4: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+            }
+                break;
+                //腾讯微博
+            case 5: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
+            }
+                break;
+                //人人网
+            case 6: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+            }
+                break;
+                //取消
+            case 7: {
+                return ;
+            }
+                break;
         }
         //设置分享内容，和回调对象
         
@@ -399,26 +442,50 @@
         UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
         snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
     }
-    else if (actionSheet.tag==kTagShare+1)
-    {
-        NSString *cmdName = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if ([cmdName isEqualToString:@"查看个人主页"]) {
-            
-            NSLog(@"user:%@",_curComment.author.uid);
-        }
-        else if([cmdName isEqualToString:@"删除评论"])
-        {
-        }
-        else if([cmdName isEqualToString:@"举报评论"])
-        {
-        }
-        else if([cmdName isEqualToString:@"回复"])
-        {
-        }
-        else
-        {
-            return;
-        }
+    else if (actionSheet.tag == kTagCommentMine) {
+        NSLog(@"%d", buttonIndex);
+//        switch (buttonIndex) {
+//                //微信朋友圈
+//            case 0: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+//            }
+//                break;
+//                //微信好友
+//            case 1: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+//            }
+//                break;
+//                //新浪微博
+//            case 2: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
+//            }
+//                break;
+//                //QQ空间
+//            case 3: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+//            }
+//                break;
+//                //QQ好友
+//            case 4: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+//            }
+//                break;
+//                //腾讯微博
+//            case 5: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
+//            }
+//                break;
+//                //人人网
+//            case 6: {
+//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+//            }
+//                break;
+//                //取消
+//            case 7: {
+//                return ;
+//            }
+//                break;
+//        }
     }
 }
 

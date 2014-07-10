@@ -55,7 +55,7 @@ static int pagesize = 10;
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/viewnews.php?pagesize=10&timestamp=1404197350.213768&token=71cbc84008a7464a5df8b1da2e16aaae
     NSString *URLStr = [VNHost stringByAppendingString:@"viewnews.php"];
-//    NSDictionary *param = @{@"token": [self tokenFromTimestamp:time], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time};
+//  NSDictionary *param = @{@"token": [self tokenFromTimestamp:time], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": time};
     NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": [self timestamp],@"pagetime":time};
     
     //FIXME: for test
@@ -173,15 +173,79 @@ static int pagesize = 10;
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
                 operationSuccess = [[responseObject objectForKey:@"success"] boolValue];
-//                if (operationSuccess) {
-//                    [[NSUserDefaults standardUserDefaults] setObject:user.basicDict forKey:VNLoginUser];
-//                    [[NSUserDefaults standardUserDefaults] synchronize];
-//                }
             }
         }
         if (completion) {
             completion(operationSuccess, nil);
         }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
+        }
+    }];
+}
+
++ (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    if (!uid) {
+        uid = @"1";
+    }
+    NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp]};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        BOOL commentSuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                commentSuccess = [[responseObject objectForKey:@"success"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(commentSuccess, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
+        }
+    }];
+}
+
++ (void)replyComment:(int)cid replyUser:(NSString *)reply_uid replyNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
+    NSString *uid = nil;
+    NSString *user_token = nil;
+    uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    if (!uid) {
+        uid = @"1";
+        user_token = @"";
+    }
+    
+    NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"reply_uid": reply_uid, @"text": content, @"type": @"reply", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
+        }
+    }];
+}
+
++ (void)deleteComment:(int)cid news:(int)nid completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    
+    NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"type": @"del", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(NO, error);

@@ -177,7 +177,6 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSLog(@"search pressed!!!");
     NSString *str = textField.text;
     NSMutableString *searchKey = [[NSMutableString alloc] init];
     [searchKey setString:str];
