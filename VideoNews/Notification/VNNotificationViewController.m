@@ -8,6 +8,11 @@
 
 #import "VNNotificationViewController.h"
 
+#import "VNNotificationTableViewCell.h"
+
+#import "UIImageView+AFNetworking.h"
+#import "UIButton+AFNetworking.h"
+
 #import "SVPullToRefresh.h"
 
 //#import "VNNotificationTableViewController.h"
@@ -17,6 +22,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *messageTableView;
 
 @property (strong, nonatomic) NSMutableArray *messageArr;
+
+@property (strong,nonatomic)VNMessage *curMessage;
 
 @end
 
@@ -124,11 +131,12 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
-    VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *cellIdentifier = @"VNNotificationTableViewCellIdentifier";
+    VNNotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    /*[cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
     cell.thumbnail.layer.masksToBounds = YES;
     cell.nameLabel.text = comment.author.name;
@@ -146,7 +154,7 @@
     //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
     cell.commentLabel.frame = titleLabelframe;
     
-    cell.timeLabel.text = [comment.date substringToIndex:10];
+    cell.timeLabel.text = [comment.date substringToIndex:10];*/
     
     return cell;
 }
@@ -154,33 +162,17 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-    self.curComment = comment;
+    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+    self.curMessage = message;
     UIActionSheet *actionSheet = nil;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     NSString *mineID = [userInfo objectForKey:@"openid"];
-    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
-    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
-    if ([comment.author.uid isEqualToString:mineID]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
-        actionSheet.tag = kTagCommentMine;
-    }
-    else if([comment.author.uid isEqualToString:@"1"])
-    {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
-        actionSheet.tag = kTagCommentAnybody;
-    }
-    else{
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
-        actionSheet.tag = kTagCommentOtherUser;
-    }
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    actionSheet.delegate = self;
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat diff = 0;
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+    /*VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
     //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
     VNCommentTableViewCell *cell = loadXib(@"VNCommentTableViewCell");
     NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
@@ -188,7 +180,7 @@
     //    NSLog(@"%@", NSStringFromCGRect(rect));
     if (CGRectGetHeight(rect) > 15) {
         diff = CGRectGetHeight(rect)-15;
-    }
+    }*/
     return 60.0+diff;
 }
 
