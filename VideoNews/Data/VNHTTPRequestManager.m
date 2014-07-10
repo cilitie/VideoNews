@@ -438,31 +438,33 @@ static int pagesize = 10;
 #pragma mark - Notification
 + (void)messageListForUser:(NSString *)uid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/message.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c&pagesize=10&pagetime=1404232200
-    NSString *URLStr = [VNHost stringByAppendingString:@"chat.php"];
+    NSString *URLStr = [VNHost stringByAppendingString:@"message.php"];
     //    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
-    NSDictionary *param = @{@"nid": uid, @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp};
+    NSDictionary *param = @{@"uid": uid, @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp};
     
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //        NSLog(@"%@", responseObject);
-        VNComment *comment = nil;
-        NSMutableArray *commentArr = [NSMutableArray array];
+        VNMessage *message = nil;
+        NSMutableArray *messageArr = [NSMutableArray array];
         
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             //FIXME: Server Error, Fix Later
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-                NSArray *responseArr = responseObject[@"list"][@"comment"];
+                NSArray *responseArr = responseObject[@"list"];
                 for (NSDictionary *dic in responseArr) {
-                    comment = [[VNComment alloc] initWithDict:dic];
-                    NSDictionary *userDic = [dic objectForKey:@"author"];
-                    comment.author = [[VNUser alloc] initWithDict:userDic];
-                    [commentArr addObject:comment];
+                    message = [[VNMessage alloc] initWithDict:dic];
+                    NSDictionary *userDic = [dic objectForKey:@"sender"];
+                    message.sender = [[VNUser alloc] initWithDict:userDic];
+                    NSDictionary *newsDic = [dic objectForKey:@"news"];
+                    message.news=[[VNNews alloc]initWithDict:newsDic];
+                    [messageArr addObject:message];
                 }
             }
         }
         if (completion) {
-            completion(commentArr, nil);
+            completion(messageArr, nil);
             return;
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
