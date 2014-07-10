@@ -47,8 +47,9 @@
 		D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F41196A3ADB00F484FE /* VNLoginViewController.m */; };
 		D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F52196B799800F484FE /* VNWeixinCodeResponse.m */; };
 		D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F55196B7E0000F484FE /* VNAuthUser.m */; };
-		D6676F59196B946B00F484FE /* VNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F58196B946B00F484FE /* VNUtility.m */; };
 		D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F5B196BC84800F484FE /* ZXRemoteNotification.m */; };
+		D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */; };
+		D6676F69196E81BB00F484FE /* VNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F67196E81BB00F484FE /* VNUtility.m */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -164,10 +165,12 @@
 		D6676F52196B799800F484FE /* VNWeixinCodeResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNWeixinCodeResponse.m; sourceTree = "<group>"; };
 		D6676F54196B7E0000F484FE /* VNAuthUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAuthUser.h; sourceTree = "<group>"; };
 		D6676F55196B7E0000F484FE /* VNAuthUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAuthUser.m; sourceTree = "<group>"; };
-		D6676F57196B946B00F484FE /* VNUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUtility.h; sourceTree = "<group>"; };
-		D6676F58196B946B00F484FE /* VNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUtility.m; sourceTree = "<group>"; };
 		D6676F5A196BC84800F484FE /* ZXRemoteNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXRemoteNotification.h; sourceTree = "<group>"; };
 		D6676F5B196BC84800F484FE /* ZXRemoteNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZXRemoteNotification.m; sourceTree = "<group>"; };
+		D6676F64196E81BB00F484FE /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationControllerDelegate.h; sourceTree = "<group>"; };
+		D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationControllerDelegate.m; sourceTree = "<group>"; };
+		D6676F66196E81BB00F484FE /* VNUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUtility.h; sourceTree = "<group>"; };
+		D6676F67196E81BB00F484FE /* VNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUtility.m; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -390,6 +393,17 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		D6676F63196E81BB00F484FE /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				D6676F64196E81BB00F484FE /* NavigationControllerDelegate.h */,
+				D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */,
+				D6676F66196E81BB00F484FE /* VNUtility.h */,
+				D6676F67196E81BB00F484FE /* VNUtility.m */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		D6FED741195AC1C100AD10E0 = {
 			isa = PBXGroup;
 			children = (
@@ -432,6 +446,7 @@
 		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
 			isa = PBXGroup;
 			children = (
+				D6676F63196E81BB00F484FE /* Utility */,
 				26962049196E75DF00EA06B3 /* Notification */,
 				D6676F3F196A3ABE00F484FE /* Login */,
 				D6FED793195C076500AD10E0 /* Model */,
@@ -532,8 +547,6 @@
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
 				D6FED7A8195EA6E100AD10E0 /* HomeNews.json */,
 				D6FED7AD195ED35D00AD10E0 /* Category.json */,
-				D6676F57196B946B00F484FE /* VNUtility.h */,
-				D6676F58196B946B00F484FE /* VNUtility.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -717,7 +730,6 @@
 			files = (
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
-				D6676F59196B946B00F484FE /* VNUtility.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
@@ -746,6 +758,8 @@
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
+				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
+				D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

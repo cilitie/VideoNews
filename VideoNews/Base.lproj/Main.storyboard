@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12E3200" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -15,10 +15,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="mLB-2t-WSC" id="pHH-iT-eU8"/>
                         <segue destination="glU-f5-ipP" kind="relationship" relationship="rootViewController" id="UyX-Od-Aws"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dNp-uA-zz0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="mLB-2t-WSC" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
+                    <connections>
+                        <outlet property="navigationController" destination="67i-x3-BeR" id="4kT-gw-GUX"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="701" y="-1153"/>
         </scene>
@@ -259,10 +265,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="g3w-A0-vov" id="LN9-Df-D5L"/>
                         <segue destination="Rgg-CU-GfY" kind="relationship" relationship="rootViewController" id="txv-d6-f4V"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7LF-Bv-tWE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="g3w-A0-vov" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
+                    <connections>
+                        <outlet property="navigationController" destination="hay-Ws-0nv" id="jye-VJ-Vmd"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="701" y="-458"/>
         </scene>
@@ -471,10 +483,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="g1u-AX-XQf" id="uA7-y3-LLZ"/>
                         <segue destination="qr6-I5-Aba" kind="relationship" relationship="rootViewController" id="SUa-g6-Yal"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="78S-un-fuU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="g1u-AX-XQf" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
+                    <connections>
+                        <outlet property="navigationController" destination="6eb-o6-15S" id="T3K-Gm-dy7"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="942"/>
         </scene>
@@ -522,10 +540,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="bVL-x6-uOs" id="qaJ-VG-l7Q"/>
                         <segue destination="cnK-5f-kdI" kind="relationship" relationship="rootViewController" id="QzP-Ad-6I3"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b3w-Fb-0ar" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="bVL-x6-uOs" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
+                    <connections>
+                        <outlet property="navigationController" destination="9nm-Rw-hx3" id="9gn-PO-1aQ"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="1686"/>
         </scene>
@@ -559,10 +583,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="bqN-lw-2E7" id="92J-2H-VG7"/>
                         <segue destination="Bce-OQ-1jH" kind="relationship" relationship="rootViewController" id="iMU-kq-8XQ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wGG-9H-T5t" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="bqN-lw-2E7" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
+                    <connections>
+                        <outlet property="navigationController" destination="so5-Zn-37y" id="Vqq-d3-9Yd"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="226"/>
         </scene>

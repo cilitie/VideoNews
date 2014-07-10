@@ -71,7 +71,7 @@
         [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToSina completion:^(UMSocialResponseEntity *respose){
             NSLog(@"response is %@",respose);
             VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-            authUser.openid = [[respose.data objectForKey:@"uid"] stringValue];
+            authUser.openid = [@"12" stringByAppendingString:[[respose.data objectForKey:@"uid"] stringValue]];
             authUser.nickname = [respose.data objectForKey:@"screen_name"];
             authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
 //            if ([[respose.data objectForKey:@"gender"] intValue] == 1) {
@@ -106,7 +106,7 @@
         [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToQQ completion:^(UMSocialResponseEntity *respose){
             NSLog(@"response is %@",respose);
             VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-            authUser.openid = [respose.data objectForKey:@"openid"];
+            authUser.openid = [@"13" stringByAppendingString:[respose.data objectForKey:@"openid"]];
             authUser.nickname = [respose.data objectForKey:@"screen_name"];
             authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
             authUser.gender = [respose.data objectForKey:@"gender"];
@@ -165,7 +165,7 @@
                 responseObject = [NSJSONSerialization JSONObjectWithData:returnData options:kNilOptions error:&error];
                 NSLog(@"%@", responseObject);
                 VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-                authUser.openid = [responseObject objectForKey:@"openid"];
+                authUser.openid = [@"14" stringByAppendingString:[responseObject objectForKey:@"openid"]];
                 authUser.nickname = [responseObject objectForKey:@"nickname"];
                 [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
                     if (error) {

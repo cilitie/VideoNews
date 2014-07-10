@@ -41,7 +41,8 @@
 #define kTagShare 101
 #define kTagCommentMine 102
 #define kTagCommentAnybody 103
-#define kTagCommentOtherUser 103
+#define kTagCommentOtherUser 104
+#define kTagNews 105
 
 
 @implementation VNNewsDetailViewController
@@ -66,6 +67,19 @@
     [headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([headerView.thumbnailImageView bounds]) / 2];
     headerView.thumbnailImageView.layer.masksToBounds = YES;
     headerView.nameLabel.text = self.news.author.name;
+    
+    
+    headerView.moreHandler = ^{
+        UIActionSheet *actionSheet = nil;
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        NSString *mineID = [userInfo objectForKey:@"openid"];
+        NSLog(@"author:%@,length:%d", self.news.author.uid, self.news.author.uid.length);
+        NSLog(@"openid:%@,length:%d",mineID, mineID.length);
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [self.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
+        actionSheet.tag = kTagNews;
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        actionSheet.delegate = self;
+    };
     
     [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
         if ([obj.type rangeOfString:@"image"].location != NSNotFound) {
@@ -245,8 +259,8 @@
     UIActionSheet *actionSheet = nil;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     NSString *mineID = [userInfo objectForKey:@"openid"];
-//    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
-//    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
+    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
+    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
     if ([comment.author.uid isEqualToString:mineID]) {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
         actionSheet.tag = kTagCommentMine;
@@ -402,7 +416,7 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (actionSheet.tag == kTagShare) {
+    if (actionSheet.tag == kTagShare || actionSheet.tag == kTagNews) {
         NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
         //NSLog(@"%@", self.news.url);
         NSString *shareURL = self.news.url;
@@ -448,20 +462,67 @@
                 snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
             }
                 break;
-                //取消
+                //取消或复制
             case 7: {
+                if (actionSheet.tag == kTagShare) {
+                    return ;
+                }
+                else {
+                    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                    pasteboard.string = self.news.url;
+                    [VNUtility showHUDText:@"已复制该文章链接" forView:self.view];
+                }
+            }
+                break;
+                //删除或举报
+            case 8: {
+                NSString *buttonTitle = [actionSheet buttonTitleAtIndex:8];
+                if ([buttonTitle isEqualToString:@"删除"]) {
+                    //TODO: 删除帖子
+                }
+                else if ([buttonTitle isEqualToString:@"举报"]) {
+                    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                    if (userInfo && userInfo.count) {
+                        NSString *uid = [userInfo objectForKey:@"openid"];
+                        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                        if (uid && user_token) {
+                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.news.nid] type:@"reportNews" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                                if (error) {
+                                    NSLog(@"%@", error.localizedDescription);
+                                }
+                                else if (succeed) {
+                                    [VNUtility showHUDText:@"举报成功!" forView:self.view];
+                                    self.inputTextField.text = @"";
+                                }
+                                else {
+                                    [VNUtility showHUDText:@"您已举报该文章" forView:self.view];
+                                }
+                            }];
+                        }
+                    }
+                    else {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                        [alert show];
+                        return;
+                    }
+                }
+            }
+                break;
+                //取消
+            case 9: {
                 return ;
             }
                 break;
         }
         //设置分享内容，和回调对象
-        
-        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.news.title,_news.author.name,_news.url];
-        UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
-        
-        [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
-        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+        if (buttonIndex < 7) {
+            NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.news.title,_news.author.name,_news.url];
+            UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
+            
+            [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
+            UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
+            snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+        }
     }
     else if (actionSheet.tag == kTagCommentMine) {
         NSLog(@"%d", buttonIndex);
@@ -469,6 +530,7 @@
                 //回复
             case 0: {
                 [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
+                [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
                 [self.inputTextField becomeFirstResponder];
             }
                 break;
@@ -554,7 +616,56 @@
         }
     }
     else if (actionSheet.tag == kTagCommentOtherUser) {
-        
+        NSLog(@"%d", buttonIndex);
+        switch (buttonIndex) {
+                //回复
+            case 0: {
+                NSLog(@"%@", self.curComment.author.name);
+                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
+                [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+                [self.inputTextField becomeFirstResponder];
+            }
+                break;
+                //查看个人主页
+            case 1: {
+                //TODO:查看个人主页
+            }
+                break;
+                //举报评论
+            case 2: {
+                NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                if (userInfo && userInfo.count) {
+                    NSString *uid = [userInfo objectForKey:@"openid"];
+                    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                    if (uid && user_token) {
+                        [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.curComment.cid] type:@"reportComment" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                            if (error) {
+                                NSLog(@"%@", error.localizedDescription);
+                            }
+                            else if (succeed) {
+                                [VNUtility showHUDText:@"举报成功!" forView:self.view];
+                                self.inputTextField.text = @"";
+                                [self.commentTableView triggerPullToRefresh];
+                            }
+                            else {
+                                [VNUtility showHUDText:@"您已举报该评论" forView:self.view];
+                            }
+                        }];
+                    }
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                    [alert show];
+                    return;
+                }
+            }
+                break;
+                ///取消
+            case 3: {
+                return ;
+            }
+                break;
+        }
     }
 }
 
