@@ -14,6 +14,7 @@
 #import "VNCategory.h"
 #import "VNComment.h"
 #import "VNAuthUser.h"
+#import "VNMessage.h"
 
 @interface VNHTTPRequestManager : NSObject
 
@@ -32,6 +33,10 @@
 #pragma mark - Login
 
 + (void)loginWithUser:(VNAuthUser *)user completion:(void(^)(BOOL succeed, NSError *error))completion;
+
+#pragma mark - Notification
+
++ (void)messageListForUser:(NSString *)uid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *messageArr, NSError *error))completion;
 
 #pragma mark - Utility
 

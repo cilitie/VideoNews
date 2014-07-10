@@ -408,6 +408,7 @@
         }
         else if([cmdName isEqualToString:@"删除评论"])
         {
+            
         }
         else if([cmdName isEqualToString:@"举报评论"])
         {

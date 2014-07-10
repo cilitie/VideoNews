@@ -478,10 +478,10 @@
             </objects>
             <point key="canvasLocation" x="709" y="942"/>
         </scene>
-        <!--View Controller-->
+        <!--Notification View Controller-->
         <scene sceneID="mVz-QV-iFT">
             <objects>
-                <viewController id="qr6-I5-Aba" sceneMemberID="viewController">
+                <viewController id="qr6-I5-Aba" customClass="VNNotificationViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5fA-1M-iOt"/>
                         <viewControllerLayoutGuide type="bottom" id="y0Z-zM-5dM"/>
@@ -489,9 +489,23 @@
                     <view key="view" contentMode="scaleToFill" id="VnW-Eg-109">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="hkD-uC-9OA">
+                                <rect key="frame" x="0.0" y="67" width="320" height="452"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="qr6-I5-Aba" id="Ne4-7B-tHZ"/>
+                                    <outlet property="delegate" destination="qr6-I5-Aba" id="CQ5-Hc-SVh"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="xgN-j0-nEH"/>
+                    <connections>
+                        <outlet property="messageTableView" destination="hkD-uC-9OA" id="f5N-sW-bIb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="htX-0J-J52" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
