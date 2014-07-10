@@ -17,6 +17,7 @@ typedef NS_ENUM(NSUInteger, SourceViewControllerType) {
 
 @property (strong, nonatomic) VNNews *news;
 @property (strong, nonatomic) VNMedia *media;
+@property (strong, nonatomic) VNMedia *vedioMedia;
 @property (assign, nonatomic) SourceViewControllerType controllerType;
 
 @end

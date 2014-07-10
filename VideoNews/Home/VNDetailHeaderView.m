@@ -11,6 +11,8 @@
 @interface VNDetailHeaderView ()
 
 - (IBAction)click:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *moreBtn;
+@property (weak, nonatomic) IBOutlet UIButton *playBtn;
 
 @end
 
@@ -26,8 +28,16 @@
 */
 
 - (IBAction)click:(id)sender {
-    if (self.moreHandler) {
-        self.moreHandler();
+    UIButton *button = sender;
+    if (button == self.moreBtn) {
+        if (self.moreHandler) {
+            self.moreHandler();
+        }
+    }
+    else if (button == self.playBtn) {
+        if (self.playHandler) {
+            self.playHandler();
+        }
     }
 }
 

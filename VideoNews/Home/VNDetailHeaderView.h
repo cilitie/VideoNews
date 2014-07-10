@@ -21,5 +21,6 @@ typedef void(^ClickEventHandler)();
 @property (weak, nonatomic) IBOutlet UILabel *likeNumLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentLabel;
 @property (copy, nonatomic) ClickEventHandler moreHandler;
+@property (copy, nonatomic) ClickEventHandler playHandler;
 
 @end

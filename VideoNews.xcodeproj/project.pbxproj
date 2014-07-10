@@ -50,6 +50,7 @@
 		D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F5B196BC84800F484FE /* ZXRemoteNotification.m */; };
 		D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */; };
 		D6676F69196E81BB00F484FE /* VNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F67196E81BB00F484FE /* VNUtility.m */; };
+		D6676F6B196E87A500F484FE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6676F6A196E87A500F484FE /* MediaPlayer.framework */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -171,6 +172,7 @@
 		D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationControllerDelegate.m; sourceTree = "<group>"; };
 		D6676F66196E81BB00F484FE /* VNUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUtility.h; sourceTree = "<group>"; };
 		D6676F67196E81BB00F484FE /* VNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUtility.m; sourceTree = "<group>"; };
+		D6676F6A196E87A500F484FE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6676F6B196E87A500F484FE /* MediaPlayer.framework in Frameworks */,
 				D6429728196695C6004E218C /* libz.dylib in Frameworks */,
 				D6429726196695BE004E218C /* libstdc++.dylib in Frameworks */,
 				D6429724196695B2004E218C /* CoreTelephony.framework in Frameworks */,
@@ -427,6 +430,7 @@
 		D6FED74C195AC1C100AD10E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D6676F6A196E87A500F484FE /* MediaPlayer.framework */,
 				D6429727196695C6004E218C /* libz.dylib */,
 				D6429725196695BE004E218C /* libstdc++.dylib */,
 				D6429723196695B2004E218C /* CoreTelephony.framework */,

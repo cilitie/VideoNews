@@ -18,6 +18,7 @@
 #import "UMSocialWechatHandler.h"
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
+#import "MediaPlayer/MPMoviePlayerController.h"
 
 @interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL isKeyboardShowing;
@@ -29,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *inputBar;
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong,nonatomic)VNComment *curComment;
+@property (strong, nonatomic) VNDetailHeaderView *headerView;
 
 - (IBAction)popBack:(id)sender;
 - (IBAction)like:(id)sender;
@@ -61,53 +63,59 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    VNDetailHeaderView *headerView = loadXib(@"VNDetailHeaderView");
+    self.headerView = loadXib(@"VNDetailHeaderView");
     
-    [headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-    [headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([headerView.thumbnailImageView bounds]) / 2];
-    headerView.thumbnailImageView.layer.masksToBounds = YES;
-    headerView.nameLabel.text = self.news.author.name;
+    [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [self.headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.headerView.thumbnailImageView bounds]) / 2];
+    self.headerView.thumbnailImageView.layer.masksToBounds = YES;
+    self.headerView.nameLabel.text = self.news.author.name;
     
+    __weak typeof(self) weakSelf = self;
     
-    headerView.moreHandler = ^{
+    self.headerView.moreHandler = ^{
         UIActionSheet *actionSheet = nil;
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         NSString *mineID = [userInfo objectForKey:@"openid"];
-        NSLog(@"author:%@,length:%d", self.news.author.uid, self.news.author.uid.length);
+        NSLog(@"author:%@,length:%d", weakSelf.news.author.uid, weakSelf.news.author.uid.length);
         NSLog(@"openid:%@,length:%d",mineID, mineID.length);
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [self.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [weakSelf.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
         actionSheet.tag = kTagNews;
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-        actionSheet.delegate = self;
+        [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+    };
+    
+    self.headerView.playHandler = ^{
+        [weakSelf playVideo];
     };
     
     [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
         if ([obj.type rangeOfString:@"image"].location != NSNotFound) {
             self.media = obj;
-            *stop = YES;
+        }
+        else {
+            self.vedioMedia = obj;
         }
     }];
-    [headerView.newsImageView setImageWithURL:[NSURL URLWithString:self.media.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [self.headerView.newsImageView setImageWithURL:[NSURL URLWithString:self.media.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     
     CGFloat diff = 0;
-    headerView.titleLabel.text = self.news.title;
-    NSDictionary *attribute = @{NSFontAttributeName:headerView.titleLabel.font};
-    CGRect rect = [headerView.titleLabel.text boundingRectWithSize:CGSizeMake(headerView.titleLabel.bounds.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-    CGRect titleLabelframe = headerView.titleLabel.frame;
+    self.headerView.titleLabel.text = self.news.title;
+    NSDictionary *attribute = @{NSFontAttributeName:self.headerView.titleLabel.font};
+    CGRect rect = [self.headerView.titleLabel.text boundingRectWithSize:CGSizeMake(self.headerView.titleLabel.bounds.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+    CGRect titleLabelframe = self.headerView.titleLabel.frame;
     titleLabelframe.size.height += CGRectGetHeight(rect);
     diff = CGRectGetHeight(rect);
-    headerView.titleLabel.frame = titleLabelframe;
+    self.headerView.titleLabel.frame = titleLabelframe;
     
-    CGRect headerFrame = headerView.bounds;
+    CGRect headerFrame = self.headerView.bounds;
     headerFrame.size.height += diff;
-    headerView.bounds = headerFrame;
+    self.headerView.bounds = headerFrame;
     
-    headerView.timeLabel.text = self.news.date;
-    headerView.tagLabel.text = self.news.tags;
-    headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
-    headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+    self.headerView.timeLabel.text = self.news.date;
+    self.headerView.tagLabel.text = self.news.tags;
+    self.headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
+    self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
     
-    self.commentTableView.tableHeaderView = headerView;
+    self.commentTableView.tableHeaderView = self.headerView;
     [self.commentTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
     self.commentTableView.layer.cornerRadius = 5.0;
     self.commentTableView.layer.masksToBounds = YES;
@@ -131,8 +139,6 @@
             [self.commentTableView reloadData];
         }
     }];
-    
-    __weak typeof(self) weakSelf = self;
     
     [self.commentTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
@@ -407,6 +413,36 @@
             }];
         }
     }
+}
+
+-(void)playVideo {
+    NSLog(@"PlayMovieAction====");
+    //视频URL
+    NSLog(@"%@", self.vedioMedia.url);
+    NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
+    
+    MPMoviePlayerController *movie = [[MPMoviePlayerController alloc] initWithContentURL:url];
+    movie.controlStyle = MPMovieControlStyleDefault;
+    [movie.view setFrame:self.headerView.newsImageView.frame];
+    movie.initialPlaybackTime = -1;
+    [self.headerView addSubview:movie.view];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(videoFinishedPlayCallback:)
+                                                 name:MPMoviePlayerPlaybackDidFinishNotification
+                                               object:movie];
+    [movie play];
+}
+
+-(void)videoFinishedPlayCallback:(NSNotification*)notify
+{
+    //视频播放对象
+    MPMoviePlayerController* theMovie = [notify object];
+    //销毁播放通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:MPMoviePlayerPlaybackDidFinishNotification
+                                                  object:theMovie];
+    [theMovie.view removeFromSuperview];
+    NSLog(@"视频播放完成");
 }
 
 - (IBAction)switchEmoji:(id)sender {
