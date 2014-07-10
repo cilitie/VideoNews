@@ -245,8 +245,8 @@
     UIActionSheet *actionSheet = nil;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     NSString *mineID = [userInfo objectForKey:@"openid"];
-    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
-    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
+//    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
+//    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
     if ([comment.author.uid isEqualToString:mineID]) {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
         actionSheet.tag = kTagCommentMine;
@@ -283,6 +283,8 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     if ([self.inputTextField isFirstResponder]) {
         [self.inputTextField resignFirstResponder];
+        [self.inputTextField setPlaceholder:@""];
+        [self.inputTextField setText:@""];
     }
 }
 
@@ -357,20 +359,39 @@
         return;
     }
     else {
-        [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
-            }
-            else if (succeed) {
-                [VNUtility showHUDText:@"评论成功!" forView:self.view];
-                self.inputTextField.text = @"";
-                [self.inputTextField resignFirstResponder];
-                [self.commentTableView triggerPullToRefresh];
-            }
-            else {
-                [VNUtility showHUDText:@"评论失败!" forView:self.view];
-            }
-        }];
+        if ([self.inputTextField.placeholder hasPrefix:@"回复"]) {
+            [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"回复成功!" forView:self.view];
+                    self.inputTextField.text = @"";
+                    [self.inputTextField resignFirstResponder];
+                    [self.inputTextField setPlaceholder:@""];
+                    [self.commentTableView triggerPullToRefresh];
+                }
+                else {
+                    [VNUtility showHUDText:@"回复失败!" forView:self.view];
+                }
+            }];
+        }
+        else {
+            [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"评论成功!" forView:self.view];
+                    self.inputTextField.text = @"";
+                    [self.inputTextField resignFirstResponder];
+                    [self.commentTableView triggerPullToRefresh];
+                }
+                else {
+                    [VNUtility showHUDText:@"评论失败!" forView:self.view];
+                }
+            }];
+        }
     }
 }
 
@@ -444,48 +465,48 @@
     }
     else if (actionSheet.tag == kTagCommentMine) {
         NSLog(@"%d", buttonIndex);
-//        switch (buttonIndex) {
-//                //微信朋友圈
-//            case 0: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
-//            }
-//                break;
-//                //微信好友
-//            case 1: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
-//            }
-//                break;
-//                //新浪微博
-//            case 2: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
-//            }
-//                break;
-//                //QQ空间
-//            case 3: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
-//            }
-//                break;
-//                //QQ好友
-//            case 4: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
-//            }
-//                break;
-//                //腾讯微博
-//            case 5: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
-//            }
-//                break;
-//                //人人网
-//            case 6: {
-//                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
-//            }
-//                break;
-//                //取消
-//            case 7: {
-//                return ;
-//            }
-//                break;
-//        }
+        switch (buttonIndex) {
+                //回复
+            case 0: {
+                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
+                [self.inputTextField becomeFirstResponder];
+            }
+                break;
+                //查看个人主页
+            case 1: {
+                //TODO:查看个人主页
+            }
+                break;
+                //删除评论
+            case 2: {
+                NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                if (userInfo && userInfo.count) {
+                    NSString *uid = [userInfo objectForKey:@"openid"];
+                    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                    if (uid && user_token) {
+                        [VNHTTPRequestManager deleteComment:self.curComment.cid news:self.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                            if (error) {
+                                NSLog(@"%@", error.localizedDescription);
+                            }
+                            else if (succeed) {
+                                [VNUtility showHUDText:@"删除评论成功!" forView:self.view];
+                                self.inputTextField.text = @"";
+                                [self.commentTableView triggerPullToRefresh];
+                            }
+                            else {
+                                [VNUtility showHUDText:@"删除评论失败!" forView:self.view];
+                            }
+                        }];
+                    }
+                }
+             }
+                break;
+                ///取消
+            case 3: {
+                return ;
+            }
+                break;
+        }
     }
 }
 

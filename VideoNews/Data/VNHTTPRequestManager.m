@@ -229,6 +229,16 @@ static int pagesize = 10;
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
+        BOOL replySuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                replySuccess = [[responseObject objectForKey:@"success"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(replySuccess, nil);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(NO, error);
@@ -236,16 +246,23 @@ static int pagesize = 10;
     }];
 }
 
-+ (void)deleteComment:(int)cid news:(int)nid completion:(void(^)(BOOL succeed, NSError *error))completion {
++ (void)deleteComment:(int)cid news:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed, NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
     NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
-    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
-    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-    
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"type": @"del", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
+        BOOL deleteSuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                deleteSuccess = [[responseObject objectForKey:@"success"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(deleteSuccess, nil);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(NO, error);
