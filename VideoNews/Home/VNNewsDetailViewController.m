@@ -33,6 +33,7 @@
 @property (strong,nonatomic)VNComment *curComment;
 @property (strong, nonatomic) VNDetailHeaderView *headerView;
 
+
 - (IBAction)popBack:(id)sender;
 - (IBAction)like:(id)sender;
 - (IBAction)share:(id)sender;
@@ -89,7 +90,6 @@ static NSString *shareStr;
     }
 
     self.headerView = loadXib(@"VNDetailHeaderView");
-    
     [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     [self.headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.headerView.thumbnailImageView bounds]) / 2];
     self.headerView.thumbnailImageView.layer.masksToBounds = YES;

@@ -498,6 +498,15 @@ static int pagesize = 10;
                     NSDictionary *newsDic = [dic objectForKey:@"news"];
                     if (![newsDic isEqual:@""]) {
                         message.news=[[VNNews alloc]initWithDict:newsDic];
+                        message.news.author=[[VNUser alloc]initWithDict:[newsDic objectForKey:@"author"]];
+                        NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                        NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                        for (NSDictionary *mediaDic in mediaArr) {
+                            VNMedia * media = [[VNMedia alloc] initWithDict:mediaDic];
+                            [mediaMutableArr addObject:media];
+                        }
+                        message.news.mediaArr = mediaMutableArr;
+
                     }
                     [messageArr addObject:message];
                 }

@@ -10,10 +10,15 @@
 
 #import "VNNotificationTableViewCell.h"
 
+#import "VNNewsDetailViewController.h"
+
 #import "UIImageView+AFNetworking.h"
 #import "UIButton+AFNetworking.h"
 
 #import "SVPullToRefresh.h"
+
+#import "VNUserViewController.h"
+
 
 //#import "VNNotificationTableViewController.h"
 
@@ -184,10 +189,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    self.curMessage = message;
-    UIActionSheet *actionSheet = nil;
-    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    NSString *mineID = [userInfo objectForKey:@"openid"];
+    _curMessage=message;
+    if ([message.type isEqualToString:@"user"]) {
+        NSLog(@"uid:%@",message.sender.uid);
+        [self performSegueWithIdentifier:@"pushVNUserViewControllerForNotification" sender:self];
+    }
+    else if([message.type isEqualToString:@"comment"])
+    {
+        
+        [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForNotification" sender:self];
+        
+    }
+    //UIActionSheet *actionSheet = nil;
+    //NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    //NSString *mineID = [userInfo objectForKey:@"openid"];
     
 }
 
@@ -208,7 +223,7 @@
 }
 
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -216,7 +231,20 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewControllerForNotification"]) {
+        VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
+        //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
+        newsDetailViewController.news=_curMessage.news;
+        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
+        newsDetailViewController.controllerType = SourceViewControllerTypeHome;
+        newsDetailViewController.hidesBottomBarWhenPushed = YES;
+    }
+    if ([segue.identifier isEqualToString:@"pushVNUserViewControllerForNotification"]) {
+        VNUserViewController *newsDetailViewController = [segue destinationViewController];
+        newsDetailViewController.uid=_curMessage.sender.uid;
+    }
+    
 }
-*/
+
 
 @end
