@@ -10,11 +10,11 @@
 #import "VNUserResultCollectionViewCell.h"
 #import "SVPullToRefresh.h"
 #import "VNSearchWordViewController.h"
-#import "UIImageView+AFNetworking.h"
 #import "VNSearchField.h"
+#import "VNLoginViewController.h"
 
 
-@interface VNUserResultViewController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate> {
+@interface VNUserResultViewController () <UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate> {
     BOOL userScrolling;
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UICollectionView *userResultCollectionView;
 @property (strong, nonatomic) NSMutableArray *userResultArr;
+@property (strong, nonatomic) NSMutableArray *idolListArr;
 @property (strong, nonatomic) VNSearchField *searchField;
 
 - (IBAction)popBack:(id)sender;
@@ -40,6 +41,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         _userResultArr = [NSMutableArray array];
+        _idolListArr = [NSMutableArray array];
     }
     return self;
 }
@@ -57,6 +59,24 @@
     self.searchField.text = self.searchKey;
     [self.navBar addSubview:self.searchField];
     
+    //获取关注列表
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    if (userInfo && userInfo.count) {
+        NSString *uid = [userInfo objectForKey:@"openid"];
+        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        if (uid && user_token) {
+            [VNHTTPRequestManager idolListForUser:uid userToken:user_token completion:^(NSArray *idolArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (idolArr.count) {
+                    [self.idolListArr addObjectsFromArray:idolArr];
+                }
+
+            }];
+        }
+    }
+    
     __weak typeof(self) weakSelf = self;
     
     [VNHTTPRequestManager searchResultForKey:self.searchKey timestamp:[VNHTTPRequestManager timestamp] searchType:@"user" completion:^(NSArray *resultNewsArr, NSError *error) {
@@ -65,6 +85,14 @@
         }
         else {
             [weakSelf.userResultArr addObjectsFromArray:resultNewsArr];
+            for (VNUser *user in weakSelf.userResultArr) {
+                if ([self.idolListArr containsObject:user.uid]) {
+                    user.isMineIdol = YES;
+                }
+                else {
+                    user.isMineIdol = NO;
+                }
+            }
             [weakSelf.userResultCollectionView reloadData];
         }
     }];
@@ -85,6 +113,14 @@
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
+                for (VNUser *user in resultNewsArr) {
+                    if ([self.idolListArr containsObject:user.uid]) {
+                        user.isMineIdol = YES;
+                    }
+                    else {
+                        user.isMineIdol = NO;
+                    }
+                }
                 [weakSelf.userResultArr addObjectsFromArray:resultNewsArr];
                 [weakSelf.userResultCollectionView reloadData];
             }
@@ -119,23 +155,65 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     VNUserResultCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VNUserResultCollectionViewCellIdentifier" forIndexPath:indexPath];
     VNUser *user = [self.userResultArr objectAtIndex:indexPath.item];
-    cell.nameLabel.text = user.name;
-    if (user.location && user.location.length) {
-        cell.locationLabel.text = user.location;
-    }
-    else {
-        cell.locationLabel.text = @"位置未知";
-    }
+    cell.user = user;
+    [cell reloadCell];
     
-    [cell.thumbnailImgView setImageWithURL:[NSURL URLWithString:user.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    __weak typeof(cell) weakCell = cell;
+    cell.followHandler = ^(VNUser *user){
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        if (userInfo && userInfo.count) {
+            NSString *uid = [userInfo objectForKey:@"openid"];
+            NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            if (uid && user_token) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                        [weakCell.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                        [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                    }
+                }];
+            }
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+            return;
+        }
+    };
     
-    CGFloat fansCountLabelWidth = 0;
-    cell.fansCountLabel.text = user.fans_count;
-    NSDictionary *attribute = @{NSFontAttributeName:cell.fansCountLabel.font};
-    CGRect rect = [cell.fansCountLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(cell.fansCountLabel.bounds)) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-    fansCountLabelWidth = CGRectGetWidth(rect);
-    cell.fansBgViewWidthLC.constant = 36.0+fansCountLabelWidth;
-    cell.fansCountLabelWidthLC.constant = fansCountLabelWidth;
+    cell.unfollowHandler = ^(VNUser *user){
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        if (userInfo && userInfo.count) {
+            NSString *uid = [userInfo objectForKey:@"openid"];
+            NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            if (uid && user_token) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"取消关注成功!" forView:self.view];
+                        [weakCell.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
+                        [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"取消关注失败!" forView:self.view];
+                    }
+                }];
+            }
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+            return;
+        }
+    };
     
     return cell;
 }
@@ -254,5 +332,18 @@
     userScrolling = NO;
     initialScrollOffset = CGPointMake(0, 0);
 }
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
+        VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
+}
+
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "VNUserResultCollectionViewCell.h"
+#import "UIImageView+AFNetworking.h"
 
 @implementation VNUserResultCollectionViewCell
 
@@ -18,6 +19,7 @@
         self.layer.masksToBounds = YES;
         self.layer.borderWidth = 1.0;
         self.layer.borderColor = [[UIColor colorWithRGBValue:0xcacaca] CGColor];
+        _isMineIdol = NO;
     }
     return self;
 }
@@ -44,4 +46,43 @@
 }
 */
 
+- (void)reloadCell {
+    if (self.user) {
+        self.nameLabel.text = self.user.name;
+        if (self.user.location && self.user.location.length) {
+            self.locationLabel.text = self.user.location;
+        }
+        else {
+            self.locationLabel.text = @"位置未知";
+        }
+        
+        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.user.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        
+        CGFloat fansCountLabelWidth = 0;
+        self.fansCountLabel.text = self.user.fans_count;
+        NSDictionary *attribute = @{NSFontAttributeName:self.fansCountLabel.font};
+        CGRect rect = [self.fansCountLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.fansCountLabel.bounds)) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        fansCountLabelWidth = CGRectGetWidth(rect);
+        self.fansBgViewWidthLC.constant = 36.0+fansCountLabelWidth;
+        self.fansCountLabelWidthLC.constant = fansCountLabelWidth;
+    }
+}
+
+- (IBAction)click:(id)sender {
+    if (self.isMineIdol) {
+        [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+        [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+        if (self.unfollowHandler) {
+            self.unfollowHandler(self.user);
+        }
+    }
+    else {
+        [self.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
+        [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+        if (self.followHandler) {
+            self.followHandler(self.user);
+        }
+    }
+    self.isMineIdol = !self.isMineIdol;
+}
 @end

@@ -46,6 +46,11 @@
 
 + (void)messageListForUser:(NSString *)uid userToken:(NSString *)user_token timestamp:(NSString *)timestamp completion:(void(^)(NSArray *messageArr, NSError *error))completion;
 
+#pragma mark - User
+//关注相关
++ (void)idolListForUser:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *idolArr, NSError *error))completion;
++ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed, NSError *error))completion;
+
 #pragma mark - Utility
 
 + (NSString *)timestamp;

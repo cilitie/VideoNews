@@ -18,6 +18,8 @@ static NSString *kLocation = @"location";
 static NSString *kSex = @"sex";
 static NSString *kMain_uid = @"main_uid";
 
+static NSString *kIsMineIdol = @"isMineIdol";
+
 @implementation VNUser
 
 - (NSString *)uid {
@@ -51,6 +53,14 @@ static NSString *kMain_uid = @"main_uid";
 
 - (NSString *)main_uid {
     return makeSureNotNull([self.basicDict objectForKey:kMain_uid]);
+}
+
+- (BOOL)isMineIdol {
+    return [makeSureNotNull([self.basicDict objectForKey:kIsMineIdol]) boolValue];
+}
+
+- (void)setIsMineIdol:(BOOL)isMineIdol {
+    [self.basicDict setObject:[NSNumber numberWithBool:isMineIdol] forKey:kIsMineIdol];
 }
 
 @end

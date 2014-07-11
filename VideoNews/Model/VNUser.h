@@ -25,5 +25,7 @@
 @property (strong, nonatomic, readonly) NSString *location;
 @property (strong, nonatomic, readonly) NSString *sex;
 @property (strong, nonatomic, readonly) NSString *main_uid;
+//for idol
+@property (assign, nonatomic) BOOL isMineIdol;
 
 @end

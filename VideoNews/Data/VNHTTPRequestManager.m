@@ -471,6 +471,7 @@ static int pagesize = 10;
         }
     }];
 }
+
 #pragma mark - Notification
 + (void)messageListForUser:(NSString *)uid userToken:(NSString *)user_token timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/message.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c&pagesize=10&pagetime=1404232200
@@ -506,6 +507,58 @@ static int pagesize = 10;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(nil, error);
+        }
+    }];
+}
+
+#pragma mark - User
+
+#pragma mark - 关注相关
++ (void)idolListForUser:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *idolArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/idolList.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"idolList.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        NSMutableArray *idolArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                if ([[responseObject objectForKey:@"list"] count]) {
+                    [idolArr addObjectsFromArray:[responseObject objectForKey:@"list"]];
+                }
+            }
+        }
+        
+        if (completion) {
+            completion(idolArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
++ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //h ttp://zmysp.sinaapp.com/op_following.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&fan_uid=1300000001&cmd=add&idol_uid=201365768878787&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"op_following.php"];
+    NSDictionary *param = @{@"idol_uid": idol_uid, @"fan_uid": fan_uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token, @"cmd": type};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        BOOL followSuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                followSuccess = [[responseObject objectForKey:@"success"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(followSuccess, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
         }
     }];
 }
