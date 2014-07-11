@@ -67,8 +67,8 @@
             NSLog(@"%@", error.localizedDescription);
         }
         else {
-            [self.messageArr addObjectsFromArray:messageArr];
-            [self.messageTableView reloadData];
+            [weakSelf.messageArr addObjectsFromArray:messageArr];
+            [weakSelf.messageTableView reloadData];
         }
     }];
     

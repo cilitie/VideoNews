@@ -496,7 +496,9 @@ static int pagesize = 10;
                     NSDictionary *userDic = [dic objectForKey:@"sender"];
                     message.sender = [[VNUser alloc] initWithDict:userDic];
                     NSDictionary *newsDic = [dic objectForKey:@"news"];
-                    message.news=[[VNNews alloc]initWithDict:newsDic];
+                    if (![newsDic isEqual:@""]) {
+                        message.news=[[VNNews alloc]initWithDict:newsDic];
+                    }
                     [messageArr addObject:message];
                 }
             }
