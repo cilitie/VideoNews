@@ -38,11 +38,20 @@
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        _messageArr = [NSMutableArray arrayWithCapacity:0];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
+    // Do any additional setup after loading the VNNotificationTableViewCell.xib
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
     
     VNAuthUser *authUser = nil;
     NSString *user_token = @"";
@@ -93,9 +102,9 @@
     [self.messageTableView addInfiniteScrollingWithActionHandler:^{
         NSString *moreTimeStamp = nil;
         if (weakSelf.messageArr.count) {
-            VNComment *lastComent = [weakSelf.messageArr lastObject];
+            VNMessage *lastMessage = [weakSelf.messageArr lastObject];
             //            NSLog(@"%@", lastComent.insert_time);
-            moreTimeStamp = lastComent.insert_time;
+            moreTimeStamp = lastMessage.time;
         }
         else {
             moreTimeStamp = [VNHTTPRequestManager timestamp];
@@ -128,13 +137,18 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"%d",self.messageArr.count);
+    //NSLog(@"%d",self.messageArr.count);
     return self.messageArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"VNNotificationTableViewCellIdentifier";
-    VNNotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    //VNNotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    //VNNotificationTableViewCell *cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
+    VNNotificationTableViewCell *cell = loadXib(@"VNNotificationTableViewCell");
+    /*if (cell==nil) {
+        cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
+    }*/
     
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
     [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
@@ -183,12 +197,14 @@
     //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
     VNNotificationTableViewCell *cell = loadXib(@"VNNotificationTableViewCell");
     NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
-    CGRect rect = [message.news.title boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-    //    NSLog(@"%@", NSStringFromCGRect(rect));
-    if (CGRectGetHeight(rect) > 20) {
-        diff = CGRectGetHeight(rect)-20;
+    if ([message.type isEqualToString:@"comment"]) {
+        CGRect rect = [message.news.title boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        if (CGRectGetHeight(rect) > 15) {
+            diff = CGRectGetHeight(rect)-15;
+        }
     }
-    return 90.0+diff;
+        return 60.0+diff;
 }
 
 

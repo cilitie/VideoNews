@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface VNNotificationTableViewCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UIButton *thumbnail;
 @property (weak, nonatomic) IBOutlet UILabel *contentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
