@@ -11,6 +11,7 @@
 
 @interface VNUserResultViewController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
+@property (weak, nonatomic) IBOutlet UICollectionView *userResultCollectionView;
 @property (strong, nonatomic) NSMutableArray *userResultArr;
 
 @end
@@ -30,6 +31,39 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    [VNHTTPRequestManager searchResultForKey:self.searchKey timestamp:[VNHTTPRequestManager timestamp] searchType:@"user" completion:^(NSArray *resultNewsArr, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        else {
+            [weakSelf.categoryNewsArr addObjectsFromArray:resultNewsArr];
+            [weakQuiltView reloadData];
+        }
+    }];
+    
+    [newsQuiltView addInfiniteScrollingWithActionHandler:^{
+        NSString *moreTimeStamp = nil;
+        if (weakSelf.categoryNewsArr.count) {
+            VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
+            NSLog(@"%@", lastNews.timestamp);
+            moreTimeStamp = lastNews.timestamp;
+        }
+        else {
+            moreTimeStamp = [VNHTTPRequestManager timestamp];
+        }
+        
+        [VNHTTPRequestManager searchResultForKey:weakSelf.searchKey timestamp:moreTimeStamp searchType:weakSelf.searchType completion:^(NSArray *resultNewsArr, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                [weakSelf.categoryNewsArr addObjectsFromArray:resultNewsArr];
+                [weakQuiltView reloadData];
+            }
+            [weakQuiltView.infiniteScrollingView stopAnimating];
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning

@@ -10,4 +10,6 @@
 
 @interface VNUserResultViewController : UIViewController
 
+@property (strong, nonatomic) NSString *searchKey;
+
 @end

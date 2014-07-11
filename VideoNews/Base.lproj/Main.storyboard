@@ -517,6 +517,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="Hew-Ub-vDU"/>
+                    <connections>
+                        <outlet property="userResultCollectionView" destination="pCh-uf-Lg8" id="zdS-Nh-57d"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UIz-ZY-fAq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
