@@ -308,22 +308,9 @@ static int pagesize = 10;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-//                for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
-//                    news = [[VNNews alloc] initWithDict:newsDic];
-//                    
-//                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
-//                    news.author = [[VNUser alloc] initWithDict:userDic];
-//                    
-//                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
-//                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
-//                    for (NSDictionary *mediaDic in mediaArr) {
-//                        media = [[VNMedia alloc] initWithDict:mediaDic];
-//                        [mediaMutableArr addObject:media];
-//                    }
-//                    news.mediaArr = mediaMutableArr;
-//                    
-//                    [newsArr addObject:news];
-//                }
+                if ([[responseObject objectForKey:@"list"] count]) {
+                    [favouriteNewsArr addObjectsFromArray:[responseObject objectForKey:@"list"]];
+                }
             }
         }
         

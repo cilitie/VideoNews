@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
 @property (weak, nonatomic) IBOutlet UITextField *inputTextField;
 @property (weak, nonatomic) IBOutlet UIToolbar *inputBar;
+@property (weak, nonatomic) IBOutlet UIButton *favouriteBtn;
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong,nonatomic)VNComment *curComment;
 @property (strong, nonatomic) VNDetailHeaderView *headerView;
@@ -64,7 +65,7 @@ static NSString *shareStr;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //TODO: 已收藏判断
+    //已收藏判断
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
         NSString *uid = [userInfo objectForKey:@"openid"];
@@ -75,6 +76,13 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 if (favouriteNewsArr.count) {
+                    NSLog(@"%@", favouriteNewsArr);
+                    for (NSDictionary *dic in favouriteNewsArr) {
+                        if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
+                            [self.favouriteBtn setSelected:YES];
+                            break;
+                        }
+                    }
                 }
             }];
         }

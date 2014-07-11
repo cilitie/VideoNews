@@ -165,6 +165,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="commentTableView" destination="8hh-Te-9He" id="Wtv-AP-tvD"/>
+                        <outlet property="favouriteBtn" destination="Itx-qo-MvC" id="aiF-Zo-E0j"/>
                         <outlet property="inputBar" destination="mfq-7G-kSC" id="HK1-zM-RfE"/>
                         <outlet property="inputTextField" destination="JSR-Pm-qD1" id="soj-C7-g4b"/>
                     </connections>
