@@ -17,14 +17,12 @@
 
 @implementation NavigationControllerDelegate
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
     UIPanGestureRecognizer* panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
     [self.navigationController.view addGestureRecognizer:panRecognizer];
 }
 
-- (void)pan:(UIPanGestureRecognizer*)recognizer
-{
+- (void)pan:(UIPanGestureRecognizer*)recognizer {
     UIView* view = self.navigationController.view;
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint location = [recognizer locationInView:view];
@@ -46,12 +44,8 @@
     }
 }
 
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
-{
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
     return self.interactionController;
 }
-
-
-
 
 @end

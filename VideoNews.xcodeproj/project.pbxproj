@@ -53,6 +53,8 @@
 		D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */; };
 		D6676F69196E81BB00F484FE /* VNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F67196E81BB00F484FE /* VNUtility.m */; };
 		D6676F6B196E87A500F484FE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6676F6A196E87A500F484FE /* MediaPlayer.framework */; };
+		D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F70196F885100F484FE /* VNUserResultViewController.m */; };
+		D6676F74196F940C00F484FE /* VNUserResultCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F73196F940C00F484FE /* VNUserResultCollectionViewCell.m */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -178,6 +180,10 @@
 		D6676F66196E81BB00F484FE /* VNUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUtility.h; sourceTree = "<group>"; };
 		D6676F67196E81BB00F484FE /* VNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUtility.m; sourceTree = "<group>"; };
 		D6676F6A196E87A500F484FE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		D6676F6F196F885100F484FE /* VNUserResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUserResultViewController.h; sourceTree = "<group>"; };
+		D6676F70196F885100F484FE /* VNUserResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUserResultViewController.m; sourceTree = "<group>"; };
+		D6676F72196F940C00F484FE /* VNUserResultCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUserResultCollectionViewCell.h; sourceTree = "<group>"; };
+		D6676F73196F940C00F484FE /* VNUserResultCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUserResultCollectionViewCell.m; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -544,6 +550,10 @@
 				D64296D419654C5B004E218C /* VNSearchResultTableViewCell.h */,
 				D64296D519654C5B004E218C /* VNSearchResultTableViewCell.m */,
 				D64296D619654C5B004E218C /* VNSearchResultTableViewCell.xib */,
+				D6676F6F196F885100F484FE /* VNUserResultViewController.h */,
+				D6676F70196F885100F484FE /* VNUserResultViewController.m */,
+				D6676F72196F940C00F484FE /* VNUserResultCollectionViewCell.h */,
+				D6676F73196F940C00F484FE /* VNUserResultCollectionViewCell.m */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -743,6 +753,7 @@
 			files = (
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
+				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
@@ -761,6 +772,7 @@
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
 				2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */,
+				D6676F74196F940C00F484FE /* VNUserResultCollectionViewCell.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				26962048196E4AF600EA06B3 /* VNMessage.m in Sources */,

@@ -612,7 +612,7 @@ static NSString *shareStr;
                 //回复
             case 0: {
                 [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
-                [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
                 [self.inputTextField becomeFirstResponder];
             }
                 break;
@@ -704,7 +704,7 @@ static NSString *shareStr;
             case 0: {
                 NSLog(@"%@", self.curComment.author.name);
                 [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
-                [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
                 [self.inputTextField becomeFirstResponder];
             }
                 break;
