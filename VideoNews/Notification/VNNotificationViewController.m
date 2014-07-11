@@ -236,7 +236,7 @@
         //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.news=_curMessage.news;
         newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
-        newsDetailViewController.controllerType = SourceViewControllerTypeHome;
+        newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
     }
     if ([segue.identifier isEqualToString:@"pushVNUserViewControllerForNotification"]) {

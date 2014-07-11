@@ -10,7 +10,8 @@
 
 typedef NS_ENUM(NSUInteger, SourceViewControllerType) {
     SourceViewControllerTypeHome = 0,
-    SourceViewControllerTypeCategory = 1
+    SourceViewControllerTypeCategory = 1,
+    SourceViewControllerTypeNotification=2
 };
 
 @interface VNNewsDetailViewController : UIViewController
