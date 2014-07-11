@@ -12,6 +12,7 @@ static NSString *kCid = @"pid";
 static NSString *kType = @"type";
 static NSString *kNews = @"news";
 static NSString *kSender = @"sender";
+static NSString *KTime=@"time";
 
 
 @implementation VNMessage
@@ -38,6 +39,10 @@ static NSString *kSender = @"sender";
 
 - (NSString *)type {
     return makeSureNotNull([self.basicDict objectForKey:kType]);
+}
+
+- (NSString *)time {
+    return makeSureNotNull([self.basicDict objectForKey:KTime]);
 }
 
 @end

@@ -52,14 +52,16 @@
             authUser = [[VNAuthUser alloc] initWithDict:userInfo];
         }
         user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        NSLog(@"uid:%@",authUser.openid);
     }
     else {
         //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
         //[alert show];
         return;
     }
+    //userToken:(NSString *)user_token
 
-    [VNHTTPRequestManager messageListForUser:authUser.openid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
+    [VNHTTPRequestManager messageListForUser:authUser.openid  timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
@@ -136,25 +138,30 @@
     
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
     [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-    /*[cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
     cell.thumbnail.layer.masksToBounds = YES;
-    cell.nameLabel.text = comment.author.name;
-    cell.delegate=self;
-    cell.replyBtn.tag=KReplyButton+indexPath.row;
-    cell.thumbnail.tag=KReplyButton+indexPath.row;
-    cell.commentLabel.text = comment.content;
-    //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-    //    cell.commentLabel.text = testString;
-    NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
-    CGRect rect = [cell.commentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-    //    NSLog(@"%@", NSStringFromCGRect(rect));
-    CGRect titleLabelframe = cell.commentLabel.frame;
-    titleLabelframe.size.height = CGRectGetHeight(rect);
-    //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
-    cell.commentLabel.frame = titleLabelframe;
-    
-    cell.timeLabel.text = [comment.date substringToIndex:10];*/
+    if ([message.type isEqualToString: @"user"]) {
+        cell.nameLabel.text=message.sender.name;
+        //NSString *text=[NSString stringWithFormat:@"@%@关注了你",message.sender.name];
+        cell.contentLabel.text=@"关注了你";
+        cell.timeLabel.text=message.time;
+    }
+    else if ([message.type isEqualToString:@"comment"])
+    {
+        cell.nameLabel.text=message.sender.name;
+        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你",message.news.title];
+        cell.contentLabel.text=text;
+        cell.timeLabel.text=message.time;
+        
+        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+        CGRect rect = [cell.contentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        CGRect titleLabelframe = cell.contentLabel.frame;
+        titleLabelframe.size.height = CGRectGetHeight(rect);
+        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
+        cell.contentLabel.frame = titleLabelframe;
+
+    }
     
     return cell;
 }
@@ -172,16 +179,16 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat diff = 0;
-    /*VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
     //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-    VNCommentTableViewCell *cell = loadXib(@"VNCommentTableViewCell");
-    NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
-    CGRect rect = [comment.content boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+    VNNotificationTableViewCell *cell = loadXib(@"VNNotificationTableViewCell");
+    NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+    CGRect rect = [message.news.title boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
     //    NSLog(@"%@", NSStringFromCGRect(rect));
-    if (CGRectGetHeight(rect) > 15) {
-        diff = CGRectGetHeight(rect)-15;
-    }*/
-    return 60.0+diff;
+    if (CGRectGetHeight(rect) > 20) {
+        diff = CGRectGetHeight(rect)-20;
+    }
+    return 90.0+diff;
 }
 
 

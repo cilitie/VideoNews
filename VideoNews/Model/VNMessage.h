@@ -18,4 +18,6 @@
 
 @property (strong,nonatomic,readonly) NSString *type;
 
+@property (strong,nonatomic,readonly) NSString *time;
+
 @end
