@@ -465,11 +465,11 @@ static int pagesize = 10;
     }];
 }
 #pragma mark - Notification
-+ (void)messageListForUser:(NSString *)uid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
++ (void)messageListForUser:(NSString *)uid userToken:(NSString *)user_token timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
     //http://zmysp.sinaapp.com/message.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c&pagesize=10&pagetime=1404232200
     NSString *URLStr = [VNHost stringByAppendingString:@"message.php"];
     //    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
-    NSDictionary *param = @{@"uid": uid, @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp};
+    NSDictionary *param = @{@"uid": uid, @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp,@"user_token":user_token};
     
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {

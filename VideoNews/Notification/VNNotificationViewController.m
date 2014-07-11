@@ -61,7 +61,7 @@
     }
     //userToken:(NSString *)user_token
 
-    [VNHTTPRequestManager messageListForUser:authUser.openid  timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
+    [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
@@ -77,7 +77,7 @@
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-            [VNHTTPRequestManager messageListForUser:authUser.openid timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
+            [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -102,7 +102,7 @@
             moreTimeStamp = [VNHTTPRequestManager timestamp];
         }
         
-        [VNHTTPRequestManager messageListForUser:authUser.openid timestamp:moreTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
+        [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:moreTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }

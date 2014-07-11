@@ -44,7 +44,7 @@
 
 #pragma mark - Notification
 
-+ (void)messageListForUser:(NSString *)uid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *messageArr, NSError *error))completion;
++ (void)messageListForUser:(NSString *)uid userToken:(NSString *)user_token timestamp:(NSString *)timestamp completion:(void(^)(NSArray *messageArr, NSError *error))completion;
 
 #pragma mark - Utility
 
