@@ -64,6 +64,22 @@ static NSString *shareStr;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    //TODO: 已收藏判断
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    if (userInfo && userInfo.count) {
+        NSString *uid = [userInfo objectForKey:@"openid"];
+        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        if (uid && user_token) {
+            [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (favouriteNewsArr.count) {
+                }
+            }];
+        }
+    }
+
     self.headerView = loadXib(@"VNDetailHeaderView");
     
     [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];

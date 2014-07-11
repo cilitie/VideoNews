@@ -132,7 +132,6 @@ static int pagesize = 10;
 //    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
     NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp};
     
-    //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //        NSLog(@"%@", responseObject);
         VNComment *comment = nil;
@@ -184,6 +183,8 @@ static int pagesize = 10;
         }
     }];
 }
+
+#pragma mark - 评论相关
 
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
@@ -270,7 +271,8 @@ static int pagesize = 10;
     }];
 }
 
-//举报相关
+#pragma mark - 举报相关
+
 + (void)report:(NSString *)objectID type:(NSString *)type userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed, NSError *error))completion {
     //http://zmysp.sinaapp.com/report.php?id=1&timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1287669920034&user_token=8d81463b854466d4d2e2ba9d4d54428c&type=reportNews
     NSString *URLStr = [VNHost stringByAppendingString:@"report.php"];
@@ -291,6 +293,46 @@ static int pagesize = 10;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(NO, error);
+        }
+    }];
+}
+
+#pragma mark - 收藏相关
++ (void)favouriteNewsListFor:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *favouriteNewsArr, NSError *error))completion {
+    //h ttp://zmysp.sinaapp.com/likesList.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"likesList.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        NSMutableArray *favouriteNewsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+//                for (NSDictionary *newsDic in [responseObject objectForKey:@"list"]) {
+//                    news = [[VNNews alloc] initWithDict:newsDic];
+//                    
+//                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+//                    news.author = [[VNUser alloc] initWithDict:userDic];
+//                    
+//                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+//                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+//                    for (NSDictionary *mediaDic in mediaArr) {
+//                        media = [[VNMedia alloc] initWithDict:mediaDic];
+//                        [mediaMutableArr addObject:media];
+//                    }
+//                    news.mediaArr = mediaMutableArr;
+//                    
+//                    [newsArr addObject:news];
+//                }
+            }
+        }
+        
+        if (completion) {
+            completion(favouriteNewsArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
         }
     }];
 }

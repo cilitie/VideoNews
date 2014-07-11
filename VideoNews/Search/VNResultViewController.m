@@ -12,6 +12,7 @@
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
 #import "VNSearchField.h"
+#import "VNSearchWordViewController.h"
 
 @interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
@@ -55,6 +56,7 @@
         self.searchField.delegate = self;
         self.searchField.frame = CGRectMake(CGRectGetMaxX(self.backBtn.frame)+10, 20+(CGRectGetHeight(self.navBar.bounds)-20-30)/2, CGRectGetWidth(self.navBar.bounds)-CGRectGetMaxX(self.backBtn.frame)-10*2, 30);
         NSLog(@"%@", NSStringFromCGRect(self.searchField.frame));
+        self.searchField.text = self.searchKey;
         [self.navBar addSubview:self.searchField];
     }
     
@@ -227,7 +229,8 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [self.navigationController popViewControllerAnimated:NO];
+    VNSearchWordViewController *searchWordViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNSearchWordViewController"];
+    [self.navigationController pushViewController:searchWordViewController animated:NO];
     return NO;
 }
 
