@@ -429,34 +429,41 @@ static int pagesize = 10;
     NSDictionary *param = @{@"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp":TimeStamp,@"pagetime": timestamp, @"key": keyWord, @"category": searchType};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+        NSLog(@"%@", responseObject);
         VNNews *news = nil;
         VNMedia *media = nil;
-        NSMutableArray *newsArr = [NSMutableArray array];
+        VNUser *user = nil;
+        NSMutableArray *resultArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-                for (NSDictionary *newsDic in responseObject[@"list"][@"search"]) {
-                    news = [[VNNews alloc] initWithDict:newsDic];
-                    
-                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
-                    news.author = [[VNUser alloc] initWithDict:userDic];
-                    
-                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
-                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
-                    for (NSDictionary *mediaDic in mediaArr) {
-                        media = [[VNMedia alloc] initWithDict:mediaDic];
-                        [mediaMutableArr addObject:media];
+                for (NSDictionary *dic in responseObject[@"list"][@"search"]) {
+                    if ([searchType isEqualToString:@"news"]) {
+                        news = [[VNNews alloc] initWithDict:dic];
+                        
+                        NSDictionary *userDic = [dic objectForKey:@"author"];
+                        news.author = [[VNUser alloc] initWithDict:userDic];
+                        
+                        NSArray *mediaArr = [dic objectForKey:@"media"];
+                        NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                        for (NSDictionary *mediaDic in mediaArr) {
+                            media = [[VNMedia alloc] initWithDict:mediaDic];
+                            [mediaMutableArr addObject:media];
+                        }
+                        news.mediaArr = mediaMutableArr;
+                        
+                        [resultArr addObject:news];
                     }
-                    news.mediaArr = mediaMutableArr;
-                    
-                    [newsArr addObject:news];
+                    else if ([searchType isEqualToString:@"user"]) {
+                        user = [[VNUser alloc] initWithDict:dic];
+                        [resultArr addObject:user];
+                    }
                 }
             }
         }
         
         if (completion) {
-            completion(newsArr, nil);
+            completion(resultArr, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {

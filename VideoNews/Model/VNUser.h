@@ -13,6 +13,8 @@
 @property (assign, nonatomic, readonly) NSString *uid;
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *avatar;
+@property (strong, nonatomic, readonly) NSString *fans_count;
+@property (strong, nonatomic, readonly) NSString *timestamp;
 //@property (assign, nonatomic, readonly) BOOL isMainUser;
 //@property (assign, nonatomic, readonly) BOOL isSearch;
 //@property (strong, nonatomic, readonly) NSArray *collectNewsArr;

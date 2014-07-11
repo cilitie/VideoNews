@@ -11,6 +11,7 @@
 #import "VNSearchTabHeaderView.h"
 #import "VNSearchResultTableViewCell.h"
 #import "VNResultViewController.h"
+#import "VNUserResultViewController.h"
 
 @interface VNSearchWordViewController () <UITextFieldDelegate>
 
@@ -153,16 +154,18 @@
             NSLog(@"save search history success!");
         }
     }];
-    VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
-    resultViewController.type = ResultTypeSerach;
-    resultViewController.searchKey = searchKey;
     if (self.searchType == SearchTypeVideo) {
+        VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
+        resultViewController.type = ResultTypeSerach;
+        resultViewController.searchKey = searchKey;
         resultViewController.searchType = @"news";
+        [self.navigationController pushViewController:resultViewController animated:YES];
     }
     else {
-        resultViewController.searchType = @"user";
+        VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
+        userResultViewController.searchKey = searchKey;
+        [self.navigationController pushViewController:userResultViewController animated:YES];
     }
-    [self.navigationController pushViewController:resultViewController animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -191,16 +194,18 @@
                 NSLog(@"save search history success!");
             }
         }];
-        VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
-        resultViewController.type = ResultTypeSerach;
-        resultViewController.searchKey = searchKey;
         if (self.searchType == SearchTypeVideo) {
+            VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
+            resultViewController.type = ResultTypeSerach;
+            resultViewController.searchKey = searchKey;
             resultViewController.searchType = @"news";
+            [self.navigationController pushViewController:resultViewController animated:YES];
         }
         else {
-            resultViewController.searchType = @"user";
+            VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
+            userResultViewController.searchKey = searchKey;
+            [self.navigationController pushViewController:userResultViewController animated:YES];
         }
-        [self.navigationController pushViewController:resultViewController animated:YES];
     }
     return YES;
 }

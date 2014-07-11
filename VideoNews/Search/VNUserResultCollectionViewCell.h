@@ -15,5 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *followBtn;
 @property (weak, nonatomic) IBOutlet UIView *fansBgView;
 @property (weak, nonatomic) IBOutlet UILabel *fansCountLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *fansBgViewWidthLC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *fansCountLabelWidthLC;
 
 @end

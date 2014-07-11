@@ -16,18 +16,20 @@
     if (self) {
         self.layer.cornerRadius = 10.0;
         self.layer.masksToBounds = YES;
+        self.layer.borderWidth = 1.0;
+        self.layer.borderColor = [[UIColor colorWithRGBValue:0xcacaca] CGColor];
     }
     return self;
 }
 
 - (void)awakeFromNib {
-    self.thumbnailImgView.layer.cornerRadius = 10.0;
+    self.thumbnailImgView.layer.cornerRadius = 5.0;
     self.thumbnailImgView.layer.masksToBounds = YES;
     
-    self.fansBgView.layer.cornerRadius = 10.0;
+    self.fansBgView.layer.cornerRadius = 5.0;
     self.fansBgView.layer.masksToBounds = YES;
     
-    self.followBtn.layer.cornerRadius = 10.0;
+    self.followBtn.layer.cornerRadius = 5.0;
     self.followBtn.layer.masksToBounds = YES;
     self.followBtn.layer.borderWidth = 1.0;
     self.followBtn.layer.borderColor = [[UIColor colorWithRGBValue:0xcacaca] CGColor];

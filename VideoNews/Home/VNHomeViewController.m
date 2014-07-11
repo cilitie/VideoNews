@@ -26,7 +26,7 @@
 
 @end
 
-static int selectedItemIndex;
+//static int selectedItemIndex;
 
 @implementation VNHomeViewController
 
