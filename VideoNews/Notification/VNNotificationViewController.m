@@ -60,6 +60,7 @@
         return;
     }
     //userToken:(NSString *)user_token
+    __weak typeof(self) weakSelf = self;
 
     [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
         if (error) {
@@ -71,15 +72,13 @@
         }
     }];
     
-    __weak typeof(self) weakSelf = self;
-    
     [self.messageTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
                 if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+                    NSLog(@"error:%@", error.localizedDescription);
                 }
                 else {
                     [weakSelf.messageArr removeAllObjects];
@@ -129,6 +128,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSLog(@"%d",self.messageArr.count);
     return self.messageArr.count;
 }
 
