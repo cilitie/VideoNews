@@ -20,6 +20,8 @@ typedef NS_ENUM(NSUInteger, SourceViewControllerType) {
 @property (strong, nonatomic) VNMedia *media;
 @property (strong, nonatomic) VNMedia *vedioMedia;
 @property (assign, nonatomic) SourceViewControllerType controllerType;
-@property (strong,nonatomic)NSNumber *pid;
+@property (strong, nonatomic)NSNumber *pid;
+@property (strong, nonatomic)NSString *sender_id;
+@property (strong, nonatomic)NSString *sender_name;
 
 @end

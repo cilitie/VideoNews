@@ -22,4 +22,6 @@
 
 @property (strong,nonatomic,readonly) NSString *time;
 
+@property (assign,nonatomic,readonly)int reply_pid;
+
 @end

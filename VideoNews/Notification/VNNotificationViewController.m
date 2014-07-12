@@ -256,7 +256,7 @@
     }
     else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"])
     {
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyCommentFromNotification" object:nil];
         [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForNotification" sender:self];
         
     }
@@ -320,6 +320,9 @@
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
         //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.news=_curMessage.news;
+        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
+        newsDetailViewController.sender_id=_curMessage.sender.uid;
+        newsDetailViewController.sender_name=_curMessage.sender.name;
         //newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
         newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;

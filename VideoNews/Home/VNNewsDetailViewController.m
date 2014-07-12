@@ -154,6 +154,11 @@ static NSString *shareStr;
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    //zmy modify
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(replyCommentFromNotification:)
+                                                 name:@"replyCommentFromNotification"
+                                               object:nil];
     
     [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *commemtArr, NSError *error) {
         if (error) {
@@ -251,6 +256,8 @@ static NSString *shareStr;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
+    
 }
 
 /*
@@ -777,7 +784,13 @@ static NSString *shareStr;
         }];
     }
 }
+#pragma mark - Notification
+-(void)replyCommentFromNotification:(NSNotification *)notification{
+    [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
+    [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
+    [self.inputTextField becomeFirstResponder];
 
+}
 
 #pragma mark - UIKeyboardNotification
 
