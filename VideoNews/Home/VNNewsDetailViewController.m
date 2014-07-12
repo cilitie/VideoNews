@@ -837,6 +837,9 @@ static NSString *shareStr;
 }
 #pragma mark - Notification
 -(void)replyCommentFromNotification:(NSNotification *)notification{
+    NSDictionary *comment=@{@"cid":_pid,@"content":@"",@"date":@"",@"ding":[NSNumber numberWithInt:0],@"insert_time":@"",@"author":@{@"uid":_sender_id,@"name":_sender_name,@"avatar":@"",@"fans_count":@"",@"timestamp":@"",@"location":@"",@"sex":@"",@"main_uid":@""}};
+    _curComment=[[VNComment alloc]initWithDict:comment];
+    NSLog(@"%@",_curComment);
     [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
     [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
     [self.inputTextField becomeFirstResponder];

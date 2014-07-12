@@ -236,6 +236,7 @@ static int pagesize = 10;
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //        NSLog(@"%@", responseObject);
+        //NSLog(@"%@",operation.request.URL.absoluteString);
         BOOL replySuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
