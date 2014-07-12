@@ -190,10 +190,14 @@ static int pagesize = 10;
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
     NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    //zmy add
+    NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+
     if (!uid) {
         uid = @"1";
     }
-    NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp]};
+    //zmy modify
+    NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
 //        NSLog(@"%@", responseObject);
