@@ -13,6 +13,8 @@ static NSString *kType = @"type";
 static NSString *kNews = @"news";
 static NSString *kSender = @"sender";
 static NSString *KTime=@"time";
+static NSString *KText=@"text";
+static NSString *KReplyText=@"reply_text";
 
 
 @implementation VNMessage
@@ -44,5 +46,14 @@ static NSString *KTime=@"time";
 - (NSString *)time {
     return makeSureNotNull([self.basicDict objectForKey:KTime]);
 }
+
+- (NSString *)text {
+    return makeSureNotNull([self.basicDict objectForKey:KText]);
+}
+
+- (NSString *)reply_text {
+    return makeSureNotNull([self.basicDict objectForKey:KReplyText]);
+}
+
 
 @end

@@ -14,7 +14,9 @@
 
 @property (strong, nonatomic) VNNews *news;
 
-@property (assign, nonatomic,readonly) int pid;
+@property (strong, nonatomic,readonly) NSString * text;
+
+@property (strong, nonatomic,readonly) NSString * reply_text;
 
 @property (strong,nonatomic,readonly) NSString *type;
 

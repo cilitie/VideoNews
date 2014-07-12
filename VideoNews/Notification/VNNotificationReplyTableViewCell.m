@@ -1,14 +1,14 @@
 //
-//  VNNotificationTableViewCell.m
+//  VNNotificationReplyTableViewCell.m
 //  VideoNews
 //
-//  Created by 曼瑜 朱 on 14-7-11.
+//  Created by 曼瑜 朱 on 14-7-12.
 //  Copyright (c) 2014年 Manyu Zhu. All rights reserved.
 //
 
-#import "VNNotificationTableViewCell.h"
+#import "VNNotificationReplyTableViewCell.h"
 
-@implementation VNNotificationTableViewCell
+@implementation VNNotificationReplyTableViewCell
 
 - (void)awakeFromNib
 {

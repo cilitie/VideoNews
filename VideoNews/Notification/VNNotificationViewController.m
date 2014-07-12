@@ -8,7 +8,9 @@
 
 #import "VNNotificationViewController.h"
 
-#import "VNNotificationTableViewCell.h"
+#import "VNNotificationReplyTableViewCell.h"
+
+#import "VNNotificationUserTableViewCell.h"
 
 #import "VNNewsDetailViewController.h"
 
@@ -56,8 +58,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
-    
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     VNAuthUser *authUser = nil;
     NSString *user_token = @"";
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:isLogin] boolValue]) {
@@ -66,7 +68,7 @@
             authUser = [[VNAuthUser alloc] initWithDict:userInfo];
         }
         user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-        NSLog(@"uid:%@",authUser.openid);
+        //NSLog(@"uid:%@",authUser.openid);
     }
     else {
         //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
@@ -147,31 +149,40 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"VNNotificationTableViewCellIdentifier";
+    
     //VNNotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     //VNNotificationTableViewCell *cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
-    VNNotificationTableViewCell *cell = loadXib(@"VNNotificationTableViewCell");
+    
     /*if (cell==nil) {
         cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
     }*/
     
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-    [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
-    cell.thumbnail.layer.masksToBounds = YES;
+    
     if ([message.type isEqualToString: @"user"]) {
+        static NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
+        VNNotificationUserTableViewCell *cell=loadXib(@"VNNotificationUserTableViewCell");
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
+        cell.thumbnail.layer.masksToBounds = YES;
         cell.nameLabel.text=message.sender.name;
         //NSString *text=[NSString stringWithFormat:@"@%@关注了你",message.sender.name];
         cell.contentLabel.text=@"关注了你";
         cell.timeLabel.text=message.time;
+        return cell;
     }
     else if ([message.type isEqualToString:@"comment"])
     {
+        static NSString *cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
+        VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
+        cell.thumbnail.layer.masksToBounds = YES;
         cell.nameLabel.text=message.sender.name;
-        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你",message.news.title];
+        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
         cell.contentLabel.text=text;
         cell.timeLabel.text=message.time;
-        
+        //cell.contentLabel.numberOfLines=0;
         NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
         CGRect rect = [cell.contentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
         //    NSLog(@"%@", NSStringFromCGRect(rect));
@@ -179,10 +190,59 @@
         titleLabelframe.size.height = CGRectGetHeight(rect);
         //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
         cell.contentLabel.frame = titleLabelframe;
-
+        
+        
+        //text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
+        cell.replyContentLabel.text=message.reply_text;
+        //cell.replyContentLabel.numberOfLines=0;
+        //cell.timeLabel.text=message.time;
+        
+        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
+        rect = [cell.replyContentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        titleLabelframe = cell.replyContentLabel.frame;
+        titleLabelframe.size.height = CGRectGetHeight(rect);
+        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
+        cell.replyContentLabel.frame = titleLabelframe;
+        return cell;
     }
-    
-    return cell;
+    //else if ([message.type isEqualToString:@"news"])
+    //{
+        static NSString *cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
+        VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
+        cell.thumbnail.layer.masksToBounds = YES;
+        
+        cell.nameLabel.text=message.sender.name;
+        NSString *text=[NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
+        
+        //cell.contentLabel.numberOfLines=0;
+        cell.timeLabel.text=message.time;
+        
+        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+          // NSLog(@"%@", NSStringFromCGRect(rect));
+        CGRect titleLabelframe = cell.contentLabel.frame;
+        titleLabelframe.size.height = CGRectGetHeight(rect);
+        //NSLog(@"%f", titleLabelframe.size.height);
+        //NSLog(@"%f",cell.contentLabel.frame.size.height);
+        cell.contentLabel.frame = titleLabelframe;
+        //NSLog(@"%f",cell.contentLabel.frame.size.height);
+        cell.contentLabel.text=text;
+        //cell.contentLabel.backgroundColor=[UIColor blackColor];
+        
+        cell.replyContentLabel.text=message.reply_text;
+        //cell.replyContentLabel.numberOfLines=0;
+        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
+        rect = [cell.replyContentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        titleLabelframe = cell.replyContentLabel.frame;
+        titleLabelframe.size.height = CGRectGetHeight(rect);
+        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
+        cell.replyContentLabel.frame = titleLabelframe;
+        return cell;
+    //}
 }
 
 #pragma mark - UITableView Delegate methods
@@ -194,7 +254,7 @@
         NSLog(@"uid:%@",message.sender.uid);
         [self performSegueWithIdentifier:@"pushVNUserViewControllerForNotification" sender:self];
     }
-    else if([message.type isEqualToString:@"comment"])
+    else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"])
     {
         
         [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForNotification" sender:self];
@@ -210,16 +270,41 @@
     CGFloat diff = 0;
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
     //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-    VNNotificationTableViewCell *cell = loadXib(@"VNNotificationTableViewCell");
-    NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+    VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
+    
     if ([message.type isEqualToString:@"comment"]) {
-        CGRect rect = [message.news.title boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
+        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
         //    NSLog(@"%@", NSStringFromCGRect(rect));
         if (CGRectGetHeight(rect) > 15) {
             diff = CGRectGetHeight(rect)-15;
         }
+        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
+        rect = [message.reply_text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        if (CGRectGetHeight(rect)>15) {
+            diff=diff+CGRectGetHeight(rect)-15;
+        }
+        return diff+80;
     }
-        return 60.0+diff;
+    else if ([message.type isEqualToString:@"news"])
+    {
+        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
+        NSString *text=[NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
+        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        if (CGRectGetHeight(rect) > 15) {
+            diff = CGRectGetHeight(rect)-15;
+        }
+        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
+        rect = [message.reply_text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        if (CGRectGetHeight(rect)>15) {
+            diff=diff+CGRectGetHeight(rect)-15;
+        }
+        return 80+diff;
+    }
+    //NSLog(@"%f",diff);
+        return 50;
 }
 
 
@@ -235,7 +320,7 @@
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
         //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.news=_curMessage.news;
-        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
+        //newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
         newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
     }
