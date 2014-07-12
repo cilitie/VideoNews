@@ -133,16 +133,6 @@
                         <constraint firstAttribute="height" constant="1" id="IeO-oX-Ftn"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="paa-72-S0r">
-                    <rect key="frame" x="100" y="140" width="100" height="100"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="click:" destination="Ywd-gi-04L" eventType="touchUpInside" id="7Yc-JT-uWs"/>
-                    </connections>
-                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
@@ -187,7 +177,6 @@
                 <outlet property="moreBtn" destination="xka-91-HeY" id="x0I-zn-tQt"/>
                 <outlet property="nameLabel" destination="sc1-do-2DV" id="uaF-Kd-Idt"/>
                 <outlet property="newsImageView" destination="GA1-lw-n6C" id="pzI-ZZ-9c6"/>
-                <outlet property="playBtn" destination="paa-72-S0r" id="eDY-zY-y1R"/>
                 <outlet property="tagLabel" destination="Q0k-Zb-lzt" id="J5w-9x-X3X"/>
                 <outlet property="thumbnailImageView" destination="nxK-No-R1P" id="f5o-cA-roU"/>
                 <outlet property="timeLabel" destination="5a9-DZ-N9C" id="pTg-2h-A3w"/>

@@ -45,7 +45,9 @@
 
 #import "VNHTTPRequestManager.h"
 #import "AFNetworking.h"
+#import "Reachability.h"
 
+static Reachability *reach = nil;
 static int pagesize = 10;
 
 @implementation VNHTTPRequestManager
@@ -652,6 +654,23 @@ static int pagesize = 10;
     NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
     NSDate* destinationDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate];
     return destinationDate;
+}
+
+#pragma mark - Network Reachability
+
++ (BOOL)isReachable;
+{
+    if (!reach) {
+        reach = [Reachability reachabilityWithHostname:@"www.chianso.com"];
+    }
+    return reach.isReachable;
+}
+
++ (BOOL)isReachableViaWiFi {
+    if (!reach) {
+        reach = [Reachability reachabilityWithHostname:@"www.chianso.com"];
+    }
+    return reach.isReachableViaWiFi;
 }
 
 @end

@@ -18,11 +18,12 @@
 #import "UMSocialWechatHandler.h"
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
-#import "MediaPlayer/MPMoviePlayerController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate,VNCommentTableViewCellDelegate> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
+    BOOL isPlaying;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
@@ -32,7 +33,8 @@
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong,nonatomic)VNComment *curComment;
 @property (strong, nonatomic) VNDetailHeaderView *headerView;
-
+@property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
+@property (strong, nonatomic) UIButton *playBtn;
 
 - (IBAction)popBack:(id)sender;
 - (IBAction)like:(id)sender;
@@ -108,10 +110,6 @@ static NSString *shareStr;
         [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
     };
     
-    self.headerView.playHandler = ^{
-        [weakSelf playVideo];
-    };
-    
     [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
         if ([obj.type rangeOfString:@"image"].location != NSNotFound) {
             self.media = obj;
@@ -139,6 +137,35 @@ static NSString *shareStr;
     self.headerView.tagLabel.text = self.news.tags;
     self.headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
     self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+    
+    //视频URL
+    NSLog(@"%@", self.vedioMedia.url);
+//    NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
+    NSURL *url = [NSURL URLWithString:@"http://cloud.video.taobao.com//play/u/320975160/p/1/e/2/t/1/12378629.M3u8"];
+    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:url];
+    self.moviePlayer.controlStyle = MPMovieControlStyleNone;
+    self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    [self.moviePlayer.view setFrame:self.headerView.newsImageView.frame];
+    self.moviePlayer.shouldAutoplay = NO;
+    [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [self.headerView addSubview:self.moviePlayer.view];
+    
+    self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.playBtn.frame = CGRectMake(0, 0, 100.0, 100.0);
+    self.playBtn.center = self.headerView.newsImageView.center;
+    if ([VNHTTPRequestManager isReachableViaWiFi]) {
+        [self.moviePlayer play];
+        [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+        isPlaying = YES;
+    }
+    else {
+        [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+        self.moviePlayer.view.hidden = YES;
+        isPlaying = NO;
+    }
+    [self.headerView addSubview:self.playBtn];
+    
     
     self.commentTableView.tableHeaderView = self.headerView;
     [self.commentTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
@@ -238,6 +265,7 @@ static NSString *shareStr;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.moviePlayer stop];
     switch (self.controllerType) {
         case SourceViewControllerTypeCategory:
             break;
@@ -257,7 +285,8 @@ static NSString *shareStr;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
-    
+    //销毁播放通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
 }
 
 /*
@@ -360,7 +389,31 @@ static NSString *shareStr;
     }
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self stopVideoWhenScrollOut];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self stopVideoWhenScrollOut];
+}
+
 #pragma mark - SEL
+
+- (void)stopVideoWhenScrollOut {
+    if (self.moviePlayer && isPlaying) {
+        CGRect convertFrame = [self.moviePlayer.view convertRect:self.headerView.frame toView:self.view.window];
+        //FIXME: hard code
+        convertFrame.size.height -= 180.0;
+//        NSLog(@"%@", NSStringFromCGRect(self.moviePlayer.view.frame));
+//        NSLog(@"%@,%@", NSStringFromCGRect(convertFrame), NSStringFromCGRect(self.view.frame));
+        if (!CGRectIntersectsRect(convertFrame, self.view.frame)) {
+            [self.moviePlayer pause];
+            [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+            [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+            isPlaying = NO;
+        }
+    }
+}
 
 - (IBAction)popBack:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -469,31 +522,29 @@ static NSString *shareStr;
 
 -(void)playVideo {
     NSLog(@"PlayMovieAction====");
-    //视频URL
-    NSLog(@"%@", self.vedioMedia.url);
-    NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
-    
-    MPMoviePlayerController *movie = [[MPMoviePlayerController alloc] initWithContentURL:url];
-    movie.controlStyle = MPMovieControlStyleDefault;
-    [movie.view setFrame:self.headerView.newsImageView.frame];
-    movie.initialPlaybackTime = -1;
-    [self.headerView addSubview:movie.view];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(videoFinishedPlayCallback:)
-                                                 name:MPMoviePlayerPlaybackDidFinishNotification
-                                               object:movie];
-    [movie play];
+    if (self.moviePlayer) {
+        self.moviePlayer.view.hidden = NO;
+        [self.moviePlayer play];
+        [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+        [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+        isPlaying = YES;
+    }
 }
 
--(void)videoFinishedPlayCallback:(NSNotification*)notify
-{
-    //视频播放对象
-    MPMoviePlayerController* theMovie = [notify object];
-    //销毁播放通知
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:MPMoviePlayerPlaybackDidFinishNotification
-                                                  object:theMovie];
-    [theMovie.view removeFromSuperview];
+- (void)pauseVideo {
+    if (self.moviePlayer) {
+        [self.moviePlayer pause];
+        [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+        [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+        isPlaying = NO;
+    }
+}
+
+-(void)videoFinishedPlayCallback:(NSNotification*)notify {
+    self.moviePlayer.view.hidden = YES;
+    [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+    [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+    isPlaying = NO;
     NSLog(@"视频播放完成");
 }
 

@@ -54,5 +54,6 @@
 #pragma mark - Utility
 
 + (NSString *)timestamp;
++ (BOOL)isReachableViaWiFi;
 
 @end
