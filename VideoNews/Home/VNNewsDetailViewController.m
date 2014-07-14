@@ -847,34 +847,28 @@ static NSString *shareStr;
 ////    _curComment=[[VNComment alloc]initWithDict:comment];
     //_curComment=nil;
     __weak typeof(self) weakSelf = self;
-    //__block VNComment * curComment;
     [VNHTTPRequestManager commentByCid:[_pid intValue] completion:^(NSArray *comment, NSError *error) {
-        //?????
-        //weakSelf.curComment= [comment copy];
-        //curComment=[comment copy];
-        //????????
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
         else {
             [weakSelf.commentArrNotify addObjectsFromArray:comment];
+            NSLog(@"%@",weakSelf.commentArrNotify);
+            weakSelf.curComment= [weakSelf.commentArrNotify objectAtIndex:0];
+            if (weakSelf.curComment==nil) {
+                [VNUtility showHUDText:@"该评论已被删除！" forView:weakSelf.view];
+            }
+            else
+            {
+                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
+                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
+                //[self.inputTextField becomeFirstResponder];
+            }
+            //NSLog(@"%@",_curComment);
            // [self.commentTableView reloadData];
         }
     }];
-    NSLog(@"%@",weakSelf.commentArrNotify);
-    _curComment= [weakSelf.commentArrNotify objectAtIndex:0];
-    NSLog(@"%@",_curComment);
     //NSLog(@"%@",self.view);
-    if (_curComment==nil) {
-        [VNUtility showHUDText:@"该评论已被删除！" forView:self.view];
-    }
-    else
-    {
-      [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
-      [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
-    //[self.inputTextField becomeFirstResponder];
-    }
-    
 }
 
 #pragma mark - UIKeyboardNotification

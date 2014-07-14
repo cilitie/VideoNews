@@ -284,6 +284,7 @@ static int pagesize = 10;
             completion(replySuccess, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        //NSLog(@"%@",operation.request.URL.absoluteString);
         if (completion) {
             completion(NO, error);
         }
