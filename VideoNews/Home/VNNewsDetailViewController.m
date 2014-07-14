@@ -27,8 +27,8 @@
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
-@property (weak, nonatomic) IBOutlet UITextField *inputTextField;
-@property (weak, nonatomic) IBOutlet UIToolbar *inputBar;
+@property (weak, nonatomic) IBOutlet UITextView *inputTextView;
+@property (weak, nonatomic) IBOutlet UIView *inputBar;
 @property (weak, nonatomic) IBOutlet UIButton *favouriteBtn;
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong, nonatomic) NSMutableArray *commentArrNotify;
@@ -69,6 +69,11 @@ static NSString *shareStr;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.inputTextView.layer.cornerRadius = 5;
+    self.inputTextView.layer.masksToBounds = YES;
+    self.inputTextView.layer.borderWidth = 1.0;
+    self.inputTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     
     //已收藏判断
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -250,9 +255,8 @@ static NSString *shareStr;
     int row=sender.tag;
     _curComment=_commentArr[row-KReplyButton];
     
-    [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
-    [self.inputTextField setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
-    [self.inputTextField becomeFirstResponder];
+    [self.inputTextView setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+    [self.inputTextView becomeFirstResponder];
     
 }
 
@@ -387,10 +391,9 @@ static NSString *shareStr;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if ([self.inputTextField isFirstResponder]) {
-        [self.inputTextField resignFirstResponder];
-        [self.inputTextField setPlaceholder:@""];
-        [self.inputTextField setText:@""];
+    if ([self.inputTextView isFirstResponder]) {
+        [self.inputTextView resignFirstResponder];
+        [self.inputTextView setText:@""];
     }
 }
 
@@ -479,7 +482,7 @@ static NSString *shareStr;
 }
 
 - (IBAction)sendComment:(id)sender {
-    NSString *str = self.inputTextField.text;
+    NSString *str = self.inputTextView.text;
     NSMutableString *commentStr = [[NSMutableString alloc] init];
     [commentStr setString:str];
     CFStringTrimWhitespace((CFMutableStringRef)commentStr);
@@ -489,7 +492,7 @@ static NSString *shareStr;
         return;
     }
     else {
-        if ([self.inputTextField.placeholder hasPrefix:@"回复"]) {
+        if ([self.inputTextView.text hasPrefix:@"回复"]) {
             //NSLog(@"%@",self.curComment);
             [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
                 if (error) {
@@ -497,9 +500,8 @@ static NSString *shareStr;
                 }
                 else if (succeed) {
                     [VNUtility showHUDText:@"回复成功!" forView:self.view];
-                    self.inputTextField.text = @"";
-                    [self.inputTextField resignFirstResponder];
-                    [self.inputTextField setPlaceholder:@""];
+                    self.inputTextView.text = @"";
+                    [self.inputTextView resignFirstResponder];
                     [self.commentTableView triggerPullToRefresh];
                 }
                 else {
@@ -514,8 +516,8 @@ static NSString *shareStr;
                 }
                 else if (succeed) {
                     [VNUtility showHUDText:@"评论成功!" forView:self.view];
-                    self.inputTextField.text = @"";
-                    [self.inputTextField resignFirstResponder];
+                    self.inputTextView.text = @"";
+                    [self.inputTextView resignFirstResponder];
                     [self.commentTableView triggerPullToRefresh];
                 }
                 else {
@@ -641,7 +643,7 @@ static NSString *shareStr;
                                 }
                                 else if (succeed) {
                                     [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                    self.inputTextField.text = @"";
+                                    self.inputTextView.text = @"";
                                 }
                                 else {
                                     [VNUtility showHUDText:@"您已举报该文章" forView:self.view];
@@ -679,9 +681,8 @@ static NSString *shareStr;
         switch (buttonIndex) {
                 //回复
             case 0: {
-                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
-                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
-                [self.inputTextField becomeFirstResponder];
+                [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
+                [self.inputTextView becomeFirstResponder];
             }
                 break;
                 //查看个人主页
@@ -702,7 +703,7 @@ static NSString *shareStr;
                             }
                             else if (succeed) {
                                 [VNUtility showHUDText:@"删除评论成功!" forView:self.view];
-                                self.inputTextField.text = @"";
+                                self.inputTextView.text = @"";
                                 [self.commentTableView triggerPullToRefresh];
                             }
                             else {
@@ -725,8 +726,8 @@ static NSString *shareStr;
         switch (buttonIndex) {
                 //回复
             case 0: {
-                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复匿名:"]];
-                [self.inputTextField becomeFirstResponder];
+                [self.inputTextView setText:[NSString stringWithFormat:@"回复匿名:"]];
+                [self.inputTextView becomeFirstResponder];
             }
                 break;
                 //举报评论
@@ -742,7 +743,7 @@ static NSString *shareStr;
                             }
                             else if (succeed) {
                                 [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                self.inputTextField.text = @"";
+                                self.inputTextView.text = @"";
                                 [self.commentTableView triggerPullToRefresh];
                             }
                             else {
@@ -771,9 +772,8 @@ static NSString *shareStr;
                 //回复
             case 0: {
                 NSLog(@"%@", self.curComment.author.name);
-                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.curComment.author.name]];
-                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
-                [self.inputTextField becomeFirstResponder];
+                [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
+                [self.inputTextView becomeFirstResponder];
             }
                 break;
                 //查看个人主页
@@ -794,7 +794,7 @@ static NSString *shareStr;
                             }
                             else if (succeed) {
                                 [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                self.inputTextField.text = @"";
+                                self.inputTextView.text = @"";
                                 [self.commentTableView triggerPullToRefresh];
                             }
                             else {
@@ -864,8 +864,7 @@ static NSString *shareStr;
             }
             else
             {
-                [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
-                [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
+                [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
                 //[self.inputTextField becomeFirstResponder];
             }
             //NSLog(@"%@",_curComment);
