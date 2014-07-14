@@ -127,9 +127,8 @@
             }
             [weakSelf.messageTableView.infiniteScrollingView stopAnimating];
         }];
-    }];    
-
-    
+    }];
+    [self.messageTableView triggerPullToRefresh];
 }
 
 - (void)didReceiveMemoryWarning
@@ -144,24 +143,16 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //NSLog(@"%d",self.messageArr.count);
+    NSLog(@"array count:%d",self.messageArr.count);
     return self.messageArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //VNNotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    //VNNotificationTableViewCell *cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
-    
-    /*if (cell==nil) {
-        cell=[[VNNotificationTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"VNNotificationTableViewCellIdentifier"];
-    }*/
-    
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
     
     if ([message.type isEqualToString: @"user"]) {
-        static NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
-        VNNotificationUserTableViewCell *cell=loadXib(@"VNNotificationUserTableViewCell");
+        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
         [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
@@ -173,8 +164,7 @@
     }
     else if ([message.type isEqualToString:@"comment"])
     {
-        static NSString *cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
-        VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
+        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
         [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
@@ -206,10 +196,7 @@
         cell.replyContentLabel.frame = titleLabelframe;
         return cell;
     }
-    //else if ([message.type isEqualToString:@"news"])
-    //{
-        static NSString *cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
-        VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
+        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
         [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
@@ -256,7 +243,7 @@
     }
     else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"])
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyCommentFromNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyCommentFromNotification" object:self];
         [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForNotification" sender:self];
         
     }

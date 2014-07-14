@@ -182,11 +182,11 @@ static NSString *shareStr;
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     //zmy modify
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(replyCommentFromNotification:)
-                                                 name:@"replyCommentFromNotification"
-                                               object:nil];
-    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(replyCommentFromNotification:)
+//                                                 name:@"replyCommentFromNotification"
+//                                               object:nil];
+//    
     [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *commemtArr, NSError *error) {
         if (error) {
             NSLog(@"%@", error.localizedDescription);
@@ -237,6 +237,9 @@ static NSString *shareStr;
             [weakSelf.commentTableView.infiniteScrollingView stopAnimating];
         }];
     }];
+    if (self.controllerType==SourceViewControllerTypeNotification) {
+        [self replyCommentFromNotification];
+    }
 
 }
 
@@ -284,7 +287,7 @@ static NSString *shareStr;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
     //销毁播放通知
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
 }
@@ -836,14 +839,14 @@ static NSString *shareStr;
     }
 }
 #pragma mark - Notification
--(void)replyCommentFromNotification:(NSNotification *)notification{
+-(void)replyCommentFromNotification{
     NSDictionary *comment=@{@"cid":_pid,@"content":@"",@"date":@"",@"ding":[NSNumber numberWithInt:0],@"insert_time":@"",@"author":@{@"uid":_sender_id,@"name":_sender_name,@"avatar":@"",@"fans_count":@"",@"timestamp":@"",@"location":@"",@"sex":@"",@"main_uid":@""}};
     _curComment=[[VNComment alloc]initWithDict:comment];
     NSLog(@"%@",_curComment);
     [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
     [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
     [self.inputTextField becomeFirstResponder];
-
+    
 }
 
 #pragma mark - UIKeyboardNotification
