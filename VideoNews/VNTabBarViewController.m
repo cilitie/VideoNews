@@ -39,8 +39,10 @@
     if (userInfo.count) {
         authUser = [[VNAuthUser alloc] initWithDict:userInfo];
     }
+    NSDate *lastLoginDate = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginDate];
+    BOOL isUserLoginTimeout = [[NSDate date] timeIntervalSinceDate:lastLoginDate] > 30*24*60*60;
     
-    if (authUser) {
+    if (authUser && !isUserLoginTimeout) {
         [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -57,8 +59,14 @@
         }];
     }
     else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
-        [alert show];
+        if (isUserLoginTimeout) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你登录的账号已过期~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+        }
     }
 }
 

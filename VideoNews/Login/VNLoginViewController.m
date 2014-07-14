@@ -88,6 +88,7 @@
                 else if (succeed) {
                     [VNUtility showHUDText:@"登录成功!" forView:self.view];
                     [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [self dismissViewControllerAnimated:YES completion:nil];
                 }
@@ -118,6 +119,7 @@
                 else if (succeed) {
                     [VNUtility showHUDText:@"登录成功!" forView:self.view];
                     [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [self dismissViewControllerAnimated:YES completion:nil];
                 }
@@ -174,6 +176,7 @@
                     else if (succeed) {
                         [VNUtility showHUDText:@"登录成功!" forView:self.view];
                         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         [self dismissViewControllerAnimated:YES completion:nil];
                     }

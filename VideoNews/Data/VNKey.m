@@ -18,6 +18,7 @@ NSString *const VNSearchTypeDidChangeNotification = @"kVNSearchTypeDidChangeNoti
 //NSUserDefault
 NSString *const VNLoginUser = @"kVNLoginUser";
 NSString *const isLogin = @"KIsLogin";
+NSString *const VNLoginDate = @"kVNLoginDate";
 NSString *const VNPushToken = @"kVNPushToken";
 NSString *const VNUserToken = @"kVNUserToken";
 

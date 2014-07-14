@@ -19,8 +19,10 @@ extern NSString *const VNSearchTypeDidChangeNotification;
 //NSUserDefault
 extern NSString *const VNLoginUser;
 extern NSString *const isLogin;
+extern NSString *const VNLoginDate;
 extern NSString *const VNPushToken;
 extern NSString *const VNUserToken;
+
 
 //友盟相关
 extern NSString *const UmengAppkey;
