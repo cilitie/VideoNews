@@ -129,7 +129,7 @@ static int pagesize = 10;
 }
 
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion {
-    //http://zmysp.sinaapp.com/chat.php?nid=1&timestamp=1402826693&token=jshangabsjksjjagnn
+    //http://zmysp.sinaapp.com/chat.php?nid=1&timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046
     NSString *URLStr = [VNHost stringByAppendingString:@"chat.php"];
 //    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
     NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self token], @"timestamp": [self timestamp],@"pagetime":timestamp};
@@ -162,6 +162,42 @@ static int pagesize = 10;
         }
     }];
 }
+
++ (void)commentByCid:(int)cid completion:(void(^)(NSArray *comment, NSError *error))completion {
+    //http://zmysp.sinaapp.com/oneComment.php?token=f961f003dd383bc39eb53c5b7e5fd046&pid=1&timestamp=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"oneComment.php"];
+    //    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"pagesize": [NSNumber numberWithInt:pagesize], @"token": [self tokenFromTimestamp:timestamp], @"timestamp": timestamp};
+    NSDictionary *param = @{@"pid": [NSNumber numberWithInt:cid], @"token": [self token], @"timestamp": [self timestamp]};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSLog(@"%@", responseObject);
+        VNComment *comment = nil;
+        NSMutableArray *commentArr = [NSMutableArray array];
+        
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            //FIXME: Server Error, Fix Later
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                NSDictionary *responseDic = responseObject[@"comment"];
+                //for (NSDictionary *dic in responseArr) {
+                    comment = [[VNComment alloc] initWithDict:responseDic];
+                    NSDictionary *userDic = [responseDic objectForKey:@"author"];
+                    comment.author = [[VNUser alloc] initWithDict:userDic];
+                    [commentArr addObject:comment];
+               // }
+            }
+        }
+        if (completion) {
+            completion(commentArr, nil);
+            return;
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
 
 + (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed, NSError *error))completion {
     //http://zmysp.sinaapp.com/op.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=add&id=1&user_token=f1517c15fd0da75cc1889e9537392a9c
@@ -635,7 +671,7 @@ static int pagesize = 10;
 
 + (NSString *)token {
     NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
-    NSLog(@"%@", originTokenStr);
+    //NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];
 }
 

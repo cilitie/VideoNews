@@ -31,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *inputBar;
 @property (weak, nonatomic) IBOutlet UIButton *favouriteBtn;
 @property (strong, nonatomic) NSMutableArray *commentArr;
+@property (strong, nonatomic) NSMutableArray *commentArrNotify;
 @property (strong,nonatomic)VNComment *curComment;
 @property (strong, nonatomic) VNDetailHeaderView *headerView;
 @property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
@@ -59,6 +60,7 @@ static NSString *shareStr;
     self = [super initWithCoder:coder];
     if (self) {
         _commentArr = [NSMutableArray arrayWithCapacity:0];
+        _commentArrNotify=[NSMutableArray arrayWithCapacity:0];
     }
     return self;
 }
@@ -488,6 +490,7 @@ static NSString *shareStr;
     }
     else {
         if ([self.inputTextField.placeholder hasPrefix:@"回复"]) {
+            //NSLog(@"%@",self.curComment);
             [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -840,12 +843,37 @@ static NSString *shareStr;
 }
 #pragma mark - Notification
 -(void)replyCommentFromNotification{
-    NSDictionary *comment=@{@"cid":_pid,@"content":@"",@"date":@"",@"ding":[NSNumber numberWithInt:0],@"insert_time":@"",@"author":@{@"uid":_sender_id,@"name":_sender_name,@"avatar":@"",@"fans_count":@"",@"timestamp":@"",@"location":@"",@"sex":@"",@"main_uid":@""}};
-    _curComment=[[VNComment alloc]initWithDict:comment];
+//    NSDictionary *comment=@{@"cid":_pid,@"content":@"",@"date":@"",@"ding":[NSNumber numberWithInt:0],@"insert_time":@"",@"author":@{@"uid":_sender_id,@"name":_sender_name,@"avatar":@"",@"fans_count":@"",@"timestamp":@"",@"location":@"",@"sex":@"",@"main_uid":@""}};
+////    _curComment=[[VNComment alloc]initWithDict:comment];
+    //_curComment=nil;
+    __weak typeof(self) weakSelf = self;
+    //__block VNComment * curComment;
+    [VNHTTPRequestManager commentByCid:[_pid intValue] completion:^(NSArray *comment, NSError *error) {
+        //?????
+        //weakSelf.curComment= [comment copy];
+        //curComment=[comment copy];
+        //????????
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        else {
+            [weakSelf.commentArrNotify addObjectsFromArray:comment];
+           // [self.commentTableView reloadData];
+        }
+    }];
+    NSLog(@"%@",weakSelf.commentArrNotify);
+    _curComment= [weakSelf.commentArrNotify objectAtIndex:0];
     NSLog(@"%@",_curComment);
-    [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
-    [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
-    [self.inputTextField becomeFirstResponder];
+    //NSLog(@"%@",self.view);
+    if (_curComment==nil) {
+        [VNUtility showHUDText:@"该评论已被删除！" forView:self.view];
+    }
+    else
+    {
+      [self.inputTextField setPlaceholder:[NSString stringWithFormat:@"回复%@:", self.sender_name]];
+      [self.inputTextField setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
+    //[self.inputTextField becomeFirstResponder];
+    }
     
 }
 
