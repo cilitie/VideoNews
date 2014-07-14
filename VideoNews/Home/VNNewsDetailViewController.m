@@ -575,11 +575,13 @@ static NSString *shareStr;
                 //微信朋友圈
             case 0: {
                 snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+                [UMSocialData defaultData].extConfig.wechatTimelineData.url = shareURL;
             }
                 break;
                 //微信好友
             case 1: {
                 snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+                [UMSocialData defaultData].extConfig.wechatSessionData.url = shareURL;
             }
                 break;
                 //新浪微博
@@ -590,11 +592,13 @@ static NSString *shareStr;
                 //QQ空间
             case 3: {
                 snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+                [UMSocialData defaultData].extConfig.qzoneData.url = shareURL;
             }
                 break;
                 //QQ好友
             case 4: {
                 snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+                [UMSocialData defaultData].extConfig.qqData.url = shareURL;
             }
                 break;
                 //腾讯微博
