@@ -19,11 +19,13 @@
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "AGEmojiKeyboardView.h"
 
-@interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate,VNCommentTableViewCellDelegate> {
+@interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNCommentTableViewCellDelegate, AGEmojiKeyboardViewDelegate, AGEmojiKeyboardViewDataSource> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
     BOOL isPlaying;
+    BOOL isDefaultKeyboard;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
@@ -38,10 +40,11 @@
 @property (strong, nonatomic) UIButton *playBtn;
 @property (weak, nonatomic) IBOutlet UILabel *thresholdLabel;
 @property (weak, nonatomic) IBOutlet UIView *dismissTapView;
+@property (weak, nonatomic) IBOutlet UIButton *keyboardToggleBtn;
+@property (strong, nonatomic) AGEmojiKeyboardView *emojiKeyboardView;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarHeightLC;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputTextViewHeightLC;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *thresholdLabelHeightLC;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarBottomLC;
 
 
@@ -83,6 +86,7 @@ static NSString *shareStr;
     self.inputTextView.layer.masksToBounds = YES;
     self.inputTextView.layer.borderWidth = 1.0;
     self.inputTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    isDefaultKeyboard = YES;
     
     //已收藏判断
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -515,6 +519,8 @@ static NSString *shareStr;
                     else if (succeed) {
                         [VNUtility showHUDText:@"回复成功!" forView:self.view];
                         self.inputTextView.text = @"";
+                        self.inputBarHeightLC.constant = 44.0;
+                        self.inputTextViewHeightLC.constant = 30.0;
                         [self.inputTextView resignFirstResponder];
                         [self.commentTableView triggerPullToRefresh];
                     }
@@ -531,6 +537,8 @@ static NSString *shareStr;
                     else if (succeed) {
                         [VNUtility showHUDText:@"评论成功!" forView:self.view];
                         self.inputTextView.text = @"";
+                        self.inputBarHeightLC.constant = 44.0;
+                        self.inputTextViewHeightLC.constant = 30.0;
                         [self.inputTextView resignFirstResponder];
                         [self.commentTableView triggerPullToRefresh];
                     }
@@ -572,6 +580,23 @@ static NSString *shareStr;
 }
 
 - (IBAction)switchEmoji:(id)sender {
+    if (isDefaultKeyboard) {
+        [self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
+        if (!self.emojiKeyboardView) {
+            self.emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 216) dataSource:self isStandard:NO];
+            self.emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+            self.emojiKeyboardView.delegate = self;
+        }
+        [self.inputTextView setInputView:self.emojiKeyboardView];
+        [self.inputTextView becomeFirstResponder];
+    }
+    else {
+        [self.keyboardToggleBtn setTitle:@"表情" forState:UIControlStateNormal];
+        [self.inputTextView  setInputView:nil];
+        [self.inputTextView  becomeFirstResponder];
+    }
+    [self.inputTextView reloadInputViews];
+    isDefaultKeyboard = !isDefaultKeyboard;
 }
 
 - (IBAction)dismissViewTapped:(UITapGestureRecognizer *)sender {
@@ -595,6 +620,34 @@ static NSString *shareStr;
     }
     if(a==0 && l==0) return 0;
     return l+(int)ceilf((float)(a+b)/2.0);
+}
+
+- (void)updateHeightOfInputBar {
+    int textCount = [self countWord:self.inputTextView.text];
+    if (textCount > 140) {
+        self.thresholdLabel.text = [NSString stringWithFormat:@"-%d", textCount-140];
+        self.thresholdLabel.hidden = NO;
+    }
+    else {
+        self.thresholdLabel.hidden = YES;
+    }
+    
+    CGSize size = self.inputTextView.contentSize;
+    size.height -= 2;
+    if (size.height >= 64) {
+        size.height = 64;
+    }
+    else if (size.height <= 30) {
+        size.height = 30;
+    }
+    
+    if (size.height != self.inputTextViewHeightLC.constant) {
+        
+        CGFloat span = size.height - self.inputTextViewHeightLC.constant;
+        
+        self.inputBarHeightLC.constant +=span;
+        self.inputTextViewHeightLC.constant +=span;
+    }
 }
 
 #pragma mark - UIActionSheetDelegate
@@ -1000,31 +1053,70 @@ static NSString *shareStr;
 #pragma mark - UITextViewDelegate
 
 - (void)textViewDidChange:(UITextView *)textView {
-    int textCount = [self countWord:textView.text];
-    if (textCount > 140) {
-        self.thresholdLabel.text = [NSString stringWithFormat:@"-%d", textCount-140];
-        self.thresholdLabel.hidden = NO;
-    }
-    else {
-        self.thresholdLabel.hidden = YES;
-    }
-    
-    CGSize size = textView.contentSize;
-    size.height -= 2;
-    if (size.height >= 64) {
-        size.height = 64;
-    }
-    else if (size.height <= 30) {
-        size.height = 30;
-    }
-    
-    if (size.height != self.inputTextViewHeightLC.constant) {
-        
-        CGFloat span = size.height - self.inputTextViewHeightLC.constant;
-        
-        self.inputBarHeightLC.constant +=span;
-        self.inputTextViewHeightLC.constant +=span;
-    }
+    [self updateHeightOfInputBar];
 }
+
+#pragma mark - AGEmojiKeyboardViewDelegate
+
+- (void)emojiKeyBoardView:(AGEmojiKeyboardView *)emojiKeyBoardView didUseEmoji:(NSString *)emoji {
+    self.inputTextView.text = [self.inputTextView.text stringByAppendingString:emoji];
+    [self updateHeightOfInputBar];
+}
+
+- (void)emojiKeyBoardViewDidPressBackSpace:(AGEmojiKeyboardView *)emojiKeyBoardView {
+    NSString *newStr = nil;
+    if (self.inputTextView.text.length>0) {
+        if (self.inputTextView.text.length > 1 && [[[self.emojiKeyboardView emojis] objectForKey:@"People"] containsObject:[self.inputTextView.text substringFromIndex:self.inputTextView.text.length-2]]) {
+            newStr=[self.inputTextView.text substringToIndex:self.inputTextView.text.length-2];
+        }
+        else {
+            newStr=[self.inputTextView.text substringToIndex:self.inputTextView.text.length-1];
+        }
+        self.inputTextView.text=newStr;
+    }
+    [self updateHeightOfInputBar];
+}
+
+#pragma mark - AGEmojiKeyboardViewDataSource
+
+- (AGEmojiKeyboardViewCategoryImage)defaultCategoryForEmojiKeyboardView:(AGEmojiKeyboardView *)emojiKeyboardView {
+    return AGEmojiKeyboardViewCategoryImageFace;
+}
+
+- (UIImage *)backSpaceButtonImageForEmojiKeyboardView:(AGEmojiKeyboardView *)emojiKeyboardView {
+    UIImage *img = [self randomImage];
+    [img imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    return img;
+}
+
+- (UIColor *)randomColor {
+    return [UIColor colorWithRed:drand48()
+                           green:drand48()
+                            blue:drand48()
+                           alpha:drand48()];
+}
+
+- (UIImage *)randomImage {
+    CGSize size = CGSizeMake(30, 10);
+    UIGraphicsBeginImageContextWithOptions(size , NO, 0);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    UIColor *fillColor = [self randomColor];
+    CGContextSetFillColorWithColor(context, [fillColor CGColor]);
+    CGRect rect = CGRectMake(0, 0, size.width, size.height);
+    CGContextFillRect(context, rect);
+    
+    fillColor = [self randomColor];
+    CGContextSetFillColorWithColor(context, [fillColor CGColor]);
+    CGFloat xxx = 3;
+    rect = CGRectMake(xxx, xxx, size.width - 2 * xxx, size.height - 2 * xxx);
+    CGContextFillRect(context, rect);
+    
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
+}
+
+
 
 @end

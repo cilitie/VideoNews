@@ -219,6 +219,7 @@
                         <outlet property="inputBarHeightLC" destination="oB1-hM-dNP" id="gpu-EP-CNC"/>
                         <outlet property="inputTextView" destination="qT7-HV-W6S" id="D2s-Kc-s0U"/>
                         <outlet property="inputTextViewHeightLC" destination="imo-31-0Xi" id="5W9-yt-wQR"/>
+                        <outlet property="keyboardToggleBtn" destination="OZj-f9-ir2" id="6UW-co-DTt"/>
                         <outlet property="thresholdLabel" destination="I25-ay-Tie" id="JQB-vu-VyR"/>
                     </connections>
                 </viewController>
