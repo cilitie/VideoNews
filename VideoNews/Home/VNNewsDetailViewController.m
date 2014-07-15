@@ -20,7 +20,7 @@
 #import "VNLoginViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 
-@interface VNNewsDetailViewController () <UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate,VNCommentTableViewCellDelegate> {
+@interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate,VNCommentTableViewCellDelegate> {
     BOOL isKeyboardShowing;
     CGFloat keyboardHeight;
     BOOL isPlaying;
@@ -36,12 +36,21 @@
 @property (strong, nonatomic) VNDetailHeaderView *headerView;
 @property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
 @property (strong, nonatomic) UIButton *playBtn;
+@property (weak, nonatomic) IBOutlet UILabel *thresholdLabel;
+@property (weak, nonatomic) IBOutlet UIView *dismissTapView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarHeightLC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputTextViewHeightLC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *thresholdLabelHeightLC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarBottomLC;
+
 
 - (IBAction)popBack:(id)sender;
 - (IBAction)like:(id)sender;
 - (IBAction)share:(id)sender;
 - (IBAction)sendComment:(id)sender;
 - (IBAction)switchEmoji:(id)sender;
+- (IBAction)dismissViewTapped:(UITapGestureRecognizer *)sender;
 
 @end
 
@@ -391,10 +400,10 @@ static NSString *shareStr;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if ([self.inputTextView isFirstResponder]) {
-        [self.inputTextView resignFirstResponder];
-        [self.inputTextView setText:@""];
-    }
+//    if ([self.inputTextView isFirstResponder]) {
+//        [self.inputTextView resignFirstResponder];
+//        [self.inputTextView setText:@""];
+//    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -492,38 +501,44 @@ static NSString *shareStr;
         return;
     }
     else {
-        if ([self.inputTextView.text hasPrefix:@"回复"]) {
-            //NSLog(@"%@",self.curComment);
-            [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    [VNUtility showHUDText:@"回复成功!" forView:self.view];
-                    self.inputTextView.text = @"";
-                    [self.inputTextView resignFirstResponder];
-                    [self.commentTableView triggerPullToRefresh];
-                }
-                else {
-                    [VNUtility showHUDText:@"回复失败!" forView:self.view];
-                }
-            }];
+        if (!self.thresholdLabel.hidden) {
+            [VNUtility showHUDText:@"发送内容字数超过140!" forView:self.view];
+            return;
         }
         else {
-            [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    [VNUtility showHUDText:@"评论成功!" forView:self.view];
-                    self.inputTextView.text = @"";
-                    [self.inputTextView resignFirstResponder];
-                    [self.commentTableView triggerPullToRefresh];
-                }
-                else {
-                    [VNUtility showHUDText:@"评论失败!" forView:self.view];
-                }
-            }];
+            if ([self.inputTextView.text hasPrefix:@"回复"]) {
+                //NSLog(@"%@",self.curComment);
+                [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"回复成功!" forView:self.view];
+                        self.inputTextView.text = @"";
+                        [self.inputTextView resignFirstResponder];
+                        [self.commentTableView triggerPullToRefresh];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"回复失败!" forView:self.view];
+                    }
+                }];
+            }
+            else {
+                [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"评论成功!" forView:self.view];
+                        self.inputTextView.text = @"";
+                        [self.inputTextView resignFirstResponder];
+                        [self.commentTableView triggerPullToRefresh];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"评论失败!" forView:self.view];
+                    }
+                }];
+            }
         }
     }
 }
@@ -557,6 +572,29 @@ static NSString *shareStr;
 }
 
 - (IBAction)switchEmoji:(id)sender {
+}
+
+- (IBAction)dismissViewTapped:(UITapGestureRecognizer *)sender {
+    [self.inputTextView resignFirstResponder];
+    self.dismissTapView.hidden = YES;
+}
+
+- (int)countWord:(NSString *)s
+{
+    int i,n=[s length],l=0,a=0,b=0;
+    unichar c;
+    for(i=0;i<n;i++){
+        c=[s characterAtIndex:i];
+        if(isblank(c)){
+            b++;
+        }else if(isascii(c)){
+            a++;
+        }else{
+            l++;
+        }
+    }
+    if(a==0 && l==0) return 0;
+    return l+(int)ceilf((float)(a+b)/2.0);
 }
 
 #pragma mark - UIActionSheetDelegate
@@ -880,6 +918,13 @@ static NSString *shareStr;
     
     isKeyboardShowing = YES;
     
+    if (self.moviePlayer && isPlaying) {
+        [self.moviePlayer pause];
+        [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+        [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+        isPlaying = NO;
+    }
+    
     NSDictionary *userInfo = [notification userInfo];
     NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     
@@ -892,6 +937,7 @@ static NSString *shareStr;
     
     [UIView animateWithDuration:animationDuration
                      animations:^{
+                         
                          CGRect frame = self.commentTableView.frame;
                          frame.size.height += keyboardHeight;
                          frame.size.height -= keyboardRect.size.height;
@@ -902,12 +948,18 @@ static NSString *shareStr;
                          frame.origin.y -= keyboardRect.size.height;
                          self.inputBar.frame = frame;
                          
+                         self.inputBarBottomLC.constant -=keyboardHeight;
+                         self.inputBarBottomLC.constant +=keyboardRect.size.height;
+                         NSLog(@"%f", self.inputBarBottomLC.constant);
                          keyboardHeight = keyboardRect.size.height;
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.3 animations:^{
+                             self.dismissTapView.hidden = NO;
+                         }];
                      }];
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    
     NSDictionary *userInfo = [notification userInfo];
     
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
@@ -924,7 +976,12 @@ static NSString *shareStr;
                          frame.origin.y += keyboardHeight;
                          self.inputBar.frame = frame;
                          
+                         self.inputBarBottomLC.constant -=keyboardHeight;
                          keyboardHeight = 0;
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.3 animations:^{
+                             self.dismissTapView.hidden = YES;
+                         }];
                      }];
 }
 
@@ -937,6 +994,36 @@ static NSString *shareStr;
     else if (buttonIndex == 1) {
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         [self presentViewController:loginViewController animated:YES completion:nil];
+    }
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidChange:(UITextView *)textView {
+    int textCount = [self countWord:textView.text];
+    if (textCount > 140) {
+        self.thresholdLabel.text = [NSString stringWithFormat:@"-%d", textCount-140];
+        self.thresholdLabel.hidden = NO;
+    }
+    else {
+        self.thresholdLabel.hidden = YES;
+    }
+    
+    CGSize size = textView.contentSize;
+    size.height -= 2;
+    if (size.height >= 64) {
+        size.height = 64;
+    }
+    else if (size.height <= 30) {
+        size.height = 30;
+    }
+    
+    if (size.height != self.inputTextViewHeightLC.constant) {
+        
+        CGFloat span = size.height - self.inputTextViewHeightLC.constant;
+        
+        self.inputBarHeightLC.constant +=span;
+        self.inputTextViewHeightLC.constant +=span;
     }
 }
 
