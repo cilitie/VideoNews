@@ -147,8 +147,8 @@ static NSString *shareStr;
     
     //视频URL
     NSLog(@"%@", self.vedioMedia.url);
-//    NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
-    NSURL *url = [NSURL URLWithString:@"http://cloud.video.taobao.com//play/u/320975160/p/1/e/2/t/1/12378629.M3u8"];
+    NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
+    //NSURL *url = [NSURL URLWithString:@"http://cloud.video.taobao.com//play/u/320975160/p/1/e/2/t/1/12378629.M3u8"];
     self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:url];
     self.moviePlayer.controlStyle = MPMovieControlStyleNone;
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
