@@ -512,7 +512,7 @@ static NSString *shareStr;
         else {
             if ([self.inputTextView.text hasPrefix:@"回复"]) {
                 //NSLog(@"%@",self.curComment);
-                [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -522,7 +522,10 @@ static NSString *shareStr;
                         self.inputBarHeightLC.constant = 44.0;
                         self.inputTextViewHeightLC.constant = 30.0;
                         [self.inputTextView resignFirstResponder];
-                        [self.commentTableView triggerPullToRefresh];
+                        if (comment) {
+                            [self.commentArr insertObject:comment atIndex:0];
+                            [self.commentTableView reloadData];
+                        }
                     }
                     else {
                         [VNUtility showHUDText:@"回复失败!" forView:self.view];
@@ -530,7 +533,7 @@ static NSString *shareStr;
                 }];
             }
             else {
-                [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, NSError *error) {
+                [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -540,7 +543,10 @@ static NSString *shareStr;
                         self.inputBarHeightLC.constant = 44.0;
                         self.inputTextViewHeightLC.constant = 30.0;
                         [self.inputTextView resignFirstResponder];
-                        [self.commentTableView triggerPullToRefresh];
+                        if (comment) {
+                            [self.commentArr insertObject:comment atIndex:0];
+                            [self.commentTableView reloadData];
+                        }
                     }
                     else {
                         [VNUtility showHUDText:@"评论失败!" forView:self.view];
@@ -633,9 +639,10 @@ static NSString *shareStr;
     }
     
     CGSize size = self.inputTextView.contentSize;
-    size.height -= 2;
-    if (size.height >= 64) {
-        size.height = 64;
+    NSLog(@"%@", NSStringFromCGSize(size));
+    size.height -= 4;
+    if (size.height >= 68) {
+        size.height = 68;
     }
     else if (size.height <= 30) {
         size.height = 30;
@@ -926,12 +933,15 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
-        [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, NSError *error) {
+        [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else if (succeed) {
-                [self.commentTableView triggerPullToRefresh];
+                if (comment) {
+                    [self.commentArr insertObject:comment atIndex:0];
+                    [self.commentTableView reloadData];
+                }
             }
         }];
     }

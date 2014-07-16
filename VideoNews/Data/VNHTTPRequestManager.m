@@ -224,7 +224,7 @@ static int pagesize = 10;
 
 #pragma mark - 评论相关
 
-+ (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, NSError *error))completion {
++ (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, VNComment *comment, NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
     NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
@@ -238,25 +238,32 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+        NSLog(@"%@", responseObject);
+        VNComment *comment = nil;
         BOOL commentSuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
                 commentSuccess = [[responseObject objectForKey:@"success"] boolValue];
             }
+            NSDictionary *commentDic = [responseObject objectForKey:@"comment"];
+            if (commentDic.count) {
+                comment = [[VNComment alloc] initWithDict:commentDic];
+                NSDictionary *userDic = [commentDic objectForKey:@"author"];
+                comment.author = [[VNUser alloc] initWithDict:userDic];
+            }
         }
         if (completion) {
-            completion(commentSuccess, nil);
+            completion(commentSuccess, comment, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
-            completion(NO, error);
+            completion(NO, nil, error);
         }
     }];
 }
 
-+ (void)replyComment:(int)cid replyUser:(NSString *)reply_uid replyNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, NSError *error))completion {
++ (void)replyComment:(int)cid replyUser:(NSString *)reply_uid replyNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed, VNComment *comment, NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
     NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
     NSString *uid = nil;
@@ -271,22 +278,29 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"reply_uid": reply_uid, @"text": content, @"type": @"reply", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+        NSLog(@"%@", responseObject);
         //NSLog(@"%@",operation.request.URL.absoluteString);
+        VNComment *comment = nil;
         BOOL replySuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
                 replySuccess = [[responseObject objectForKey:@"success"] boolValue];
             }
+            NSDictionary *commentDic = [responseObject objectForKey:@"comment"];
+            if (commentDic.count) {
+                comment = [[VNComment alloc] initWithDict:commentDic];
+                NSDictionary *userDic = [commentDic objectForKey:@"author"];
+                comment.author = [[VNUser alloc] initWithDict:userDic];
+            }
         }
         if (completion) {
-            completion(replySuccess, nil);
+            completion(replySuccess, comment, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         //NSLog(@"%@",operation.request.URL.absoluteString);
         if (completion) {
-            completion(NO, error);
+            completion(NO, nil, error);
         }
     }];
 }
