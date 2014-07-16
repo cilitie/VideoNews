@@ -1089,6 +1089,8 @@ static NSString *shareStr;
     return img;
 }
 
+//FIXME: 缺少删除表情的图片
+
 - (UIColor *)randomColor {
     return [UIColor colorWithRed:drand48()
                            green:drand48()
@@ -1116,7 +1118,5 @@ static NSString *shareStr;
     UIGraphicsEndImageContext();
     return img;
 }
-
-
 
 @end
