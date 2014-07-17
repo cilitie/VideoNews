@@ -63,6 +63,7 @@
 		D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F77197523A900F484FE /* AGEmojiKeyBoardView.m */; };
 		D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F79197523A900F484FE /* AGEmojiPageView.m */; };
 		D6676F7D197523A900F484FE /* EmojisList.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6676F7A197523A900F484FE /* EmojisList.plist */; };
+		D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F7F1976AD5C00F484FE /* BMNavigationController.m */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -206,6 +207,8 @@
 		D6676F78197523A900F484FE /* AGEmojiPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGEmojiPageView.h; sourceTree = "<group>"; };
 		D6676F79197523A900F484FE /* AGEmojiPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGEmojiPageView.m; sourceTree = "<group>"; };
 		D6676F7A197523A900F484FE /* EmojisList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EmojisList.plist; sourceTree = "<group>"; };
+		D6676F7E1976AD5C00F484FE /* BMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMNavigationController.h; sourceTree = "<group>"; };
+		D6676F7F1976AD5C00F484FE /* BMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMNavigationController.m; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -440,6 +443,8 @@
 		D6676F63196E81BB00F484FE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				D6676F7E1976AD5C00F484FE /* BMNavigationController.h */,
+				D6676F7F1976AD5C00F484FE /* BMNavigationController.m */,
 				D6676F75197523A900F484FE /* AGEmojiKeyboard */,
 				D6676F64196E81BB00F484FE /* NavigationControllerDelegate.h */,
 				D6676F65196E81BB00F484FE /* NavigationControllerDelegate.m */,

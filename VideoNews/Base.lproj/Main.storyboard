@@ -7,7 +7,7 @@
         <!--Navigation Controller-->
         <scene sceneID="9TZ-OS-ZRF">
             <objects>
-                <navigationController definesPresentationContext="YES" id="67i-x3-BeR" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="67i-x3-BeR" customClass="BMNavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="Home" id="GWl-2w-em2">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
@@ -15,16 +15,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <outlet property="delegate" destination="mLB-2t-WSC" id="pHH-iT-eU8"/>
                         <segue destination="glU-f5-ipP" kind="relationship" relationship="rootViewController" id="UyX-Od-Aws"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dNp-uA-zz0" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <customObject id="mLB-2t-WSC" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
-                    <connections>
-                        <outlet property="navigationController" destination="67i-x3-BeR" id="4kT-gw-GUX"/>
-                    </connections>
-                </customObject>
             </objects>
             <point key="canvasLocation" x="701" y="-1153"/>
         </scene>
@@ -316,7 +310,7 @@
         <!--Navigation Controller-->
         <scene sceneID="eo5-hJ-GPk">
             <objects>
-                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="hay-Ws-0nv" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="hay-Ws-0nv" customClass="BMNavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="Search" id="ib3-OJ-7kd">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
@@ -324,16 +318,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <outlet property="delegate" destination="g3w-A0-vov" id="LN9-Df-D5L"/>
                         <segue destination="Rgg-CU-GfY" kind="relationship" relationship="rootViewController" id="txv-d6-f4V"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7LF-Bv-tWE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <customObject id="g3w-A0-vov" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
-                    <connections>
-                        <outlet property="navigationController" destination="hay-Ws-0nv" id="jye-VJ-Vmd"/>
-                    </connections>
-                </customObject>
             </objects>
             <point key="canvasLocation" x="701" y="-458"/>
         </scene>
@@ -688,7 +676,7 @@
         <!--Navigation Controller-->
         <scene sceneID="00Q-R6-O8c">
             <objects>
-                <navigationController definesPresentationContext="YES" id="6eb-o6-15S" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="6eb-o6-15S" customClass="BMNavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="Notification" id="1Eq-WP-PkY">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
@@ -696,16 +684,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <outlet property="delegate" destination="g1u-AX-XQf" id="uA7-y3-LLZ"/>
                         <segue destination="qr6-I5-Aba" kind="relationship" relationship="rootViewController" id="SUa-g6-Yal"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="78S-un-fuU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <customObject id="g1u-AX-XQf" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
-                    <connections>
-                        <outlet property="navigationController" destination="6eb-o6-15S" id="T3K-Gm-dy7"/>
-                    </connections>
-                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="942"/>
         </scene>
@@ -767,7 +749,7 @@
         <!--Navigation Controller-->
         <scene sceneID="oQI-I1-t95">
             <objects>
-                <navigationController definesPresentationContext="YES" id="9nm-Rw-hx3" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="9nm-Rw-hx3" customClass="BMNavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="Profile" id="xDY-eG-LEw">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
@@ -775,16 +757,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <outlet property="delegate" destination="bVL-x6-uOs" id="qaJ-VG-l7Q"/>
                         <segue destination="cnK-5f-kdI" kind="relationship" relationship="rootViewController" id="QzP-Ad-6I3"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b3w-Fb-0ar" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <customObject id="bVL-x6-uOs" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
-                    <connections>
-                        <outlet property="navigationController" destination="9nm-Rw-hx3" id="9gn-PO-1aQ"/>
-                    </connections>
-                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="1686"/>
         </scene>
@@ -810,7 +786,7 @@
         <!--Navigation Controller-->
         <scene sceneID="nIU-sX-kaf">
             <objects>
-                <navigationController definesPresentationContext="YES" id="so5-Zn-37y" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="so5-Zn-37y" customClass="BMNavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="Add" id="r2h-Zg-UQq">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
@@ -818,16 +794,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <outlet property="delegate" destination="bqN-lw-2E7" id="92J-2H-VG7"/>
                         <segue destination="Bce-OQ-1jH" kind="relationship" relationship="rootViewController" id="iMU-kq-8XQ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wGG-9H-T5t" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <customObject id="bqN-lw-2E7" userLabel="Navigation Controller Delegate" customClass="NavigationControllerDelegate">
-                    <connections>
-                        <outlet property="navigationController" destination="so5-Zn-37y" id="Vqq-d3-9Yd"/>
-                    </connections>
-                </customObject>
             </objects>
             <point key="canvasLocation" x="709" y="226"/>
         </scene>
