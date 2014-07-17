@@ -832,6 +832,7 @@
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				26962048196E4AF600EA06B3 /* VNMessage.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
+				D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */,
 				14B82BDF1976BB77007E84F4 /* VNCustomizedImagePickerController.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
