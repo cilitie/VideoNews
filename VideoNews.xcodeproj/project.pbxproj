@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		14B82BDF1976BB77007E84F4 /* VNCustomizedImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */; };
+		14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
 		269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C4197061BD005DEDEE /* VNUserViewController.m */; };
@@ -107,6 +109,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14B82BDD1976BB77007E84F4 /* VNCustomizedImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedImagePickerController.h; sourceTree = "<group>"; };
+		14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedImagePickerController.m; sourceTree = "<group>"; };
+		14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCameraOverlayView.h; sourceTree = "<group>"; };
+		14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCameraOverlayView.m; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
@@ -561,6 +567,10 @@
 				D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */,
 				D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */,
 				D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */,
+				14B82BDD1976BB77007E84F4 /* VNCustomizedImagePickerController.h */,
+				14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */,
+				14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */,
+				14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -817,10 +827,12 @@
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				26962048196E4AF600EA06B3 /* VNMessage.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
+				14B82BDF1976BB77007E84F4 /* VNCustomizedImagePickerController.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
+				14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,

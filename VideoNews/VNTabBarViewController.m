@@ -9,6 +9,7 @@
 #import "VNTabBarViewController.h"
 #import "VNAuthUser.h"
 #import "VNLoginViewController.h"
+#import "VNCustomizedImagePickerController.h"
 
 @interface VNTabBarViewController () <UIAlertViewDelegate>
 
@@ -68,6 +69,13 @@
             [alert show];
         }
     }
+    
+    //btn to open UIImagePickerController in the middle of tabbarcontroller.
+    UIButton *openPickerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    openPickerBtn.frame = CGRectMake(125, 0, 70, 49);
+    openPickerBtn.backgroundColor = [UIColor clearColor];
+    [openPickerBtn addTarget:self action:@selector(doOpenImagePickerCtl) forControlEvents:UIControlEventTouchUpInside];
+    [self.tabBar addSubview:openPickerBtn];
 }
 
 - (void)didReceiveMemoryWarning
@@ -110,6 +118,22 @@
     else if (buttonIndex == 1) {
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         [self presentViewController:loginViewController animated:YES completion:nil];
+    }
+}
+
+#pragma mark - UserInteractionMethods
+
+/**
+ *  @description: open UIImagePickerController, start video capture.
+ */
+- (void)doOpenImagePickerCtl
+{
+    VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
+    
+    if([VNCustomizedImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [self presentViewController:picker animated:YES completion:nil];
+    }else {
+        //mei video
     }
 }
 
