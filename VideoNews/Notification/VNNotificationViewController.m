@@ -21,6 +21,9 @@
 
 #import "VNUserViewController.h"
 
+#import "VNHTTPRequestManager.h"
+#import "AFNetworking.h"
+
 
 //#import "VNNotificationTableViewController.h"
 
@@ -58,6 +61,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
+    //[self uploadImage];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     VNAuthUser *authUser = nil;
@@ -129,6 +133,39 @@
         }];
     }];
     [self.messageTableView triggerPullToRefresh];
+}
+
+
+-(void)uploadImage
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+   // manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    
+    
+    NSDictionary *parameters =@{@"key":@"/thumbnail/150-150QQ.png"};
+    //,@"policy":@"value2",@"Signature":@"value"@"OSSAccessKeyId":@"bmJjNn9pYaftA46d",
+    //NSDictionary *parameters =@{@"uid":@"/thumbnail/150-150QQ.png"};
+    NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"150-150QQ.png"], 1.0);//fashion-test.oss-cn-beijing.aliyuncs.com
+    
+    NSString *URLStr = [VNHost stringByAppendingString:@"upload_thumbnail.php"];
+    //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
+    [manager POST:URLStr parameters:parameters
+constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            [formData appendPartWithFileData :imageData name:@"file" fileName:@"150-150QQ.png" mimeType:@"image/jpeg"];
+    
+    }
+          success:^(AFHTTPRequestOperation *operation,id responseObject) {
+        NSLog(@"Success: %@", responseObject);
+        
+        
+    } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+        NSLog(@"%@",operation.request.URL.absoluteString);
+        NSLog(@"%@",operation);
+        NSLog(@"Error: %@", error);
+        
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning
