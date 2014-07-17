@@ -1094,39 +1094,7 @@ static NSString *shareStr;
 }
 
 - (UIImage *)backSpaceButtonImageForEmojiKeyboardView:(AGEmojiKeyboardView *)emojiKeyboardView {
-    UIImage *img = [self randomImage];
-    [img imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    return img;
-}
-
-//FIXME: 缺少删除表情的图片
-
-- (UIColor *)randomColor {
-    return [UIColor colorWithRed:drand48()
-                           green:drand48()
-                            blue:drand48()
-                           alpha:drand48()];
-}
-
-- (UIImage *)randomImage {
-    CGSize size = CGSizeMake(30, 10);
-    UIGraphicsBeginImageContextWithOptions(size , NO, 0);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    UIColor *fillColor = [self randomColor];
-    CGContextSetFillColorWithColor(context, [fillColor CGColor]);
-    CGRect rect = CGRectMake(0, 0, size.width, size.height);
-    CGContextFillRect(context, rect);
-    
-    fillColor = [self randomColor];
-    CGContextSetFillColorWithColor(context, [fillColor CGColor]);
-    CGFloat xxx = 3;
-    rect = CGRectMake(xxx, xxx, size.width - 2 * xxx, size.height - 2 * xxx);
-    CGContextFillRect(context, rect);
-    
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
+    return [UIImage imageNamed:@"60-60Delete"];
 }
 
 @end
