@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BA837DF9-79B8-466C-AEA6-DA2D769A2F2B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>VideoNews</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>869E4879-834D-414C-A19F-894339C1073C</key>
+		<string>https://github.com/lucifer1988/VideoNews.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>VideoNews.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>869E4879-834D-414C-A19F-894339C1073C</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/lucifer1988/VideoNews.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>869E4879-834D-414C-A19F-894339C1073C</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>869E4879-834D-414C-A19F-894339C1073C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>VideoNews</string>
+		</dict>
+	</array>
+</dict>
+</plist>
