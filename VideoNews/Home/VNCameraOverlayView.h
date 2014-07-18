@@ -53,10 +53,17 @@
 
 @end
 
+typedef NS_ENUM(NSUInteger, SubmitBtnStatus) {
+    SubmitBtnStatusAlbum,              //btn 相册模式
+    SubmitBtnStatusDisabled,           //时间还不够，不能提交
+    SubmitBtnStatusEnabled,            //时间够了，可以提交
+};
+
 @interface VNCameraOverlayView : UIView
 
 @property (nonatomic, assign)id<VNCameraOverlayViewDelegate>delegate;
 
 - (void)setTorchBtnHidden:(BOOL)hidden;
+- (void)setAlbumAndSubmitBtnStatus:(SubmitBtnStatus)st;
 
 @end

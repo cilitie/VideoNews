@@ -2,3 +2,9 @@
 VideoNews/Data/VNHTTPRequestManager.m
 
 VideoNews/Home/VNNewsDetailViewController.m
+
+.gitignore
+
+Pods/
+
+VideoNews.xcworkspace/

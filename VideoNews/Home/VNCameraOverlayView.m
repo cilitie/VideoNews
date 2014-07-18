@@ -13,6 +13,8 @@
 @property (nonatomic, strong) UIView *progressSliderView;
 @property (nonatomic, strong) UIButton *torchBtn;
 
+@property (nonatomic, strong) UIButton *submitBtn;
+@property (nonatomic, assign) SubmitBtnStatus currSubmitBtnStatus;
 @end
 
 @implementation VNCameraOverlayView
@@ -43,6 +45,23 @@
         _torchBtn.selected = NO;
     }
     return _torchBtn;
+}
+
+- (UIButton *)submitBtn
+{
+    if (!_submitBtn) {
+        //album and submit button
+        _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, 45, 90, 90)];
+        [_submitBtn setTitle:@"Album" forState:UIControlStateNormal];
+        [_submitBtn setTitle:@"Submit" forState:UIControlStateSelected];
+        _submitBtn.backgroundColor = [UIColor blueColor];
+        [_submitBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
+        _submitBtn.showsTouchWhenHighlighted = YES;
+        _submitBtn.selected = NO;
+        
+        self.currSubmitBtnStatus = SubmitBtnStatusAlbum;
+    }
+    return _submitBtn;
 }
 
 #pragma mark - ViewLifeCycle
@@ -127,15 +146,7 @@
     takeVideoBtn.selected = NO;
     [bottomBaseView addSubview:takeVideoBtn];
     
-    //album and submit button
-    UIButton *albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, 45, 90, 90)];
-    [albumBtn setTitle:@"Album" forState:UIControlStateNormal];
-    [albumBtn setTitle:@"Submit" forState:UIControlStateSelected];
-    albumBtn.backgroundColor = [UIColor blueColor];
-    [albumBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
-    albumBtn.showsTouchWhenHighlighted = YES;
-    albumBtn.selected = NO;
-    [bottomBaseView addSubview:albumBtn];
+    [bottomBaseView addSubview:self.submitBtn];
     
     [self addSubview:bottomBaseView];
 }
@@ -143,6 +154,26 @@
 - (void)setTorchBtnHidden:(BOOL)hidden
 {
     self.torchBtn.hidden = hidden;
+}
+
+- (void)setAlbumAndSubmitBtnStatus:(SubmitBtnStatus)st
+{
+    if (self.currSubmitBtnStatus != st) {
+        switch (st) {
+            case SubmitBtnStatusAlbum:
+                NSLog(@"切换到相册");
+                break;
+            case SubmitBtnStatusDisabled:
+                NSLog(@"时间还不够");
+                break;
+            case SubmitBtnStatusEnabled:
+                NSLog(@"时间够了够了够了");
+                break;
+            default:
+                break;
+        }
+        self.currSubmitBtnStatus = st;
+    }
 }
 
 #pragma mark - UserInteractionMethods

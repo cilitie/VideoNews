@@ -128,12 +128,15 @@
  */
 - (void)doOpenImagePickerCtl
 {
-    VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
-    
-    if([VNCustomizedImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        
+        VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
         [self presentViewController:picker animated:YES completion:nil];
+        
     }else {
-        //mei video
+        
+        NSLog(@"没有拍照功能啊！");
+        
     }
 }
 
