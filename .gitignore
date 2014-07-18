@@ -8,3 +8,5 @@ VideoNews/Home/VNNewsDetailViewController.m
 Pods/
 
 VideoNews.xcworkspace/
+
+Podfile.lock
