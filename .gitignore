@@ -2,9 +2,3 @@
 VideoNews/Data/VNHTTPRequestManager.m
 
 VideoNews/Home/VNNewsDetailViewController.m
-
-Podfile.lock
-	VideoNews.xcodeproj/project.xcworkspace/xcshareddata/
-	VideoNews.xcodeproj/project.xcworkspace/xcuserdata/
-	VideoNews.xcodeproj/xcuserdata/zhangxue.xcuserdatad/
-	VideoNews.xcworkspace/
