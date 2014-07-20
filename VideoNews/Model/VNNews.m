@@ -21,6 +21,8 @@ static NSString *kTags = @"tags";
 static NSString *kDescription = @"description";
 static NSString *kAuthor = @"author";
 static NSString *kMedia = @"media";
+static NSString *kImgMedia = @"imgMedia";
+static NSString *kVedioMedia = @"vedioMedia";
 static NSString *kTimestamp = @"timestamp";
 static NSString *kClassid = @"classid";
 
@@ -80,6 +82,22 @@ static NSString *kClassid = @"classid";
 
 - (void)setMediaArr:(NSArray *)mediaArr {
     [self.basicDict setObject:mediaArr forKey:kMedia];
+}
+
+- (VNMedia *)imgMdeia {
+    return makeSureNotNull([self.basicDict objectForKey:kImgMedia]);
+}
+
+- (void)setImgMdeia:(VNMedia *)imgMdeia {
+    [self.basicDict setObject:imgMdeia forKey:kImgMedia];
+}
+
+- (VNMedia *)videoMedia {
+    return makeSureNotNull([self.basicDict objectForKey:kVedioMedia]);
+}
+
+- (void)setVideoMedia:(VNMedia *)videoMedia {
+    [self.basicDict setObject:videoMedia forKey:kVedioMedia];
 }
 
 - (NSString *)timestamp {

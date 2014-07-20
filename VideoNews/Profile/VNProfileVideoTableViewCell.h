@@ -10,4 +10,8 @@
 
 @interface VNProfileVideoTableViewCell : UITableViewCell
 
+@property (strong, nonatomic) VNNews *news;
+
+- (void)reload;
+
 @end

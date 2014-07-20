@@ -9,6 +9,7 @@
 #import "VNObject.h"
 
 @class VNUser;
+@class VNMedia;
 
 @interface VNNews : VNObject
 
@@ -24,6 +25,8 @@
 @property (strong, nonatomic, readonly) NSString *description;
 @property (strong, nonatomic) VNUser *author;
 @property (strong, nonatomic) NSArray *mediaArr;
+@property (strong, nonatomic) VNMedia *imgMdeia;
+@property (strong, nonatomic) VNMedia *videoMedia;
 @property (strong, nonatomic, readonly) NSString *timestamp;
 @property (strong, nonatomic, readonly) NSString *classid;
 
