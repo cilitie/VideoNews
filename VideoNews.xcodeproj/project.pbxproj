@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		1433433F197B83A600F48022 /* VNVideoCoverSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */; };
+		14334348197B99AD00F48022 /* VNAVPlayerPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */; };
+		1433434F197C061200F48022 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433434E197C061200F48022 /* VNVideoFramesView.m */; };
 		14B82BDF1976BB77007E84F4 /* VNCustomizedImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */; };
 		14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
@@ -116,6 +119,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1433433D197B83A600F48022 /* VNVideoCoverSettingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCoverSettingController.h; sourceTree = "<group>"; };
+		1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCoverSettingController.m; sourceTree = "<group>"; };
+		14334346197B99AD00F48022 /* VNAVPlayerPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAVPlayerPlayView.h; sourceTree = "<group>"; };
+		14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAVPlayerPlayView.m; sourceTree = "<group>"; };
+		1433434D197C061200F48022 /* VNVideoFramesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoFramesView.h; sourceTree = "<group>"; };
+		1433434E197C061200F48022 /* VNVideoFramesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFramesView.m; sourceTree = "<group>"; };
 		14B82BDD1976BB77007E84F4 /* VNCustomizedImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedImagePickerController.h; sourceTree = "<group>"; };
 		14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedImagePickerController.m; sourceTree = "<group>"; };
 		14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCameraOverlayView.h; sourceTree = "<group>"; };
@@ -321,6 +330,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14334349197BA70600F48022 /* VNVideo */ = {
+			isa = PBXGroup;
+			children = (
+				14B82BDD1976BB77007E84F4 /* VNCustomizedImagePickerController.h */,
+				14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */,
+				14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */,
+				14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */,
+				1433433D197B83A600F48022 /* VNVideoCoverSettingController.h */,
+				1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */,
+				1433434D197C061200F48022 /* VNVideoFramesView.h */,
+				1433434E197C061200F48022 /* VNVideoFramesView.m */,
+				14334346197B99AD00F48022 /* VNAVPlayerPlayView.h */,
+				14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */,
+			);
+			name = VNVideo;
+			sourceTree = "<group>";
+		};
 		26962049196E75DF00EA06B3 /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -594,6 +620,7 @@
 		D6FED785195BFF5F00AD10E0 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				14334349197BA70600F48022 /* VNVideo */,
 				D6FED789195BFF7D00AD10E0 /* VNHomeViewController.h */,
 				D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */,
 				D6FED7A0195D1BD400AD10E0 /* VNQuiltViewCell.h */,
@@ -606,10 +633,6 @@
 				D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */,
 				D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */,
 				D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */,
-				14B82BDD1976BB77007E84F4 /* VNCustomizedImagePickerController.h */,
-				14B82BDE1976BB77007E84F4 /* VNCustomizedImagePickerController.m */,
-				14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */,
-				14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -854,6 +877,7 @@
 				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
 				D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */,
 				D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */,
+				1433433F197B83A600F48022 /* VNVideoCoverSettingController.m in Sources */,
 				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
 				D6676F89197806CE00F484FE /* VNProfileViewController.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
@@ -876,7 +900,9 @@
 				14B82BDF1976BB77007E84F4 /* VNCustomizedImagePickerController.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
+				1433434F197C061200F48022 /* VNVideoFramesView.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
+				14334348197B99AD00F48022 /* VNAVPlayerPlayView.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
 				14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,

@@ -10,4 +10,6 @@
 
 @interface VNVideoCoverSettingController : UIViewController
 
+@property (nonatomic, copy) NSString *videoPath;
+
 @end

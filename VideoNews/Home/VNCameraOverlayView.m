@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UIButton *torchBtn;
 
 @property (nonatomic, strong) UIButton *submitBtn;
-@property (nonatomic, assign) SubmitBtnStatus currSubmitBtnStatus;
 @end
 
 @implementation VNCameraOverlayView
@@ -57,9 +56,8 @@
         _submitBtn.backgroundColor = [UIColor blueColor];
         [_submitBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
         _submitBtn.showsTouchWhenHighlighted = YES;
-        _submitBtn.selected = NO;
+        _submitBtn.enabled = NO;
         
-        self.currSubmitBtnStatus = SubmitBtnStatusAlbum;
     }
     return _submitBtn;
 }
@@ -156,24 +154,25 @@
     self.torchBtn.hidden = hidden;
 }
 
-- (void)setAlbumAndSubmitBtnStatus:(SubmitBtnStatus)st
+- (void)setAlbumAndSubmitBtnStatus:(BOOL)enabled
 {
-    if (self.currSubmitBtnStatus != st) {
-        switch (st) {
-            case SubmitBtnStatusAlbum:
-                NSLog(@"切换到相册");
-                break;
-            case SubmitBtnStatusDisabled:
-                NSLog(@"时间还不够");
-                break;
-            case SubmitBtnStatusEnabled:
-                NSLog(@"时间够了够了够了");
-                break;
-            default:
-                break;
-        }
-        self.currSubmitBtnStatus = st;
-    }
+//    if (self.currSubmitBtnStatus != st) {
+//        switch (st) {
+//            case SubmitBtnStatusAlbum:
+//                NSLog(@"切换到相册");
+//                break;
+//            case SubmitBtnStatusDisabled:
+//                NSLog(@"时间还不够");
+//                break;
+//            case SubmitBtnStatusEnabled:
+//                NSLog(@"时间够了够了够了");
+//                break;
+//            default:
+//                break;
+//        }
+//        self.currSubmitBtnStatus = st;
+//    }
+    self.submitBtn.enabled = enabled;
 }
 
 #pragma mark - UserInteractionMethods
@@ -278,7 +277,7 @@
 {
     //判断当前进度
 //    if () {
-        //open photo album
+        //open photo album (long long ago, it's needed)
 //    }else if (){
     //submit the whole video.
     if ([self shouldPerforDelegateSelector:@selector(doSubmitWholeVideo)]) {

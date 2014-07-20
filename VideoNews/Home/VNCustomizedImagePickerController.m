@@ -11,6 +11,11 @@
 #import <AVFoundation/AVFoundation.h>
 #import <objc/runtime.h>
 
+#import "VNHTTPRequestManager.h"
+#import <AFNetworking.h>
+
+#import "VNVideoCoverSettingController.h"
+
 @interface VNCustomizedImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, VNCameraOverlayViewDelegate,UIAlertViewDelegate>
 
 @property (nonatomic, strong) VNCameraOverlayView *overlayView;
@@ -28,7 +33,7 @@
 @implementation VNCustomizedImagePickerController
 
 #define MIN_VIDEO_DURATION 5.0
-#define MAX_VIDEO_DURATION 15.0
+#define MAX_VIDEO_DURATION 8.0
 #define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
 
 #pragma mark - Initialization
@@ -71,6 +76,7 @@
         self.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
         self.cameraDevice = UIImagePickerControllerCameraDeviceRear;
         self.showsCameraControls = NO;
+        self.videoQuality = UIImagePickerControllerQualityTypeHigh;
         
         self.cameraOverlayView = self.overlayView;
         
@@ -84,6 +90,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    
+//    NSData *imgData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"IMG_3699" ofType:@"PNG"]];
+//    NSString *dataLength = [NSString stringWithFormat:@"%d",imgData.length];
+//    
+//    NSDictionary *params = @{@"Authorization":@"OSS qn6qrrqxo2oawuk53otfjbyc:kZoYNv66bsmc10+dcGKw5x2PRrk=",@"Content-Encoding":@"utf-8",@"Content-Disposition":@"attachment",@"filename":@"oss_download.jpg",@"Content-Type":@"image/jpg",@"Expires":[NSDate dateWithTimeIntervalSinceNow:365 * 24 * 60 * 60],@"Content-Length":dataLength};
+//    
+//    [manager PUT:@"oss-example.oss-cn-hangzhou.aliyuncs.com" parameters:params success:^(AFHTTPRequestOperation *operation, id responseData){
+//        
+//        
+//        NSLog(@"成功了:\n%@",responseData);
+//        
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *err) {
+//        
+//        NSLog(@"error::::%@",err.userInfo);
+//        
+//    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,13 +154,14 @@
     NSLog(@"video total time...:%f",self.videoTotalDuration);
 
     if (self.videoTotalDuration < MIN_VIDEO_DURATION) {
-        [self.overlayView setAlbumAndSubmitBtnStatus:SubmitBtnStatusDisabled];
+        [self.overlayView setAlbumAndSubmitBtnStatus:NO];
     }else {
-        [self.overlayView setAlbumAndSubmitBtnStatus:SubmitBtnStatusEnabled];
+        [self.overlayView setAlbumAndSubmitBtnStatus:YES];
     }
     if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
         
         [self doEndCurVideo];
+        
     }
 }
 
@@ -204,7 +229,8 @@
                 NSLog(@"111111Export canceled");
                 break;
             default:
-                UISaveVideoAtPathToSavedPhotosAlbum(combinedPath, self, nil, nil);
+            {
+//                UISaveVideoAtPathToSavedPhotosAlbum(combinedPath, self, nil, nil);
                 
                 
                 /*******************************************************************************************/
@@ -245,7 +271,7 @@
                 
                 //Create an Export Path to store the cropped video
                 NSString *tempDir = NSTemporaryDirectory();
-                NSString *combinedPath = [tempDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.MOV",TEMP_VIDEO_NAME_PREFIX]];;
+                NSString *combinedPath = [tempDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.MOV",TEMP_VIDEO_NAME_PREFIX]];
                 
                 [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
 
@@ -269,14 +295,19 @@
                                  NSLog(@"Export canceled");
                                  break;
                              default:
-
-                                 UISaveVideoAtPathToSavedPhotosAlbum(combinedPath, self, nil, nil);
+                             {
+//                                 UISaveVideoAtPathToSavedPhotosAlbum(combinedPath, self, nil, nil);
+                                 
+                                 VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+                                 coverSettingCtl.videoPath = combinedPath;
+                                 [self pushViewController:coverSettingCtl animated:YES];
+                             }
                                  break;
                          }
                          
                      });
                  }];
-                
+            }
                 break;
         }
     }];
@@ -311,7 +342,20 @@
  */
 - (void)clearTempVideos
 {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *tempDir = NSTemporaryDirectory();
     
+    NSLog(@"%@",[fm contentsOfDirectoryAtPath:tempDir error:nil]);
+
+    NSArray *arr = [fm contentsOfDirectoryAtPath:tempDir error:nil];
+    
+    for (NSString *dir in arr) {
+        if ([dir hasPrefix:TEMP_VIDEO_NAME_PREFIX]) {
+            [fm removeItemAtPath:[tempDir stringByAppendingPathComponent:dir] error:nil];
+        }
+    }
+    
+    NSLog(@"%@",[fm contentsOfDirectoryAtPath:tempDir error:nil]);
 }
 
 - (void)doChangeTorchStatusTo:(BOOL)isOn
@@ -339,6 +383,7 @@
 - (void)doDeleteCurrentVideo
 {
     //删除当前片段
+    
 }
 
 - (void)doStartNewVideoRecord
@@ -370,7 +415,7 @@
 - (void)doSubmitWholeVideo
 {
     if (self.videoTotalDuration >= MIN_VIDEO_DURATION) {
-        
+        [self combineAndCropSingleVideo];
     }
 }
 
