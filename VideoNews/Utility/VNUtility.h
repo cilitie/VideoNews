@@ -12,4 +12,5 @@
 
 + (void)showHUDText:(NSString *)text forView:(UIView *)view;
 
++ (NSString *)getNSCachePath:(NSString *)filenameorpath;
 @end

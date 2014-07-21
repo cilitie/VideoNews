@@ -10,8 +10,10 @@
 #import "VNAuthUser.h"
 #import "VNLoginViewController.h"
 #import "VNCustomizedImagePickerController.h"
+#import "VNCustomizedAlbumPickerController.h"
+#import "VNCustomizedActionSheet.h"
 
-@interface VNTabBarViewController () <UIAlertViewDelegate>
+@interface VNTabBarViewController () <UIAlertViewDelegate, VNCustomizedActionSheetDelegate>
 
 @end
 
@@ -116,6 +118,7 @@
         return;
     }
     else if (buttonIndex == 1) {
+        
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
@@ -128,6 +131,22 @@
  */
 - (void)doOpenImagePickerCtl
 {
+    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+    VNCustomizedActionSheet *actionSheet = [[VNCustomizedActionSheet alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+    actionSheet.delegate = self;
+    actionSheet.superView = self.view;
+    [actionSheet show];
+}
+
+#pragma mark - VNCustomizedActionSheetDelegate
+
+- (void)draftBtnDidPressed
+{
+    
+}
+
+- (void)cameraBtnDidPressed
+{
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         
         VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
@@ -135,9 +154,20 @@
         
     }else {
         
-        NSLog(@"没有拍照功能啊！");
-        
+        //if camera is not avaliable, use album instead.
+        [self albumBtnDidPressed];
     }
+}
+
+- (void)albumBtnDidPressed
+{
+    VNCustomizedAlbumPickerController *picker = [[VNCustomizedAlbumPickerController alloc] init];
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)cancelBtnClicked
+{
+    //do nothing
 }
 
 @end

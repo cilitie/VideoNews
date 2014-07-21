@@ -21,4 +21,20 @@
     [hud hide:YES afterDelay:2.0f];
 }
 
+/**
+ *  @description: return the cache path(appending the user relative path) to user
+ *
+ *  @param filenameorpath : path relative to app cache path
+ *
+ *  @return : whole path string
+ */
++ (NSString *)getNSCachePath:(NSString *)filenameorpath{
+	NSArray *Paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *Directory = [Paths objectAtIndex:0];
+    filenameorpath = [Directory stringByAppendingPathComponent:filenameorpath];
+	Directory=nil;
+	Paths=nil;
+    return filenameorpath;
+}
+
 @end
