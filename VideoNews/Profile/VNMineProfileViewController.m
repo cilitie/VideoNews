@@ -9,19 +9,21 @@
 #import "VNMineProfileViewController.h"
 #import "VNProfileVideoTableViewCell.h"
 #import "SVPullToRefresh.h"
+#import "VNMineProfileHeaderView.h"
 
-@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate> {
+    BOOL firstLoading;
+    BOOL userScrolling;
+    CGPoint initialScrollOffset;
+    CGPoint previousScrollOffset;
+    BOOL isToBottom;
+}
 
-@property (weak, nonatomic) IBOutlet UIImageView *thumbnailImgView;
-@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *videoCountLabel;
-@property (weak, nonatomic) IBOutlet UILabel *favouriteCountLabel;
-@property (weak, nonatomic) IBOutlet UILabel *followCountLabel;
-@property (weak, nonatomic) IBOutlet UILabel *fansCountLabel;
 @property (weak, nonatomic) IBOutlet UITableView *videoTableView;
 @property (weak, nonatomic) IBOutlet UITableView *favouriteTableView;
 @property (weak, nonatomic) IBOutlet UITableView *followTableView;
 @property (weak, nonatomic) IBOutlet UITableView *fansTableView;
+@property (strong, nonatomic) VNMineProfileHeaderView *headerView;
 
 @property (strong, nonatomic) NSMutableArray *mineVideoArr;
 @property (strong, nonatomic) NSMutableArray *favVideoArr;
@@ -44,6 +46,7 @@
         _favVideoArr = [NSMutableArray array];
         _followArr = [NSMutableArray array];
         _fansArr = [NSMutableArray array];
+        firstLoading = YES;
     }
     return self;
 }
@@ -53,9 +56,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.headerView = loadXib(@"VNMineProfileHeaderView");
+    self.videoTableView.tableHeaderView = self.headerView;
     [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
-    self.videoTableView.layer.cornerRadius = 5.0;
-    self.videoTableView.layer.masksToBounds = YES;
     
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
@@ -77,6 +80,7 @@
                     [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
                     [weakSelf.videoTableView reloadData];
                 }
+                firstLoading = YES;
                 [weakSelf.videoTableView.pullToRefreshView stopAnimating];
             }];
         });
@@ -142,6 +146,10 @@
         VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
         cell.news = news;
         [cell reload];
+        if (indexPath.row == 0 && firstLoading) {
+            [cell startOrPausePlaying:YES];
+            firstLoading = NO;
+        }
         return cell;
     }
     
@@ -162,14 +170,132 @@
     return 0;
 }
 
+#pragma mark - SEL
+
 - (CGFloat)cellHeightFor:(VNNews *)news {
     __block CGFloat cellHeight = 380.0;
     
     NSDictionary *attribute = @{NSFontAttributeName:[UIFont systemFontOfSize:17.0]};
     CGRect rect = [news.title boundingRectWithSize:CGSizeMake(280.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
     cellHeight += CGRectGetHeight(rect);
-    
+    NSLog(@"%f", cellHeight);
     return cellHeight;
 }
+
+- (void)hideTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds), view.frame.size.width, view.frame.size.height)];
+        }
+    }
+    [UIView commitAnimations];
+}
+
+- (void)showTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds)-49, view.frame.size.width, view.frame.size.height)];
+        }
+    }
+    [UIView commitAnimations];
+}
+
+#pragma mark - Scrollview Delegate
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    userScrolling = YES;
+    initialScrollOffset = scrollView.contentOffset;
+    
+    UITableView *tableView = (UITableView *)scrollView;
+    if (tableView == self.videoTableView) {
+        NSArray *visibleCells=[tableView visibleCells];
+        for (VNProfileVideoTableViewCell *cell in visibleCells) {
+            if (cell.isPlaying) {
+                [cell startOrPausePlaying:NO];
+            }
+        }
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!userScrolling) return;
+    
+    //initialize
+    if (scrollView.contentSize.height <= scrollView.bounds.size.height) {
+        [self showTabBar];
+        return;
+    }
+    
+    if (scrollView.contentOffset.y <= 0) {
+        //Scrolling above the page
+        [self showTabBar];
+        return;
+    }
+    
+    //contentOffset
+    CGFloat contentOffset = scrollView.contentOffset.y - initialScrollOffset.y;
+    
+    if (scrollView.contentOffset.y <= 24) {
+        contentOffset = scrollView.contentOffset.y;
+    } else {
+        if (contentOffset < 0 && (scrollView.contentOffset.y - previousScrollOffset.y) > 0) {
+            initialScrollOffset = scrollView.contentOffset;
+        }
+    }
+    
+    contentOffset = roundf(contentOffset);
+    
+    if (contentOffset >= 0 && (scrollView.contentOffset.y + scrollView.frame.size.height < scrollView.contentSize.height) && scrollView.contentOffset.y > 24) {
+        [self hideTabBar];
+    }
+    
+    //scroll to bottom, quit fullScreen
+    if (scrollView.contentOffset.y + scrollView.frame.size.height >= scrollView.contentSize.height+49) {
+        [self showTabBar];
+    }
+    
+    if (scrollView.contentOffset.y + scrollView.frame.size.height <= scrollView.contentSize.height) {
+        previousScrollOffset = scrollView.contentOffset;
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (velocity.y < -0.5) {
+        userScrolling = NO;
+        [self showTabBar];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    userScrolling = NO;
+    initialScrollOffset = CGPointMake(0, 0);
+    
+    UITableView *tableView = (UITableView *)scrollView;
+    if (tableView == self.videoTableView) {
+        NSArray *visibleCells=[tableView visibleCells];
+        CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
+        VNProfileVideoTableViewCell *curCell = nil;
+        for (VNProfileVideoTableViewCell *cell in visibleCells) {
+            CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
+            CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+            NSLog(@"%f", self.view.window.center.y);
+            CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
+            if (gap < minGap) {
+                NSLog(@"%f, %f", minGap, gap);
+                minGap = gap;
+                curCell = cell;
+            }
+        }
+        if (curCell && !curCell.isPlaying) {
+            [curCell startOrPausePlaying:YES];
+        }
+    }
+}
+
 
 @end

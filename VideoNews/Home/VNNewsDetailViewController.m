@@ -403,13 +403,6 @@ static NSString *shareStr;
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    if ([self.inputTextView isFirstResponder]) {
-//        [self.inputTextView resignFirstResponder];
-//        [self.inputTextView setText:@""];
-//    }
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self stopVideoWhenScrollOut];
 }

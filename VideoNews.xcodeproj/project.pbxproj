@@ -73,6 +73,8 @@
 		D6676F91197916D400F484FE /* VNProfileVideoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6676F8F197916D400F484FE /* VNProfileVideoTableViewCell.xib */; };
 		D6676F95197916F600F484FE /* VNProfileFansTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F93197916F600F484FE /* VNProfileFansTableViewCell.m */; };
 		D6676F96197916F600F484FE /* VNProfileFansTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6676F94197916F600F484FE /* VNProfileFansTableViewCell.xib */; };
+		D6676F99197CBACD00F484FE /* VNMineProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D6676F98197CBACD00F484FE /* VNMineProfileHeaderView.m */; };
+		D6676F9B197CBADE00F484FE /* VNMineProfileHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6676F9A197CBADE00F484FE /* VNMineProfileHeaderView.xib */; };
 		D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */; };
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
@@ -234,6 +236,9 @@
 		D6676F92197916F600F484FE /* VNProfileFansTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProfileFansTableViewCell.h; sourceTree = "<group>"; };
 		D6676F93197916F600F484FE /* VNProfileFansTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProfileFansTableViewCell.m; sourceTree = "<group>"; };
 		D6676F94197916F600F484FE /* VNProfileFansTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNProfileFansTableViewCell.xib; sourceTree = "<group>"; };
+		D6676F97197CBACD00F484FE /* VNMineProfileHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMineProfileHeaderView.h; sourceTree = "<group>"; };
+		D6676F98197CBACD00F484FE /* VNMineProfileHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMineProfileHeaderView.m; sourceTree = "<group>"; };
+		D6676F9A197CBADE00F484FE /* VNMineProfileHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNMineProfileHeaderView.xib; sourceTree = "<group>"; };
 		D66F7A4019619EFE00EA72BC /* VNNewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNewsDetailViewController.h; sourceTree = "<group>"; };
 		D66F7A4119619EFE00EA72BC /* VNNewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNewsDetailViewController.m; sourceTree = "<group>"; };
 		D66F7A4319619FAF00EA72BC /* VNDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDetailHeaderView.h; sourceTree = "<group>"; };
@@ -521,6 +526,9 @@
 				D6676F92197916F600F484FE /* VNProfileFansTableViewCell.h */,
 				D6676F93197916F600F484FE /* VNProfileFansTableViewCell.m */,
 				D6676F94197916F600F484FE /* VNProfileFansTableViewCell.xib */,
+				D6676F97197CBACD00F484FE /* VNMineProfileHeaderView.h */,
+				D6676F98197CBACD00F484FE /* VNMineProfileHeaderView.m */,
+				D6676F9A197CBADE00F484FE /* VNMineProfileHeaderView.xib */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -791,6 +799,7 @@
 				D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */,
+				D6676F9B197CBADE00F484FE /* VNMineProfileHeaderView.xib in Resources */,
 				D642970D19668EE4004E218C /* UMSCommentDetailController.xib in Resources */,
 				D642971319668EE4004E218C /* UMSnsAccountViewController.xib in Resources */,
 				D6676F91197916D400F484FE /* VNProfileVideoTableViewCell.xib in Resources */,
@@ -863,6 +872,7 @@
 			files = (
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
+				D6676F99197CBACD00F484FE /* VNMineProfileHeaderView.m in Sources */,
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
