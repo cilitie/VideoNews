@@ -9,10 +9,10 @@
 #import "VNMineProfileViewController.h"
 #import "VNProfileVideoTableViewCell.h"
 #import "SVPullToRefresh.h"
+#import "UIImageView+AFNetworking.h"
 #import "VNMineProfileHeaderView.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate> {
-    BOOL firstLoading;
     BOOL userScrolling;
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
@@ -23,7 +23,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *favouriteTableView;
 @property (weak, nonatomic) IBOutlet UITableView *followTableView;
 @property (weak, nonatomic) IBOutlet UITableView *fansTableView;
-@property (strong, nonatomic) VNMineProfileHeaderView *headerView;
+//@property (strong, nonatomic) VNMineProfileHeaderView *headerView;
 
 @property (strong, nonatomic) NSMutableArray *mineVideoArr;
 @property (strong, nonatomic) NSMutableArray *favVideoArr;
@@ -36,6 +36,8 @@
 
 @end
 
+static BOOL firstLoading = YES;
+
 @implementation VNMineProfileViewController
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -46,7 +48,6 @@
         _favVideoArr = [NSMutableArray array];
         _followArr = [NSMutableArray array];
         _fansArr = [NSMutableArray array];
-        firstLoading = YES;
     }
     return self;
 }
@@ -55,18 +56,104 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    self.headerView = loadXib(@"VNMineProfileHeaderView");
-    self.videoTableView.tableHeaderView = self.headerView;
-    [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
-    
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
         self.uid = [userInfo objectForKey:@"openid"];
         self.user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
     }
     
+    VNMineProfileHeaderView *videoHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *favHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
+    
+    [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        if (userInfo) {
+            self.mineInfo = userInfo;
+            [videoHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+            [videoHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([videoHeaderView.thumbnailImgView bounds]) / 2];
+            videoHeaderView.thumbnailImgView.layer.masksToBounds = YES;
+            [videoHeaderView.nameLabel setText:userInfo.name];
+            [videoHeaderView.videoCountLabel setText:userInfo.video_count];
+            [videoHeaderView.favouriteCountLabel setText:userInfo.like_count];
+            [videoHeaderView.followCountLabel setText:userInfo.idol_count];
+            [videoHeaderView.fansCountLabel setText:userInfo.fans_count];
+            
+            [favHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+            [favHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([favHeaderView.thumbnailImgView bounds]) / 2];
+            favHeaderView.thumbnailImgView.layer.masksToBounds = YES;
+            [favHeaderView.nameLabel setText:userInfo.name];
+            [favHeaderView.videoCountLabel setText:userInfo.video_count];
+            [favHeaderView.favouriteCountLabel setText:userInfo.like_count];
+            [favHeaderView.followCountLabel setText:userInfo.idol_count];
+            [favHeaderView.fansCountLabel setText:userInfo.fans_count];
+            
+            [followHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+            [followHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([followHeaderView.thumbnailImgView bounds]) / 2];
+            followHeaderView.thumbnailImgView.layer.masksToBounds = YES;
+            [followHeaderView.nameLabel setText:userInfo.name];
+            [followHeaderView.videoCountLabel setText:userInfo.video_count];
+            [followHeaderView.favouriteCountLabel setText:userInfo.like_count];
+            [followHeaderView.followCountLabel setText:userInfo.idol_count];
+            [followHeaderView.fansCountLabel setText:userInfo.fans_count];
+            
+            [fansHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+            [fansHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([fansHeaderView.thumbnailImgView bounds]) / 2];
+            videoHeaderView.thumbnailImgView.layer.masksToBounds = YES;
+            [fansHeaderView.nameLabel setText:userInfo.name];
+            [fansHeaderView.videoCountLabel setText:userInfo.video_count];
+            [fansHeaderView.favouriteCountLabel setText:userInfo.like_count];
+            [fansHeaderView.followCountLabel setText:userInfo.idol_count];
+            [fansHeaderView.fansCountLabel setText:userInfo.fans_count];
+        }
+    }];
+    
     __weak typeof(self) weakSelf = self;
+    
+    videoHeaderView.editHandler = ^(){};
+    videoHeaderView.tabHandler = ^(NSUInteger index){
+        firstLoading = YES;
+        switch (index) {
+            case 0: {
+                weakSelf.favouriteTableView.hidden = YES;
+                weakSelf.followTableView.hidden = YES;
+                weakSelf.fansTableView.hidden = YES;
+                weakSelf.videoTableView.hidden = NO;
+                [weakSelf.videoTableView triggerPullToRefresh];
+            }
+                break;
+            case 1: {
+                weakSelf.videoTableView.hidden = YES;
+                weakSelf.followTableView.hidden = YES;
+                weakSelf.fansTableView.hidden = YES;
+                weakSelf.favouriteTableView.hidden = NO;
+                [weakSelf.favouriteTableView triggerPullToRefresh];
+            }
+                break;
+            case 2: {
+                
+            }
+                break;
+            case 3: {
+                
+            }
+                break;
+        }
+    };
+    favHeaderView.editHandler = videoHeaderView.editHandler;
+    favHeaderView.tabHandler = videoHeaderView.tabHandler;
+    followHeaderView.editHandler = videoHeaderView.editHandler;
+    followHeaderView.tabHandler = videoHeaderView.tabHandler;
+    fansHeaderView.editHandler = videoHeaderView.editHandler;
+    fansHeaderView.tabHandler = videoHeaderView.tabHandler;
+    
+    //我的视频
+    self.videoTableView.tableHeaderView = videoHeaderView;
+    [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
+    
     [self.videoTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -108,6 +195,52 @@
         }];
     }];
     [self.videoTableView triggerPullToRefresh];
+    
+    //我的收藏
+    self.favouriteTableView.tableHeaderView = favHeaderView;
+    [self.favouriteTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFavTableViewCellIdentifier"];
+    
+    [self.favouriteTableView addPullToRefreshWithActionHandler:^{
+        // FIXME: Hard code
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+            [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.favVideoArr removeAllObjects];
+                    [weakSelf.favVideoArr addObjectsFromArray:videoArr];
+                    [weakSelf.favouriteTableView reloadData];
+                }
+                firstLoading = YES;
+                [weakSelf.favouriteTableView.pullToRefreshView stopAnimating];
+            }];
+        });
+    }];
+    
+    [self.favouriteTableView addInfiniteScrollingWithActionHandler:^{
+        NSString *moreTimeStamp = nil;
+        if (weakSelf.favVideoArr.count) {
+            VNNews *lastNews = [weakSelf.favVideoArr lastObject];
+            moreTimeStamp = lastNews.timestamp;
+        }
+        else {
+            moreTimeStamp = [VNHTTPRequestManager timestamp];
+        }
+        
+        [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:moreTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                [weakSelf.favVideoArr addObjectsFromArray:videoArr];
+                [weakSelf.favouriteTableView reloadData];
+            }
+            [weakSelf.favouriteTableView.infiniteScrollingView stopAnimating];
+
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -137,6 +270,9 @@
     if (tableView == self.videoTableView) {
         return self.mineVideoArr.count;
     }
+    if (tableView == self.favouriteTableView) {
+        return self.favVideoArr.count;
+    }
     return 0;
 }
 
@@ -144,6 +280,17 @@
     if (tableView == self.videoTableView) {
          VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
         VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
+        cell.news = news;
+        [cell reload];
+        if (indexPath.row == 0 && firstLoading) {
+            [cell startOrPausePlaying:YES];
+            firstLoading = NO;
+        }
+        return cell;
+    }
+    if (tableView == self.favouriteTableView) {
+        VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNProfileFavTableViewCellIdentifier"];
+        VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
         cell.news = news;
         [cell reload];
         if (indexPath.row == 0 && firstLoading) {
@@ -165,6 +312,10 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.videoTableView) {
         VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
+        return [self cellHeightFor:news];
+    }
+    if (tableView == self.favouriteTableView) {
+        VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
         return [self cellHeightFor:news];
     }
     return 0;
@@ -212,7 +363,7 @@
     initialScrollOffset = scrollView.contentOffset;
     
     UITableView *tableView = (UITableView *)scrollView;
-    if (tableView == self.videoTableView) {
+    if (tableView == self.videoTableView || tableView == self.favouriteTableView) {
         NSArray *visibleCells=[tableView visibleCells];
         for (VNProfileVideoTableViewCell *cell in visibleCells) {
             if (cell.isPlaying) {
@@ -276,7 +427,7 @@
     initialScrollOffset = CGPointMake(0, 0);
     
     UITableView *tableView = (UITableView *)scrollView;
-    if (tableView == self.videoTableView) {
+    if (tableView == self.videoTableView || tableView == self.favouriteTableView) {
         NSArray *visibleCells=[tableView visibleCells];
         CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
         VNProfileVideoTableViewCell *curCell = nil;

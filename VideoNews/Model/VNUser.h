@@ -14,13 +14,11 @@
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *avatar;
 @property (strong, nonatomic, readonly) NSString *fans_count;
+@property (strong, nonatomic, readonly) NSString *video_count;
+@property (strong, nonatomic, readonly) NSString *like_count;
+@property (strong, nonatomic, readonly) NSString *idol_count;
 @property (strong, nonatomic, readonly) NSString *timestamp;
-//@property (assign, nonatomic, readonly) BOOL isMainUser;
-//@property (assign, nonatomic, readonly) BOOL isSearch;
-//@property (strong, nonatomic, readonly) NSArray *collectNewsArr;
-//@property (strong, nonatomic, readonly) NSArray *commentArr;
-//@property (strong, nonatomic, readonly) NSArray *newsArr;
-//@property (strong, nonatomic, readonly) NSArray *replyCommentArr;
+@property (strong, nonatomic, readonly) NSString *userDescription;
 //for comment author
 @property (strong, nonatomic, readonly) NSString *location;
 @property (strong, nonatomic, readonly) NSString *sex;

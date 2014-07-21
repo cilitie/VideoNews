@@ -104,9 +104,7 @@
 		D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED79E195C121D00AD10E0 /* VNMedia.m */; };
 		D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */; };
 		D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */; };
-		D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FED7A8195EA6E100AD10E0 /* HomeNews.json */; };
 		D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */; };
-		D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */ = {isa = PBXBuildFile; fileRef = D6FED7AD195ED35D00AD10E0 /* Category.json */; };
 		D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FED7B0195ED38D00AD10E0 /* VNCategory.m */; };
 /* End PBXBuildFile section */
 
@@ -286,10 +284,8 @@
 		D6FED7A1195D1BD400AD10E0 /* VNQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNQuiltViewCell.m; sourceTree = "<group>"; };
 		D6FED7A5195D5CD500AD10E0 /* VNSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSearchViewController.h; sourceTree = "<group>"; };
 		D6FED7A6195D5CD600AD10E0 /* VNSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSearchViewController.m; sourceTree = "<group>"; };
-		D6FED7A8195EA6E100AD10E0 /* HomeNews.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HomeNews.json; sourceTree = "<group>"; };
 		D6FED7AA195ECD2800AD10E0 /* VNCategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCategoryCollectionViewCell.h; sourceTree = "<group>"; };
 		D6FED7AB195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCategoryCollectionViewCell.m; sourceTree = "<group>"; };
-		D6FED7AD195ED35D00AD10E0 /* Category.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Category.json; sourceTree = "<group>"; };
 		D6FED7AF195ED38D00AD10E0 /* VNCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCategory.h; sourceTree = "<group>"; };
 		D6FED7B0195ED38D00AD10E0 /* VNCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCategory.m; sourceTree = "<group>"; };
 		E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VideoNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -681,8 +677,6 @@
 				D64296C719652AC4004E218C /* VNCacheDataManager.m */,
 				D6FED790195C030D00AD10E0 /* VNKey.h */,
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
-				D6FED7A8195EA6E100AD10E0 /* HomeNews.json */,
-				D6FED7AD195ED35D00AD10E0 /* Category.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -795,7 +789,6 @@
 				269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */,
 				D642970B19668EE4004E218C /* UMSocialLocalizable.strings in Resources */,
 				D642970A19668EE4004E218C /* umFeedback.bundle in Resources */,
-				D6FED7AE195ED35D00AD10E0 /* Category.json in Resources */,
 				D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */,
@@ -813,7 +806,6 @@
 				D642971519668EE4004E218C /* UMSocialSDKResourcesNew.bundle in Resources */,
 				269755CA19710E75005DEDEE /* VNNotificationReplyTableViewCell.xib in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
-				D6FED7A9195EA6E100AD10E0 /* HomeNews.json in Resources */,
 				D64296D319653E62004E218C /* VNSearchTabHeaderView.xib in Resources */,
 				D642971819668EE4004E218C /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				D6676F7D197523A900F484FE /* EmojisList.plist in Resources */,

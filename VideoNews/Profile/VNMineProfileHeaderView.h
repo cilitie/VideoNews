@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ClickEditHandler)();
+typedef void(^ClickTabHandler)(NSUInteger index);
+
 @interface VNMineProfileHeaderView : UIView
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailImgView;
@@ -16,5 +19,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *favouriteCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *followCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fansCountLabel;
+
+@property (copy, nonatomic) ClickEditHandler editHandler;
+@property (copy, nonatomic) ClickTabHandler tabHandler;
 
 @end

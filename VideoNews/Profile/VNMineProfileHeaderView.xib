@@ -71,6 +71,9 @@
                             <state key="normal" title="编 辑 资 料">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="edit:" destination="iN0-l3-epB" eventType="touchUpInside" id="SNY-W3-z2u"/>
+                            </connections>
                         </button>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JOd-hQ-94v" userLabel="Label FavouriteNum">
                             <rect key="frame" x="85" y="100" width="70" height="24"/>
@@ -116,6 +119,10 @@
                         </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    <gestureRecognizers/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="d89-Er-g9I" appends="YES" id="fA6-Zz-cPl"/>
+                    </connections>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -129,5 +136,10 @@
                 <outlet property="videoCountLabel" destination="ZSX-MZ-occ" id="pWi-in-F5b"/>
             </connections>
         </view>
+        <tapGestureRecognizer id="d89-Er-g9I">
+            <connections>
+                <action selector="tap:" destination="iN0-l3-epB" id="fns-OJ-Oii"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
 </document>
