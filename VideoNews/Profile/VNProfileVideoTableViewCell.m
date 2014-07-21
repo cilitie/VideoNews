@@ -114,4 +114,8 @@
     }
 }
 
+- (void)startOrPausePlaying:(BOOL)isPlay {
+    
+}
+
 @end

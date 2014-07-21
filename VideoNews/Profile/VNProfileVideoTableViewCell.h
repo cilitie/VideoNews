@@ -13,5 +13,6 @@
 @property (strong, nonatomic) VNNews *news;
 
 - (void)reload;
+- (void)startOrPausePlaying:(BOOL)isPlay;
 
 @end
