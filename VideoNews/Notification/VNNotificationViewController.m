@@ -143,18 +143,18 @@
    // manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     
     
-    NSDictionary *parameters =@{@"key":@"/thumbnail/150-150QQ.png"};
+    NSDictionary *parameters =@{@"method":@"PUT",@"path":@"fashion-test/image/test.txt"};
     //,@"policy":@"value2",@"Signature":@"value"@"OSSAccessKeyId":@"bmJjNn9pYaftA46d",
     //NSDictionary *parameters =@{@"uid":@"/thumbnail/150-150QQ.png"};
-    NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"150-150QQ.png"], 1.0);//fashion-test.oss-cn-beijing.aliyuncs.com
+    //NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"150-150QQ.png"], 1.0);//fashion-test.oss-cn-beijing.aliyuncs.com
     
-    NSString *URLStr = [VNHost stringByAppendingString:@"upload_thumbnail.php"];
+    NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
     //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
     [manager POST:URLStr parameters:parameters
-constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-            [formData appendPartWithFileData :imageData name:@"file" fileName:@"150-150QQ.png" mimeType:@"image/jpeg"];
+//constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            //[formData appendPartWithFileData :imageData name:@"file" fileName:@"150-150QQ.png" mimeType:@"image/jpeg"];
     
-    }
+//    }
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
         NSLog(@"Success: %@", responseObject);
         
