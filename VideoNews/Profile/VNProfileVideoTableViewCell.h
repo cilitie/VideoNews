@@ -11,7 +11,9 @@
 @interface VNProfileVideoTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) VNNews *news;
+@property (assign, nonatomic) BOOL isPlaying;
 
 - (void)reload;
+- (void)startOrPausePlaying:(BOOL)isPlay;
 
 @end

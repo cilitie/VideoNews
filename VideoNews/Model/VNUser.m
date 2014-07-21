@@ -12,6 +12,10 @@ static NSString *kUid = @"uid";
 static NSString *kName = @"name";
 static NSString *kAvatar = @"avatar";
 static NSString *kFans_count = @"fans_count";
+static NSString *kVideo_count = @"video_count";
+static NSString *kLike_count = @"like_count";
+static NSString *kIdol_count = @"idol_count";
+static NSString *kUserDescription = @"description";
 static NSString *kTimestamp = @"timestamp";
 
 static NSString *kLocation = @"location";
@@ -37,6 +41,22 @@ static NSString *kIsMineIdol = @"isMineIdol";
 
 - (NSString *)fans_count {
     return makeSureNotNull([self.basicDict objectForKey:kFans_count]);
+}
+
+- (NSString *)video_count {
+    return makeSureNotNull([self.basicDict objectForKey:kVideo_count]);
+}
+
+- (NSString *)like_count {
+    return makeSureNotNull([self.basicDict objectForKey:kLike_count]);
+}
+
+- (NSString *)idol_count {
+    return makeSureNotNull([self.basicDict objectForKey:kIdol_count]);
+}
+
+- (NSString *)userDescription {
+    return makeSureNotNull([self.basicDict objectForKey:kUserDescription]);
 }
 
 - (NSString *)timestamp {
