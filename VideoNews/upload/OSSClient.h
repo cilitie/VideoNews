@@ -31,7 +31,8 @@ typedef enum {PRIVATE,PRIVATE_W,PUBLIC} OSSBucketPermission;
  */
 - (OSSClient *)initWithBucketBaseUrl:(NSURL *)bucketBaseUrl
                     bucketPermission:(OSSBucketPermission)bucketPermission
-                      signCalculator:(NSString *(^)(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options)) signCalculator;
+                      signCalculator:(NSString *(^)(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options)) signCalculator
+                                Date:(NSString *)date;
 
 /**
  * 上传文件

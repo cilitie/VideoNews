@@ -27,7 +27,8 @@
 #import "OSSClient.h"
 //OSS Bucket的基址，可以是自定义域名或者OSS默认域名
 //#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
-#define OSS_BUCKET_BASE_URL     "http://oss-cn-beijing.aliyuncs.com/"
+#define OSS_BUCKET_BASE_URL     "http://fashion-test.oss-cn-beijing.aliyuncs.com/"
+//#define OSS_BUCKET_BASE_URL     "http://oss-cn-beijing.aliyuncs.com/"
 //用于计算签名的服务端接口服务
 //#define OSS_SIGN_CALC_SERVICE   "http://10.32.179.161:8080/ossFileApi/sign.json"
 #define OSS_SIGN_CALC_SERVICE   "http://182.92.103.134:8080/engine/signature.php"
@@ -68,7 +69,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
-    [self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
+    //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     VNAuthUser *authUser = nil;
@@ -147,20 +148,13 @@
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *path=[NSString stringWithFormat:@"%@%@",bucket,filePath];
-    //NSData *postData = [path dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    //NSLog(@"%@",path);
-    //path=@"fashion-test/image/test.txt";
-    NSDictionary *parameters =@{@"method":@"PUT",@"path":path};
-    //@"fashion-test/image/test.txt"
-    //,@"policy":@"value2",@"Signature":@"value"@"OSSAccessKeyId":@"bmJjNn9pYaftA46d",
-    //NSDictionary *parameters =@{@"uid":@"/thumbnail/150-150QQ.png"};
-    //NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"150-150QQ.png"], 1.0);//fashion-test.oss-cn-beijing.aliyuncs.com
     
-    NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
+    NSDictionary *parameters =@{@"method":@"PUT",@"path":path};
+        NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
     //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
-        NSLog(@"Success: %@", responseObject);
+        //NSLog(@"Success: %@", responseObject);
               //获得签名信息
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             NSString *(^signCalculatorBlock)(OSSMethod ,NSString *,NSMutableDictionary *)=^(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options){
@@ -171,15 +165,21 @@
             };
 
             
-            OSSClient *ossClient=[[OSSClient alloc] initWithBucketBaseUrl:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",@OSS_BUCKET_BASE_URL,bucket]]
+            OSSClient *ossClient=[[OSSClient alloc] initWithBucketBaseUrl:[NSURL URLWithString:@OSS_BUCKET_BASE_URL]
                                                          bucketPermission:PRIVATE
-                                                           signCalculator:signCalculatorBlock];
+                                                           signCalculator:signCalculatorBlock
+                                                                     Date:[responseObject objectForKey:@"date"]
+                                  ];
+            
             NSData *data=[@"HELLO OBJECTIVE C - FROM IOS\n" dataUsingEncoding:NSASCIIStringEncoding];
             
             OSSMethodResult *result=nil;
             //NSMutableDictionary *options=nil;
             
             result=[ossClient putFile:filePath data:data options:nil];
+            //NSLog(@"%@",result.headers);
+            //NSLog(@"%@",result.error);
+            //NSLog(@"%@",result.data);
             if (result.error==nil && result.statusCode==200) {
                 NSLog(@"PUT OK");
             }

@@ -23,6 +23,7 @@
 @implementation OSSClient{
     NSURL *_bucketBaseUrl;
     OSSBucketPermission _bucketPermission;
+    NSString *_date;
     NSString *(^_signCalculator)(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options);
 }
 
@@ -32,11 +33,14 @@
 
 - (OSSClient *)initWithBucketBaseUrl:(NSURL *)bucketBaseUrl
                     bucketPermission:(OSSBucketPermission)bucketPermission
-                      signCalculator:(NSString *(^)(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options)) signCalculator{
+                      signCalculator:(NSString *(^)(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options)) signCalculator
+                                Date:(NSString *)date
+{
     if ((self=[super init])) {
         _bucketBaseUrl=bucketBaseUrl;
         _bucketPermission=bucketPermission;
         _signCalculator=signCalculator  ;
+        _date=date;
     }
     return self;
 }
@@ -82,19 +86,22 @@
     
     //只有当对私有bucket进行读写和对私有写的bucket的进行写的时候才需要签名校验
     if (_bucketPermission==PRIVATE || (_bucketPermission==PRIVATE_W && method==PUT)) {
-        [options setValue:[self gmtDateStrigOfNow] forKey:@"Date"];
+        //[options setValue:[self gmtDateStrigOfNow] forKey:@"Date"];
+        [options setValue:_date forKey:@"Date"];
         //[options setValue:@"Tue, 22 Jul 2014 05:09:24 GMT" forKeyPath:@"Date"];
         [options setValue:_signCalculator(method,ossFilePath,options) forKey:@"Authorization"];
+        //[options setValue:@"text/plain" forKeyPath:@"Content-Type"];
+        //[options setValue:@"oss-cn-beijing.aliyuncs.com" forKeyPath:@"Host"];
         //NSLog(@"%@",_signCalculator(method,ossFilePath,options));
         //[options setValue:@"OSS bmJjNn9pYaftA46d:Pmgka7VTZt8zmz1BHx0m0M/c7cw=" forKey:@"Authorization"];
     }
     
     //构造OSS文件的访问URL
-    //NSURL *url=[NSURL URLWithString: ossFilePath relativeToURL: _bucketBaseUrl];
+    NSURL *url=[NSURL URLWithString: ossFilePath relativeToURL: _bucketBaseUrl];
     //NSLog(@"%@",url);
-    NSString *urlStr=[NSString stringWithFormat:@"%@%@",_bucketBaseUrl,ossFilePath];
+    //NSString *urlStr=[NSString stringWithFormat:@"%@%@",_bucketBaseUrl,ossFilePath];
     //NSURL *url=[NSURL URLWithString:@"http://oss-cn-beijing.aliyuncs.com/fashion-test/image/test.txt"];
-    NSURL *url=[NSURL URLWithString:urlStr];
+    //NSURL *url=[NSURL URLWithString:urlStr];
     
     NSMutableURLRequest *request=[[NSMutableURLRequest alloc] init];
     NSLog(@"date:%@,signature:%@",[options objectForKey:@"Date"],[options objectForKey:@"Authorization"]);
@@ -116,7 +123,7 @@
 
 - (NSString *)gmtDateStrigOfNow{
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    //[df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     df.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss 'GMT'";
     //df.dateFormat = @"EE, dd MM yyyy HH:mm:ss GMT";
