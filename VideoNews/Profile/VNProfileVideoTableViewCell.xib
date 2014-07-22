@@ -51,6 +51,9 @@
                                 <state key="normal" image="ellipse">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="comment:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="sxQ-mV-xAs"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="30-30comment" translatesAutoresizingMaskIntoConstraints="NO" id="dzN-dZ-VGP">
                                 <rect key="frame" x="17" y="349" width="15" height="15"/>
@@ -69,6 +72,9 @@
                                 <state key="normal" image="ellipse">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="like:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="k3r-7f-iE1"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="30-30heart" translatesAutoresizingMaskIntoConstraints="NO" id="Gn2-Er-N2F">
                                 <rect key="frame" x="81" y="349" width="15" height="15"/>
@@ -87,6 +93,9 @@
                                 <state key="normal" image="ellipse">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="more:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="UVY-yP-gZ5"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="50-30dots" translatesAutoresizingMaskIntoConstraints="NO" id="ZWX-g2-U07">
                                 <rect key="frame" x="253" y="349" width="25" height="15"/>

@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ClickEventHandler)();
+
 @interface VNProfileVideoTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) VNNews *news;
 @property (assign, nonatomic) BOOL isPlaying;
+@property (copy, nonatomic) ClickEventHandler likeHandler;
+@property (copy, nonatomic) ClickEventHandler moreHandler;
+@property (copy, nonatomic) ClickEventHandler commentHandler;
 
 - (void)reload;
 - (void)startOrPausePlaying:(BOOL)isPlay;

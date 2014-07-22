@@ -47,7 +47,7 @@
         <!--News Detail View Controller-->
         <scene sceneID="1i7-LL-VH9">
             <objects>
-                <viewController id="pds-Bb-2jX" customClass="VNNewsDetailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VNNewsDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pds-Bb-2jX" customClass="VNNewsDetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9tn-9h-mgg"/>
                         <viewControllerLayoutGuide type="bottom" id="LId-MT-gZn"/>

@@ -291,6 +291,8 @@ static NSString *shareStr;
     switch (self.controllerType) {
         case SourceViewControllerTypeCategory:
             break;
+        case SourceViewControllerTypeProfile:
+            break;
         default:
             self.navigationController.navigationBarHidden = NO;
             break;

@@ -12,6 +12,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "VNMineProfileHeaderView.h"
 #import "VNProfileFansTableViewCell.h"
+#import "VNNewsDetailViewController.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate> {
     BOOL userScrolling;
@@ -433,6 +434,14 @@ static BOOL firstLoading = YES;
             [cell startOrPausePlaying:YES];
             firstLoading = NO;
         }
+        cell.commentHandler = ^(){
+            VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+            newsDetailViewController.news = news;
+            newsDetailViewController.hidesBottomBarWhenPushed = YES;
+            newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+            [self.navigationController pushViewController:newsDetailViewController animated:YES];
+        };
+        
         return cell;
     }
     if (tableView == self.favouriteTableView) {
@@ -444,6 +453,14 @@ static BOOL firstLoading = YES;
             [cell startOrPausePlaying:YES];
             firstLoading = NO;
         }
+        cell.commentHandler = ^(){
+            VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+            newsDetailViewController.news = news;
+            newsDetailViewController.hidesBottomBarWhenPushed = YES;
+            newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+            [self.navigationController pushViewController:newsDetailViewController animated:YES];
+        };
+        
         return cell;
     }
     if (tableView == self.followTableView) {
@@ -483,7 +500,22 @@ static BOOL firstLoading = YES;
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if (tableView == self.videoTableView) {
+        VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+        VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
+        newsDetailViewController.news = news;
+        newsDetailViewController.hidesBottomBarWhenPushed = YES;
+        newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+        [self.navigationController pushViewController:newsDetailViewController animated:YES];
+    }
+    else if (tableView == self.favouriteTableView) {
+        VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+        VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
+        newsDetailViewController.news = news;
+        newsDetailViewController.hidesBottomBarWhenPushed = YES;
+        newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+        [self.navigationController pushViewController:newsDetailViewController animated:YES];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -23,6 +23,10 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelHeightLC;
 
+- (IBAction)like:(id)sender;
+- (IBAction)more:(id)sender;
+- (IBAction)comment:(id)sender;
+
 @end
 
 @implementation VNProfileVideoTableViewCell
@@ -129,4 +133,21 @@
     }
 }
 
+- (IBAction)like:(id)sender {
+    if (self.likeHandler) {
+        self.likeHandler();
+    }
+}
+
+- (IBAction)more:(id)sender {
+    if (self.moreHandler) {
+        self.moreHandler();
+    }
+}
+
+- (IBAction)comment:(id)sender {
+    if (self.commentHandler) {
+        self.commentHandler();
+    }
+}
 @end

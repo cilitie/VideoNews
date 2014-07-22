@@ -116,7 +116,7 @@
     if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewController"]) {
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
         //newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
-        newsDetailViewController.news=_curNews;
+        newsDetailViewController.news = _curNews;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
         newsDetailViewController.controllerType = SourceViewControllerTypeHome;
     }
