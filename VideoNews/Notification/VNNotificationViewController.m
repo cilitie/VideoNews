@@ -23,7 +23,14 @@
 
 #import "VNHTTPRequestManager.h"
 #import "AFNetworking.h"
-
+////上传相关
+#import "OSSClient.h"
+//OSS Bucket的基址，可以是自定义域名或者OSS默认域名
+//#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
+#define OSS_BUCKET_BASE_URL     "http://oss-cn-beijing.aliyuncs.com/"
+//用于计算签名的服务端接口服务
+//#define OSS_SIGN_CALC_SERVICE   "http://10.32.179.161:8080/ossFileApi/sign.json"
+#define OSS_SIGN_CALC_SERVICE   "http://182.92.103.134:8080/engine/signature.php"
 
 //#import "VNNotificationTableViewController.h"
 
@@ -61,7 +68,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
-    //[self uploadImage];
+    [self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     VNAuthUser *authUser = nil;
@@ -136,14 +143,15 @@
 }
 
 
--(void)uploadImage
+-(void)uploadImage:(NSString *)filePath Bucket:(NSString *)bucket
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    
-   // manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-    
-    
-    NSDictionary *parameters =@{@"method":@"PUT",@"path":@"fashion-test/image/test.txt"};
+    NSString *path=[NSString stringWithFormat:@"%@%@",bucket,filePath];
+    //NSData *postData = [path dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    //NSLog(@"%@",path);
+    //path=@"fashion-test/image/test.txt";
+    NSDictionary *parameters =@{@"method":@"PUT",@"path":path};
+    //@"fashion-test/image/test.txt"
     //,@"policy":@"value2",@"Signature":@"value"@"OSSAccessKeyId":@"bmJjNn9pYaftA46d",
     //NSDictionary *parameters =@{@"uid":@"/thumbnail/150-150QQ.png"};
     //NSData *imageData = UIImageJPEGRepresentation([UIImage imageNamed:@"150-150QQ.png"], 1.0);//fashion-test.oss-cn-beijing.aliyuncs.com
@@ -151,17 +159,35 @@
     NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
     //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
     [manager POST:URLStr parameters:parameters
-//constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-            //[formData appendPartWithFileData :imageData name:@"file" fileName:@"150-150QQ.png" mimeType:@"image/jpeg"];
-    
-//    }
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
         NSLog(@"Success: %@", responseObject);
-        
-        
+              //获得签名信息
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            NSString *(^signCalculatorBlock)(OSSMethod ,NSString *,NSMutableDictionary *)=^(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options){
+                NSLog(@"GET SIGN FROM SERVER");
+                //return @"OSS bmJjNn9pYaftA46d:yh55h8wESbuoC0nET7BJt0qTHps=";
+                //return getSignFromServer(method,ossFilePath,options);
+                return [responseObject objectForKey:@"signature"];
+            };
+
+            
+            OSSClient *ossClient=[[OSSClient alloc] initWithBucketBaseUrl:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",@OSS_BUCKET_BASE_URL,bucket]]
+                                                         bucketPermission:PRIVATE
+                                                           signCalculator:signCalculatorBlock];
+            NSData *data=[@"HELLO OBJECTIVE C - FROM IOS\n" dataUsingEncoding:NSASCIIStringEncoding];
+            
+            OSSMethodResult *result=nil;
+            //NSMutableDictionary *options=nil;
+            
+            result=[ossClient putFile:filePath data:data options:nil];
+            if (result.error==nil && result.statusCode==200) {
+                NSLog(@"PUT OK");
+            }
+
+        }
     } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
-        NSLog(@"%@",operation.request.URL.absoluteString);
-        NSLog(@"%@",operation);
+        //NSLog(@"%@",operation.request.URL.absoluteString);
+        //NSLog(@"%@",operation);
         NSLog(@"Error: %@", error);
         
         
