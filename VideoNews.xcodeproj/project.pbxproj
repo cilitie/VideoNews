@@ -23,6 +23,7 @@
 		269755CA19710E75005DEDEE /* VNNotificationReplyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755C819710E75005DEDEE /* VNNotificationReplyTableViewCell.xib */; };
 		269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */; };
 		269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */; };
+		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
 		D64296C51964FB05004E218C /* VNResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C41964FB05004E218C /* VNResultViewController.m */; };
 		D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C719652AC4004E218C /* VNCacheDataManager.m */; };
 		D64296CB19652FB6004E218C /* VNSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CA19652FB6004E218C /* VNSearchField.m */; };
@@ -150,6 +151,8 @@
 		269755CB19712580005DEDEE /* VNNotificationUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationUserTableViewCell.h; sourceTree = "<group>"; };
 		269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationUserTableViewCell.m; sourceTree = "<group>"; };
 		269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationUserTableViewCell.xib; sourceTree = "<group>"; };
+		269B0825197DF96400CF4ADC /* OSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
+		269B0826197DF96400CF4ADC /* OSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
 		D64296C31964FB05004E218C /* VNResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNResultViewController.h; sourceTree = "<group>"; };
 		D64296C41964FB05004E218C /* VNResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNResultViewController.m; sourceTree = "<group>"; };
@@ -380,6 +383,15 @@
 			path = Notification;
 			sourceTree = "<group>";
 		};
+		269B0824197DF96400CF4ADC /* upload */ = {
+			isa = PBXGroup;
+			children = (
+				269B0825197DF96400CF4ADC /* OSSClient.h */,
+				269B0826197DF96400CF4ADC /* OSSClient.m */,
+			);
+			path = upload;
+			sourceTree = "<group>";
+		};
 		D64296D919668EE4004E218C /* Umeng */ = {
 			isa = PBXGroup;
 			children = (
@@ -587,6 +599,7 @@
 		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
 			isa = PBXGroup;
 			children = (
+				269B0824197DF96400CF4ADC /* upload */,
 				D6676F86197806B900F484FE /* Profile */,
 				D6676F63196E81BB00F484FE /* Utility */,
 				26962049196E75DF00EA06B3 /* Notification */,
@@ -887,6 +900,7 @@
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
+				269B0827197DF96400CF4ADC /* OSSClient.m in Sources */,
 				269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
