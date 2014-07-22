@@ -11,6 +11,7 @@
 #import "SVPullToRefresh.h"
 #import "UIImageView+AFNetworking.h"
 #import "VNMineProfileHeaderView.h"
+#import "VNProfileFansTableViewCell.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate> {
     BOOL userScrolling;
@@ -23,13 +24,17 @@
 @property (weak, nonatomic) IBOutlet UITableView *favouriteTableView;
 @property (weak, nonatomic) IBOutlet UITableView *followTableView;
 @property (weak, nonatomic) IBOutlet UITableView *fansTableView;
-//@property (strong, nonatomic) VNMineProfileHeaderView *headerView;
 
 @property (strong, nonatomic) NSMutableArray *mineVideoArr;
 @property (strong, nonatomic) NSMutableArray *favVideoArr;
 @property (strong, nonatomic) NSMutableArray *followArr;
 @property (strong, nonatomic) NSMutableArray *fansArr;
+//为了检测用户与其他user的关系
+@property (strong, nonatomic) NSMutableArray *idolListArr;
 @property (strong, nonatomic) VNUser *mineInfo;
+@property (strong, nonatomic) NSString *followLastPageTime;
+@property (strong, nonatomic) NSString *fansLastPageTime;
+
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
@@ -48,6 +53,9 @@ static BOOL firstLoading = YES;
         _favVideoArr = [NSMutableArray array];
         _followArr = [NSMutableArray array];
         _fansArr = [NSMutableArray array];
+        _idolListArr = [NSMutableArray array];
+        _followLastPageTime = nil;
+        _fansLastPageTime = nil;
     }
     return self;
 }
@@ -115,30 +123,48 @@ static BOOL firstLoading = YES;
     
     videoHeaderView.editHandler = ^(){};
     videoHeaderView.tabHandler = ^(NSUInteger index){
+        for (VNProfileVideoTableViewCell *cell in [weakSelf.videoTableView visibleCells]) {
+            if (cell.isPlaying) {
+                [cell startOrPausePlaying:NO];
+            }
+        }
+        for (VNProfileVideoTableViewCell *cell in [weakSelf.favouriteTableView visibleCells]) {
+            if (cell.isPlaying) {
+                [cell startOrPausePlaying:NO];
+            }
+        }
         firstLoading = YES;
         switch (index) {
             case 0: {
+                weakSelf.videoTableView.hidden = NO;
                 weakSelf.favouriteTableView.hidden = YES;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = YES;
-                weakSelf.videoTableView.hidden = NO;
                 [weakSelf.videoTableView triggerPullToRefresh];
             }
                 break;
             case 1: {
                 weakSelf.videoTableView.hidden = YES;
+                weakSelf.favouriteTableView.hidden = NO;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = YES;
-                weakSelf.favouriteTableView.hidden = NO;
                 [weakSelf.favouriteTableView triggerPullToRefresh];
             }
                 break;
             case 2: {
-                
+                weakSelf.videoTableView.hidden = YES;
+                weakSelf.favouriteTableView.hidden = YES;
+                weakSelf.followTableView.hidden = NO;
+                weakSelf.fansTableView.hidden = YES;
+                [weakSelf.followTableView triggerPullToRefresh];
             }
                 break;
             case 3: {
-                
+                weakSelf.videoTableView.hidden = YES;
+                weakSelf.favouriteTableView.hidden = YES;
+                weakSelf.followTableView.hidden = YES;
+                weakSelf.fansTableView.hidden = NO;
+                [weakSelf.fansTableView triggerPullToRefresh];
             }
                 break;
         }
@@ -241,6 +267,121 @@ static BOOL firstLoading = YES;
 
         }];
     }];
+    
+    //我的关注
+    self.followTableView.tableHeaderView = followHeaderView;
+    [self.followTableView registerNib:[UINib nibWithNibName:@"VNProfileFansTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFollowTableViewCellIdentifier"];
+    
+    [self.followTableView addPullToRefreshWithActionHandler:^{
+        // FIXME: Hard code
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+            [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.followArr removeAllObjects];
+                    [weakSelf.followArr addObjectsFromArray:userArr];
+                    weakSelf.followLastPageTime = lastTimeStamp;
+                    [weakSelf.followTableView reloadData];
+                }
+                [weakSelf.followTableView.pullToRefreshView stopAnimating];
+            }];
+        });
+    }];
+    
+    [self.followTableView addInfiniteScrollingWithActionHandler:^{
+        NSString *moreTimeStamp = nil;
+        if (self.followLastPageTime) {
+            moreTimeStamp = self.followLastPageTime;
+        }
+        else {
+            moreTimeStamp = [VNHTTPRequestManager timestamp];
+        }
+        
+        [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:moreTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                [weakSelf.followArr addObjectsFromArray:userArr];
+                weakSelf.followLastPageTime = lastTimeStamp;
+                [weakSelf.followTableView reloadData];
+            }
+            [weakSelf.followTableView.infiniteScrollingView stopAnimating];
+        }];
+    }];
+    
+    //我的粉丝
+    self.fansTableView.tableHeaderView = fansHeaderView;
+    [self.fansTableView registerNib:[UINib nibWithNibName:@"VNProfileFansTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFansTableViewCellIdentifier"];
+    
+    [self.fansTableView addPullToRefreshWithActionHandler:^{
+        // FIXME: Hard code
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [VNHTTPRequestManager idolListForUser:self.uid userToken:self.user_token completion:^(NSArray *idolArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (idolArr.count) {
+                    [self.idolListArr removeAllObjects];
+                    [self.idolListArr addObjectsFromArray:idolArr];
+                }
+                NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        for (VNUser *user in userArr) {
+                            if ([self.idolListArr containsObject:user.uid]) {
+                                user.isMineIdol = YES;
+                            }
+                            else {
+                                user.isMineIdol = NO;
+                            }
+                        }
+                        [weakSelf.fansArr removeAllObjects];
+                        [weakSelf.fansArr addObjectsFromArray:userArr];
+                        weakSelf.fansLastPageTime = lastTimeStamp;
+                        [weakSelf.fansTableView reloadData];
+                    }
+                    [weakSelf.fansTableView.pullToRefreshView stopAnimating];
+                }];
+            }];
+        });
+    }];
+    
+    [self.fansTableView addInfiniteScrollingWithActionHandler:^{
+        NSString *moreTimeStamp = nil;
+        if (weakSelf.fansLastPageTime ) {
+            moreTimeStamp = weakSelf.fansLastPageTime ;
+        }
+        else {
+            moreTimeStamp = [VNHTTPRequestManager timestamp];
+        }
+        
+        [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:moreTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                for (VNUser *user in userArr) {
+                    if ([self.idolListArr containsObject:user.uid]) {
+                        user.isMineIdol = YES;
+                    }
+                    else {
+                        user.isMineIdol = NO;
+                    }
+                }
+                [weakSelf.fansArr addObjectsFromArray:userArr];
+                weakSelf.fansLastPageTime = lastTimeStamp;
+                [weakSelf.fansTableView reloadData];
+            }
+            [weakSelf.fansTableView.infiniteScrollingView stopAnimating];
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -273,6 +414,12 @@ static BOOL firstLoading = YES;
     if (tableView == self.favouriteTableView) {
         return self.favVideoArr.count;
     }
+    if (tableView == self.followTableView) {
+        return self.followArr.count;
+    }
+    if (tableView == self.fansTableView) {
+        return self.fansArr.count;
+    }
     return 0;
 }
 
@@ -299,6 +446,36 @@ static BOOL firstLoading = YES;
         }
         return cell;
     }
+    if (tableView == self.followTableView) {
+        VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNProfileFollowTableViewCellIdentifier"];
+        VNUser *user = [self.followArr objectAtIndex:indexPath.row];
+        cell.user = user;
+        [cell reload];
+        return cell;
+    }
+    if (tableView == self.fansTableView) {
+        VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNProfileFansTableViewCellIdentifier"];
+        VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
+        cell.user = user;
+        [cell reload];
+        __weak typeof(cell) weakCell = cell;
+        cell.followHandler = ^(){
+            [VNHTTPRequestManager followIdol:user.uid follower:self.uid userToken:self.user_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                    weakCell.followBtn.hidden = YES;
+                    weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }
+                else {
+                    [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                }
+            }];
+        };
+        return cell;
+    }
     
     return nil;
 }
@@ -317,6 +494,9 @@ static BOOL firstLoading = YES;
     if (tableView == self.favouriteTableView) {
         VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
         return [self cellHeightFor:news];
+    }
+    if (tableView == self.followTableView || tableView == self.fansTableView) {
+        return 50.0;
     }
     return 0;
 }

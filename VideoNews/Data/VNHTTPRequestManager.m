@@ -683,8 +683,8 @@ static int pagesize = 10;
     }];
 }
 
-//http://zmysp.sinaapp.com/userInfo.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001
 + (void)userInfoForUser:(NSString *)uid completion:(void(^)(VNUser *userInfo, NSError *error))completion {
+    //http://zmysp.sinaapp.com/userInfo.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001
     NSString *URLStr = [VNHost stringByAppendingString:@"userInfo.php"];
     NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp]};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -705,6 +705,39 @@ static int pagesize = 10;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(nil, error);
+        }
+    }];
+}
+
++ (void)userListForUser:(NSString *)uid type:(NSString *)type pageTime:(NSString *)pageTime completion:(void(^)(NSArray *userArr, NSString *lastTimeStamp, NSError *error))completion {
+    //http://zmysp.sinaapp.com/getlistByUser.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=idols&pagesize=10$pagetime=1404232200
+    //http://zmysp.sinaapp.com/getlistByUser.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=fans&pagesize=10$pagetime=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"cmd": type, @"pagesize": [NSNumber numberWithInt:pagesize], @"pagetime": pageTime};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        NSMutableArray *userArr = [NSMutableArray array];
+        VNUser *user = nil;
+        NSString *lastTimeStamp = nil;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [responseObject[@"status"] boolValue];
+            if (responseStatus) {
+                NSArray *resultArr = responseObject[@"result"][@"list"];
+                lastTimeStamp = responseObject[@"result"][@"lastTimestamp"];
+                if (resultArr.count) {
+                    for (NSDictionary *dict in resultArr) {
+                        user = [[VNUser alloc] initWithDict:dict];
+                        [userArr addObject:user];
+                    }
+                }
+            }
+        }
+        if (completion) {
+            completion(userArr, lastTimeStamp, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, nil, error);
         }
     }];
 }

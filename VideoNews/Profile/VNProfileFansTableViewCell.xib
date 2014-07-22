@@ -1,18 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5023" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="VNProfileFansTableViewCell">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KGk-i7-Jjw" customClass="VNProfileFansTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Kt4-gE-BBx">
+                        <rect key="frame" x="20" y="10" width="30" height="30"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="L0m-w4-VnB"/>
+                            <constraint firstAttribute="width" constant="30" id="bh2-1k-y9M"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cq0-1S-n8s">
+                        <rect key="frame" x="62" y="16" width="0.0" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="18" id="3nv-7Z-LJA"/>
+                            <constraint firstAttribute="width" id="hbQ-sc-QOE"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.37647062540054321" green="0.38823533058166504" blue="0.40000003576278687" alpha="1" colorSpace="deviceRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="25-25Female" translatesAutoresizingMaskIntoConstraints="NO" id="vqp-Pg-t6t">
+                        <rect key="frame" x="67" y="19" width="12" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </imageView>
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9GY-aT-LpD">
+                        <rect key="frame" x="260" y="12" width="50" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" red="0.80392163991928101" green="0.098039224743843079" blue="0.14117647707462311" alpha="1" colorSpace="deviceRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <state key="normal" title="关注">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <connections>
+                            <action selector="follow:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="fRT-hk-AgB"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Cq0-1S-n8s" firstAttribute="leading" secondItem="Kt4-gE-BBx" secondAttribute="trailing" constant="12" id="N9J-Ts-BDg"/>
+                    <constraint firstItem="vqp-Pg-t6t" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="19" id="Sbs-Kf-p8x"/>
+                    <constraint firstItem="Kt4-gE-BBx" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Umf-cf-AUw"/>
+                    <constraint firstItem="vqp-Pg-t6t" firstAttribute="leading" secondItem="Cq0-1S-n8s" secondAttribute="trailing" constant="5" id="gOv-sa-UlK"/>
+                    <constraint firstItem="Cq0-1S-n8s" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="oV9-mh-Icb"/>
+                    <constraint firstItem="Kt4-gE-BBx" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="yyW-am-6UK"/>
+                </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="followBtn" destination="9GY-aT-LpD" id="H02-8M-rid"/>
+                <outlet property="genderImgView" destination="vqp-Pg-t6t" id="imt-Vj-5cW"/>
+                <outlet property="nameLabel" destination="Cq0-1S-n8s" id="Zoo-fZ-1g5"/>
+                <outlet property="nameLabelWidthLC" destination="hbQ-sc-QOE" id="FCf-Pf-2Ib"/>
+                <outlet property="thumbnailImgView" destination="Kt4-gE-BBx" id="maw-b9-Cyv"/>
+            </connections>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="25-25Female" width="12" height="12"/>
+    </resources>
 </document>
