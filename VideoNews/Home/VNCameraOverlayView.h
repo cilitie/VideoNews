@@ -66,5 +66,13 @@
 
 - (void)setTorchBtnHidden:(BOOL)hidden;
 - (void)setAlbumAndSubmitBtnStatus:(BOOL)enabled;
+- (void)setTrashBtnEnabled:(BOOL)enable;
+- (void)updateProgressViewToPercentage:(CGFloat)per;
+
+- (void)showCombiningMsg;
+- (void)hideCombiningMsg;
+
+- (void)setProgressViewBlinking:(BOOL)blink;
+- (void)setProgressTimeArr:(NSArray *)timeArr;
 
 @end

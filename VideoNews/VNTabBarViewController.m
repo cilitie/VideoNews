@@ -9,8 +9,9 @@
 #import "VNTabBarViewController.h"
 #import "VNAuthUser.h"
 #import "VNLoginViewController.h"
-#import "VNCustomizedImagePickerController.h"
+#import "VNVideoCaptureViewController.h"
 #import "VNCustomizedAlbumPickerController.h"
+#import "VNDraftListController.h"
 #import "VNCustomizedActionSheet.h"
 
 @interface VNTabBarViewController () <UIAlertViewDelegate, VNCustomizedActionSheetDelegate>
@@ -144,6 +145,11 @@
 {
     [MobClick event:@"video_record" label:@"draft"];
     
+    VNDraftListController *draftCtl = [[VNDraftListController alloc] init];
+    
+    UINavigationController *draftNav = [[UINavigationController alloc] initWithRootViewController:draftCtl];
+    
+    [self presentViewController:draftNav animated:YES completion:nil];
 }
 
 - (void)cameraBtnDidPressed
@@ -151,8 +157,10 @@
     [MobClick event:@"video_record" label:@"camera"];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         
-        VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
-        [self presentViewController:picker animated:YES completion:nil];
+        VNVideoCaptureViewController *captureCtl = [[VNVideoCaptureViewController alloc] init];
+        UINavigationController *videoNav = [[UINavigationController alloc] initWithRootViewController:captureCtl];
+        videoNav.navigationBarHidden = YES;
+        [self presentViewController:videoNav animated:YES completion:nil];
         
     }else {
         

@@ -18,7 +18,7 @@
 @property (nonatomic ,strong) AVPlayer *videoPlayer;                  //播放视频player
 
 @property (nonatomic, strong) UIImageView *videoCoverImgView;        //封面展示
-
+@property (nonatomic, strong) VNVideoFramesView *videoFramesView;    //缩略图
 @end
 
 @implementation VNVideoCoverSettingController
@@ -31,7 +31,7 @@
 {
     if (!_videoPlayView) {
         _videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
-        _videoPlayView.backgroundColor = [UIColor clearColor];
+        _videoPlayView.backgroundColor = [UIColor lightGrayColor];
     }
     return _videoPlayView;
 }
@@ -89,15 +89,16 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     [self.view addSubview:self.videoPlayView];
 
     //video cover view
-    [self setVideoCoverWithTime:0];
     [self.view addSubview:self.videoCoverImgView];
     
     //generate images of video
-    VNVideoFramesView *videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, 535, 320, 30) andVideoPath:self.videoPath];
-    videoFramesView.delegate = self;
-    videoFramesView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:videoFramesView];
+    _videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, 535, 320, 30) andVideoPath:self.videoPath];
+    _videoFramesView.delegate = self;
+    _videoFramesView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_videoFramesView];
     
+    [self setVideoCoverWithTime:0];
+
     [self playVideo];
 }
 
@@ -150,17 +151,23 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //play a video.
 - (void)playVideo
 {
-    NSURL *videoUrl = [NSURL fileURLWithPath:self.videoPath];
-    AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
-    AVPlayerItem * newPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+    __weak VNVideoCoverSettingController *weakSelf = self;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:newPlayerItem];
-    
-    self.videoPlayer = [AVPlayer playerWithPlayerItem:newPlayerItem];
-    [self.videoPlayer addObserver:self forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        NSURL *videoUrl = [NSURL fileURLWithPath:weakSelf.videoPath];
+        AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+        AVPlayerItem * newPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:weakSelf
+                                                 selector:@selector(playerItemDidReachEnd:)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:newPlayerItem];
+        
+        weakSelf.videoPlayer = [AVPlayer playerWithPlayerItem:newPlayerItem];
+        [weakSelf.videoPlayer addObserver:weakSelf forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+        
+    });
 }
 
 /**
@@ -186,7 +193,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     CGImageRef halfWayImage = [imageGenerator copyCGImageAtTime:timeFrame actualTime:&actualTime error:&error];
     if (halfWayImage != NULL) {
 
-        self.videoCoverImgView.image = [UIImage imageWithCGImage:halfWayImage];
+        UIImage *img = [UIImage imageWithCGImage:halfWayImage];
+        self.videoCoverImgView.image = img;
+        [_videoFramesView setThumbCoverImage:img];
         CGImageRelease(halfWayImage);
     }
 }

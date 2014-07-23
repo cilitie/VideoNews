@@ -7,6 +7,8 @@
 //
 
 #import "VNCustomizedAlbumPickerController.h"
+#import <AVFoundation/AVFoundation.h>
+#import "VNAlbumVideoEditController.h"
 
 @interface VNCustomizedAlbumPickerController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -23,6 +25,14 @@
         self.mediaTypes = @[@"public.movie"];
         self.delegate = self;
         
+        BOOL _isDir;
+        NSString *fileDir = [VNUtility getNSCachePath:@"VideoFiles"];
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:fileDir isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
+            }
+        }
     }
     return self;
 }
@@ -49,14 +59,40 @@
     
     if ([mediaType isEqualToString:@"public.movie"] && picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary){
         
+        NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
+        AVAsset *anAsset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+        float currVideoDuration = anAsset.duration.value / anAsset.duration.timescale;
         
-//        UIImagePickerControllerMediaType = "public.movie";
-//        UIImagePickerControllerMediaURL = "file:///private/var/mobile/Applications/C5798254-1C98-42D7-B7DE-910E873B8196/tmp/trim.B51BD016-D293-4D52-B855-05EEC4D07184.MOV";
-//        UIImagePickerControllerReferenceURL = "assets-library://asset/asset.MOV?id=8DA75856-346A-4BAA-9EE2-A14A10D5D2B9&ext=MOV";
-        
+        if (currVideoDuration < 5.0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~视频时长至少要5秒哦~~" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+            [self popViewControllerAnimated:YES];
+        }else {
+            __weak VNCustomizedAlbumPickerController *weakSelf = self;
+            NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles"];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
+                
+                NSString *filePath = [videoPath stringByAppendingPathComponent:@"VN_Video_Final.mov"];
+                if ([videoData writeToFile:filePath atomically:YES]) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSLog(@"filePath: %@",filePath);
+                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath];
+                        [weakSelf pushViewController:editCtl animated:YES];
+                    });
+                }
+            });
+            
+        }
     }
     
 }
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 @end

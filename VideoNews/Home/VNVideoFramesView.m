@@ -14,6 +14,8 @@
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, assign) CGFloat duration;
 
+@property (nonatomic, strong) UIImageView *showImgView;    //正在展示的缩略图
+
 @end
 
 @implementation VNVideoFramesView
@@ -26,13 +28,25 @@
     if (self) {
         _videoPath = videoPath;
         
-        [self generateImagesOfVideo];
-        
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
         panGesture.delegate = self;
         [self addGestureRecognizer:panGesture];
+        
+        _showImgView = [[UIImageView alloc] initWithFrame:CGRectMake(-3, -3, 26, 36)];
+        _showImgView.backgroundColor = [UIColor clearColor];
+        _showImgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        _showImgView.layer.borderWidth = 1.5;
+        _showImgView.contentMode = UIViewContentModeScaleToFill;
+        [self addSubview:_showImgView];
+        
+        [self generateImagesOfVideo];
     }
     return self;
+}
+
+- (void)setThumbCoverImage:(UIImage *)img
+{
+    _showImgView.image = img;
 }
 
 /**
@@ -46,7 +60,8 @@
     imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
     imageGenerator.maximumSize = CGSizeMake(60, 60);
     
-    int picWidth = 30;
+    int picWidth = 21;
+    int picHeight = 30;
     
     CGFloat durationSeconds = CMTimeGetSeconds([myAsset duration]);
     self.duration = durationSeconds;
@@ -58,10 +73,9 @@
     int time4Pic = 0;
     NSError *error;
     CMTime actualTime;
-    int prefreWidth=0;
     
     //generate frames.
-    for (int i=1, ii = 0; i<= picsCnt; i++){
+    for (int i=0, ii = 0; i< picsCnt; i++){
         
         time4Pic = i * picWidth;
         
@@ -77,26 +91,17 @@
         
         CGRect currentFrame = tmp.frame;
         currentFrame.origin.x = ii * picWidth;
-        
-        currentFrame.size.width=picWidth;
-        prefreWidth += currentFrame.size.width;
-        
-        if( i == picsCnt-1){
-            currentFrame.size.width-=6;
-        }
+        currentFrame.size.width = picWidth;
+        currentFrame.size.height = picHeight;
+
         tmp.frame = currentFrame;
-        int all = (ii+1)*tmp.frame.size.width;
-        
-        if (all > 320){
-            int delta = all - 320;
-            currentFrame.size.width -= delta;
-        }
         
         ii++;
         
         __weak VNVideoFramesView *weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf addSubview:tmp];
+            [weakSelf bringSubviewToFront:_showImgView];
         });
         
         CGImageRelease(halfWayImage);
@@ -107,9 +112,30 @@
 - (void) handlePan:(UIPanGestureRecognizer *)gesture
 {
     CGFloat x = [gesture locationInView:self].x;
+    
+    //adjust the frame of showimageview
+    CGRect frame = _showImgView.frame;
+    if (x < 0) {
+        frame.origin.x = 0;
+    }else {
+        frame.origin.x = x;
+    }
+    
+    if (x > self.frame.size.width - 21) {
+        frame.origin.x = self.frame.size.width - 21;
+    }else {
+        frame.origin.x = x;
+    }
+    _showImgView.frame = frame;
+    
     if (delegate && [delegate respondsToSelector:@selector(didSelecteTime:)]) {
         [delegate didSelecteTime:x / self.frame.size.width * self.duration];
     }
+}
+
+- (void)hideDisplayImageView
+{
+    _showImgView.hidden = YES;
 }
 
 @end

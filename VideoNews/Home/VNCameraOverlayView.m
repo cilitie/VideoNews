@@ -7,13 +7,20 @@
 //
 
 #import "VNCameraOverlayView.h"
+#import "VNProgressView.h"
 
 @interface VNCameraOverlayView () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UIView *progressSliderView;
 @property (nonatomic, strong) UIButton *torchBtn;
 
+@property (nonatomic, strong) UIButton *trashBtn;
+
 @property (nonatomic, strong) UIButton *submitBtn;
+
+@property (nonatomic, strong) VNProgressView *progressView;
+
+@property (nonatomic, strong) UILabel *msgLbl;
+
 @end
 
 @implementation VNCameraOverlayView
@@ -21,16 +28,6 @@
 @synthesize delegate;
 
 #pragma mark - Initialization
-
-- (UIView *)progressSliderView
-{
-    if (!_progressSliderView) {
-        _progressSliderView = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, 320, 10)];
-        _progressSliderView.backgroundColor = [UIColor orangeColor];
-        _progressSliderView.userInteractionEnabled = NO;
-    }
-    return _progressSliderView;
-}
 
 - (UIButton *)torchBtn
 {
@@ -44,6 +41,21 @@
         _torchBtn.selected = NO;
     }
     return _torchBtn;
+}
+
+- (UIButton *)trashBtn
+{
+    if (!_trashBtn) {
+        _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 45, 90, 90)];
+        [_trashBtn setTitle:@"Back" forState:UIControlStateNormal];
+        [_trashBtn setTitle:@"Del" forState:UIControlStateSelected];
+        _trashBtn.backgroundColor = [UIColor yellowColor];
+        [_trashBtn addTarget:self action:@selector(doDeleteCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
+        _trashBtn.showsTouchWhenHighlighted = YES;
+        _trashBtn.selected = NO;
+        _trashBtn.enabled = NO;
+    }
+    return _trashBtn;
 }
 
 - (UIButton *)submitBtn
@@ -60,6 +72,28 @@
         
     }
     return _submitBtn;
+}
+
+- (VNProgressView *)progressView
+{
+    if (!_progressView) {
+        _progressView = [[VNProgressView alloc] initWithFrame:CGRectMake(0, 0, 320, 8)];
+    }
+    return _progressView;
+}
+
+- (UILabel *)msgLbl
+{
+    if (!_msgLbl) {
+        _msgLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        _msgLbl.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
+        _msgLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:20];
+        _msgLbl.textColor = [UIColor blackColor];
+        _msgLbl.text = @"正在生成视频";
+        _msgLbl.textAlignment = NSTextAlignmentCenter;
+        _msgLbl.alpha = 0;
+    }
+    return _msgLbl;
 }
 
 #pragma mark - ViewLifeCycle
@@ -122,17 +156,9 @@
     UIView *bottomBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 385, 320, 183)];
     bottomBaseView.backgroundColor = [UIColor blackColor];
     
-    [bottomBaseView addSubview:self.progressSliderView];
+    [bottomBaseView addSubview:self.progressView];
     
-    UIButton *delBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 45, 90, 90)];
-    [delBtn setTitle:@"Back" forState:UIControlStateNormal];
-    [delBtn setTitle:@"Del" forState:UIControlStateSelected];
-    delBtn.backgroundColor = [UIColor yellowColor];
-    [delBtn addTarget:self action:@selector(doDeleteCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
-    delBtn.showsTouchWhenHighlighted = YES;
-    delBtn.selected = NO;
-    delBtn.enabled = NO;
-    [bottomBaseView addSubview:delBtn];
+    [bottomBaseView addSubview:self.trashBtn];
     
     UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
     [takeVideoBtn setTitle:@"Go" forState:UIControlStateNormal];
@@ -147,6 +173,8 @@
     [bottomBaseView addSubview:self.submitBtn];
     
     [self addSubview:bottomBaseView];
+    
+    [self addSubview:self.msgLbl];
 }
 
 - (void)setTorchBtnHidden:(BOOL)hidden
@@ -176,6 +204,35 @@
 }
 
 #pragma mark - UserInteractionMethods
+
+- (void)showCombiningMsg
+{
+    self.userInteractionEnabled = NO;
+    [UIView animateWithDuration:0.3f animations:^{
+        _msgLbl.alpha = 1;
+    }];
+}
+
+- (void)hideCombiningMsg
+{
+    self.userInteractionEnabled = YES;
+    _msgLbl.alpha = 0;
+}
+
+- (void)setTrashBtnEnabled:(BOOL)enable
+{
+    [self.trashBtn setEnabled:enable];
+}
+
+- (void)setProgressViewBlinking:(BOOL)blink
+{
+    [_progressView setTippingPointShining:blink];
+}
+
+- (void)setProgressTimeArr:(NSArray *)timeArr
+{
+    [_progressView setTimePointArr:timeArr];
+}
 
 /**
  *  @description: close current UIImagePickerController
@@ -231,13 +288,17 @@
         
         sender.selected = YES;
         
-        //处理progress slider
+        _progressView.status = ProgressViewStatusEditing;
+        
     }else {
         
+        //处理progressBar 和 本地video文件
         if ([self shouldPerforDelegateSelector:@selector(doDeleteCurrentVideo)]) {
             
             [delegate doDeleteCurrentVideo];
             sender.selected = NO;
+            _progressView.status = ProgressViewStatusNormal;
+
         }
     }
 }
@@ -302,6 +363,11 @@
         NSLog(@"delegate function miss【%@】",NSStringFromSelector(sel));
         return NO;
     }
+}
+
+- (void)updateProgressViewToPercentage:(CGFloat)per
+{
+    _progressView.progress = per;
 }
 
 @end

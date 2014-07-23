@@ -17,6 +17,9 @@
 @interface VNVideoFramesView : UIView
 
 - (id)initWithFrame:(CGRect)frame andVideoPath:(NSString *)videoPath;
+- (void)setThumbCoverImage:(UIImage *)img;
+
+- (void)hideDisplayImageView;
 
 @property (nonatomic,assign)id<VNVideoFramesViewDelegate> delegate;
 
