@@ -13,8 +13,10 @@
 #import "VNMineProfileHeaderView.h"
 #import "VNProfileFansTableViewCell.h"
 #import "VNNewsDetailViewController.h"
+#import "UMSocial.h"
+#import "VNLoginViewController.h"
 
-@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate> {
+@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
@@ -39,10 +41,12 @@
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
+@property (strong, nonatomic) VNNews *shareNews;
 
 @end
 
 static BOOL firstLoading = YES;
+static NSString *shareStr;
 
 @implementation VNMineProfileViewController
 
@@ -57,6 +61,7 @@ static BOOL firstLoading = YES;
         _idolListArr = [NSMutableArray array];
         _followLastPageTime = nil;
         _fansLastPageTime = nil;
+        _shareNews = nil;
     }
     return self;
 }
@@ -442,6 +447,14 @@ static BOOL firstLoading = YES;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
         };
         
+        __weak typeof(self) weakSelf = self;
+        cell.moreHandler = ^{
+            UIActionSheet *actionSheet = nil;
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+            weakSelf.shareNews = news;
+            [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+        };
+        
         return cell;
     }
     if (tableView == self.favouriteTableView) {
@@ -461,6 +474,14 @@ static BOOL firstLoading = YES;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
         };
         
+        __weak typeof(self) weakSelf = self;
+        cell.moreHandler = ^{
+            UIActionSheet *actionSheet = nil;
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+            weakSelf.shareNews = news;
+            [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+        };
+        
         return cell;
     }
     if (tableView == self.followTableView) {
@@ -468,6 +489,22 @@ static BOOL firstLoading = YES;
         VNUser *user = [self.followArr objectAtIndex:indexPath.row];
         cell.user = user;
         [cell reload];
+        __weak typeof(cell) weakCell = cell;
+        cell.followHandler = ^(){
+            [VNHTTPRequestManager followIdol:user.uid follower:self.uid userToken:self.user_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                    weakCell.followBtn.hidden = YES;
+                    weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }
+                else {
+                    [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                }
+            }];
+        };
         return cell;
     }
     if (tableView == self.fansTableView) {
@@ -536,7 +573,7 @@ static BOOL firstLoading = YES;
 #pragma mark - SEL
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
-    __block CGFloat cellHeight = 380.0;
+    __block CGFloat cellHeight = 390.0;
     
     NSDictionary *attribute = @{NSFontAttributeName:[UIFont systemFontOfSize:17.0]};
     CGRect rect = [news.title boundingRectWithSize:CGSizeMake(280.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
@@ -660,5 +697,152 @@ static BOOL firstLoading = YES;
     }
 }
 
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (self.shareNews) {
+        NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
+        NSString *shareURL = self.shareNews.url;
+        if (!shareURL || [shareURL isEqualToString:@""]) {
+            shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.shareNews.nid];
+        }
+        NSString *snsName = nil;
+        switch (buttonIndex) {
+                //微信朋友圈
+            case 0: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+                [UMSocialData defaultData].extConfig.wechatTimelineData.url = shareURL;
+            }
+                break;
+                //微信好友
+            case 1: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+                [UMSocialData defaultData].extConfig.wechatSessionData.url = shareURL;
+            }
+                break;
+                //新浪微博
+            case 2: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
+            }
+                break;
+                //QQ空间
+            case 3: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+                [UMSocialData defaultData].extConfig.qzoneData.url = shareURL;
+            }
+                break;
+                //QQ好友
+            case 4: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+                [UMSocialData defaultData].extConfig.qqData.url = shareURL;
+            }
+                break;
+                //腾讯微博
+            case 5: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
+            }
+                break;
+                //人人网
+            case 6: {
+                snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+            }
+                break;
+                //取消或复制
+            case 7: {
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = self.shareNews.url;
+                [VNUtility showHUDText:@"已复制该文章链接" forView:self.view];
+            }
+                break;
+                //删除或举报
+            case 8: {
+                NSString *buttonTitle = [actionSheet buttonTitleAtIndex:8];
+                if ([buttonTitle isEqualToString:@"删除"]) {
+                    //TODO: 删除帖子
+                }
+                else if ([buttonTitle isEqualToString:@"举报"]) {
+                    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                    if (userInfo && userInfo.count) {
+                        NSString *uid = [userInfo objectForKey:@"openid"];
+                        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                        if (uid && user_token) {
+                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.shareNews.nid] type:@"reportNews" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                                if (error) {
+                                    NSLog(@"%@", error.localizedDescription);
+                                }
+                                else if (succeed) {
+                                    [VNUtility showHUDText:@"举报成功!" forView:self.view];
+                                }
+                                else {
+                                    [VNUtility showHUDText:@"您已举报该文章" forView:self.view];
+                                }
+                            }];
+                        }
+                    }
+                    else {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                        [alert show];
+                        return;
+                    }
+                }
+            }
+                break;
+                //取消
+            case 9: {
+                return ;
+            }
+                break;
+        }
+        //设置分享内容，和回调对象
+        if (buttonIndex < 7) {
+            NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.shareNews.title, self.shareNews.author.name,self.shareNews.url];
+            UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.shareNews.imgMdeia.url]]];
+            shareStr = shareText;
+            
+            [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
+            UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
+            snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+        }
+    }
+}
+
+#pragma mark - UMSocialUIDelegate
+
+-(void)didCloseUIViewController:(UMSViewControllerType)fromViewControllerType
+{
+    NSLog(@"didClose is %d",fromViewControllerType);
+}
+
+//下面得到分享完成的回调
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    NSLog(@"didFinishGetUMSocialDataInViewController with response is %@",response);
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess) {
+        //得到分享到的微博平台名
+        NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+        [VNUtility showHUDText:@"分享成功!" forView:self.view];
+        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if (succeed) {
+                NSLog(@"分享添加评论成功！");
+            }
+        }];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
+        VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
+}
 
 @end

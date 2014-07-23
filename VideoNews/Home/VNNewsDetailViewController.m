@@ -14,8 +14,6 @@
 #import "SVPullToRefresh.h"
 #import "VNCommentTableViewCell.h"
 
-#import "UMSocialQQHandler.h"
-#import "UMSocialWechatHandler.h"
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
@@ -123,8 +121,6 @@ static NSString *shareStr;
         UIActionSheet *actionSheet = nil;
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         NSString *mineID = [userInfo objectForKey:@"openid"];
-        NSLog(@"author:%@,length:%d", weakSelf.news.author.uid, weakSelf.news.author.uid.length);
-        NSLog(@"openid:%@,length:%d",mineID, mineID.length);
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [weakSelf.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
         actionSheet.tag = kTagNews;
         [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
@@ -280,6 +276,7 @@ static NSString *shareStr;
     NSLog(@"nid:%@",_curComment.author.uid);
     
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
