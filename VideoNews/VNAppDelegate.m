@@ -7,7 +7,7 @@
 //
 
 #import "VNAppDelegate.h"
-#import "MobClick.h"
+//#import "MobClick.h"
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"

@@ -61,11 +61,17 @@
     if (self.moviePlayer) {
         self.moviePlayer.view.hidden = NO;
         self.videoImgView.hidden = YES;
-        [self.moviePlayer play];
+        //[self.moviePlayer play];
+        [self playAndCount];
         [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
         self.isPlaying = YES;
     }
+}
+-(void)playAndCount
+{
+    [self.moviePlayer play];
+    [MobClick event:@"video_play" label:@"porfile"];
 }
 
 - (void)pauseVideo {
@@ -124,7 +130,8 @@
                 self.moviePlayer.view.hidden = NO;
                 self.videoImgView.hidden = YES;
             }
-            [self.moviePlayer play];
+            //[self.moviePlayer play];
+            [self playAndCount];
             [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
             [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
             self.isPlaying = YES;

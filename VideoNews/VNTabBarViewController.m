@@ -142,11 +142,13 @@
 
 - (void)draftBtnDidPressed
 {
+    [MobClick event:@"video_record" label:@"draft"];
     
 }
 
 - (void)cameraBtnDidPressed
 {
+    [MobClick event:@"video_record" label:@"camera"];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         
         VNCustomizedImagePickerController *picker = [[VNCustomizedImagePickerController alloc] init];
@@ -161,6 +163,7 @@
 
 - (void)albumBtnDidPressed
 {
+    [MobClick event:@"video_record" label:@"album"];
     VNCustomizedAlbumPickerController *picker = [[VNCustomizedAlbumPickerController alloc] init];
     [self presentViewController:picker animated:YES completion:nil];
 }

@@ -171,7 +171,8 @@ static NSString *shareStr;
     self.playBtn.frame = CGRectMake(0, 0, 100.0, 100.0);
     self.playBtn.center = self.headerView.newsImageView.center;
     if ([VNHTTPRequestManager isReachableViaWiFi]) {
-        [self.moviePlayer play];
+        //[self.moviePlayer play];
+        [self playAndCount];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
         isPlaying = YES;
     }
@@ -553,13 +554,18 @@ static NSString *shareStr;
     NSLog(@"PlayMovieAction====");
     if (self.moviePlayer) {
         self.moviePlayer.view.hidden = NO;
-        [self.moviePlayer play];
+        //[self.moviePlayer play];
+        [self playAndCount];
         [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
         isPlaying = YES;
     }
 }
-
+-(void)playAndCount
+{
+    [self.moviePlayer play];
+    [MobClick event:@"video_play" label:@"newsDetail"];
+}
 - (void)pauseVideo {
     if (self.moviePlayer) {
         [self.moviePlayer pause];

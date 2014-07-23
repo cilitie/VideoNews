@@ -159,11 +159,15 @@
         resultViewController.type = ResultTypeSerach;
         resultViewController.searchKey = searchKey;
         resultViewController.searchType = @"news";
+        //UMeng analytics
+        [MobClick endEvent:@"Search" label:@"video"];
         [self.navigationController pushViewController:resultViewController animated:YES];
     }
     else {
         VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
         userResultViewController.searchKey = searchKey;
+        //UMeng analytics
+        [MobClick endEvent:@"Search" label:@"user"];
         [self.navigationController pushViewController:userResultViewController animated:YES];
     }
 }
@@ -199,11 +203,15 @@
             resultViewController.type = ResultTypeSerach;
             resultViewController.searchKey = searchKey;
             resultViewController.searchType = @"news";
+            //UMeng analytics
+            [MobClick endEvent:@"Search" label:@"video"];
             [self.navigationController pushViewController:resultViewController animated:YES];
         }
         else {
             VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
             userResultViewController.searchKey = searchKey;
+            //UMeng analytics
+            [MobClick endEvent:@"Search" label:@"user"];
             [self.navigationController pushViewController:userResultViewController animated:YES];
         }
     }

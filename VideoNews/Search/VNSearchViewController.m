@@ -99,6 +99,10 @@ static int selectedItemIndex;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    VNCategory *category=[self.categoryArr objectAtIndex:selectedItemIndex];
+    //NSString *label= category.name;
+    //UMeng analytics
+    [MobClick event:@"Category" label:[NSString stringWithFormat:@"%d",category.cid]];
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     selectedItemIndex = indexPath.item;
     [self performSegueWithIdentifier:@"pushVNResultViewController" sender:self];
