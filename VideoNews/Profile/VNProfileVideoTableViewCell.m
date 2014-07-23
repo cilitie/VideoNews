@@ -16,7 +16,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentNumLabel;
-@property (weak, nonatomic) IBOutlet UILabel *favouriteLabel;
 @property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
 @property (strong, nonatomic) UIButton *playBtn;
 @property (weak, nonatomic) IBOutlet UIView *bgView;

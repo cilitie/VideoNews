@@ -545,8 +545,12 @@ static int pagesize = 10;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-                if ([[responseObject objectForKey:@"list"] count]) {
-                    [idolArr addObjectsFromArray:[responseObject objectForKey:@"list"]];
+                NSArray *idolList = responseObject[@"list"];
+                if ([idolList count]) {
+                    for (NSDictionary *dict in idolList) {
+                        NSString *uid = dict[@"uid"];
+                        [idolArr addObject:uid];
+                    }
                 }
             }
         }

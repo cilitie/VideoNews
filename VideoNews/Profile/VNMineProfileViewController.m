@@ -15,6 +15,7 @@
 #import "VNNewsDetailViewController.h"
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
+#import "VNProfileViewController.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
@@ -37,7 +38,6 @@
 @property (strong, nonatomic) VNUser *mineInfo;
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
-
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
@@ -64,6 +64,24 @@ static NSString *shareStr;
         _shareNews = nil;
     }
     return self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (!self.videoTableView.hidden) {
+        for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
+            if (cell.isPlaying) {
+                [cell startOrPausePlaying:NO];
+            }
+        }
+    }
+    if (!self.favouriteTableView.hidden) {
+        for (VNProfileVideoTableViewCell *cell in [self.favouriteTableView visibleCells]) {
+            if (cell.isPlaying) {
+                [cell startOrPausePlaying:NO];
+            }
+        }
+    }
 }
 
 - (void)viewDidLoad
@@ -287,6 +305,9 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
+                    for (VNUser *user in userArr) {
+                        user.isMineIdol = YES;
+                    }
                     [weakSelf.followArr removeAllObjects];
                     [weakSelf.followArr addObjectsFromArray:userArr];
                     weakSelf.followLastPageTime = lastTimeStamp;
@@ -311,6 +332,9 @@ static NSString *shareStr;
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
+                for (VNUser *user in userArr) {
+                    user.isMineIdol = YES;
+                }
                 [weakSelf.followArr addObjectsFromArray:userArr];
                 weakSelf.followLastPageTime = lastTimeStamp;
                 [weakSelf.followTableView reloadData];
@@ -340,12 +364,14 @@ static NSString *shareStr;
                         NSLog(@"%@", error.localizedDescription);
                     }
                     else {
-                        for (VNUser *user in userArr) {
-                            if ([self.idolListArr containsObject:user.uid]) {
-                                user.isMineIdol = YES;
-                            }
-                            else {
-                                user.isMineIdol = NO;
+                        if (self.idolListArr.count) {
+                            for (VNUser *user in userArr) {
+                                if ([self.idolListArr containsObject:user.uid]) {
+                                    user.isMineIdol = YES;
+                                }
+                                else {
+                                    user.isMineIdol = NO;
+                                }
                             }
                         }
                         [weakSelf.fansArr removeAllObjects];
@@ -373,12 +399,14 @@ static NSString *shareStr;
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
-                for (VNUser *user in userArr) {
-                    if ([self.idolListArr containsObject:user.uid]) {
-                        user.isMineIdol = YES;
-                    }
-                    else {
-                        user.isMineIdol = NO;
+                if (self.idolListArr.count) {
+                    for (VNUser *user in userArr) {
+                        if ([self.idolListArr containsObject:user.uid]) {
+                            user.isMineIdol = YES;
+                        }
+                        else {
+                            user.isMineIdol = NO;
+                        }
                     }
                 }
                 [weakSelf.fansArr addObjectsFromArray:userArr];
@@ -552,6 +580,18 @@ static NSString *shareStr;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
         newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
         [self.navigationController pushViewController:newsDetailViewController animated:YES];
+    }
+    else if (tableView == self.followTableView) {
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        VNUser *user = [self.followArr objectAtIndex:indexPath.row];
+        profileViewController.uid = user.uid;
+        [self.navigationController pushViewController:profileViewController animated:YES];
+    }
+    else if (tableView == self.fansTableView) {
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
+        profileViewController.uid = user.uid;
+        [self.navigationController pushViewController:profileViewController animated:YES];
     }
 }
 

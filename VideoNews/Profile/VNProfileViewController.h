@@ -10,4 +10,6 @@
 
 @interface VNProfileViewController : UIViewController
 
+@property (strong, nonatomic) NSString *uid;
+
 @end

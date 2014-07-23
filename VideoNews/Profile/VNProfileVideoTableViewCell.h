@@ -14,6 +14,7 @@ typedef void(^ClickEventHandler)();
 
 @property (strong, nonatomic) VNNews *news;
 @property (assign, nonatomic) BOOL isPlaying;
+@property (weak, nonatomic) IBOutlet UILabel *favouriteLabel;
 @property (copy, nonatomic) ClickEventHandler likeHandler;
 @property (copy, nonatomic) ClickEventHandler moreHandler;
 @property (copy, nonatomic) ClickEventHandler commentHandler;
