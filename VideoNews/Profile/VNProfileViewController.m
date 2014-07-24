@@ -261,7 +261,9 @@ static NSString *shareStr;
                             }
                             [weakSelf.followArr removeAllObjects];
                             [weakSelf.followArr addObjectsFromArray:userArr];
-                            weakSelf.followLastPageTime = lastTimeStamp;
+                            if (lastTimeStamp) {
+                                weakSelf.followLastPageTime = lastTimeStamp;
+                            }
                             [weakSelf.followTableView reloadData];
                         }
                         [weakSelf.followTableView.pullToRefreshView stopAnimating];
@@ -280,7 +282,9 @@ static NSString *shareStr;
                         }
                         [weakSelf.followArr removeAllObjects];
                         [weakSelf.followArr addObjectsFromArray:userArr];
-                        weakSelf.followLastPageTime = lastTimeStamp;
+                        if (lastTimeStamp) {
+                            weakSelf.followLastPageTime = lastTimeStamp;
+                        }
                         [weakSelf.followTableView reloadData];
                     }
                     [weakSelf.followTableView.pullToRefreshView stopAnimating];
@@ -293,6 +297,7 @@ static NSString *shareStr;
         NSString *moreTimeStamp = nil;
         if (self.followLastPageTime) {
             moreTimeStamp = self.followLastPageTime;
+            NSLog(@"%@", moreTimeStamp);
         }
         else {
             moreTimeStamp = [VNHTTPRequestManager timestamp];
@@ -317,7 +322,9 @@ static NSString *shareStr;
                     }
                 }
                 [weakSelf.followArr addObjectsFromArray:userArr];
-                weakSelf.followLastPageTime = lastTimeStamp;
+                if (lastTimeStamp) {
+                    weakSelf.followLastPageTime = lastTimeStamp;
+                }
                 [weakSelf.followTableView reloadData];
             }
             [weakSelf.followTableView.infiniteScrollingView stopAnimating];
@@ -359,7 +366,9 @@ static NSString *shareStr;
                             }
                             [weakSelf.fansArr removeAllObjects];
                             [weakSelf.fansArr addObjectsFromArray:userArr];
-                            weakSelf.fansLastPageTime = lastTimeStamp;
+                            if (lastTimeStamp) {
+                                weakSelf.fansLastPageTime = lastTimeStamp;
+                            }
                             [weakSelf.fansTableView reloadData];
                         }
                         [weakSelf.fansTableView.pullToRefreshView stopAnimating];
@@ -378,7 +387,9 @@ static NSString *shareStr;
                         }
                         [weakSelf.fansArr removeAllObjects];
                         [weakSelf.fansArr addObjectsFromArray:userArr];
-                        weakSelf.fansLastPageTime = lastTimeStamp;
+                        if (lastTimeStamp) {
+                            weakSelf.fansLastPageTime = lastTimeStamp;
+                        }
                         [weakSelf.fansTableView reloadData];
                     }
                     [weakSelf.fansTableView.pullToRefreshView stopAnimating];
@@ -415,7 +426,9 @@ static NSString *shareStr;
                     }
                 }
                 [weakSelf.fansArr addObjectsFromArray:userArr];
-                weakSelf.fansLastPageTime = lastTimeStamp;
+                if (lastTimeStamp) {
+                    weakSelf.fansLastPageTime = lastTimeStamp;
+                }
                 [weakSelf.fansTableView reloadData];
             }
             [weakSelf.fansTableView.infiniteScrollingView stopAnimating];

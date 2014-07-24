@@ -39,14 +39,17 @@
     if (CGRectContainsPoint(CGRectMake(0, 94, 80, 50), point)) {
         index = 0;
     }
-    if (CGRectContainsPoint(CGRectMake(80, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(80, 94, 80, 50), point)) {
         index = 1;
     }
-    if (CGRectContainsPoint(CGRectMake(80*2, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(80*2, 94, 80, 50), point)) {
         index = 2;
     }
-    if (CGRectContainsPoint(CGRectMake(80*3, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(80*3, 94, 80, 50), point)) {
         index = 3;
+    }
+    else {
+        return;
     }
     if (self.tabHandler) {
         self.tabHandler(index);

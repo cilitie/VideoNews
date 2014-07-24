@@ -65,20 +65,25 @@
         fansCountLabelWidth = CGRectGetWidth(rect);
         self.fansBgViewWidthLC.constant = 36.0+fansCountLabelWidth;
         self.fansCountLabelWidthLC.constant = fansCountLabelWidth;
+        
+        if (self.isMineIdol) {
+            [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+            [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+        }
+        else {
+            [self.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
+            [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+        }
     }
 }
 
 - (IBAction)click:(id)sender {
     if (self.isMineIdol) {
-        [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
-        [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
         if (self.unfollowHandler) {
             self.unfollowHandler(self.user);
         }
     }
     else {
-        [self.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
-        [self.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
         if (self.followHandler) {
             self.followHandler(self.user);
         }

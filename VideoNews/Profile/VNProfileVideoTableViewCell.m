@@ -68,6 +68,7 @@
         self.isPlaying = YES;
     }
 }
+
 -(void)playAndCount
 {
     [self.moviePlayer play];
