@@ -12,4 +12,6 @@
 
 +(void)registerRemote;
 
++(void)addDevice:(id)token;
+
 @end

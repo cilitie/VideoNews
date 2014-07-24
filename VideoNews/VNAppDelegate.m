@@ -7,7 +7,7 @@
 //
 
 #import "VNAppDelegate.h"
-//#import "MobClick.h"
+#import "ZXRemoteNotification.h"
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
@@ -23,7 +23,16 @@
     [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setSupportQzoneSSO:YES];
+    //注册通知
+    [UIResponder registerRemote];
+    
+    NSDictionary *userInfo=[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (userInfo) {
+        //跳到通知页面
+    }
+    
     // Override point for customization after application launch.
+    
     return YES;
 }
 							
@@ -62,6 +71,35 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
+    
+    NSLog(@"regisger success:%@", pToken);
+    [UIResponder addDevice:pToken];
+    //注册成功，将deviceToken保存到应用服务器数据库中
+    
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    //在应用内收到通知时调用
+    // 处理推送消息
+    //UIAlertView *alert=[[UIAlertView alloc]initWithTitle:@"通知" message:@"我的信息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+    
+    //[alert show];
+    
+    //[alert release];
+    
+    NSLog(@"%@", userInfo);
+    
+    [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
+    
+}
+
+- (void)application:(UIApplication *)application
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    
+    NSLog(@"Error in registration. Error: %@", error);
 }
 
 @end
