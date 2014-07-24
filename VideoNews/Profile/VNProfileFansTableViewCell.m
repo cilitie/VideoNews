@@ -7,7 +7,6 @@
 //
 
 #import "VNProfileFansTableViewCell.h"
-#import "UIImageView+AFNetworking.h"
 
 @interface VNProfileFansTableViewCell ()
 

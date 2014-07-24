@@ -9,13 +9,14 @@
 #import "VNProfileViewController.h"
 #import "VNProfileVideoTableViewCell.h"
 #import "SVPullToRefresh.h"
-#import "UIImageView+AFNetworking.h"
 #import "VNUserProfileHeaderView.h"
 #import "VNProfileFansTableViewCell.h"
 #import "VNNewsDetailViewController.h"
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
 #import "VNMineProfileViewController.h"
+#import "VNProfileDetailViewController.h"
+#import "VNOriginImgViewController.h"
 
 @interface VNProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
@@ -35,7 +36,7 @@
 @property (strong, nonatomic) NSMutableArray *fansArr;
 //为了检测用户与其他user的关系
 @property (strong, nonatomic) NSMutableArray *idolListArr;
-@property (strong, nonatomic) VNUser *mineInfo;
+@property (strong, nonatomic) VNUser *userInfo;
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
 
@@ -136,7 +137,7 @@ static NSString *shareStr;
             NSLog(@"%@", error.localizedDescription);
         }
         if (userInfo) {
-            self.mineInfo = userInfo;
+            self.userInfo = userInfo;
             //videoHeaderView
             videoHeaderView.userInfo = userInfo;
             [videoHeaderView reload];
@@ -178,6 +179,24 @@ static NSString *shareStr;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = NO;
                 [weakSelf.fansTableView triggerPullToRefresh];
+            }
+                break;
+            case 11: {
+                if (self.userInfo.avatar) {
+                    VNOriginImgViewController *originImgViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNOriginImgViewController"];
+                    originImgViewController.imgURL = self.userInfo.avatar;
+                    //FIXME: 修复大头像
+//                    [self presentViewController:originImgViewController animated:NO completion:nil];
+                }
+                return ;
+            }
+                break;
+            case 12: {
+                if (self.userInfo) {
+                    VNProfileDetailViewController *profileDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileDetailViewController"];
+                    profileDetailViewController.user = self.userInfo;
+                    [self.navigationController pushViewController:profileDetailViewController animated:YES];
+                }
             }
                 break;
         }

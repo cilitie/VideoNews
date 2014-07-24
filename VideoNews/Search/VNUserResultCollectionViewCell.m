@@ -7,7 +7,6 @@
 //
 
 #import "VNUserResultCollectionViewCell.h"
-#import "UIImageView+AFNetworking.h"
 
 @implementation VNUserResultCollectionViewCell
 

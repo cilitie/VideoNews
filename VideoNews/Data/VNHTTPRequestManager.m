@@ -306,7 +306,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"id": objectID, @"type": type, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+        NSLog(@"%@", operation.request.URL);
+        NSLog(@"%@", responseObject);
         BOOL reportSuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];

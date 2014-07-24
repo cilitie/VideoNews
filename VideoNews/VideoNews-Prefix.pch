@@ -14,6 +14,7 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import "ColorUtils.h"
+    #import "UIImageView+AFNetworking.h"
     #import "VNKey.h"
     #import "VNHTTPRequestManager.h"
     #import "VNCacheDataManager.h"

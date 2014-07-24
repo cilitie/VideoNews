@@ -8,7 +8,6 @@
 
 #import "VNNewsDetailViewController.h"
 #import "VNDetailHeaderView.h"
-#import "UIImageView+AFNetworking.h"
 #import "UIButton+AFNetworking.h"
 
 #import "SVPullToRefresh.h"

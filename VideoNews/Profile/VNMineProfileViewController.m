@@ -9,7 +9,6 @@
 #import "VNMineProfileViewController.h"
 #import "VNProfileVideoTableViewCell.h"
 #import "SVPullToRefresh.h"
-#import "UIImageView+AFNetworking.h"
 #import "VNMineProfileHeaderView.h"
 #import "VNProfileFansTableViewCell.h"
 #import "VNNewsDetailViewController.h"
@@ -128,41 +127,17 @@ static NSString *shareStr;
             }
             if (userInfo) {
                 self.mineInfo = userInfo;
-                [videoHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-                [videoHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([videoHeaderView.thumbnailImgView bounds]) / 2];
-                videoHeaderView.thumbnailImgView.layer.masksToBounds = YES;
-                [videoHeaderView.nameLabel setText:userInfo.name];
-                [videoHeaderView.videoCountLabel setText:userInfo.video_count];
-                [videoHeaderView.favouriteCountLabel setText:userInfo.like_count];
-                [videoHeaderView.followCountLabel setText:userInfo.idol_count];
-                [videoHeaderView.fansCountLabel setText:userInfo.fans_count];
+                videoHeaderView.userInfo = userInfo;
+                [videoHeaderView reload];
                 
-                [favHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-                [favHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([favHeaderView.thumbnailImgView bounds]) / 2];
-                favHeaderView.thumbnailImgView.layer.masksToBounds = YES;
-                [favHeaderView.nameLabel setText:userInfo.name];
-                [favHeaderView.videoCountLabel setText:userInfo.video_count];
-                [favHeaderView.favouriteCountLabel setText:userInfo.like_count];
-                [favHeaderView.followCountLabel setText:userInfo.idol_count];
-                [favHeaderView.fansCountLabel setText:userInfo.fans_count];
+                favHeaderView.userInfo = userInfo;
+                [favHeaderView reload];
                 
-                [followHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-                [followHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([followHeaderView.thumbnailImgView bounds]) / 2];
-                followHeaderView.thumbnailImgView.layer.masksToBounds = YES;
-                [followHeaderView.nameLabel setText:userInfo.name];
-                [followHeaderView.videoCountLabel setText:userInfo.video_count];
-                [followHeaderView.favouriteCountLabel setText:userInfo.like_count];
-                [followHeaderView.followCountLabel setText:userInfo.idol_count];
-                [followHeaderView.fansCountLabel setText:userInfo.fans_count];
+                followHeaderView.userInfo = userInfo;
+                [followHeaderView reload];
                 
-                [fansHeaderView.thumbnailImgView setImageWithURL:[NSURL URLWithString:userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
-                [fansHeaderView.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([fansHeaderView.thumbnailImgView bounds]) / 2];
-                videoHeaderView.thumbnailImgView.layer.masksToBounds = YES;
-                [fansHeaderView.nameLabel setText:userInfo.name];
-                [fansHeaderView.videoCountLabel setText:userInfo.video_count];
-                [fansHeaderView.favouriteCountLabel setText:userInfo.like_count];
-                [fansHeaderView.followCountLabel setText:userInfo.idol_count];
-                [fansHeaderView.fansCountLabel setText:userInfo.fans_count];
+                fansHeaderView.userInfo = userInfo;
+                [fansHeaderView reload];
             }
         }];
         

@@ -19,8 +19,11 @@ typedef void(^ClickTabHandler)(NSUInteger index);
 @property (weak, nonatomic) IBOutlet UILabel *favouriteCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *followCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fansCountLabel;
+@property (strong, nonatomic) VNUser *userInfo;
 
 @property (copy, nonatomic) ClickEditHandler editHandler;
 @property (copy, nonatomic) ClickTabHandler tabHandler;
+
+- (void)reload;
 
 @end

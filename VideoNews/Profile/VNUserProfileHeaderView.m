@@ -7,7 +7,6 @@
 //
 
 #import "VNUserProfileHeaderView.h"
-#import "UIImageView+AFNetworking.h"
 
 @interface VNUserProfileHeaderView ()
 
@@ -70,7 +69,7 @@
             self.locationLabel.text = @"位置未知";
         }
         
-        if (self.userInfo.userDescription) {
+        if (self.userInfo.userDescription && ![self.userInfo.userDescription isEqualToString:@""]) {
             self.descriptionLabel.text = self.userInfo.userDescription;
         }
         else {
@@ -94,6 +93,12 @@
     }
     else if (CGRectContainsPoint(CGRectMake(106*2, 94, 106, 50), point)) {
         index = 2;
+    }
+    else if (CGRectContainsPoint(CGRectMake(10, 10, 75, 75), point)) {
+        index = 11;
+    }
+    else if (CGRectContainsPoint(CGRectMake(85, 0, CGRectGetWidth(self.bounds)-85.0, 95), point)) {
+        index = 12;
     }
     else {
         return;

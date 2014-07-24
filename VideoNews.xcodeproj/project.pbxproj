@@ -89,6 +89,8 @@
 		D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A4419619FAF00EA72BC /* VNDetailHeaderView.m */; };
 		D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */; };
 		D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A9D1963D78500EA72BC /* VNComment.m */; };
+		D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */; };
+		D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F61981063F00236517 /* VNOriginImgViewController.m */; };
 		D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */; };
 		D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
@@ -273,6 +275,10 @@
 		D66F7A4619619FC800EA72BC /* VNDetailHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNDetailHeaderView.xib; sourceTree = "<group>"; };
 		D66F7A9C1963D78500EA72BC /* VNComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNComment.h; sourceTree = "<group>"; };
 		D66F7A9D1963D78500EA72BC /* VNComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNComment.m; sourceTree = "<group>"; };
+		D68CB4F21980F0D600236517 /* VNProfileDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProfileDetailViewController.h; sourceTree = "<group>"; };
+		D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProfileDetailViewController.m; sourceTree = "<group>"; };
+		D68CB4F51981063F00236517 /* VNOriginImgViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNOriginImgViewController.h; sourceTree = "<group>"; };
+		D68CB4F61981063F00236517 /* VNOriginImgViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNOriginImgViewController.m; sourceTree = "<group>"; };
 		D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCommentTableViewCell.h; sourceTree = "<group>"; };
 		D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCommentTableViewCell.m; sourceTree = "<group>"; };
 		D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCommentTableViewCell.xib; sourceTree = "<group>"; };
@@ -580,6 +586,10 @@
 				D6676F9C197F587F00F484FE /* VNUserProfileHeaderView.h */,
 				D6676F9D197F587F00F484FE /* VNUserProfileHeaderView.m */,
 				D6676F9F197F589800F484FE /* VNUserProfileHeaderView.xib */,
+				D68CB4F21980F0D600236517 /* VNProfileDetailViewController.h */,
+				D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */,
+				D68CB4F51981063F00236517 /* VNOriginImgViewController.h */,
+				D68CB4F61981063F00236517 /* VNOriginImgViewController.m */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -928,6 +938,7 @@
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
+				D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
 				269B0827197DF96400CF4ADC /* OSSClient.m in Sources */,
 				269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */,
@@ -952,6 +963,7 @@
 				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
+				D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */,
 				149D9124197E3E4500DF4346 /* VNVideoCaptureViewController.m in Sources */,
 				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
 				2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */,

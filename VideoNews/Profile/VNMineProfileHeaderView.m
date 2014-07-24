@@ -27,6 +27,19 @@
     return self;
 }
 
+- (void)reload {
+    if (self.userInfo) {
+        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([self.thumbnailImgView bounds]) / 2];
+        self.thumbnailImgView.layer.masksToBounds = YES;
+        [self.nameLabel setText:self.userInfo.name];
+        [self.videoCountLabel setText:self.userInfo.video_count];
+        [self.favouriteCountLabel setText:self.userInfo.like_count];
+        [self.followCountLabel setText:self.userInfo.idol_count];
+        [self.fansCountLabel setText:self.userInfo.fans_count];
+    }
+}
+
 - (IBAction)edit:(id)sender {
     if (self.editHandler) {
         self.editHandler();

@@ -14,7 +14,6 @@
 
 #import "VNNewsDetailViewController.h"
 
-#import "UIImageView+AFNetworking.h"
 #import "UIButton+AFNetworking.h"
 
 #import "SVPullToRefresh.h"

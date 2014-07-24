@@ -7,7 +7,6 @@
 //
 
 #import "VNQuiltViewCell.h"
-#import "UIImageView+AFNetworking.h"
 
 @interface VNQuiltViewCell ()
 

@@ -8,7 +8,6 @@
 
 #import "VNSearchViewController.h"
 #import "VNCategoryCollectionViewCell.h"
-#import "UIImageView+AFNetworking.h"
 #import "VNResultViewController.h"
 #import "VNSearchField.h"
 #import "VNSearchWordViewController.h"

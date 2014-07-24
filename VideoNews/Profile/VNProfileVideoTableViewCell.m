@@ -8,7 +8,6 @@
 
 #import "VNProfileVideoTableViewCell.h"
 #import <MediaPlayer/MediaPlayer.h>
-#import "UIImageView+AFNetworking.h"
 
 @interface VNProfileVideoTableViewCell ()
 
