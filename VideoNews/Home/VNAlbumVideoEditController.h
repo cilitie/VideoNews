@@ -10,6 +10,6 @@
 
 @interface VNAlbumVideoEditController : UIViewController
 
-- (id)initWithVideoPath:(NSString *)videoP;
+- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s;
 
 @end

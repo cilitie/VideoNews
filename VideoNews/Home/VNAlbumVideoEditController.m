@@ -21,6 +21,7 @@
 @property (nonatomic, strong) VNVideoFramesView *videoFramesView;    //缩略图
 
 @property (nonatomic, copy) NSString *videoPath;
+@property (nonatomic, assign) CGSize size;
 
 @end
 
@@ -31,9 +32,10 @@
 - (UIScrollView *)videoScrollView
 {
     if (!_videoScrollView) {
-        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 44, 320, 320)];
         _videoScrollView.backgroundColor = [UIColor clearColor];
         _videoScrollView.showsVerticalScrollIndicator = NO;
+        
     }
     return _videoScrollView;
 }
@@ -41,15 +43,17 @@
 - (UIView *)videoPlayView
 {
     if (!_videoPlayView) {
+        
         _videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
         _videoPlayView.backgroundColor = [UIColor lightGrayColor];
+        
     }
     return _videoPlayView;
 }
 
 #pragma mark - ViewLifeCycle
 
-- (id)initWithVideoPath:(NSString *)videoP
+- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s
 {
     self = [super init];
     if (self) {
@@ -75,6 +79,18 @@
         [self.view addSubview:topView];
      
         self.videoPath = videoP;
+        self.size = CGSizeMake(s.width, s.height);
+        
+        CGFloat height = 320 * self.size.height / self.size.width;
+        CGFloat height2 = (height > 320)?height:320;
+        
+        _videoPlayView.frame = CGRectMake(0, 0, 320, height2);
+        _videoPlayView.backgroundColor = [UIColor lightGrayColor];
+        
+        self.videoScrollView.contentSize = CGSizeMake(320, height2);
+        if (height2 > 320) {
+            [self.videoScrollView scrollRectToVisible:CGRectMake(0, (height - 320)/2 , 320, 320) animated:NO];
+        }
     }
     return self;
 }
@@ -88,12 +104,13 @@
     VNProgressViewForAlbum *progressView = [[VNProgressViewForAlbum alloc] initWithFrame:CGRectMake(0, 384, 320, 10)];
     [progressView addTarget:self action:@selector(progressValueChanged:) forControlEvents:UIControlEventValueChanged];
     
+    [self.view addSubview:self.videoScrollView];
+    [self.videoScrollView addSubview:self.videoPlayView];
+    
     __weak VNAlbumVideoEditController *weakSelf = self;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        [weakSelf.view addSubview:weakSelf.videoScrollView];
-        [weakSelf.videoScrollView addSubview:weakSelf.videoPlayView];
         [weakSelf playVideo];
         
         //generate images of video
@@ -102,14 +119,17 @@
         [weakSelf.videoFramesView hideDisplayImageView];
         weakSelf.videoFramesView.userInteractionEnabled = NO;
         
-        NSURL *videoURL = [NSURL fileURLWithPath:self.videoPath];
-        AVAsset *anAsset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
-        float currVideoDuration = anAsset.duration.value / anAsset.duration.timescale;
-        progressView.maximumValue = currVideoDuration;
-        progressView.value = currVideoDuration;
-        
-        [weakSelf.view addSubview:progressView];
-        [weakSelf.view addSubview:_videoFramesView];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            NSURL *videoURL = [NSURL fileURLWithPath:weakSelf.videoPath];
+            AVAsset *anAsset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+            float currVideoDuration = anAsset.duration.value / anAsset.duration.timescale;
+                        
+            progressView.maximumValue = currVideoDuration;
+            progressView.value = currVideoDuration;
+            [weakSelf.view addSubview:progressView];
+            [weakSelf.view addSubview:self.videoFramesView];
+        });
         
     });
     
@@ -158,7 +178,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     if (slider.value >= 5) {
         CMTime time = CMTimeMakeWithSeconds(slider.value, 600);
         [_videoPlayer seekToTime:time];
-        //    [_videoPlayer pause];
+        [slider setNeedsDisplay];
     }else {
         slider.value = 5;
     }

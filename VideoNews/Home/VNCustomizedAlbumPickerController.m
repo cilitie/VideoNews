@@ -63,14 +63,36 @@
         AVAsset *anAsset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
         float currVideoDuration = anAsset.duration.value / anAsset.duration.timescale;
         
+        CGSize size;
+        AVAssetTrack *vt;
+        
+        if ([[anAsset tracksWithMediaType:AVMediaTypeVideo] count] != 0)
+        {
+            vt = [[anAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        }
+        
+        //check the orientation
+        CGAffineTransform txf = [vt preferredTransform];
+        
+        if (txf.a == 0 && txf.d == 0) {
+            //lans
+            size = CGSizeMake(vt.naturalSize.height, vt.naturalSize.width);
+        }
+        if (txf.b == 0 && txf.c == 0) {
+            //po
+            size = vt.naturalSize;
+        }
+        
         if (currVideoDuration < 5.0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~视频时长至少要5秒哦~~" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
             [alert show];
             [self popViewControllerAnimated:YES];
         }else {
-            __weak VNCustomizedAlbumPickerController *weakSelf = self;
+            
             NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles"];
             
+            __weak VNCustomizedAlbumPickerController *weakSelf = self;
+
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
                 
@@ -79,12 +101,11 @@
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSLog(@"filePath: %@",filePath);
-                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath];
+                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size];
                         [weakSelf pushViewController:editCtl animated:YES];
                     });
                 }
             });
-            
         }
     }
     

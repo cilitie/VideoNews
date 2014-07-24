@@ -31,11 +31,12 @@
     return self;
 }
 
-- (void)setValue:(float)value
-{
-    [super setValue:value];
-    [self setNeedsDisplay];
-}
+//- (void)setValue:(float)value
+//{
+//    [super setValue:value];
+//    NSLog(@"set value.....:%f",value);
+//    [self setNeedsDisplay];
+//}
 
 - (void)drawRect:(CGRect)rect
 {

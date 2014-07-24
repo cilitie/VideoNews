@@ -165,47 +165,46 @@ static NSString *videoFilePath;
 {
     __weak VNVideoCaptureViewController *weakSelf = self;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        AVMutableComposition *composition = [AVMutableComposition composition];
+    AVMutableComposition *composition = [AVMutableComposition composition];
+    
+    AVMutableCompositionTrack *compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    
+    AVMutableCompositionTrack *compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    
+    CMTime startTime = kCMTimeZero;
+    
+    //for loop to combine clips into a single video
+    for (NSInteger i=0; i < weakSelf.videoPathArr.count; i++) {
         
-        AVMutableCompositionTrack *compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+        NSString *pathString = [NSString stringWithString:[weakSelf.videoPathArr objectAtIndex:i]];
         
-        AVMutableCompositionTrack *compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:pathString] options:nil];
+        AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         
-        CMTime startTime = kCMTimeZero;
+        AVAssetTrack *audioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         
-        //for loop to combine clips into a single video
-        for (NSInteger i=0; i < weakSelf.videoPathArr.count; i++) {
-            
-            NSString *pathString = [NSString stringWithString:[weakSelf.videoPathArr objectAtIndex:i]];
-            NSURL *url = [NSURL fileURLWithPath:pathString];
-            
-            AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:url options:nil];
-
-            AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-
-            AVAssetTrack *audioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-            
-            //set the orientation
-            if(i == 0)
-            {
-                [compositionVideoTrack setPreferredTransform:videoTrack.preferredTransform];
-            }
-            
-            BOOL ok;
-            ok = [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:videoTrack atTime:startTime error:nil];
-            ok = [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:audioTrack atTime:startTime error:nil];
-            
-            startTime = CMTimeAdd(startTime, [asset duration]);
+        //set the orientation
+        if(i == 0)
+        {
+            [compositionVideoTrack setPreferredTransform:videoTrack.preferredTransform];
         }
         
-        //export the combined video
+        BOOL ok;
+        ok = [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:videoTrack atTime:startTime error:nil];
+        ok = [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, [asset duration]) ofTrack:audioTrack atTime:startTime error:nil];
         
-        NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Final.mov",TEMP_VIDEO_NAME_PREFIX]];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
-        });
+        startTime = CMTimeAdd(startTime, [asset duration]);
+    }
+    
+    //export the combined video
+    
+    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Final.mov",TEMP_VIDEO_NAME_PREFIX]];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
+    });
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
         NSURL *url = [NSURL fileURLWithPath:combinedPath];
         

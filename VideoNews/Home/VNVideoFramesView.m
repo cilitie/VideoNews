@@ -59,6 +59,7 @@
     imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
     imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
     imageGenerator.maximumSize = CGSizeMake(60, 60);
+    imageGenerator.appliesPreferredTrackTransform = YES;
     
     int picWidth = 21;
     int picHeight = 30;
