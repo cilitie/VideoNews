@@ -18,6 +18,7 @@
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
     BOOL isToBottom;
+    BOOL isTabBarHidden;
 }
 
 @property (strong, nonatomic) NSMutableArray *newsArr;
@@ -35,6 +36,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         _newsArr = [NSMutableArray array];
+        isTabBarHidden = NO;
     }
     return self;
 }
@@ -97,6 +99,13 @@
     [newsQuiltView triggerPullToRefresh];
     
     [self.view addSubview:newsQuiltView];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (isTabBarHidden) {
+        [self showTabBar];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -204,6 +213,7 @@
             [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, CGRectGetHeight(self.view.bounds))];
         }
     }
+    isTabBarHidden = YES;
     [UIView commitAnimations];
 }
 
@@ -218,6 +228,7 @@
             [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width,  CGRectGetHeight(self.view.bounds)-49)];
         }
     }
+    isTabBarHidden = NO;
     [UIView commitAnimations];
 }
 

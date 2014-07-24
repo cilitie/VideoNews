@@ -19,6 +19,7 @@
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
     BOOL isToBottom;
+    BOOL isTabBarHidden;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *navBar;
@@ -42,6 +43,7 @@
     if (self) {
         _userResultArr = [NSMutableArray array];
         _idolListArr = [NSMutableArray array];
+        isTabBarHidden = NO;
     }
     return self;
 }
@@ -127,6 +129,13 @@
             [weakSelf.userResultCollectionView.infiniteScrollingView stopAnimating];
         }];
     }];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (isTabBarHidden) {
+        [self showTabBar];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -259,6 +268,7 @@
             [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, CGRectGetHeight(self.view.bounds))];
         }
     }
+    isTabBarHidden = YES;
     [UIView commitAnimations];
 }
 
@@ -273,6 +283,7 @@
             [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width,  CGRectGetHeight(self.view.bounds)-49)];
         }
     }
+    isTabBarHidden = NO;
     [UIView commitAnimations];
 }
 

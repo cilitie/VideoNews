@@ -22,6 +22,7 @@
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
     BOOL isToBottom;
+    BOOL isTabBarHidden;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *followBtn;
@@ -63,6 +64,7 @@ static NSString *shareStr;
         _followLastPageTime = nil;
         _fansLastPageTime = nil;
         _shareNews = nil;
+        isTabBarHidden = NO;
     }
     return self;
 }
@@ -87,6 +89,9 @@ static NSString *shareStr;
                 [cell startOrPausePlaying:NO];
             }
         }
+    }
+    if (isTabBarHidden) {
+        [self showTabBar];
     }
 }
 
@@ -600,6 +605,7 @@ static NSString *shareStr;
         VNUser *user = [self.followArr objectAtIndex:indexPath.row];
         if ([self.mineUid isEqualToString:user.uid]) {
             VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+            mineProfileViewController.isPush = YES;
             [self.navigationController pushViewController:mineProfileViewController animated:YES];
         }
         else {
@@ -612,6 +618,7 @@ static NSString *shareStr;
         VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
         if ([self.mineUid isEqualToString:user.uid]) {
             VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+            mineProfileViewController.isPush = YES;
             [self.navigationController pushViewController:mineProfileViewController animated:YES];
         }
         else {
@@ -655,6 +662,7 @@ static NSString *shareStr;
             [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds), view.frame.size.width, view.frame.size.height)];
         }
     }
+    isTabBarHidden = YES;
     [UIView commitAnimations];
 }
 
@@ -666,6 +674,7 @@ static NSString *shareStr;
             [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds)-49, view.frame.size.width, view.frame.size.height)];
         }
     }
+    isTabBarHidden = NO;
     [UIView commitAnimations];
 }
 

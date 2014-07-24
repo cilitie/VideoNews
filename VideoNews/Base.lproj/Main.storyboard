@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12E3200" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -907,13 +907,13 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xgb-8e-oIJ">
-                                        <rect key="frame" x="10" y="31" width="20" height="22"/>
+                                        <rect key="frame" x="290" y="31" width="20" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="40-40Settings">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="popBack:" destination="lib-ei-pAS" eventType="touchUpInside" id="jJa-Ew-aqK"/>
+                                            <action selector="setting:" destination="cnK-5f-kdI" eventType="touchUpInside" id="zF1-gB-vwu"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="个人主页" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yeo-UO-g2r">
@@ -923,6 +923,16 @@
                                         <color key="textColor" red="0.80392163991928101" green="0.098039224743843079" blue="0.14509804546833038" alpha="1" colorSpace="deviceRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KG1-Za-DBV">
+                                        <rect key="frame" x="10" y="31" width="20" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="back">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="pop:" destination="cnK-5f-kdI" eventType="touchUpInside" id="XL3-l2-LCP"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.9450981021" green="0.9450981021" blue="0.9450981021" alpha="1" colorSpace="deviceRGB"/>
                                 <constraints>
@@ -996,6 +1006,7 @@
                         <outlet property="fansTableView" destination="f2W-TF-NeL" id="2VU-yY-83S"/>
                         <outlet property="favouriteTableView" destination="lfO-FM-2FD" id="mPe-sl-8zz"/>
                         <outlet property="followTableView" destination="11S-Xy-59Q" id="gVv-Xg-9Pj"/>
+                        <outlet property="popBtn" destination="KG1-Za-DBV" id="wH9-aC-908"/>
                         <outlet property="videoTableView" destination="My9-9Z-OHu" id="Eg1-ap-DvO"/>
                     </connections>
                 </viewController>

@@ -9,12 +9,13 @@
 #import "VNTabBarViewController.h"
 #import "VNAuthUser.h"
 #import "VNLoginViewController.h"
+
 #import "VNVideoCaptureViewController.h"
 #import "VNCustomizedAlbumPickerController.h"
 #import "VNDraftListController.h"
 #import "VNCustomizedActionSheet.h"
 
-@interface VNTabBarViewController () <UIAlertViewDelegate, VNCustomizedActionSheetDelegate>
+@interface VNTabBarViewController () <UIAlertViewDelegate, UITabBarControllerDelegate, VNCustomizedActionSheetDelegate>
 
 @end
 
@@ -26,6 +27,7 @@
     // Do any additional setup after loading the view.
     [self.tabBar setBarTintColor:[UIColor whiteColor]];
     [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x3f3f3f]]];
+    self.delegate = self;
     
     NSArray *tabBarIcons = @[@"Home", @"Search", @"Camera", @"Notification", @"Profile"];
     NSArray *tabBarSelectedIcons = @[@"Home_A", @"Search_A", @"Camera_A", @"Notification_A", @"Profile_A"];
@@ -123,6 +125,24 @@
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
+}
+
+#pragma mark - UITabBarControllerDelegate
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    if ([self.viewControllers indexOfObject:viewController] == 4) {
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        if (userInfo[@"openid"] && user_token) {
+            return YES;
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+            return NO;
+        }
+    }
+    return YES;
 }
 
 #pragma mark - UserInteractionMethods
