@@ -41,6 +41,7 @@
 #define MIN_VIDEO_DURATION 5.0
 #define MAX_VIDEO_DURATION 30.0
 #define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
+#define screenH ([[UIScreen mainScreen] bounds].size.height)
 
 static NSString *videoFilePath;
 
@@ -73,17 +74,23 @@ static NSString *videoFilePath;
         AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
         
         self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:nil];
-        self.audioInput = [[AVCaptureDeviceInput alloc] initWithDevice:audioDevice error:nil];
+        self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
         
         self.movieOutput = [[AVCaptureMovieFileOutput alloc] init];
         
         [self.captureSession addInput:self.videoInput];
+        [self.captureSession addInput:self.audioInput];
         [self.captureSession addOutput:self.movieOutput];
         
         AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-        UIView *aView = self.view;
-        previewLayer.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-        [aView.layer addSublayer:previewLayer];
+        CGFloat y;
+        if (screenH == 568) {
+            y = -6;
+        }else {
+            y = 0;
+        }
+        previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
+        [self.view.layer addSublayer:previewLayer];
         
         [self.view addSubview:self.overlayView];
         
@@ -163,7 +170,6 @@ static NSString *videoFilePath;
  */
 - (void)combineAndCropSingleVideo
 {
-    __weak VNVideoCaptureViewController *weakSelf = self;
     
     AVMutableComposition *composition = [AVMutableComposition composition];
     
@@ -174,15 +180,17 @@ static NSString *videoFilePath;
     CMTime startTime = kCMTimeZero;
     
     //for loop to combine clips into a single video
-    for (NSInteger i=0; i < weakSelf.videoPathArr.count; i++) {
+    for (NSInteger i=0; i < self.videoPathArr.count; i++) {
         
-        NSString *pathString = [NSString stringWithString:[weakSelf.videoPathArr objectAtIndex:i]];
+        NSString *pathString = [NSString stringWithString:[self.videoPathArr objectAtIndex:i]];
         
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:pathString] options:nil];
         AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         
         AVAssetTrack *audioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         
+        NSLog(@"size.......:%@",NSStringFromCGSize(videoTrack.naturalSize));
+
         //set the orientation
         if(i == 0)
         {
@@ -203,6 +211,8 @@ static NSString *videoFilePath;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
     });
+
+    __weak VNVideoCaptureViewController *weakSelf = self;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
@@ -244,13 +254,13 @@ static NSString *videoFilePath;
     
     /*******************************************************************************************/
     
-    //crop the single video
-    
-    //export the combined video
-    
+    NSString *combinedPath;
+    if (self.videoPieceCount == 1) {
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@1.mov",TEMP_VIDEO_NAME_PREFIX]];
+    }else {
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Final.mov",TEMP_VIDEO_NAME_PREFIX]];
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        
-        NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@1.mov",TEMP_VIDEO_NAME_PREFIX]];
         
         AVAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:combinedPath] options:nil];
         
@@ -269,10 +279,10 @@ static NSString *videoFilePath;
         AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
         
         //Here we shift the viewing square up to the TOP of the video so we only see the top
-        //CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, 0 );
+        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, 0 );
         
         //Use this code if you want the viewing square to be in the middle of the video
-        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, -(clipVideoTrack.naturalSize.width - clipVideoTrack.naturalSize.height) /2 );
+//        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, -(clipVideoTrack.naturalSize.width - clipVideoTrack.naturalSize.height) /2 );
         
         //Make sure the square is portrait
         CGAffineTransform t2 = CGAffineTransformRotate(t1, M_PI_2);
@@ -472,7 +482,6 @@ static NSString *videoFilePath;
 {
     [self.overlayView setProgressViewBlinking:NO];
     
-    
     NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
     
     [self.videoPathArr addObject:currVideoPath];
@@ -572,11 +581,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
         //video duration array stores video files' duration data, for process bar
         
         if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
-            __weak VNVideoCaptureViewController *weakSelf = self;
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [weakSelf combineAndCropSingleVideo];
-            });
-            
+            [self combineAndCropSingleVideo];
         }
         
     }

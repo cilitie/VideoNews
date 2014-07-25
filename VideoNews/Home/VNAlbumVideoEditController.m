@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "VNVideoFramesView.h"
 #import "VNProgressViewForAlbum.h"
+#import "VNVideoCoverSettingController.h"
 
 @interface VNAlbumVideoEditController ()
 
@@ -22,17 +23,20 @@
 
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, assign) CGSize size;
-
+@property (nonatomic, assign) CGFloat duration;
+@property (nonatomic, assign) CGFloat timeScale;
 @end
 
 @implementation VNAlbumVideoEditController
+
+#define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
 
 #pragma mark - Initialization
 
 - (UIScrollView *)videoScrollView
 {
     if (!_videoScrollView) {
-        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 44, 320, 320)];
+        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
         _videoScrollView.backgroundColor = [UIColor clearColor];
         _videoScrollView.showsVerticalScrollIndicator = NO;
         
@@ -53,7 +57,7 @@
 
 #pragma mark - ViewLifeCycle
 
-- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s
+- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s andScale:(CGFloat)scale
 {
     self = [super init];
     if (self) {
@@ -76,20 +80,43 @@
         titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
         [topView addSubview:titleLbl];
         
+        UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
+        [submitBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [submitBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
+        [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
+        [topView addSubview:submitBtn];
+        
         [self.view addSubview:topView];
      
         self.videoPath = videoP;
         self.size = CGSizeMake(s.width, s.height);
+        self.timeScale = scale;
         
-        CGFloat height = 320 * self.size.height / self.size.width;
-        CGFloat height2 = (height > 320)?height:320;
+        CGFloat width, height, width2, height2;
         
-        _videoPlayView.frame = CGRectMake(0, 0, 320, height2);
+        if (self.size.height > self.size.width) {
+            width = 320;
+            width2 = 320;
+            height = 320 * self.size.height / self.size.width;
+            height2 = (height > 320)?height:320;
+        }else if (self.size.width > self.size.height) {
+            width = 320 * self.size.width / self.size.height;
+            width2 = (width > 320)?width:320;
+            height = 320;
+            height2 = 320;
+        }else {
+            width = 320;
+            width2 = 320;
+            height = 320;
+            height2 = 320;
+        }
+        
+        _videoPlayView.frame = CGRectMake(0, 0, width2, height2);
         _videoPlayView.backgroundColor = [UIColor lightGrayColor];
         
-        self.videoScrollView.contentSize = CGSizeMake(320, height2);
-        if (height2 > 320) {
-            [self.videoScrollView scrollRectToVisible:CGRectMake(0, (height - 320)/2 , 320, 320) animated:NO];
+        self.videoScrollView.contentSize = CGSizeMake(width2, height2);
+        if (height2 > 320 || width2 > 320) {
+            [self.videoScrollView scrollRectToVisible:CGRectMake((width - 320) / 2, (height - 320)/2 , 320, 320) animated:NO];
         }
     }
     return self;
@@ -127,8 +154,15 @@
                         
             progressView.maximumValue = currVideoDuration;
             progressView.value = currVideoDuration;
+            self.duration = currVideoDuration;
             [weakSelf.view addSubview:progressView];
             [weakSelf.view addSubview:self.videoFramesView];
+            
+            UIButton *playBtn = [[UIButton alloc] initWithFrame:CGRectMake(140, 140, 40, 40)];
+            playBtn.backgroundColor = [UIColor blueColor];
+            [playBtn setTitle:@"Play" forState:UIControlStateNormal];
+            [playBtn addTarget:weakSelf action:@selector(playTheVideo) forControlEvents:UIControlEventTouchUpInside];
+            [weakSelf.view addSubview:playBtn];
         });
         
     });
@@ -163,27 +197,129 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
 }
 
-//observe for player start.
 - (void)observeValueForKeyPath:(NSString*) path ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
     if (_videoPlayer.status == AVPlayerStatusReadyToPlay) {
         
         [(AVPlayerLayer *)[self.videoPlayView layer] setPlayer:_videoPlayer];
-//        [_videoPlayer play];
     }
 }
 
 - (void)progressValueChanged:(VNProgressViewForAlbum *)slider
 {
     if (slider.value >= 5) {
-        CMTime time = CMTimeMakeWithSeconds(slider.value, 600);
+        CMTime time = CMTimeMakeWithSeconds(slider.value, self.timeScale);
         [_videoPlayer seekToTime:time];
         [slider setNeedsDisplay];
     }else {
         slider.value = 5;
     }
+    self.duration = slider.value;
 }
 
+- (void)playTheVideo
+{
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(pauseVideo:) userInfo:nil repeats:NO];
+    [_videoPlayer seekToTime:kCMTimeZero];
+    [timer setFireDate:[NSDate dateWithTimeIntervalSinceNow:self.duration]];
+    [_videoPlayer play];
+}
+
+- (void)pauseVideo:(NSTimer *)timer
+{
+    [_videoPlayer pause];
+    [timer invalidate];
+}
+
+- (void)doSubmit
+{
+    __weak VNAlbumVideoEditController *weakSelf = self;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        AVAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+        
+        AVAssetTrack *clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        
+        //create a video composition and preset some settings
+        AVMutableVideoComposition* videoComposition = [AVMutableVideoComposition videoComposition];
+        videoComposition.frameDuration = CMTimeMake(1, 30);
+        
+        CGFloat width = MIN(clipVideoTrack.naturalSize.width, clipVideoTrack.naturalSize.height);
+        videoComposition.renderSize = CGSizeMake(width, width);
+        
+        //create a video instruction
+        AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, 30));
+        
+        AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
+        
+        CGFloat diff;
+        if (clipVideoTrack.naturalSize.width != clipVideoTrack.naturalSize.height) {
+            diff = - (weakSelf.videoScrollView.contentOffset.x + weakSelf.videoScrollView.contentOffset.y) * clipVideoTrack.naturalSize.height / 320;
+        }else {
+            diff = 0;
+        }
+        
+        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, diff);
+        //Make sure the square is portrait
+        CGAffineTransform t2 = CGAffineTransformRotate(t1, M_PI_2);
+        
+        CGAffineTransform finalTransform = t2;
+        [transformer setTransform:finalTransform atTime:kCMTimeZero];
+        
+        //add the transformer layer instructions, then add to video composition
+        instruction.layerInstructions = [NSArray arrayWithObject:transformer];
+        videoComposition.instructions = [NSArray arrayWithObject: instruction];
+        
+        //Create an Export Path to store the cropped video
+        NSString *cropPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[NSFileManager defaultManager] removeItemAtPath:cropPath error:nil];
+        });
+        
+        NSURL *exportUrl = [NSURL fileURLWithPath:cropPath];
+        
+        //Export
+        AVAssetExportSession *finalExporter = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality] ;
+        finalExporter.videoComposition = videoComposition;
+        finalExporter.outputURL = exportUrl;
+        finalExporter.outputFileType = AVFileTypeMPEG4;
+        
+        CMTime duration = CMTimeMakeWithSeconds(self.duration, self.timeScale);
+        CMTimeRange range = CMTimeRangeMake(kCMTimeZero, duration);
+        finalExporter.timeRange = range;
+        
+        [finalExporter exportAsynchronouslyWithCompletionHandler:^
+         {
+             dispatch_async(dispatch_get_main_queue(), ^{
+
+                 switch ([finalExporter status]) {
+                     case AVAssetExportSessionStatusFailed:
+                         NSLog(@"Export failed: %@", [[finalExporter error] localizedDescription]);
+                         break;
+                     case AVAssetExportSessionStatusCancelled:
+                         NSLog(@"Export canceled");
+                         break;
+                     default:
+                         
+                         [weakSelf pushToCoverSettingCtl];
+                         
+                         break;
+                 }
+             });
+         }];
+    });
+}
+
+- (void) pushToCoverSettingCtl
+{
+    NSString *combinedPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+    coverSettingCtl.videoPath = combinedPath;
+    [self.navigationController pushViewController:coverSettingCtl animated:YES];
+}
 
 
 @end

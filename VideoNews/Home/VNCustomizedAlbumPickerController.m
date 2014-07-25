@@ -65,6 +65,7 @@
         
         CGSize size;
         AVAssetTrack *vt;
+        CGFloat timeScale;
         
         if ([[anAsset tracksWithMediaType:AVMediaTypeVideo] count] != 0)
         {
@@ -82,6 +83,8 @@
             //po
             size = vt.naturalSize;
         }
+        
+        timeScale = anAsset.duration.timescale;
         
         if (currVideoDuration < 5.0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~视频时长至少要5秒哦~~" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -101,7 +104,7 @@
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSLog(@"filePath: %@",filePath);
-                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size];
+                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size andScale:timeScale];
                         [weakSelf pushViewController:editCtl animated:YES];
                     });
                 }
