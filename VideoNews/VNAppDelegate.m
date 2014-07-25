@@ -11,6 +11,7 @@
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
+#import "VNTabBarViewController.h"
 
 @implementation VNAppDelegate
 
@@ -26,11 +27,19 @@
     //注册通知
     [UIResponder registerRemote];
     
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber!=0) {
+        //使用badge number判断，计数不正确
+        [self setItemBadgeValue];
+    }
+    
     NSDictionary *userInfo=[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    //userInfo=@{@"key": @"value"};
     if (userInfo) {
-        //跳到通知页面
-        self.window.rootViewController.tabBarController.selectedIndex=3;
-        [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
+        //跳到通知页面：从此处跳到通知页面会导致用户没有登录，通知页面没有数据，以后改进
+        //tabBarViewController.selectedIndex=3;
+        
+        [self setItemBadgeValue];
+        
     }
     
     // Override point for customization after application launch.
@@ -63,6 +72,11 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     [UMSocialSnsService  applicationDidBecomeActive];
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber!=0) {
+        //使用badge number判断，计数不正确
+        [self setItemBadgeValue];
+    }
+    
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -93,7 +107,21 @@
     //[alert release];
     
     NSLog(@"%@", userInfo);
-    UITabBarItem *item=[self.window.rootViewController.tabBarController.tabBar.items objectAtIndex:3];
+    [self setItemBadgeValue];
+    
+}
+
+- (void)application:(UIApplication *)application
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    
+    NSLog(@"Error in registration. Error: %@", error);
+}
+
+-(void)setItemBadgeValue
+{
+    VNTabBarViewController *tabBarViewController=(VNTabBarViewController *)self.window.rootViewController;
+    
+    UITabBarItem *item=[tabBarViewController.tabBar.items objectAtIndex:3];
     if (item.badgeValue==nil) {
         item.badgeValue=[NSString stringWithFormat:@"%d",1];
     }
@@ -111,12 +139,6 @@
     }
     [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
     
-}
-
-- (void)application:(UIApplication *)application
-didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    
-    NSLog(@"Error in registration. Error: %@", error);
 }
 
 @end

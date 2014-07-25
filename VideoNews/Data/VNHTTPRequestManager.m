@@ -239,6 +239,7 @@ static int pagesize = 10;
     NSString *user_token = nil;
     uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    NSLog(@"user_token:%@",user_token);
     if (!uid) {
         uid = @"1";
         user_token = @"";
@@ -248,7 +249,7 @@ static int pagesize = 10;
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
-        //NSLog(@"%@",operation.request.URL.absoluteString);
+        NSLog(@"%@",operation.request.URL.absoluteString);
         VNComment *comment = nil;
         BOOL replySuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
@@ -267,7 +268,7 @@ static int pagesize = 10;
             completion(replySuccess, comment, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        //NSLog(@"%@",operation.request.URL.absoluteString);
+        NSLog(@"%@",operation.request.URL.absoluteString);
         if (completion) {
             completion(NO, nil, error);
         }

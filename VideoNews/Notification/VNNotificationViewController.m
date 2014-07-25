@@ -24,6 +24,8 @@
 #import "AFNetworking.h"
 ////上传相关
 #import "OSSClient.h"
+
+#import "VNTabBarViewController.h"
 //OSS Bucket的基址，可以是自定义域名或者OSS默认域名
 //#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
 #define OSS_BUCKET_BASE_URL     "http://fashion-test.oss-cn-beijing.aliyuncs.com/"
@@ -41,6 +43,10 @@
 @property (strong, nonatomic) NSMutableArray *messageArr;
 
 @property (strong,nonatomic)VNMessage *curMessage;
+
+@property (strong,nonatomic)NSString *openUid;
+
+@property (strong,nonatomic)NSString *user_token;
 
 @end
 
@@ -69,6 +75,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
     //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
+    
+    [self removeBadgeValue];
+
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     VNAuthUser *authUser = nil;
@@ -88,6 +97,8 @@
     }
     //userToken:(NSString *)user_token
     __weak typeof(self) weakSelf = self;
+    _openUid=authUser.openid;
+    _user_token=user_token;
 
     [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
         if (error) {
@@ -111,6 +122,7 @@
                     [weakSelf.messageArr removeAllObjects];
                     [weakSelf.messageArr addObjectsFromArray:messageArr];
                     [weakSelf.messageTableView reloadData];
+                    [self removeBadgeValue];
                 }
                 [weakSelf.messageTableView.pullToRefreshView stopAnimating];
             }];;
@@ -142,7 +154,34 @@
     [self.messageTableView triggerPullToRefresh];
 }
 
+-(void)removeBadgeValue
+{
+    VNTabBarViewController *tabBarViewController=(VNTabBarViewController *)self.tabBarController;
+    UITabBarItem *item=[tabBarViewController.tabBar.items objectAtIndex:3];
+    if (item.badgeValue!=nil)
+    {
+        item.badgeValue=nil;
+    }
+    [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
+}
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self.messageTableView triggerPullToRefresh];
+    [self removeBadgeValue];
+ //   __weak typeof(self) weakSelf = self;
+    
+//    [VNHTTPRequestManager messageListForUser:_openUid userToken:_user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
+//        if (error) {
+//            NSLog(@"%@", error.localizedDescription);
+//        }
+//        else {
+//            [weakSelf.messageArr addObjectsFromArray:messageArr];
+//            [weakSelf.messageTableView reloadData];
+//        }
+//    }];
+
+}
 -(void)uploadImage:(NSString *)filePath Bucket:(NSString *)bucket
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
