@@ -15,6 +15,7 @@
 #import "UMSocial.h"
 #import "VNLoginViewController.h"
 #import "VNProfileViewController.h"
+#import "VNOriginImgViewController.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
@@ -155,9 +156,9 @@ static NSString *shareStr;
                     [cell startOrPausePlaying:NO];
                 }
             }
-            firstLoading = YES;
             switch (index) {
                 case 0: {
+                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = NO;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
@@ -166,6 +167,7 @@ static NSString *shareStr;
                 }
                     break;
                 case 1: {
+                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = NO;
                     weakSelf.followTableView.hidden = YES;
@@ -174,6 +176,7 @@ static NSString *shareStr;
                 }
                     break;
                 case 2: {
+                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = NO;
@@ -182,6 +185,7 @@ static NSString *shareStr;
                 }
                     break;
                 case 3: {
+                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
@@ -189,6 +193,15 @@ static NSString *shareStr;
                     [weakSelf.fansTableView triggerPullToRefresh];
                 }
                     break;
+                case 11: {
+                    if (self.mineInfo.avatar) {
+                        VNOriginImgViewController *originImgViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNOriginImgViewController"];
+                        originImgViewController.imgURL = self.mineInfo.avatar;
+                        originImgViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+                        [self presentViewController:originImgViewController animated:YES completion:nil];
+                    }
+                    return ;
+                }
             }
         };
         favHeaderView.editHandler = videoHeaderView.editHandler;

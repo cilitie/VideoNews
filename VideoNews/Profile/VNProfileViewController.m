@@ -158,9 +158,9 @@ static NSString *shareStr;
                 [cell startOrPausePlaying:NO];
             }
         }
-        firstLoading = YES;
         switch (index) {
             case 0: {
+                firstLoading = YES;
                 weakSelf.videoTableView.hidden = NO;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = YES;
@@ -168,6 +168,7 @@ static NSString *shareStr;
             }
                 break;
             case 1: {
+                firstLoading = YES;
                 weakSelf.videoTableView.hidden = YES;
                 weakSelf.followTableView.hidden = NO;
                 weakSelf.fansTableView.hidden = YES;
@@ -175,6 +176,7 @@ static NSString *shareStr;
             }
                 break;
             case 2: {
+                firstLoading = YES;
                 weakSelf.videoTableView.hidden = YES;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = NO;
@@ -185,8 +187,8 @@ static NSString *shareStr;
                 if (self.userInfo.avatar) {
                     VNOriginImgViewController *originImgViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNOriginImgViewController"];
                     originImgViewController.imgURL = self.userInfo.avatar;
-                    //FIXME: 修复大头像
-//                    [self presentViewController:originImgViewController animated:NO completion:nil];
+                    originImgViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+                    [self presentViewController:originImgViewController animated:YES completion:nil];
                 }
                 return ;
             }

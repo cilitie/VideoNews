@@ -10,9 +10,7 @@
 
 @interface VNOriginImgViewController ()
 
-@property (weak, nonatomic) IBOutlet UIImageView *originImgView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *originImgViewHeightLC;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *originImgViewWidthLC;
+@property (strong, nonatomic) UIImageView *originImgView;
 
 - (IBAction)tap:(UITapGestureRecognizer *)sender;
 
@@ -25,10 +23,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.originImgView = [[UIImageView alloc] init];
     [self.originImgView setImageWithURL:[NSURL URLWithString:self.imgURL] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
     [self.originImgView sizeToFit];
-    self.originImgViewWidthLC.constant = CGRectGetWidth(self.originImgView.bounds);
-    self.originImgViewHeightLC.constant = CGRectGetHeight(self.originImgView.bounds);
+    self.originImgView.center = self.view.center;
+    [self.view addSubview:self.originImgView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -49,6 +48,6 @@
 */
 
 - (IBAction)tap:(UITapGestureRecognizer *)sender {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

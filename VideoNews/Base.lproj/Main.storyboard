@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12E3200" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yvf-YO-3ud">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -1080,31 +1080,12 @@
                     <view key="view" contentMode="scaleToFill" id="9dM-ib-7Kz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pYE-8V-w5D">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="568" id="b8L-Ol-PHJ"/>
-                                    <constraint firstAttribute="width" constant="320" id="u1U-UM-6VS"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="pYE-8V-w5D" secondAttribute="centerX" id="wWD-Sj-SEx"/>
-                            <constraint firstAttribute="centerY" secondItem="pYE-8V-w5D" secondAttribute="centerY" id="yBD-ck-UKM"/>
-                        </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="HnT-Ak-fov" appends="YES" id="8QN-2p-gJW"/>
                         </connections>
                     </view>
-                    <connections>
-                        <outlet property="originImgView" destination="pYE-8V-w5D" id="ra2-Sn-D2D"/>
-                        <outlet property="originImgViewHeightLC" destination="wWD-Sj-SEx" id="djc-8T-iw1"/>
-                        <outlet property="originImgViewWidthLC" destination="yBD-ck-UKM" id="a3S-Pr-o1X"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ihQ-6b-4Er" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="HnT-Ak-fov">

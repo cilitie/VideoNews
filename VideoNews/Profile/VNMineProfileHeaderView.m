@@ -61,6 +61,9 @@
     else if (CGRectContainsPoint(CGRectMake(80*3, 94, 80, 50), point)) {
         index = 3;
     }
+    else if (CGRectContainsPoint(CGRectMake(10, 10, 75, 75), point)) {
+        index = 11;
+    }
     else {
         return;
     }
