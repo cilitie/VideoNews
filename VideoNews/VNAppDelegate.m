@@ -29,6 +29,8 @@
     NSDictionary *userInfo=[launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (userInfo) {
         //跳到通知页面
+        self.window.rootViewController.tabBarController.selectedIndex=3;
+        [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
     }
     
     // Override point for customization after application launch.
@@ -91,7 +93,22 @@
     //[alert release];
     
     NSLog(@"%@", userInfo);
-    
+    UITabBarItem *item=[self.window.rootViewController.tabBarController.tabBar.items objectAtIndex:3];
+    if (item.badgeValue==nil) {
+        item.badgeValue=[NSString stringWithFormat:@"%d",1];
+    }
+    else
+    {
+        int value=[item.badgeValue intValue];
+        value=value+1;
+        if (value>999) {
+            item.badgeValue=@"999+";
+        }
+        else
+        {
+            item.badgeValue=[NSString stringWithFormat:@"%d",value];
+        }
+    }
     [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
     
 }
