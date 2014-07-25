@@ -25,5 +25,8 @@
 @property (strong, nonatomic, readonly) NSString *main_uid;
 //for idol
 @property (assign, nonatomic) BOOL isMineIdol;
+//for user profile
+@property (strong, nonatomic, readonly) NSString *constellation;
+@property (strong, nonatomic, readonly) NSString *birthday;
 
 @end

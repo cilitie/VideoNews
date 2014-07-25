@@ -22,7 +22,7 @@ extern NSString *const isLogin;
 extern NSString *const VNLoginDate;
 extern NSString *const VNPushToken;
 extern NSString *const VNUserToken;
-
+extern NSString *const VNProfileInfo;
 
 //友盟相关
 extern NSString *const UmengAppkey;

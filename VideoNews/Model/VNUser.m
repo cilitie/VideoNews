@@ -24,6 +24,9 @@ static NSString *kMain_uid = @"main_uid";
 
 static NSString *kIsMineIdol = @"isMineIdol";
 
+static NSString *kConstellation = @"constellation";
+static NSString *kBirthday = @"birthday";
+
 @implementation VNUser
 
 - (NSString *)uid {

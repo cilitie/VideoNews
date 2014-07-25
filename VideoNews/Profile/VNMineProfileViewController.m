@@ -16,6 +16,7 @@
 #import "VNLoginViewController.h"
 #import "VNProfileViewController.h"
 #import "VNOriginImgViewController.h"
+#import "VNEditProfileViewController.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
@@ -144,7 +145,14 @@ static NSString *shareStr;
         
         __weak typeof(self) weakSelf = self;
         
-        videoHeaderView.editHandler = ^(){};
+        videoHeaderView.editHandler = ^(){
+            VNEditProfileViewController *editProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNEditProfileViewController"];
+            if (self.mineInfo) {
+                editProfileViewController.userInfo = self.mineInfo;
+            }
+            [self.navigationController pushViewController:editProfileViewController animated:YES];
+        };
+        
         videoHeaderView.tabHandler = ^(NSUInteger index){
             for (VNProfileVideoTableViewCell *cell in [weakSelf.videoTableView visibleCells]) {
                 if (cell.isPlaying) {

@@ -22,6 +22,7 @@ NSString *const isLogin = @"KIsLogin";
 NSString *const VNLoginDate = @"kVNLoginDate";
 NSString *const VNPushToken = @"kVNPushToken";
 NSString *const VNUserToken = @"kVNUserToken";
+NSString *const VNProfileInfo = @"kVNProfileInfo";
 
 //友盟相关
 NSString *const UmengAppkey = @"53a91faf56240bf2de0016ef";

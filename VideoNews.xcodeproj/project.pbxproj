@@ -91,6 +91,9 @@
 		D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */ = {isa = PBXBuildFile; fileRef = D66F7A9D1963D78500EA72BC /* VNComment.m */; };
 		D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */; };
 		D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F61981063F00236517 /* VNOriginImgViewController.m */; };
+		D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F919822C6300236517 /* VNEditProfileViewController.m */; };
+		D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */; };
+		D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4FF1982503F00236517 /* VNEditContentViewController.m */; };
 		D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */; };
 		D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
@@ -279,6 +282,12 @@
 		D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProfileDetailViewController.m; sourceTree = "<group>"; };
 		D68CB4F51981063F00236517 /* VNOriginImgViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNOriginImgViewController.h; sourceTree = "<group>"; };
 		D68CB4F61981063F00236517 /* VNOriginImgViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNOriginImgViewController.m; sourceTree = "<group>"; };
+		D68CB4F819822C6300236517 /* VNEditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNEditProfileViewController.h; sourceTree = "<group>"; };
+		D68CB4F919822C6300236517 /* VNEditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNEditProfileViewController.m; sourceTree = "<group>"; };
+		D68CB4FB19823D1700236517 /* VNEditProfileTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNEditProfileTableViewCell.h; sourceTree = "<group>"; };
+		D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNEditProfileTableViewCell.m; sourceTree = "<group>"; };
+		D68CB4FE1982503F00236517 /* VNEditContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNEditContentViewController.h; sourceTree = "<group>"; };
+		D68CB4FF1982503F00236517 /* VNEditContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNEditContentViewController.m; sourceTree = "<group>"; };
 		D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCommentTableViewCell.h; sourceTree = "<group>"; };
 		D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCommentTableViewCell.m; sourceTree = "<group>"; };
 		D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCommentTableViewCell.xib; sourceTree = "<group>"; };
@@ -590,6 +599,12 @@
 				D68CB4F31980F0D600236517 /* VNProfileDetailViewController.m */,
 				D68CB4F51981063F00236517 /* VNOriginImgViewController.h */,
 				D68CB4F61981063F00236517 /* VNOriginImgViewController.m */,
+				D68CB4F819822C6300236517 /* VNEditProfileViewController.h */,
+				D68CB4F919822C6300236517 /* VNEditProfileViewController.m */,
+				D68CB4FB19823D1700236517 /* VNEditProfileTableViewCell.h */,
+				D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */,
+				D68CB4FE1982503F00236517 /* VNEditContentViewController.h */,
+				D68CB4FF1982503F00236517 /* VNEditContentViewController.m */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -937,6 +952,7 @@
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
+				D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
 				D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
@@ -963,6 +979,7 @@
 				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
+				D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */,
 				D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */,
 				149D9124197E3E4500DF4346 /* VNVideoCaptureViewController.m in Sources */,
 				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
@@ -987,6 +1004,7 @@
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
+				D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */,
 				14747CF4197FDD6E0059A68C /* VNProgressViewForAlbum.m in Sources */,
 				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
 				D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */,
