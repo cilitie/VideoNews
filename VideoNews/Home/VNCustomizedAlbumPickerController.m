@@ -90,12 +90,12 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~视频时长至少要5秒哦~~" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
             [alert show];
             [self popViewControllerAnimated:YES];
-        }else {
+        }else if (currVideoDuration <= 30.0){
             
             NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles"];
             
             __weak VNCustomizedAlbumPickerController *weakSelf = self;
-
+            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
                 
@@ -109,6 +109,69 @@
                     });
                 }
             });
+        }else {
+            
+            NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:@"VN_Video_Final.mov"];
+
+            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            }
+            
+            NSURL *videoFileUrl = [NSURL fileURLWithPath:filePath];
+            
+            NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:anAsset];
+            
+            if ([compatiblePresets containsObject:AVAssetExportPresetMediumQuality]) {
+                
+                
+                AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
+                                      
+                                      initWithAsset:anAsset presetName:AVAssetExportPresetPassthrough];
+                
+                exportSession.outputURL = videoFileUrl;
+                
+                exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+                
+                CMTime start = CMTimeMakeWithSeconds(0, anAsset.duration.timescale);
+                
+                CMTime duration = CMTimeMakeWithSeconds(30, anAsset.duration.timescale);
+                
+                CMTimeRange range = CMTimeRangeMake(start, duration);
+                
+                exportSession.timeRange = range;
+                
+                __weak VNCustomizedAlbumPickerController *weakSelf = self;
+
+                [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                    
+                    switch ([exportSession status]) {
+                        case AVAssetExportSessionStatusFailed:
+                        {
+                            NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"视频导出失败" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                            [alert show];
+                            [self popViewControllerAnimated:YES];
+                        }
+                            break;
+                        case AVAssetExportSessionStatusCancelled:
+                        {
+                            NSLog(@"Export canceled");
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"视频导出失败" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                            [alert show];
+                            [self popViewControllerAnimated:YES];
+                        }
+                            break;
+                        default:
+                            NSLog(@"NONE");
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size andScale:timeScale];
+                                [weakSelf pushViewController:editCtl animated:YES];
+                            });
+                            break;
+                    }
+                }];
+            }
         }
     }
     

@@ -27,6 +27,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setThumbImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        
+        UIImage *sliderLeftTrackImage = [[UIImage imageNamed:@"blank"] stretchableImageWithLeftCapWidth:0 topCapHeight: 0];
+        UIImage *sliderRightTrackImage = [[UIImage imageNamed:@"blank"] stretchableImageWithLeftCapWidth:0 topCapHeight: 0];
+        [self setMinimumTrackImage: sliderLeftTrackImage forState: UIControlStateNormal];
+        [self setMaximumTrackImage: sliderRightTrackImage forState: UIControlStateNormal];
+        
     }
     return self;
 }
@@ -50,7 +56,7 @@
     
     // draw the empty rounded rectangle (shown for the "unfilled" portions of the progress
     
-	[[UIColor blackColor] setFill] ;
+	[[UIColor colorWithRGBValue:0x222127] setFill] ;
 	
 	CGContextBeginPath(context) ;
     CGContextMoveToPoint(context, CGRectGetMinX(rect), 0) ;
@@ -61,10 +67,24 @@
     CGContextClosePath(context) ;
 	CGContextFillPath(context) ;
     
-    //draw tipping point.
-    [[UIColor lightGrayColor] setFill];
+	// make sure the filled rounded rectangle is not smaller than 2 times the radius
+    CGFloat x = rect.size.width * self.value / self.maximumValue;
     
-    CGFloat x = rect.size.width * 5.0 / self.maximumValue;
+	[[UIColor redColor] setFill] ;
+	
+	CGContextBeginPath(context) ;
+    
+    CGContextMoveToPoint(context, 0, 0) ;
+    CGContextAddLineToPoint(context, x, 0);
+    CGContextAddLineToPoint(context, x, kProgressBarHeight);
+    CGContextAddLineToPoint(context, 0, kProgressBarHeight);
+    CGContextAddLineToPoint(context, 0, 0);
+	CGContextClosePath(context) ;
+	CGContextFillPath(context) ;
+    
+    //draw tipping point.
+    [[UIColor whiteColor] setFill];
+    x = rect.size.width * 5.0 / self.maximumValue;
     
     CGContextBeginPath(context) ;
     CGContextMoveToPoint(context, x - 1, 0) ;
@@ -74,22 +94,7 @@
     CGContextAddLineToPoint(context, x - 1, 0);
     CGContextClosePath(context) ;
 	CGContextFillPath(context) ;
-    
-	// make sure the filled rounded rectangle is not smaller than 2 times the radius
-	rect.size.width *= self.value / self.maximumValue;
-    
-	[[UIColor colorWithRed:170/255.0 green:64/255.0 blue:144/255.0 alpha:1] setFill] ;
-	
-	CGContextBeginPath(context) ;
-    
-    CGContextMoveToPoint(context, CGRectGetMinX(rect), 0) ;
-    CGContextAddLineToPoint(context, CGRectGetMaxX(rect), 0);
-    CGContextAddLineToPoint(context, CGRectGetMaxX(rect), kProgressBarHeight);
-    CGContextAddLineToPoint(context, CGRectGetMinX(rect), kProgressBarHeight);
-    CGContextAddLineToPoint(context, CGRectGetMinX(rect), 0);
-	CGContextClosePath(context) ;
-	CGContextFillPath(context) ;
-    
+
 	// restore the context
 	CGContextRestoreGState(context) ;
 }

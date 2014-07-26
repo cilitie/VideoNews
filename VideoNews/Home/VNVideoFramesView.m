@@ -80,7 +80,7 @@
         
         time4Pic = i * picWidth;
         
-        CMTime timeFrame = CMTimeMakeWithSeconds(durationSeconds * time4Pic / 320, 600);
+        CMTime timeFrame = CMTimeMakeWithSeconds(durationSeconds * time4Pic / 320, myAsset.duration.timescale);
         
         [allTimes addObject:[NSValue valueWithCMTime:timeFrame]];
         

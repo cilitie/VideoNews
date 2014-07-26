@@ -12,6 +12,7 @@
 #import "VNVideoFramesView.h"
 #import "VNProgressViewForAlbum.h"
 #import "VNVideoCoverSettingController.h"
+#import <MBProgressHUD.h>
 
 @interface VNAlbumVideoEditController ()
 
@@ -25,6 +26,8 @@
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGFloat duration;
 @property (nonatomic, assign) CGFloat timeScale;
+
+@property (nonatomic, strong) MBProgressHUD *hud;
 @end
 
 @implementation VNAlbumVideoEditController
@@ -53,6 +56,16 @@
         
     }
     return _videoPlayView;
+}
+
+- (MBProgressHUD *)hud
+{
+    if (!_hud) {
+        _hud = [[MBProgressHUD alloc] init];
+        _hud.minSize = CGSizeMake(100, 100);
+        _hud.labelText = @"正在合成视频，请稍后";
+    }
+    return _hud;
 }
 
 #pragma mark - ViewLifeCycle
@@ -163,6 +176,9 @@
             [playBtn setTitle:@"Play" forState:UIControlStateNormal];
             [playBtn addTarget:weakSelf action:@selector(playTheVideo) forControlEvents:UIControlEventTouchUpInside];
             [weakSelf.view addSubview:playBtn];
+            
+            [weakSelf.view addSubview:self.hud];
+
         });
         
     });
@@ -233,6 +249,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)doSubmit
 {
+    
+    [self.hud show:YES];
+    
     __weak VNAlbumVideoEditController *weakSelf = self;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -250,7 +269,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         //create a video instruction
         AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, 30));
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(30, asset.duration.timescale));
         
         AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
         
@@ -295,6 +314,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
          {
              dispatch_async(dispatch_get_main_queue(), ^{
 
+                 [weakSelf.hud hide:YES];
+                 
                  switch ([finalExporter status]) {
                      case AVAssetExportSessionStatusFailed:
                          NSLog(@"Export failed: %@", [[finalExporter error] localizedDescription]);

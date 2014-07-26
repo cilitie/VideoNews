@@ -52,7 +52,7 @@ static NSString *videoFilePath;
     if (!_overlayView) {
         _overlayView = [[VNCameraOverlayView alloc] initWithFrame:self.view.frame];
         _overlayView.delegate = self;
-        [_overlayView setProgressViewBlinking:YES];
+//        [_overlayView setProgressViewBlinking:YES];
     }
     return _overlayView;
 }
@@ -107,7 +107,6 @@ static NSString *videoFilePath;
 
             }
         }
-
     }
     return self;
 }
@@ -274,7 +273,7 @@ static NSString *videoFilePath;
         
         //create a video instruction
         AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, 30));
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(30, asset.duration.timescale));
         
         AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
         
@@ -480,7 +479,7 @@ static NSString *videoFilePath;
  */
 - (void)doStartNewVideoRecord
 {
-    [self.overlayView setProgressViewBlinking:NO];
+//    [self.overlayView setProgressViewBlinking:NO];
     
     NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
     
@@ -494,7 +493,7 @@ static NSString *videoFilePath;
  */
 - (void)doEndCurVideo
 {
-    [self.overlayView setProgressViewBlinking:YES];
+//    [self.overlayView setProgressViewBlinking:YES];
     
     if ([_durationTimer isValid]) {
         [_durationTimer invalidate];

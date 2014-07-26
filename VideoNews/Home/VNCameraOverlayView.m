@@ -46,10 +46,11 @@
 - (UIButton *)trashBtn
 {
     if (!_trashBtn) {
-        _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 45, 90, 90)];
-        [_trashBtn setTitle:@"Back" forState:UIControlStateNormal];
-        [_trashBtn setTitle:@"Del" forState:UIControlStateSelected];
-        _trashBtn.backgroundColor = [UIColor yellowColor];
+        _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 52, 76, 76)];
+        [_trashBtn setImage:[UIImage imageNamed:@"video_back"] forState:UIControlStateNormal];
+        [_trashBtn setImage:[UIImage imageNamed:@"video_back"] forState:UIControlStateSelected];
+        [_trashBtn setTitle:@"Trash" forState:UIControlStateSelected];
+        _trashBtn.backgroundColor = [UIColor clearColor];
         [_trashBtn addTarget:self action:@selector(doDeleteCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
         _trashBtn.showsTouchWhenHighlighted = YES;
         _trashBtn.selected = NO;
@@ -110,12 +111,32 @@
         UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(doPinch)];
         pinchGesture.delegate = self;
         [self addGestureRecognizer:pinchGesture];
+        
+        UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+        pressGesture.delegate = self;
+        [self addGestureRecognizer:pressGesture];
     }
     return self;
 }
 
 - (void)doPinch
 {}
+
+//handle long press gesture...
+- (void)handlePress:(UILongPressGestureRecognizer *)ges
+{
+    if (ges.state == UIGestureRecognizerStateBegan) {
+        if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
+            
+            [delegate doStartNewVideoRecord];
+        }
+    }else if (ges.state == UIGestureRecognizerStateEnded) {
+        if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
+            
+            [delegate doEndCurVideo];
+        }
+    }
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -152,6 +173,14 @@
     
     [self addSubview:topBaseView];
     
+    UILabel *descLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 343, 320, 42)];
+    descLbl.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    descLbl.textColor = [UIColor whiteColor];
+    descLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:15];
+    descLbl.textAlignment = NSTextAlignmentCenter;
+    descLbl.text = @"找到有趣的画，按任意位置开始拍摄";
+    [self addSubview:descLbl];
+    
     //bottom base view initialization
     UIView *bottomBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 385, 320, 183)];
     bottomBaseView.backgroundColor = [UIColor blackColor];
@@ -160,15 +189,16 @@
     
     [bottomBaseView addSubview:self.trashBtn];
     
-    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
-    [takeVideoBtn setTitle:@"Go" forState:UIControlStateNormal];
-    [takeVideoBtn setTitle:@"On" forState:UIControlStateSelected];
-    takeVideoBtn.backgroundColor = [UIColor redColor];
-    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
-    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
-    takeVideoBtn.showsTouchWhenHighlighted = YES;
-    takeVideoBtn.selected = NO;
-    [bottomBaseView addSubview:takeVideoBtn];
+    //commented by zhangxue 20140726 due to requirement change...
+//    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
+//    [takeVideoBtn setTitle:@"Go" forState:UIControlStateNormal];
+//    [takeVideoBtn setTitle:@"On" forState:UIControlStateSelected];
+//    takeVideoBtn.backgroundColor = [UIColor redColor];
+//    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
+//    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
+//    takeVideoBtn.showsTouchWhenHighlighted = YES;
+//    takeVideoBtn.selected = NO;
+//    [bottomBaseView addSubview:takeVideoBtn];
     
     [bottomBaseView addSubview:self.submitBtn];
     
@@ -224,10 +254,11 @@
     [self.trashBtn setEnabled:enable];
 }
 
-- (void)setProgressViewBlinking:(BOOL)blink
-{
-    [_progressView setTippingPointShining:blink];
-}
+//commented by zhangxue 20140726
+//- (void)setProgressViewBlinking:(BOOL)blink
+//{
+//    [_progressView setTippingPointShining:blink];
+//}
 
 - (void)setProgressTimeArr:(NSArray *)timeArr
 {
@@ -304,30 +335,30 @@
 }
 
 /**
- *  @description: startVideoRecord
+ *  @description: startVideoRecord (commented by zhangxue 20140726 due to requirement change...)
  *
  *  @param sender: input button
  */
-- (void)doStartVideoRecord:(UIButton *)sender
-{
-    if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
-        
-        [delegate doStartNewVideoRecord];
-    }
-}
+//- (void)doStartVideoRecord:(UIButton *)sender
+//{
+//    if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
+//        
+//        [delegate doStartNewVideoRecord];
+//    }
+//}
 
 /**
- *  @description: end current video record
+ *  @description: end current video record (commented by zhangxue 20140726 due to requirement change...)
  *
  *  @param sender: input button
  */
-- (void)doEndVideoRecord:(UIButton *)sender
-{
-    if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
-        
-        [delegate doEndCurVideo];
-    }
-}
+//- (void)doEndVideoRecord:(UIButton *)sender
+//{
+//    if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
+//        
+//        [delegate doEndCurVideo];
+//    }
+//}
 
 /**
  *  @description: if the video record has not been started yet, open the photo album, or if the video longer than a certain time period, submit the video.

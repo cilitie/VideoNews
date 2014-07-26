@@ -72,7 +72,8 @@
 - (void)showCombiningMsg;
 - (void)hideCombiningMsg;
 
-- (void)setProgressViewBlinking:(BOOL)blink;
+//commented by zhangxue 20140726
+//- (void)setProgressViewBlinking:(BOOL)blink;
 - (void)setProgressTimeArr:(NSArray *)timeArr;
 
 @end

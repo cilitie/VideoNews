@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, ProgressViewStatus) {
 @property (nonatomic, assign) ProgressViewStatus status;
 
 //小方块闪烁
-- (void)setTippingPointShining:(BOOL)shine;
+// commented by zhangxue 20140726
+//- (void)setTippingPointShining:(BOOL)shine;
 
 @end

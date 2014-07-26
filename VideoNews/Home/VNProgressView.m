@@ -38,9 +38,9 @@
 		if (frame.size.width == 0.0f)
 			frame.size.width = kProgressBarWidth ;
         
-        _blingRect = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kProgressBarHeight, kProgressBarHeight)];
-        _blingRect.backgroundColor = [UIColor orangeColor];
-        [self addSubview:_blingRect];
+//        _blingRect = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kProgressBarHeight, kProgressBarHeight)];
+//        _blingRect.backgroundColor = [UIColor orangeColor];
+//        [self addSubview:_blingRect];
         
 	}
 	return self ;
@@ -50,22 +50,23 @@
 {
 }
 
-- (void)setTippingPointShining:(BOOL)shine
-{
-    if (shine) {
-        _shiningTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(shineTippingPoint) userInfo:nil repeats:YES];
-        [_shiningTimer fire];
-    }else {
-        
-        [_shiningTimer invalidate];
-        
-        [UIView animateWithDuration:0.2f animations:^{
-            _blingRect.alpha = 1;
-        } completion:^(BOOL finish){
-            _blingRect.hidden = NO;
-        }];
-    }
-}
+// commented by zhangxue 20140726
+//- (void)setTippingPointShining:(BOOL)shine
+//{
+//    if (shine) {
+//        _shiningTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(shineTippingPoint) userInfo:nil repeats:YES];
+//        [_shiningTimer fire];
+//    }else {
+//        
+//        [_shiningTimer invalidate];
+//        
+//        [UIView animateWithDuration:0.2f animations:^{
+//            _blingRect.alpha = 1;
+//        } completion:^(BOOL finish){
+//            _blingRect.hidden = NO;
+//        }];
+//    }
+//}
 
 
 - (void)shineTippingPoint
@@ -158,7 +159,7 @@
     
     // draw the empty rounded rectangle (shown for the "unfilled" portions of the progress
     
-	[[UIColor blackColor] setFill] ;
+	[[UIColor colorWithRGBValue:0x222127] setFill] ;
 	
 	CGContextBeginPath(context) ;
     CGContextMoveToPoint(context, CGRectGetMinX(rect), 0) ;
@@ -171,7 +172,7 @@
     
     
     //draw tipping point.
-    [[UIColor lightGrayColor] setFill];
+    [[UIColor whiteColor] setFill];
     
     CGContextBeginPath(context) ;
     CGContextMoveToPoint(context, 53, 0) ;
@@ -188,7 +189,7 @@
 	// make sure the filled rounded rectangle is not smaller than 2 times the radius
 	rect.size.width *= progress ;
     
-	[[UIColor colorWithRed:170/255.0 green:64/255.0 blue:144/255.0 alpha:1] setFill] ;
+	[[UIColor redColor] setFill] ;
 	
 	CGContextBeginPath(context) ;
     
@@ -203,7 +204,7 @@
     
     if (timePointArr) {
         
-        [[UIColor blueColor] setFill] ;
+        [[UIColor colorWithRGBValue:0x222127] setFill] ;
         
         for (int i = 0; i < timePointArr.count; i++) {
             

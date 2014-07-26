@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
+		140332281983D54E005611A8 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 140332271983D54E005611A8 /* VNVideoShareViewController.m */; };
 		1433433F197B83A600F48022 /* VNVideoCoverSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */; };
 		14334348197B99AD00F48022 /* VNAVPlayerPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */; };
 		1433434F197C061200F48022 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433434E197C061200F48022 /* VNVideoFramesView.m */; };
@@ -134,6 +135,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		140332261983D54E005611A8 /* VNVideoShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoShareViewController.h; sourceTree = "<group>"; };
+		140332271983D54E005611A8 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
 		1433433D197B83A600F48022 /* VNVideoCoverSettingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCoverSettingController.h; sourceTree = "<group>"; };
 		1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCoverSettingController.m; sourceTree = "<group>"; };
 		14334346197B99AD00F48022 /* VNAVPlayerPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAVPlayerPlayView.h; sourceTree = "<group>"; };
@@ -402,6 +405,8 @@
 				149D9120197E3AE000DF4346 /* VNProgressView.m */,
 				14747CF2197FDD6E0059A68C /* VNProgressViewForAlbum.h */,
 				14747CF3197FDD6E0059A68C /* VNProgressViewForAlbum.m */,
+				140332261983D54E005611A8 /* VNVideoShareViewController.h */,
+				140332271983D54E005611A8 /* VNVideoShareViewController.m */,
 			);
 			name = VNVideo;
 			sourceTree = "<group>";
@@ -962,6 +967,7 @@
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
 				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
+				140332281983D54E005611A8 /* VNVideoShareViewController.m in Sources */,
 				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,
 				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
 				D6676F9E197F587F00F484FE /* VNUserProfileHeaderView.m in Sources */,
