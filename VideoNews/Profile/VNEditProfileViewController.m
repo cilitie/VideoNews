@@ -10,19 +10,37 @@
 #import "VNEditProfileTableViewCell.h"
 #import "VNEditContentViewController.h"
 
-@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *saveBtn;
 @property (weak, nonatomic) IBOutlet UITableView *editTableView;
-@property (strong, nonatomic) NSDictionary *profileInfo;
+@property (strong, nonatomic) NSMutableDictionary *profileInfo;
+
+@property (strong, nonatomic) NSArray *genderArr;
+@property (strong, nonatomic) NSArray *constellationArr;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;
 
 @end
 
+static NSUInteger genderPickerTag = 101;
+static NSUInteger constellationPickerTag = 102;
+static NSUInteger birthdayPickerTag = 103;
+
+
 @implementation VNEditProfileViewController
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        _genderArr = @[@"男", @"女"];
+        _constellationArr = @[@"白羊座", @"金牛座", @"双子座", @"巨蟹座", @"狮子座", @"处女座", @"天秤座", @"天蝎座", @"射手座", @"摩羯座", @"水瓶座", @"双鱼座"];
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -48,11 +66,12 @@
     [super viewWillAppear:animated];
     NSDictionary *profileInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNProfileInfo];
     if (profileInfo && profileInfo.count) {
-        self.profileInfo = [[NSDictionary alloc] initWithDictionary:profileInfo];
+        self.profileInfo = [[NSMutableDictionary alloc] initWithDictionary:profileInfo];
     }
     else {
-        self.profileInfo = @{};
+        self.profileInfo = [@{} mutableCopy];
     }
+    [self.editTableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -111,7 +130,7 @@
                 break;
             case 2: {
                 cell.titleLabel.text = @"地区";
-                cell.contentLabel.text = [self.profileInfo objectForKey:@"location3"];
+                cell.contentLabel.text = [self.profileInfo objectForKey:@"location"];
             }
                 break;
             case 3: {
@@ -126,7 +145,13 @@
                 break;
             case 5: {
                 cell.titleLabel.text = @"生日";
-                cell.contentLabel.text = [self.profileInfo objectForKey:@"birthday"];
+                if ([self.profileInfo objectForKey:@"birthday"]) {
+                    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[self.profileInfo objectForKey:@"birthday"] doubleValue]];
+                    NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
+                    formatter.dateFormat = @"YYYY年-MM月-dd日";
+                    NSString *timestamp = [formatter stringFromDate:date];
+                    cell.contentLabel.text = timestamp;
+                }
             }
                 break;
         }
@@ -144,12 +169,46 @@
     else if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 1: {
+                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
+                                                                         delegate:self
+                                                                cancelButtonTitle:@"确定"
+                                                           destructiveButtonTitle:nil
+                                                                otherButtonTitles:nil];
+                [actionSheet showInView:self.view];
+                UIPickerView *genderPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 200.0f)];
+                genderPicker.tag = genderPickerTag;
+                genderPicker.delegate = self;
+                genderPicker.dataSource = self;
+                genderPicker.showsSelectionIndicator = YES;
+                [actionSheet addSubview:genderPicker];
             }
                 break;
             case 4: {
+                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
+                                                                         delegate:self
+                                                                cancelButtonTitle:@"确定"
+                                                           destructiveButtonTitle:nil
+                                                                otherButtonTitles:nil];
+                [actionSheet showInView:self.view];
+                UIPickerView *genderPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 200.0f)];
+                genderPicker.tag = constellationPickerTag;
+                genderPicker.delegate = self;
+                genderPicker.dataSource = self;
+                genderPicker.showsSelectionIndicator = YES;
+                [actionSheet addSubview:genderPicker];
             }
                 break;
             case 5: {
+                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
+                                                                         delegate:self
+                                                                cancelButtonTitle:@"确定"
+                                                           destructiveButtonTitle:nil
+                                                                otherButtonTitles:nil];
+                [actionSheet showInView:self.view];
+                UIDatePicker *datePicker = [[UIDatePicker alloc] init];
+                datePicker.tag = birthdayPickerTag;
+                datePicker.datePickerMode = UIDatePickerModeDate;
+                [actionSheet addSubview:datePicker];
             }
                 break;
             case 0: {
@@ -157,6 +216,8 @@
             case 2: {
             }
             case 3: {
+                [[NSUserDefaults standardUserDefaults] setObject:self.profileInfo forKey:VNProfileInfo];
+                [[NSUserDefaults standardUserDefaults] synchronize];
                 VNEditProfileTableViewCell *cell = (VNEditProfileTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
                 VNEditContentViewController *editContentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNEditContentViewController"];
                 editContentViewController.title = cell.titleLabel.text;
@@ -168,11 +229,77 @@
     }
 }
 
+#pragma mark - UIPickerViewDatesource
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if (pickerView.tag == genderPickerTag) {
+        return self.genderArr.count;
+    }
+    else if (pickerView.tag == constellationPickerTag) {
+        return self.constellationArr.count;
+    }
+    return 0;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    if (pickerView.tag == genderPickerTag) {
+        return [self.genderArr objectAtIndex:row];
+    }
+    else if (pickerView.tag == constellationPickerTag) {
+        return [self.constellationArr objectAtIndex:row];
+    }
+    return nil;
+}
+
+#pragma mark - UIPickerViewDelegate
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    UIPickerView *genderPicker= (UIPickerView *)[actionSheet viewWithTag:genderPickerTag];
+    if (genderPicker) {
+        [self.profileInfo setObject:[self.genderArr objectAtIndex:[genderPicker selectedRowInComponent:0]] forKey:@"sex"];
+        [self.editTableView reloadData];
+    }
+    UIPickerView *constellationPicker= (UIPickerView *)[actionSheet viewWithTag:constellationPickerTag];
+    if (constellationPicker) {
+        [self.profileInfo setObject:[self.constellationArr objectAtIndex:[constellationPicker selectedRowInComponent:0]] forKey:@"constellation"];
+        [self.editTableView reloadData];
+    }
+    UIDatePicker *birthdayPicker= (UIDatePicker *)[actionSheet viewWithTag:birthdayPickerTag];
+    if (birthdayPicker) {
+        NSString *timestamp = [NSString stringWithFormat:@"%f", [birthdayPicker.date timeIntervalSince1970]];
+        NSLog(@"%@", timestamp);
+        [self.profileInfo setObject:timestamp forKey:@"birthday"];
+        [self.editTableView reloadData];
+    }
+}
+
+#pragma mark - SEL
+
 - (IBAction)cancel:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)save:(id)sender {
+    [VNHTTPRequestManager updateUserInfo:self.profileInfo completion:^(BOOL succeed, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        if (succeed) {
+            [VNUtility showHUDText:@"个人信息更新成功!" forView:self.view];
+            [self.navigationController popViewControllerAnimated:YES];
+            return ;
+        }
+        [VNUtility showHUDText:@"个人信息更新失败!" forView:self.view];
+    }];
 }
 
 @end

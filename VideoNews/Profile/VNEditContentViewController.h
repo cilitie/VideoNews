@@ -10,4 +10,6 @@
 
 @interface VNEditContentViewController : UIViewController
 
+@property (strong, nonatomic) NSString *initialStr;
+
 @end

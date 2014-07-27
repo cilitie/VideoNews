@@ -39,6 +39,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navTitleLabel.text = self.title;
+    [self.contentTextView setText:self.initialStr];
     [self.contentTextView becomeFirstResponder];
 }
 
@@ -65,6 +66,27 @@
 }
 
 - (IBAction)save:(id)sender {
+    NSString *str = self.contentTextView.text;
+    NSMutableString *contentStr = [[NSMutableString alloc] init];
+    [contentStr setString:str];
+    CFStringTrimWhitespace((CFMutableStringRef)contentStr);
+    
+    NSDictionary *profileInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNProfileInfo];
+    NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithDictionary:profileInfo];
+    if ([self.title isEqualToString:@"昵称"]) {
+        [tempDict setObject:contentStr forKey:@"name"];
+    }
+    else if ([self.title isEqualToString:@"地区"]) {
+        [tempDict setObject:contentStr forKey:@"location"];
+    }
+    else if ([self.title isEqualToString:@"描述"]) {
+        [tempDict setObject:contentStr forKey:@"description"];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:tempDict forKey:VNProfileInfo];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.contentTextView resignFirstResponder];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
