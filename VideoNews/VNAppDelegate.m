@@ -124,6 +124,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     UITabBarItem *item=[tabBarViewController.tabBar.items objectAtIndex:3];
     if (item.badgeValue==nil) {
         item.badgeValue=[NSString stringWithFormat:@"%d",1];
+        //item.badgeValue=@"";
     }
     else
     {
@@ -134,6 +135,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
         }
         else
         {
+            //item.badgeValue=@"";
             item.badgeValue=[NSString stringWithFormat:@"%d",value];
         }
     }
