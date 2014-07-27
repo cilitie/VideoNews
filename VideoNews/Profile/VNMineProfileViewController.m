@@ -820,9 +820,14 @@ static NSString *shareStr;
                 break;
                 //取消或复制
             case 7: {
-                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                pasteboard.string = self.shareNews.url;
-                [VNUtility showHUDText:@"已复制该文章链接" forView:self.view];
+                if (self.shareNews.url) {
+                    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                    pasteboard.string = self.shareNews.url;
+                    [VNUtility showHUDText:@"已复制该文章链接" forView:self.view];
+                }
+                else {
+                    [VNUtility showHUDText:@"暂无该文章链接" forView:self.view];
+                }
             }
                 break;
                 //删除或举报
