@@ -26,7 +26,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setThumbImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [self setThumbImage:[UIImage imageNamed:@"slider_drag"] forState:UIControlStateNormal];
         
         UIImage *sliderLeftTrackImage = [[UIImage imageNamed:@"blank"] stretchableImageWithLeftCapWidth:0 topCapHeight: 0];
         UIImage *sliderRightTrackImage = [[UIImage imageNamed:@"blank"] stretchableImageWithLeftCapWidth:0 topCapHeight: 0];

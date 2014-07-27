@@ -26,7 +26,7 @@
         self.delegate = self;
         
         BOOL _isDir;
-        NSString *fileDir = [VNUtility getNSCachePath:@"VideoFiles"];
+        NSString *fileDir = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:fileDir isDirectory:&_isDir]){
             if (![[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:YES attributes:nil error:nil]) {
@@ -92,26 +92,55 @@
             [self popViewControllerAnimated:YES];
         }else if (currVideoDuration <= 30.0){
             
-            NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles"];
+            NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
+            NSString *filePath = [videoPath stringByAppendingPathComponent:@"VN_Video_Final.mp4"];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            }
+            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
+                                                   
+                                                   initWithAsset:anAsset presetName:AVAssetExportPresetPassthrough];
+            
+            exportSession.outputURL = [NSURL fileURLWithPath:filePath];
+            
+            exportSession.outputFileType = AVFileTypeMPEG4;
             
             __weak VNCustomizedAlbumPickerController *weakSelf = self;
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
+            [exportSession exportAsynchronouslyWithCompletionHandler:^{
                 
-                NSString *filePath = [videoPath stringByAppendingPathComponent:@"VN_Video_Final.mov"];
-                if ([videoData writeToFile:filePath atomically:YES]) {
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSLog(@"filePath: %@",filePath);
-                        VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size andScale:timeScale];
-                        [weakSelf pushViewController:editCtl animated:YES];
-                    });
+                switch ([exportSession status]) {
+                    case AVAssetExportSessionStatusFailed:
+                    {
+                        NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"视频导出失败" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                        [alert show];
+                        [self popViewControllerAnimated:YES];
+                    }
+                        break;
+                    case AVAssetExportSessionStatusCancelled:
+                    {
+                        NSLog(@"Export canceled");
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"视频导出失败" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                        [alert show];
+                        [self popViewControllerAnimated:YES];
+                    }
+                        break;
+                    default:
+                        NSLog(@"NONE");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size andScale:timeScale];
+                            [weakSelf pushViewController:editCtl animated:YES];
+                        });
+                        break;
                 }
-            });
+            }];
+            
         }else {
             
-            NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:@"VN_Video_Final.mov"];
+            NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_Final.mp4"];
 
             if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
@@ -130,7 +159,7 @@
                 
                 exportSession.outputURL = videoFileUrl;
                 
-                exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+                exportSession.outputFileType = AVFileTypeMPEG4;
                 
                 CMTime start = CMTimeMakeWithSeconds(0, anAsset.duration.timescale);
                 

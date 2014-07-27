@@ -102,9 +102,15 @@ static NSString *videoFilePath;
         
         BOOL _isDir;
 
-        if(![[NSFileManager defaultManager] fileExistsAtPath:videoFilePath isDirectory:&_isDir]){
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:videoFilePath withIntermediateDirectories:YES attributes:nil error:nil]) {
+        if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] withIntermediateDirectories:YES attributes:nil error:nil]) {
 
+            }
+        }
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
             }
         }
     }
@@ -115,7 +121,6 @@ static NSString *videoFilePath;
 {
     [super viewDidLoad];
 
-    [self clearTempVideos];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -188,8 +193,6 @@ static NSString *videoFilePath;
         
         AVAssetTrack *audioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         
-        NSLog(@"size.......:%@",NSStringFromCGSize(videoTrack.naturalSize));
-
         //set the orientation
         if(i == 0)
         {
@@ -205,7 +208,7 @@ static NSString *videoFilePath;
     
     //export the combined video
     
-    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Final.mov",TEMP_VIDEO_NAME_PREFIX]];
+    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mp4",TEMP_VIDEO_NAME_PREFIX]];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
@@ -255,9 +258,9 @@ static NSString *videoFilePath;
     
     NSString *combinedPath;
     if (self.videoPieceCount == 1) {
-        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@1.mov",TEMP_VIDEO_NAME_PREFIX]];
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@1.mp4",TEMP_VIDEO_NAME_PREFIX]];
     }else {
-        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Final.mov",TEMP_VIDEO_NAME_PREFIX]];
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mp4",TEMP_VIDEO_NAME_PREFIX]];
     }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
@@ -294,7 +297,7 @@ static NSString *videoFilePath;
         videoComposition.instructions = [NSArray arrayWithObject: instruction];
         
         //Create an Export Path to store the cropped video
-        NSString *cropPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];;
+        NSString *cropPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[NSFileManager defaultManager] removeItemAtPath:cropPath error:nil];
@@ -363,17 +366,23 @@ static NSString *videoFilePath;
 {
     NSFileManager *fm = [NSFileManager defaultManager];
     
-    NSLog(@"%@",[fm contentsOfDirectoryAtPath:videoFilePath error:nil]);
     
-    NSArray *arr = [fm contentsOfDirectoryAtPath:videoFilePath error:nil];
+    NSString *filePath = [videoFilePath stringByAppendingPathComponent:@"Clips"];
+    
+    NSArray *arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
     
     for (NSString *dir in arr) {
-        if ([dir hasPrefix:TEMP_VIDEO_NAME_PREFIX]) {
-            [fm removeItemAtPath:[videoFilePath stringByAppendingPathComponent:dir] error:nil];
-        }
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
     }
     
-    NSLog(@"%@",[fm contentsOfDirectoryAtPath:videoFilePath error:nil]);
+    filePath = [videoFilePath stringByAppendingPathComponent:@"Temp"];
+    
+    arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
+    }
+
 }
 
 - (void)doChangeTorchStatusTo:(BOOL)isOn
@@ -450,7 +459,7 @@ static NSString *videoFilePath;
 {
     //删除当前片段
     
-    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount]];
+    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mp4",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount]];
     
     NSError *err;
     [[NSFileManager defaultManager] removeItemAtPath:currVideoPath error:&err];
@@ -481,7 +490,7 @@ static NSString *videoFilePath;
 {
 //    [self.overlayView setProgressViewBlinking:NO];
     
-    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mp4",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
     
     [self.videoPathArr addObject:currVideoPath];
 
@@ -526,7 +535,7 @@ static NSString *videoFilePath;
 
 - (void) pushToCoverSettingCtl
 {
-    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
     VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
     coverSettingCtl.videoPath = combinedPath;
     [self.navigationController pushViewController:coverSettingCtl animated:YES];

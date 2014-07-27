@@ -8,19 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
-		140332281983D54E005611A8 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 140332271983D54E005611A8 /* VNVideoShareViewController.m */; };
-		1433433F197B83A600F48022 /* VNVideoCoverSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */; };
-		14334348197B99AD00F48022 /* VNAVPlayerPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */; };
-		1433434F197C061200F48022 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1433434E197C061200F48022 /* VNVideoFramesView.m */; };
-		14747CF4197FDD6E0059A68C /* VNProgressViewForAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 14747CF3197FDD6E0059A68C /* VNProgressViewForAlbum.m */; };
-		147F9873197F8D98002A1177 /* VNDraftListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 147F9872197F8D98002A1177 /* VNDraftListController.m */; };
-		147F9876197FA912002A1177 /* VNAlbumVideoEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 147F9875197FA912002A1177 /* VNAlbumVideoEditController.m */; };
-		149D9121197E3AE000DF4346 /* VNProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 149D9120197E3AE000DF4346 /* VNProgressView.m */; };
-		149D9124197E3E4500DF4346 /* VNVideoCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 149D9123197E3E4500DF4346 /* VNVideoCaptureViewController.m */; };
-		149D9127197E53FD00DF4346 /* VNCustomizedAlbumPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 149D9126197E53FD00DF4346 /* VNCustomizedAlbumPickerController.m */; };
-		14E5529E197CD96500512C81 /* VNCustomizedActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E5529D197CD96500512C81 /* VNCustomizedActionSheet.m */; };
-		14E552A1197CDB0A00512C81 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E552A0197CDB0A00512C81 /* UIImageView+LBBlurredImage.m */; };
-		14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */; };
+		144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */; };
+		144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */; };
+		144BF5411984F58000A6C6B7 /* VNAlbumVideoEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5291984F58000A6C6B7 /* VNAlbumVideoEditController.m */; };
+		144BF5421984F58000A6C6B7 /* VNAVPlayerPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF52B1984F58000A6C6B7 /* VNAVPlayerPlayView.m */; };
+		144BF5431984F58000A6C6B7 /* VNCameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF52D1984F58000A6C6B7 /* VNCameraOverlayView.m */; };
+		144BF5441984F58000A6C6B7 /* VNCustomizedActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF52F1984F58000A6C6B7 /* VNCustomizedActionSheet.m */; };
+		144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5311984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m */; };
+		144BF5461984F58000A6C6B7 /* VNDraftListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5331984F58000A6C6B7 /* VNDraftListController.m */; };
+		144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5351984F58000A6C6B7 /* VNProgressView.m */; };
+		144BF5481984F58000A6C6B7 /* VNProgressViewForAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5371984F58000A6C6B7 /* VNProgressViewForAlbum.m */; };
+		144BF5491984F58000A6C6B7 /* VNVideoCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5391984F58000A6C6B7 /* VNVideoCaptureViewController.m */; };
+		144BF54A1984F58000A6C6B7 /* VNVideoCoverSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53B1984F58000A6C6B7 /* VNVideoCoverSettingController.m */; };
+		144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */; };
+		144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
 		269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C4197061BD005DEDEE /* VNUserViewController.m */; };
@@ -135,32 +136,34 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		140332261983D54E005611A8 /* VNVideoShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoShareViewController.h; sourceTree = "<group>"; };
-		140332271983D54E005611A8 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
-		1433433D197B83A600F48022 /* VNVideoCoverSettingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCoverSettingController.h; sourceTree = "<group>"; };
-		1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCoverSettingController.m; sourceTree = "<group>"; };
-		14334346197B99AD00F48022 /* VNAVPlayerPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAVPlayerPlayView.h; sourceTree = "<group>"; };
-		14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAVPlayerPlayView.m; sourceTree = "<group>"; };
-		1433434D197C061200F48022 /* VNVideoFramesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoFramesView.h; sourceTree = "<group>"; };
-		1433434E197C061200F48022 /* VNVideoFramesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFramesView.m; sourceTree = "<group>"; };
-		14747CF2197FDD6E0059A68C /* VNProgressViewForAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProgressViewForAlbum.h; sourceTree = "<group>"; };
-		14747CF3197FDD6E0059A68C /* VNProgressViewForAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProgressViewForAlbum.m; sourceTree = "<group>"; };
-		147F9871197F8D98002A1177 /* VNDraftListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDraftListController.h; sourceTree = "<group>"; };
-		147F9872197F8D98002A1177 /* VNDraftListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNDraftListController.m; sourceTree = "<group>"; };
-		147F9874197FA912002A1177 /* VNAlbumVideoEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAlbumVideoEditController.h; sourceTree = "<group>"; };
-		147F9875197FA912002A1177 /* VNAlbumVideoEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAlbumVideoEditController.m; sourceTree = "<group>"; };
-		149D911F197E3AE000DF4346 /* VNProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProgressView.h; sourceTree = "<group>"; };
-		149D9120197E3AE000DF4346 /* VNProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProgressView.m; sourceTree = "<group>"; };
-		149D9122197E3E4500DF4346 /* VNVideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCaptureViewController.h; sourceTree = "<group>"; };
-		149D9123197E3E4500DF4346 /* VNVideoCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCaptureViewController.m; sourceTree = "<group>"; };
-		149D9125197E53FD00DF4346 /* VNCustomizedAlbumPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedAlbumPickerController.h; sourceTree = "<group>"; };
-		149D9126197E53FD00DF4346 /* VNCustomizedAlbumPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedAlbumPickerController.m; sourceTree = "<group>"; };
-		14E5529C197CD96500512C81 /* VNCustomizedActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedActionSheet.h; sourceTree = "<group>"; };
-		14E5529D197CD96500512C81 /* VNCustomizedActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedActionSheet.m; sourceTree = "<group>"; };
-		14E5529F197CDB0A00512C81 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
-		14E552A0197CDB0A00512C81 /* UIImageView+LBBlurredImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+LBBlurredImage.m"; sourceTree = "<group>"; };
-		14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCameraOverlayView.h; sourceTree = "<group>"; };
-		14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCameraOverlayView.m; sourceTree = "<group>"; };
+		144BF5231984F52900A6C6B7 /* VNVideoDraftTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoDraftTableViewCell.h; sourceTree = "<group>"; };
+		144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoDraftTableViewCell.m; sourceTree = "<group>"; };
+		144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
+		144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+LBBlurredImage.m"; sourceTree = "<group>"; };
+		144BF5281984F58000A6C6B7 /* VNAlbumVideoEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAlbumVideoEditController.h; sourceTree = "<group>"; };
+		144BF5291984F58000A6C6B7 /* VNAlbumVideoEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAlbumVideoEditController.m; sourceTree = "<group>"; };
+		144BF52A1984F58000A6C6B7 /* VNAVPlayerPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAVPlayerPlayView.h; sourceTree = "<group>"; };
+		144BF52B1984F58000A6C6B7 /* VNAVPlayerPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAVPlayerPlayView.m; sourceTree = "<group>"; };
+		144BF52C1984F58000A6C6B7 /* VNCameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCameraOverlayView.h; sourceTree = "<group>"; };
+		144BF52D1984F58000A6C6B7 /* VNCameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCameraOverlayView.m; sourceTree = "<group>"; };
+		144BF52E1984F58000A6C6B7 /* VNCustomizedActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedActionSheet.h; sourceTree = "<group>"; };
+		144BF52F1984F58000A6C6B7 /* VNCustomizedActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedActionSheet.m; sourceTree = "<group>"; };
+		144BF5301984F58000A6C6B7 /* VNCustomizedAlbumPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCustomizedAlbumPickerController.h; sourceTree = "<group>"; };
+		144BF5311984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCustomizedAlbumPickerController.m; sourceTree = "<group>"; };
+		144BF5321984F58000A6C6B7 /* VNDraftListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNDraftListController.h; sourceTree = "<group>"; };
+		144BF5331984F58000A6C6B7 /* VNDraftListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNDraftListController.m; sourceTree = "<group>"; };
+		144BF5341984F58000A6C6B7 /* VNProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProgressView.h; sourceTree = "<group>"; };
+		144BF5351984F58000A6C6B7 /* VNProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProgressView.m; sourceTree = "<group>"; };
+		144BF5361984F58000A6C6B7 /* VNProgressViewForAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNProgressViewForAlbum.h; sourceTree = "<group>"; };
+		144BF5371984F58000A6C6B7 /* VNProgressViewForAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNProgressViewForAlbum.m; sourceTree = "<group>"; };
+		144BF5381984F58000A6C6B7 /* VNVideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCaptureViewController.h; sourceTree = "<group>"; };
+		144BF5391984F58000A6C6B7 /* VNVideoCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCaptureViewController.m; sourceTree = "<group>"; };
+		144BF53A1984F58000A6C6B7 /* VNVideoCoverSettingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoCoverSettingController.h; sourceTree = "<group>"; };
+		144BF53B1984F58000A6C6B7 /* VNVideoCoverSettingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoCoverSettingController.m; sourceTree = "<group>"; };
+		144BF53C1984F58000A6C6B7 /* VNVideoFramesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoFramesView.h; sourceTree = "<group>"; };
+		144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFramesView.m; sourceTree = "<group>"; };
+		144BF53E1984F58000A6C6B7 /* VNVideoShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoShareViewController.h; sourceTree = "<group>"; };
+		144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
@@ -378,37 +381,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		14334349197BA70600F48022 /* VNVideo */ = {
+		144BF52219848AF700A6C6B7 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				149D9125197E53FD00DF4346 /* VNCustomizedAlbumPickerController.h */,
-				149D9126197E53FD00DF4346 /* VNCustomizedAlbumPickerController.m */,
-				147F9874197FA912002A1177 /* VNAlbumVideoEditController.h */,
-				147F9875197FA912002A1177 /* VNAlbumVideoEditController.m */,
-				149D9122197E3E4500DF4346 /* VNVideoCaptureViewController.h */,
-				149D9123197E3E4500DF4346 /* VNVideoCaptureViewController.m */,
-				147F9871197F8D98002A1177 /* VNDraftListController.h */,
-				147F9872197F8D98002A1177 /* VNDraftListController.m */,
-				14FBC6F0197777D200A911DC /* VNCameraOverlayView.h */,
-				14FBC6F1197777D200A911DC /* VNCameraOverlayView.m */,
-				1433433D197B83A600F48022 /* VNVideoCoverSettingController.h */,
-				1433433E197B83A600F48022 /* VNVideoCoverSettingController.m */,
-				1433434D197C061200F48022 /* VNVideoFramesView.h */,
-				1433434E197C061200F48022 /* VNVideoFramesView.m */,
-				14334346197B99AD00F48022 /* VNAVPlayerPlayView.h */,
-				14334347197B99AD00F48022 /* VNAVPlayerPlayView.m */,
-				14E5529F197CDB0A00512C81 /* UIImageView+LBBlurredImage.h */,
-				14E552A0197CDB0A00512C81 /* UIImageView+LBBlurredImage.m */,
-				14E5529C197CD96500512C81 /* VNCustomizedActionSheet.h */,
-				14E5529D197CD96500512C81 /* VNCustomizedActionSheet.m */,
-				149D911F197E3AE000DF4346 /* VNProgressView.h */,
-				149D9120197E3AE000DF4346 /* VNProgressView.m */,
-				14747CF2197FDD6E0059A68C /* VNProgressViewForAlbum.h */,
-				14747CF3197FDD6E0059A68C /* VNProgressViewForAlbum.m */,
-				140332261983D54E005611A8 /* VNVideoShareViewController.h */,
-				140332271983D54E005611A8 /* VNVideoShareViewController.m */,
+				144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */,
+				144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */,
+				144BF5281984F58000A6C6B7 /* VNAlbumVideoEditController.h */,
+				144BF5291984F58000A6C6B7 /* VNAlbumVideoEditController.m */,
+				144BF52A1984F58000A6C6B7 /* VNAVPlayerPlayView.h */,
+				144BF52B1984F58000A6C6B7 /* VNAVPlayerPlayView.m */,
+				144BF52C1984F58000A6C6B7 /* VNCameraOverlayView.h */,
+				144BF52D1984F58000A6C6B7 /* VNCameraOverlayView.m */,
+				144BF52E1984F58000A6C6B7 /* VNCustomizedActionSheet.h */,
+				144BF52F1984F58000A6C6B7 /* VNCustomizedActionSheet.m */,
+				144BF5301984F58000A6C6B7 /* VNCustomizedAlbumPickerController.h */,
+				144BF5311984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m */,
+				144BF5321984F58000A6C6B7 /* VNDraftListController.h */,
+				144BF5331984F58000A6C6B7 /* VNDraftListController.m */,
+				144BF5231984F52900A6C6B7 /* VNVideoDraftTableViewCell.h */,
+				144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */,
+				144BF5341984F58000A6C6B7 /* VNProgressView.h */,
+				144BF5351984F58000A6C6B7 /* VNProgressView.m */,
+				144BF5361984F58000A6C6B7 /* VNProgressViewForAlbum.h */,
+				144BF5371984F58000A6C6B7 /* VNProgressViewForAlbum.m */,
+				144BF5381984F58000A6C6B7 /* VNVideoCaptureViewController.h */,
+				144BF5391984F58000A6C6B7 /* VNVideoCaptureViewController.m */,
+				144BF53A1984F58000A6C6B7 /* VNVideoCoverSettingController.h */,
+				144BF53B1984F58000A6C6B7 /* VNVideoCoverSettingController.m */,
+				144BF53C1984F58000A6C6B7 /* VNVideoFramesView.h */,
+				144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */,
+				144BF53E1984F58000A6C6B7 /* VNVideoShareViewController.h */,
+				144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */,
 			);
-			name = VNVideo;
+			path = Video;
 			sourceTree = "<group>";
 		};
 		26962049196E75DF00EA06B3 /* Notification */ = {
@@ -657,6 +662,7 @@
 		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
 			isa = PBXGroup;
 			children = (
+				144BF52219848AF700A6C6B7 /* Video */,
 				269B0824197DF96400CF4ADC /* upload */,
 				D6676F86197806B900F484FE /* Profile */,
 				D6676F63196E81BB00F484FE /* Utility */,
@@ -710,7 +716,6 @@
 		D6FED785195BFF5F00AD10E0 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				14334349197BA70600F48022 /* VNVideo */,
 				D6FED789195BFF7D00AD10E0 /* VNHomeViewController.h */,
 				D6FED78A195BFF7D00AD10E0 /* VNHomeViewController.m */,
 				D6FED7A0195D1BD400AD10E0 /* VNQuiltViewCell.h */,
@@ -949,13 +954,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14E552A1197CDB0A00512C81 /* UIImageView+LBBlurredImage.m in Sources */,
-				14E5529E197CD96500512C81 /* VNCustomizedActionSheet.m in Sources */,
+				144BF5421984F58000A6C6B7 /* VNAVPlayerPlayView.m in Sources */,
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
 				D6676F99197CBACD00F484FE /* VNMineProfileHeaderView.m in Sources */,
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
+				144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
@@ -963,57 +968,58 @@
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
 				269B0827197DF96400CF4ADC /* OSSClient.m in Sources */,
 				269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */,
+				144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
+				144BF5491984F58000A6C6B7 /* VNVideoCaptureViewController.m in Sources */,
 				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
-				140332281983D54E005611A8 /* VNVideoShareViewController.m in Sources */,
 				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,
 				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
 				D6676F9E197F587F00F484FE /* VNUserProfileHeaderView.m in Sources */,
+				144BF54A1984F58000A6C6B7 /* VNVideoCoverSettingController.m in Sources */,
+				144BF5431984F58000A6C6B7 /* VNCameraOverlayView.m in Sources */,
+				144BF5411984F58000A6C6B7 /* VNAlbumVideoEditController.m in Sources */,
 				D6FED78F195C017500AD10E0 /* VNHTTPRequestManager.m in Sources */,
 				D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */,
-				1433433F197B83A600F48022 /* VNVideoCoverSettingController.m in Sources */,
 				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
 				D6676F89197806CE00F484FE /* VNProfileViewController.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
 				D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */,
-				147F9876197FA912002A1177 /* VNAlbumVideoEditController.m in Sources */,
 				D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */,
 				D6676F95197916F600F484FE /* VNProfileFansTableViewCell.m in Sources */,
 				D6FED792195C030D00AD10E0 /* VNKey.m in Sources */,
+				144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */,
 				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */,
+				144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */,
 				D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */,
-				149D9124197E3E4500DF4346 /* VNVideoCaptureViewController.m in Sources */,
+				144BF5441984F58000A6C6B7 /* VNCustomizedActionSheet.m in Sources */,
 				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
 				2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */,
 				D6676F74196F940C00F484FE /* VNUserResultCollectionViewCell.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
-				149D9127197E53FD00DF4346 /* VNCustomizedAlbumPickerController.m in Sources */,
 				269755C919710E75005DEDEE /* VNNotificationReplyTableViewCell.m in Sources */,
-				149D9121197E3AE000DF4346 /* VNProgressView.m in Sources */,
+				144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */,
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
 				26962048196E4AF600EA06B3 /* VNMessage.m in Sources */,
+				144BF5481984F58000A6C6B7 /* VNProgressViewForAlbum.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
-				1433434F197C061200F48022 /* VNVideoFramesView.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
-				147F9873197F8D98002A1177 /* VNDraftListController.m in Sources */,
-				14334348197B99AD00F48022 /* VNAVPlayerPlayView.m in Sources */,
+				144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
-				14FBC6F2197777D200A911DC /* VNCameraOverlayView.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 				D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */,
-				14747CF4197FDD6E0059A68C /* VNProgressViewForAlbum.m in Sources */,
 				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
 				D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */,
+				144BF5461984F58000A6C6B7 /* VNDraftListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

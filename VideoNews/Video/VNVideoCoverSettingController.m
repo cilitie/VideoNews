@@ -111,9 +111,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     [self.view addSubview:_videoFramesView];
     
     UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, 400, 30, 30)];
-    soundBtn.backgroundColor = [UIColor blackColor];
-    [soundBtn setTitle:@"ON" forState:UIControlStateNormal];
-    [soundBtn setTitle:@"OFF" forState:UIControlStateSelected];
+    soundBtn.backgroundColor = [UIColor clearColor];
+    [soundBtn setImage:[UIImage imageNamed:@"audio_on"] forState:UIControlStateNormal];
+    [soundBtn setImage:[UIImage imageNamed:@"audio_off"] forState:UIControlStateSelected];
     [soundBtn addTarget:self action:@selector(soundSetting:) forControlEvents:UIControlEventTouchUpInside];
     soundBtn.selected = NO;   //on-sound off-nosound
     [self.view addSubview:soundBtn];
@@ -261,7 +261,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
     }else {
         
-        NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:@"VN_Video_share.mov"];
+        NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
@@ -294,7 +294,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         exporter.outputURL = [NSURL fileURLWithPath:filePath];
         
-        exporter.outputFileType = AVFileTypeQuickTimeMovie;
+        exporter.outputFileType = AVFileTypeMPEG4;
         
         __weak VNVideoCoverSettingController *weakSelf = self;
         

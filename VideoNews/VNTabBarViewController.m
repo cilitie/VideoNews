@@ -168,6 +168,7 @@
     VNDraftListController *draftCtl = [[VNDraftListController alloc] init];
     
     UINavigationController *draftNav = [[UINavigationController alloc] initWithRootViewController:draftCtl];
+    draftNav.navigationBarHidden = YES;
     
     [self presentViewController:draftNav animated:YES completion:nil];
 }

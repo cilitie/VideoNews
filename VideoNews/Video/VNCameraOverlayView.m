@@ -32,10 +32,10 @@
 - (UIButton *)torchBtn
 {
     if (!_torchBtn) {
-        _torchBtn = [[UIButton alloc] initWithFrame:CGRectMake(195, 0, 60, 44)];
-        [_torchBtn setTitle:@"Off" forState:UIControlStateNormal];
-        [_torchBtn setTitle:@"On" forState:UIControlStateSelected];
-        _torchBtn.backgroundColor = [UIColor orangeColor];
+        _torchBtn = [[UIButton alloc] initWithFrame:CGRectMake(195, 20, 60, 44)];
+        [_torchBtn setImage:[UIImage imageNamed:@"video_flash_off"] forState:UIControlStateNormal];
+        [_torchBtn setImage:[UIImage imageNamed:@"video_flash_on"] forState:UIControlStateSelected];
+        _torchBtn.backgroundColor = [UIColor clearColor];
         [_torchBtn addTarget:self action:@selector(doChangeTorchStatus:) forControlEvents:UIControlEventTouchUpInside];
         _torchBtn.showsTouchWhenHighlighted = YES;
         _torchBtn.selected = NO;
@@ -48,8 +48,7 @@
     if (!_trashBtn) {
         _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 52, 76, 76)];
         [_trashBtn setImage:[UIImage imageNamed:@"video_back"] forState:UIControlStateNormal];
-        [_trashBtn setImage:[UIImage imageNamed:@"video_back"] forState:UIControlStateSelected];
-        [_trashBtn setTitle:@"Trash" forState:UIControlStateSelected];
+        [_trashBtn setImage:[UIImage imageNamed:@"video_trash"] forState:UIControlStateSelected];
         _trashBtn.backgroundColor = [UIColor clearColor];
         [_trashBtn addTarget:self action:@selector(doDeleteCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
         _trashBtn.showsTouchWhenHighlighted = YES;
@@ -153,19 +152,19 @@
     UIView *topBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
     topBaseView.backgroundColor = [UIColor blackColor];
     
-    UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
-    [closeBtn setTitle:@"Close" forState:UIControlStateNormal];
-    closeBtn.backgroundColor = [UIColor greenColor];
+    UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
+    [closeBtn setTitle:@"X" forState:UIControlStateNormal];
+    closeBtn.backgroundColor = [UIColor clearColor];
     [closeBtn addTarget:self action:@selector(doClosePickerCtl) forControlEvents:UIControlEventTouchUpInside];
     closeBtn.showsTouchWhenHighlighted = YES;
     [topBaseView addSubview:closeBtn];
     
     [topBaseView addSubview:self.torchBtn];
     
-    UIButton *changeCameraDeviceBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 0, 60, 44)];
-    [changeCameraDeviceBtn setTitle:@"Back" forState:UIControlStateNormal];
-    [changeCameraDeviceBtn setTitle:@"Front" forState:UIControlStateSelected];
-    changeCameraDeviceBtn.backgroundColor = [UIColor yellowColor];
+    UIButton *changeCameraDeviceBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
+    [changeCameraDeviceBtn setImage:[UIImage imageNamed:@"flip_camera"] forState:UIControlStateNormal];
+    [changeCameraDeviceBtn setImage:[UIImage imageNamed:@"flip_camera"] forState:UIControlStateSelected];
+    changeCameraDeviceBtn.backgroundColor = [UIColor clearColor];
     [changeCameraDeviceBtn addTarget:self action:@selector(doChangeCameraDevice:) forControlEvents:UIControlEventTouchUpInside];
     changeCameraDeviceBtn.showsTouchWhenHighlighted = YES;
     changeCameraDeviceBtn.selected = NO;
@@ -321,6 +320,13 @@
         
         _progressView.status = ProgressViewStatusEditing;
         
+        self.submitBtn.enabled = NO;
+        
+        for (UIGestureRecognizer *ges in self.gestureRecognizers) {
+            if ([ges isKindOfClass:[UILongPressGestureRecognizer class]]) {
+                ges.enabled = NO;
+            }
+        }
     }else {
         
         //处理progressBar 和 本地video文件
@@ -330,6 +336,14 @@
             sender.selected = NO;
             _progressView.status = ProgressViewStatusNormal;
 
+        }
+        
+        self.submitBtn.enabled = YES;
+        
+        for (UIGestureRecognizer *ges in self.gestureRecognizers) {
+            if ([ges isKindOfClass:[UILongPressGestureRecognizer class]]) {
+                ges.enabled = YES;
+            }
         }
     }
 }

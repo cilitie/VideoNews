@@ -12,6 +12,7 @@
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
 #import "VNTabBarViewController.h"
+#import <objc/runtime.h>
 
 @implementation VNAppDelegate
 
@@ -40,9 +41,10 @@
         
         [self setItemBadgeValue];
         
+    }else {
+        //to see if there's any video clip left(after video capture last time of application launch).
+        [self checkVideoCapture];
     }
-    
-    // Override point for customization after application launch.
     
     return YES;
 }
@@ -141,6 +143,54 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     }
     [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
     
+}
+
+#pragma mark - Video Related
+
+- (void)checkVideoCapture
+{
+    NSString *dirPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:@"Clips"];
+    
+    BOOL _isDir;
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:dirPath isDirectory:&_isDir]){
+        NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath error:nil];
+        
+        if (arr && arr.count > 0) {
+            //alert if user need to edit base on these clips.
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"上次视频编辑未完成，是否继续，继续编辑还没加" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            void (^clearVideoBlock)(NSInteger) = ^(NSInteger buttonIndex){
+                if (buttonIndex == 0) {
+                    //delete those clips.
+                    NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath error:nil];
+                    
+                    for (NSString *dir in arr) {
+                        [[NSFileManager defaultManager] removeItemAtPath:[dirPath stringByAppendingPathComponent:dir] error:nil];
+                    }
+                } else {
+                    //go to video capture view.
+//                    [self ];
+                }
+            };
+            objc_setAssociatedObject(alert, @"continueEdittingVideo",
+                                     clearVideoBlock, OBJC_ASSOCIATION_COPY);
+            
+            [alert show];
+        }else {
+            //no clips here.
+        }
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    void (^clearVideoBlock)(NSInteger) = objc_getAssociatedObject(alertView, @"continueEdittingVideo");
+    
+    clearVideoBlock(buttonIndex);
+    
+    objc_removeAssociatedObjects(alertView);
 }
 
 @end

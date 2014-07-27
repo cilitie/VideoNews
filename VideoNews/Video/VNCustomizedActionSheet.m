@@ -75,15 +75,17 @@
         
         
         UIButton *cameraBtn = [[UIButton alloc] initWithFrame:CGRectMake(123, 36, 74, 74)];
-        [cameraBtn setTitle:@"Camera" forState:UIControlStateNormal];
-        cameraBtn.backgroundColor = [UIColor redColor];
+        [cameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+        [cameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
+        cameraBtn.backgroundColor = [UIColor clearColor];
         [cameraBtn addTarget:self action:@selector(doOpenCamera) forControlEvents:UIControlEventTouchUpInside];
         cameraBtn.showsTouchWhenHighlighted = YES;
         [actionBgView addSubview:cameraBtn];
         
         UIButton *albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(238, 36, 74, 74)];
-        [albumBtn setTitle:@"Album" forState:UIControlStateNormal];
-        albumBtn.backgroundColor = [UIColor redColor];
+        [albumBtn setImage:[UIImage imageNamed:@"album"] forState:UIControlStateNormal];
+        [albumBtn setImage:[UIImage imageNamed:@"album"] forState:UIControlStateSelected];
+        albumBtn.backgroundColor = [UIColor clearColor];
         [albumBtn addTarget:self action:@selector(doOpenAlbum) forControlEvents:UIControlEventTouchUpInside];
         albumBtn.showsTouchWhenHighlighted = YES;
         [actionBgView addSubview:albumBtn];

@@ -5,9 +5,13 @@
 //  Created by zhangxue on 14-7-26.
 //  Copyright (c) 2014年 Manyu Zhu. All rights reserved.
 //
+// 草稿中文件的保存
+// 路径 cache/VideoFiles/Draft/时间戳.mp4 视频文件
 
 #import "VNVideoShareViewController.h"
 #import "WXApi.h"
+#import "UMSocialAccountManager.h"
+#import "UMSocialSnsPlatformManager.h"
 
 @interface VNVideoShareViewController () <UIGestureRecognizerDelegate>
 
@@ -18,10 +22,14 @@
 @property (nonatomic, strong) UITextField *titleTF;
 @property (nonatomic, strong) UITextField *tagsTF;
 
+@property (nonatomic, assign) BOOL shareSina;
+@property (nonatomic, assign) BOOL shareWeixin;
 
 @end
 
 @implementation VNVideoShareViewController
+
+#define screenH ([[UIScreen mainScreen] bounds].size.height)
 
 #pragma mark - Initialization
 
@@ -76,7 +84,7 @@
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor colorWithRGBValue:0x989797];
+    self.view.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
     
     //initialize top bar view.
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
@@ -97,9 +105,14 @@
     [topView addSubview:titleLbl];
     
     UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
-    [draftBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-    [draftBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
-    [draftBtn addTarget:self action:@selector(doSaveToDraft) forControlEvents:UIControlEventTouchUpInside];
+    [draftBtn setTitle:@"draft" forState:UIControlStateNormal];
+    [draftBtn setTitle:@"Record" forState:UIControlStateSelected];
+    [draftBtn addTarget:self action:@selector(doSaveToDraft:) forControlEvents:UIControlEventTouchUpInside];
+    if (self.draftNameString) {
+        draftBtn.selected = YES;
+    }else {
+        [draftBtn setSelected:NO];
+    }
     [topView addSubview:draftBtn];
     
     [self.view addSubview:topView];
@@ -113,17 +126,17 @@
     [self.view addSubview:self.tagsTF];
     
     BOOL isWeiXinInstalled = YES;
+    self.shareWeixin = YES;
     if (![WXApi isWXAppInstalled]) {
         isWeiXinInstalled = NO;
+        self.shareWeixin = NO;
     }
     UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(10, 300, 300, 90)];
     bgView.backgroundColor = [UIColor whiteColor];
     bgView.layer.cornerRadius = 5;
-    if (isWeiXinInstalled) {
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 44, 300, 2)];
-        line.backgroundColor = [UIColor lightGrayColor];
-        [bgView addSubview:line];
-    }
+    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 44, 300, 1)];
+    line.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
+    [bgView addSubview:line];
     
     UILabel *shareWeiboLbl = [[UILabel alloc] initWithFrame:CGRectMake(28, 10, 90, 25)];
     shareWeiboLbl.backgroundColor = [UIColor clearColor];
@@ -133,7 +146,14 @@
     [bgView addSubview:shareWeiboLbl];
     
     UISwitch *shareWeiboSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(240, 5, 50, 30)];
+    shareWeiboSwitch.tag = 9100;
     [shareWeiboSwitch setOn:YES];
+    self.shareSina = YES;
+    if (![UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
+        [shareWeiboSwitch setOn:NO];
+        self.shareSina = NO;
+    }
+    [shareWeiboSwitch addTarget:self action:@selector(handleSwitch:) forControlEvents:UIControlEventValueChanged];
     [bgView addSubview:shareWeiboSwitch];
     
     UILabel *shareWeixinLbl = [[UILabel alloc] initWithFrame:CGRectMake(28, 55, 90, 25)];
@@ -144,14 +164,30 @@
     [bgView addSubview:shareWeixinLbl];
     
     UISwitch *shareWeiXinSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(240, 50, 50, 30)];
+    shareWeiXinSwitch.tag = 9101;
     [shareWeiXinSwitch setOn:YES];
     if (!isWeiXinInstalled) {
         [shareWeiXinSwitch setOn:NO];
-        [shareWeiXinSwitch setEnabled:NO];
     }
+    [shareWeiXinSwitch addTarget:self action:@selector(handleSwitch:) forControlEvents:UIControlEventValueChanged];
     [bgView addSubview:shareWeiXinSwitch];
     
     [self.view addSubview:bgView];
+    
+    CGFloat y = 485;
+    if (screenH == 480) {
+        y = 430;
+    }
+    
+    UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, y, 300, 45)];
+    submitBtn.backgroundColor = [UIColor colorWithRGBValue:0xCE2426];
+    [submitBtn.titleLabel setFont:[UIFont fontWithName:@"STHeitiSC-Light" size:16]];
+    [submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [submitBtn setTitle:@"完成" forState:UIControlStateNormal];
+    submitBtn.layer.cornerRadius = 5;
+    submitBtn.clipsToBounds = YES;
+    [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:submitBtn];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
@@ -170,9 +206,71 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)doSaveToDraft
+- (void)doSaveToDraft:(UIButton *)sender
+{
+    if (!sender.selected) {
+        NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
+        NSString *coverPath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
+        BOOL _isDir;
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
+            }
+        }
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:coverPath isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:coverPath withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
+            }
+        }
+        
+        NSError *err;
+        double timeInterval = [NSDate timeIntervalSinceReferenceDate];
+        NSString *time = [NSString stringWithFormat:@"%lf.mp4",timeInterval];
+        NSString *timeCover = [NSString stringWithFormat:@"%lf.jpg",timeInterval];
+        
+        NSData *data = UIImageJPEGRepresentation(self.coverImg, 1);
+        [data writeToFile:[coverPath stringByAppendingPathComponent:timeCover] atomically:YES];
+        NSLog(@"cover path :%@",[coverPath stringByAppendingPathComponent:timeCover]);
+        [[NSFileManager defaultManager] copyItemAtPath:self.videoPath toPath:[filePath stringByAppendingPathComponent:time] error:&err];
+        
+        if (!err) {
+            MBProgressHUD *hud = [[MBProgressHUD alloc] init];
+            hud.labelText = @"已存草稿";
+            [self.view addSubview:hud];
+            [hud show:YES];
+            [hud hide:YES afterDelay:2];
+            
+            sender.selected = YES;
+        }
+        
+    }else {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+}
+
+- (void)handleSwitch:(UISwitch *)sw
+{
+    if (sw.tag == 9100) {
+        //sina
+        self.shareSina = sw.isOn;
+        
+    }else if (sw.tag == 9101) {
+        //wechat
+        self.shareWeixin = sw.isOn;
+    }
+}
+
+- (void)doSubmit
 {
     
+    if (self.shareSina) {
+        //分享新浪
+    }
+    if (self.shareWeixin) {
+        //分享朋友圈
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelgate
