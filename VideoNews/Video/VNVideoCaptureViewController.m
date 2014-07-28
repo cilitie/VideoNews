@@ -600,7 +600,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
     
     _durationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(refreshVideoDuration:) userInfo:nil repeats:YES];
     
-    [_durationTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:1.]];
+    [_durationTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 }
 
 @end

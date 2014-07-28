@@ -234,10 +234,12 @@
             
             NSNumber *time = [timePointArr objectAtIndex:0];
             
+            x_start = 0;
             x_end = time.floatValue / 30 * kProgressBarWidth;
             
             
         }else {
+            
             NSNumber *time = [timePointArr objectAtIndex:timePointArr.count - 2];
             
             x_start = time.floatValue / 30 * kProgressBarWidth;
@@ -250,7 +252,7 @@
         
         CGContextBeginPath(context) ;
         
-        CGContextMoveToPoint(context, x_start, 0) ;
+        CGContextMoveToPoint(context, x_start, 0);
         CGContextAddLineToPoint(context, x_end, 0);
         CGContextAddLineToPoint(context, x_end, kProgressBarHeight);
         CGContextAddLineToPoint(context, x_start, kProgressBarHeight);
