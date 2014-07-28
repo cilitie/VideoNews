@@ -46,6 +46,7 @@
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
 @property (strong, nonatomic) VNNews *shareNews;
+@property (strong, nonatomic) NSArray *headerViewArr;
 
 - (IBAction)setting:(id)sender;
 - (IBAction)pop:(id)sender;
@@ -75,6 +76,24 @@ static NSString *shareStr;
         isTabBarHidden = NO;
     }
     return self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (self.headerViewArr.count) {
+        [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if (userInfo) {
+                self.mineInfo = userInfo;
+                for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                    headerView.userInfo = userInfo;
+                    [headerView reload];
+                }
+            }
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -122,7 +141,7 @@ static NSString *shareStr;
         VNMineProfileHeaderView *favHeaderView = loadXib(@"VNMineProfileHeaderView");
         VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
         VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
-        
+        self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
         [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -553,6 +572,7 @@ static NSString *shareStr;
                 else if (succeed) {
                     [VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
+                    [self addIdolOrFans:NO];
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }
                 else {
@@ -576,6 +596,7 @@ static NSString *shareStr;
                 else if (succeed) {
                     [VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
+                    [self addIdolOrFans:YES];
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }
                 else {
@@ -638,6 +659,21 @@ static NSString *shareStr;
 }
 
 #pragma mark - SEL
+
+- (void)addIdolOrFans:(BOOL)isAFan {
+    for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+        if (isAFan) {
+            NSInteger fansCount = [headerView.fansCountLabel.text integerValue];
+            fansCount++;
+            headerView.fansCountLabel.text = [NSString stringWithFormat:@"%d", fansCount];
+        }
+        else {
+            NSInteger idolCount = [headerView.followCountLabel.text integerValue];
+            idolCount++;
+            headerView.followCountLabel.text = [NSString stringWithFormat:@"%d", idolCount];
+        }
+    }
+}
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
     __block CGFloat cellHeight = 390.0;
@@ -918,6 +954,8 @@ static NSString *shareStr;
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
 }
+
+#pragma mark - IBAction
 
 - (IBAction)setting:(id)sender {
     VNSettingViewController *settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNSettingViewController"];
