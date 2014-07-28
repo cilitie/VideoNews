@@ -17,6 +17,7 @@
 #import "VNProfileViewController.h"
 #import "VNOriginImgViewController.h"
 #import "VNEditProfileViewController.h"
+#import "VNSettingViewController.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
     BOOL userScrolling;
@@ -919,6 +920,9 @@ static NSString *shareStr;
 }
 
 - (IBAction)setting:(id)sender {
+    VNSettingViewController *settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNSettingViewController"];
+    settingViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:settingViewController animated:YES];
 }
 
 - (IBAction)pop:(id)sender {

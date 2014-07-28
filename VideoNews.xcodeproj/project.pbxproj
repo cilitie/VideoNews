@@ -96,6 +96,8 @@
 		D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4F919822C6300236517 /* VNEditProfileViewController.m */; };
 		D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */; };
 		D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4FF1982503F00236517 /* VNEditContentViewController.m */; };
+		D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB50419862E0B00236517 /* VNSettingViewController.m */; };
+		D68CB5081986305200236517 /* VNSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB5071986305200236517 /* VNSettingTableViewCell.m */; };
 		D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */; };
 		D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
@@ -294,6 +296,10 @@
 		D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNEditProfileTableViewCell.m; sourceTree = "<group>"; };
 		D68CB4FE1982503F00236517 /* VNEditContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNEditContentViewController.h; sourceTree = "<group>"; };
 		D68CB4FF1982503F00236517 /* VNEditContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNEditContentViewController.m; sourceTree = "<group>"; };
+		D68CB50319862E0B00236517 /* VNSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSettingViewController.h; sourceTree = "<group>"; };
+		D68CB50419862E0B00236517 /* VNSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSettingViewController.m; sourceTree = "<group>"; };
+		D68CB5061986305200236517 /* VNSettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSettingTableViewCell.h; sourceTree = "<group>"; };
+		D68CB5071986305200236517 /* VNSettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSettingTableViewCell.m; sourceTree = "<group>"; };
 		D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCommentTableViewCell.h; sourceTree = "<group>"; };
 		D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCommentTableViewCell.m; sourceTree = "<group>"; };
 		D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCommentTableViewCell.xib; sourceTree = "<group>"; };
@@ -619,6 +625,17 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		D68CB50219862DF900236517 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				D68CB50319862E0B00236517 /* VNSettingViewController.h */,
+				D68CB50419862E0B00236517 /* VNSettingViewController.m */,
+				D68CB5061986305200236517 /* VNSettingTableViewCell.h */,
+				D68CB5071986305200236517 /* VNSettingTableViewCell.m */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
 		D6FED741195AC1C100AD10E0 = {
 			isa = PBXGroup;
 			children = (
@@ -662,6 +679,7 @@
 		D6FED753195AC1C100AD10E0 /* VideoNews */ = {
 			isa = PBXGroup;
 			children = (
+				D68CB50219862DF900236517 /* Setting */,
 				144BF52219848AF700A6C6B7 /* Video */,
 				269B0824197DF96400CF4ADC /* upload */,
 				D6676F86197806B900F484FE /* Profile */,
@@ -971,12 +989,14 @@
 				144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
+				D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
 				144BF5491984F58000A6C6B7 /* VNVideoCaptureViewController.m in Sources */,
 				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
 				D6FED78B195BFF7D00AD10E0 /* VNHomeViewController.m in Sources */,
 				D6FED796195C07E100AD10E0 /* VNObject.m in Sources */,
 				D6676F9E197F587F00F484FE /* VNUserProfileHeaderView.m in Sources */,
+				D68CB5081986305200236517 /* VNSettingTableViewCell.m in Sources */,
 				144BF54A1984F58000A6C6B7 /* VNVideoCoverSettingController.m in Sources */,
 				144BF5431984F58000A6C6B7 /* VNCameraOverlayView.m in Sources */,
 				144BF5411984F58000A6C6B7 /* VNAlbumVideoEditController.m in Sources */,
