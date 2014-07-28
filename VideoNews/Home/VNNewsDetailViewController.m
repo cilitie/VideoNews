@@ -18,6 +18,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "AGEmojiKeyboardView.h"
 #import "VNProfileViewController.h"
+#import "VNMineProfileViewController.h"
 
 @interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNCommentTableViewCellDelegate, AGEmojiKeyboardViewDelegate, AGEmojiKeyboardViewDataSource> {
     BOOL isKeyboardShowing;
@@ -118,10 +119,18 @@ static NSString *shareStr;
     __weak typeof(self) weakSelf = self;
     
     self.headerView.profileHandler = ^{
-        VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
         VNUser *user = weakSelf.news.author;
-        profileViewController.uid = user.uid;
-        [weakSelf.navigationController pushViewController:profileViewController animated:YES];
+        NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+        if (mineUid && [mineUid isEqualToString:user.uid]) {
+            VNMineProfileViewController *mineProfileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+            mineProfileViewController.isPush = YES;
+            [weakSelf.navigationController pushViewController:mineProfileViewController animated:YES];
+        }
+        else {
+            VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+            profileViewController.uid = user.uid;
+            [weakSelf.navigationController pushViewController:profileViewController animated:YES];
+        }
     };
     
     self.headerView.moreHandler = ^{
@@ -790,10 +799,18 @@ static NSString *shareStr;
                 break;
                 //查看个人主页
             case 1: {
-                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
                 VNUser *user = self.curComment.author;
-                profileViewController.uid = user.uid;
-                [self.navigationController pushViewController:profileViewController animated:YES];
+                NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+                if (mineUid && [mineUid isEqualToString:user.uid]) {
+                    VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+                    mineProfileViewController.isPush = YES;
+                    [self.navigationController pushViewController:mineProfileViewController animated:YES];
+                }
+                else {
+                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    profileViewController.uid = user.uid;
+                    [self.navigationController pushViewController:profileViewController animated:YES];
+                }
             }
                 break;
                 //删除评论
@@ -885,10 +902,18 @@ static NSString *shareStr;
                 //查看个人主页
             case 1: {
                 //TODO:查看个人主页
-                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
                 VNUser *user = self.curComment.author;
-                profileViewController.uid = user.uid;
-                [self.navigationController pushViewController:profileViewController animated:YES];
+                NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+                if (mineUid && [mineUid isEqualToString:user.uid]) {
+                    VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+                    mineProfileViewController.isPush = YES;
+                    [self.navigationController pushViewController:mineProfileViewController animated:YES];
+                }
+                else {
+                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    profileViewController.uid = user.uid;
+                    [self.navigationController pushViewController:profileViewController animated:YES];
+                }
             }
                 break;
                 //举报评论

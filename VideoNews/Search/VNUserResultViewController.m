@@ -13,7 +13,7 @@
 #import "VNSearchField.h"
 #import "VNLoginViewController.h"
 #import "VNProfileViewController.h"
-
+#import "VNMineProfileViewController.h"
 
 @interface VNUserResultViewController () <UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate> {
     BOOL userScrolling;
@@ -187,6 +187,7 @@
                         [VNUtility showHUDText:@"关注成功!" forView:self.view];
                         [weakCell.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                         [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+                        weakCell.isMineIdol = YES;
                     }
                     else {
                         [VNUtility showHUDText:@"关注失败!" forView:self.view];
@@ -219,6 +220,7 @@
                         [VNUtility showHUDText:@"取消关注成功!" forView:self.view];
                         [weakCell.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
                         [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+                        weakCell.isMineIdol = NO;
                     }
                     else {
                         [VNUtility showHUDText:@"取消关注失败!" forView:self.view];
@@ -240,10 +242,18 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
     VNUser *user = [self.userResultArr objectAtIndex:indexPath.item];
-    profileViewController.uid = user.uid;
-    [self.navigationController pushViewController:profileViewController animated:YES];
+    NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    if (mineUid && [mineUid isEqualToString:user.uid]) {
+        VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+        mineProfileViewController.isPush = YES;
+        [self.navigationController pushViewController:mineProfileViewController animated:YES];
+    }
+    else {
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        profileViewController.uid = user.uid;
+        [self.navigationController pushViewController:profileViewController animated:YES];
+    }
 }
 
 #pragma mark - UITextFieldDelegate

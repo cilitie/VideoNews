@@ -12,6 +12,7 @@
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
 #import "VNProfileViewController.h"
+#import "VNMineProfileViewController.h"
 
 @interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
@@ -175,10 +176,20 @@
 
 -(void)TapUserView:(VNNews *)news {
     NSLog(@"Tap user View");
-    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
     VNUser *user = news.author;
-    profileViewController.uid = user.uid;
-    [self.navigationController pushViewController:profileViewController animated:YES];
+    NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    if (mineUid && [mineUid isEqualToString:user.uid]) {
+        VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+        mineProfileViewController.isPush = YES;
+        mineProfileViewController.navigationController.navigationBarHidden = YES;
+        [self.navigationController pushViewController:mineProfileViewController animated:YES];
+    }
+    else {
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        profileViewController.uid = user.uid;
+        profileViewController.navigationController.navigationBarHidden = YES;
+        [self.navigationController pushViewController:profileViewController animated:YES];
+    }
 }
 /*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
     selectedItemIndex = indexPath.item;

@@ -72,7 +72,6 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
     if (!self.mineUid || !self.mineUser_token) {
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         if (userInfo && userInfo.count) {
@@ -84,7 +83,6 @@ static NSString *shareStr;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = NO;
     if (!self.videoTableView.hidden) {
         for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
             if (cell.isPlaying) {

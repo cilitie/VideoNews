@@ -87,6 +87,5 @@
             self.followHandler(self.user);
         }
     }
-    self.isMineIdol = !self.isMineIdol;
 }
 @end

@@ -11,7 +11,6 @@
 @interface VNMineProfileViewController : UIViewController
 
 @property (assign, nonatomic) BOOL isPush;
-
 - (void)reload;
 
 @end
