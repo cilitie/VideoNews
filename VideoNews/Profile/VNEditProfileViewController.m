@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, EditPickerType) {
     EditPickerTypeBirthday
 };
 
-@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
+@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *saveBtn;
@@ -56,12 +56,6 @@ static EditPickerType pickerType = EditPickerTypeGender;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    NSLog(@"%@", NSStringFromCGRect(self.pickerBgView.frame));
-    CGRect pickerFrame = self.pickerBgView.frame;
-    pickerFrame.origin.y += CGRectGetHeight(pickerFrame);
-    self.pickerBgView.frame = pickerFrame;
-    NSLog(@"%@", NSStringFromCGRect(self.pickerBgView.frame));
     
     self.cancelBtn.layer.cornerRadius = 5.0;
     self.cancelBtn.layer.masksToBounds = YES;
@@ -71,11 +65,19 @@ static EditPickerType pickerType = EditPickerTypeGender;
     self.saveBtn.layer.cornerRadius = 5.0;
     self.saveBtn.layer.masksToBounds = YES;
     
-    if (self.userInfo) {
-        self.profileInfo = self.userInfo.basicDict;
-        [[NSUserDefaults standardUserDefaults] setObject:self.profileInfo forKey:VNProfileInfo];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    [VNHTTPRequestManager userInfoForUser:uid completion:^(VNUser *userInfo, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        if (userInfo) {
+            self.userInfo = userInfo;
+            self.profileInfo = self.userInfo.basicDict;
+            [[NSUserDefaults standardUserDefaults] setObject:self.profileInfo forKey:VNProfileInfo];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self.editTableView reloadData];
+        }
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -141,7 +143,13 @@ static EditPickerType pickerType = EditPickerTypeGender;
                 break;
             case 1: {
                 cell.titleLabel.text = @"性别";
-                cell.contentLabel.text = [self.profileInfo objectForKey:@"sex"];
+                NSString *gender = [self.profileInfo objectForKey:@"sex"];
+                if ([gender isEqualToString:@"male"]) {
+                    cell.contentLabel.text = @"男";
+                }
+                else if ([gender isEqualToString:@"female"]) {
+                    cell.contentLabel.text = @"女";
+                }
             }
                 break;
             case 2: {
@@ -180,7 +188,12 @@ static EditPickerType pickerType = EditPickerTypeGender;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        //FIXME: 上传头像
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"取消"
+                                                   destructiveButtonTitle:(nil)
+                                                        otherButtonTitles:@"拍照", @"从手机相册选择", nil];
+        [actionSheet showInView:self.view];
     }
     else if (indexPath.section == 1) {
         switch (indexPath.row) {
@@ -241,6 +254,64 @@ static EditPickerType pickerType = EditPickerTypeGender;
         return [self.constellationArr objectAtIndex:row];
     }
     return nil;
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0: {
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                picker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                [self presentViewController:picker
+                                   animated:YES
+                                 completion:nil];
+                
+            }else{
+                NSLog(@"模拟器无法打开相机");
+            }
+        }
+            break;
+        case 1: {
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:picker
+                               animated:YES
+                             completion:nil];
+        }
+            break;
+        case 2: {
+            return;
+        }
+            break;
+    }
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *editedImage = info[UIImagePickerControllerEditedImage];
+    if (editedImage) {
+        NSData *imageData = nil;
+        if (UIImagePNGRepresentation(editedImage) == nil) {
+            imageData = UIImageJPEGRepresentation(editedImage, 1);
+        } else {
+            imageData = UIImagePNGRepresentation(editedImage);
+        }
+        //FIXME: 上传头像
+        
+        [picker dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - SEL
@@ -313,7 +384,12 @@ static EditPickerType pickerType = EditPickerTypeGender;
 
 - (IBAction)completePicker:(id)sender {
     if (pickerType == EditPickerTypeGender) {
-        [self.profileInfo setObject:[self.genderArr objectAtIndex:[self.customPicker selectedRowInComponent:0]] forKey:@"sex"];
+        if ([self.customPicker selectedRowInComponent:0] == 0) {
+            [self.profileInfo setObject:@"male" forKey:@"sex"];
+        }
+        else {
+            [self.profileInfo setObject:@"female" forKey:@"sex"];
+        }
         [self.editTableView reloadData];
     }
     else if (pickerType == EditPickerTypeConstellation) {
