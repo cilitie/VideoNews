@@ -10,11 +10,22 @@
 #import "VNEditProfileTableViewCell.h"
 #import "VNEditContentViewController.h"
 
-@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
+typedef NS_ENUM(NSUInteger, EditPickerType) {
+    EditPickerTypeGender,
+    EditPickerTypeConstellation,
+    EditPickerTypeBirthday
+};
+
+@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *saveBtn;
 @property (weak, nonatomic) IBOutlet UITableView *editTableView;
+@property (weak, nonatomic) IBOutlet UIView *bgView;
+@property (weak, nonatomic) IBOutlet UIView *pickerBgView;
+@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (weak, nonatomic) IBOutlet UIPickerView *customPicker;
+
 @property (strong, nonatomic) NSMutableDictionary *profileInfo;
 
 @property (strong, nonatomic) NSArray *genderArr;
@@ -22,13 +33,13 @@
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;
+- (IBAction)cancelPicker:(id)sender;
+- (IBAction)completePicker:(id)sender;
+- (IBAction)tap:(UITapGestureRecognizer *)sender;
 
 @end
 
-static NSUInteger genderPickerTag = 101;
-static NSUInteger constellationPickerTag = 102;
-static NSUInteger birthdayPickerTag = 103;
-
+static EditPickerType pickerType = EditPickerTypeGender;
 
 @implementation VNEditProfileViewController
 
@@ -46,6 +57,11 @@ static NSUInteger birthdayPickerTag = 103;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    NSLog(@"%@", NSStringFromCGRect(self.pickerBgView.frame));
+    CGRect pickerFrame = self.pickerBgView.frame;
+    pickerFrame.origin.y += CGRectGetHeight(pickerFrame);
+    self.pickerBgView.frame = pickerFrame;
+    NSLog(@"%@", NSStringFromCGRect(self.pickerBgView.frame));
     
     self.cancelBtn.layer.cornerRadius = 5.0;
     self.cancelBtn.layer.masksToBounds = YES;
@@ -169,46 +185,18 @@ static NSUInteger birthdayPickerTag = 103;
     else if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 1: {
-                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"确定"
-                                                           destructiveButtonTitle:nil
-                                                                otherButtonTitles:nil];
-                [actionSheet showInView:self.view];
-                UIPickerView *genderPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 200.0f)];
-                genderPicker.tag = genderPickerTag;
-                genderPicker.delegate = self;
-                genderPicker.dataSource = self;
-                genderPicker.showsSelectionIndicator = YES;
-                [actionSheet addSubview:genderPicker];
+                pickerType = EditPickerTypeGender;
+                [self showPicker];
             }
                 break;
             case 4: {
-                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"确定"
-                                                           destructiveButtonTitle:nil
-                                                                otherButtonTitles:nil];
-                [actionSheet showInView:self.view];
-                UIPickerView *genderPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 200.0f)];
-                genderPicker.tag = constellationPickerTag;
-                genderPicker.delegate = self;
-                genderPicker.dataSource = self;
-                genderPicker.showsSelectionIndicator = YES;
-                [actionSheet addSubview:genderPicker];
+                pickerType = EditPickerTypeConstellation;
+                [self showPicker];
             }
                 break;
             case 5: {
-                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n"
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"确定"
-                                                           destructiveButtonTitle:nil
-                                                                otherButtonTitles:nil];
-                [actionSheet showInView:self.view];
-                UIDatePicker *datePicker = [[UIDatePicker alloc] init];
-                datePicker.tag = birthdayPickerTag;
-                datePicker.datePickerMode = UIDatePickerModeDate;
-                [actionSheet addSubview:datePicker];
+                pickerType = EditPickerTypeBirthday;
+                [self showPicker];
             }
                 break;
             case 0: {
@@ -236,53 +224,70 @@ static NSUInteger birthdayPickerTag = 103;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    if (pickerView.tag == genderPickerTag) {
+    if (pickerType == EditPickerTypeGender) {
         return self.genderArr.count;
     }
-    else if (pickerView.tag == constellationPickerTag) {
+    else if (pickerType == EditPickerTypeConstellation) {
         return self.constellationArr.count;
     }
     return 0;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    if (pickerView.tag == genderPickerTag) {
+    if (pickerType == EditPickerTypeGender) {
         return [self.genderArr objectAtIndex:row];
     }
-    else if (pickerView.tag == constellationPickerTag) {
+    else if (pickerType == EditPickerTypeConstellation) {
         return [self.constellationArr objectAtIndex:row];
     }
     return nil;
 }
 
-#pragma mark - UIPickerViewDelegate
-
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    UIPickerView *genderPicker= (UIPickerView *)[actionSheet viewWithTag:genderPickerTag];
-    if (genderPicker) {
-        [self.profileInfo setObject:[self.genderArr objectAtIndex:[genderPicker selectedRowInComponent:0]] forKey:@"sex"];
-        [self.editTableView reloadData];
-    }
-    UIPickerView *constellationPicker= (UIPickerView *)[actionSheet viewWithTag:constellationPickerTag];
-    if (constellationPicker) {
-        [self.profileInfo setObject:[self.constellationArr objectAtIndex:[constellationPicker selectedRowInComponent:0]] forKey:@"constellation"];
-        [self.editTableView reloadData];
-    }
-    UIDatePicker *birthdayPicker= (UIDatePicker *)[actionSheet viewWithTag:birthdayPickerTag];
-    if (birthdayPicker) {
-        NSString *timestamp = [NSString stringWithFormat:@"%f", [birthdayPicker.date timeIntervalSince1970]];
-        NSLog(@"%@", timestamp);
-        [self.profileInfo setObject:timestamp forKey:@"birthday"];
-        [self.editTableView reloadData];
-    }
-}
-
 #pragma mark - SEL
+
+- (void)showPicker {
+    if (pickerType == EditPickerTypeGender) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.bgView.hidden = NO;
+            [self.customPicker reloadAllComponents];
+            self.customPicker.hidden = NO;
+            self.datePicker.hidden = YES;
+            CGRect pickerFrame = CGRectMake(0, CGRectGetHeight(self.view.window.bounds)-238, CGRectGetWidth(self.view.window.bounds), 238);
+            NSLog(@"%@", NSStringFromCGRect(pickerFrame));
+            self.pickerBgView.frame = pickerFrame;
+        } completion:nil];
+    }
+    else if (pickerType == EditPickerTypeConstellation) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.bgView.hidden = NO;
+            [self.customPicker reloadAllComponents];
+            self.customPicker.hidden = NO;
+            self.datePicker.hidden = YES;
+            CGRect pickerFrame = CGRectMake(0, CGRectGetHeight(self.view.window.bounds)-238, CGRectGetWidth(self.view.window.bounds), 238);
+            self.pickerBgView.frame = pickerFrame;
+        } completion:nil];
+    }
+    else if (pickerType == EditPickerTypeBirthday) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.bgView.hidden = NO;
+            self.customPicker.hidden = YES;
+            self.datePicker.hidden = NO;
+            CGRect pickerFrame = CGRectMake(0, CGRectGetHeight(self.view.window.bounds)-238, CGRectGetWidth(self.view.window.bounds), 238);
+            self.pickerBgView.frame = pickerFrame;
+        } completion:nil];
+    }
+}
+
+- (void)hidePicker {
+    [UIView animateWithDuration:0.3 animations:^{
+        NSLog(@"%@", NSStringFromCGRect(self.pickerBgView.frame));
+        CGRect pickerFrame = self.pickerBgView.frame;
+        pickerFrame.origin.y += CGRectGetHeight(pickerFrame);
+        self.pickerBgView.frame = pickerFrame;
+    } completion:^(BOOL finished) {
+        self.bgView.hidden = YES;
+    }];
+}
 
 - (IBAction)cancel:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -300,6 +305,32 @@ static NSUInteger birthdayPickerTag = 103;
         }
         [VNUtility showHUDText:@"个人信息更新失败!" forView:self.view];
     }];
+}
+
+- (IBAction)cancelPicker:(id)sender {
+    [self hidePicker];
+}
+
+- (IBAction)completePicker:(id)sender {
+    if (pickerType == EditPickerTypeGender) {
+        [self.profileInfo setObject:[self.genderArr objectAtIndex:[self.customPicker selectedRowInComponent:0]] forKey:@"sex"];
+        [self.editTableView reloadData];
+    }
+    else if (pickerType == EditPickerTypeConstellation) {
+        [self.profileInfo setObject:[self.constellationArr objectAtIndex:[self.customPicker selectedRowInComponent:0]] forKey:@"constellation"];
+        [self.editTableView reloadData];
+    }
+    else if (pickerType == EditPickerTypeBirthday) {
+        NSString *timestamp = [NSString stringWithFormat:@"%f", [self.datePicker.date timeIntervalSince1970]];
+        NSLog(@"%@", timestamp);
+        [self.profileInfo setObject:timestamp forKey:@"birthday"];
+        [self.editTableView reloadData];
+    }
+    [self hidePicker];
+}
+
+- (IBAction)tap:(UITapGestureRecognizer *)sender {
+    [self hidePicker];
 }
 
 @end

@@ -11,6 +11,8 @@
 @interface VNDetailHeaderView ()
 
 - (IBAction)click:(id)sender;
+- (IBAction)tap:(UITapGestureRecognizer *)sender;
+
 @property (weak, nonatomic) IBOutlet UIButton *moreBtn;
 
 @end
@@ -32,6 +34,12 @@
         if (self.moreHandler) {
             self.moreHandler();
         }
+    }
+}
+
+- (IBAction)tap:(UITapGestureRecognizer *)sender {
+    if (self.profileHandler) {
+        self.profileHandler();
     }
 }
 

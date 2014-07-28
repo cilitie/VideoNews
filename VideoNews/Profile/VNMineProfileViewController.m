@@ -147,6 +147,7 @@ static NSString *shareStr;
         
         videoHeaderView.editHandler = ^(){
             VNEditProfileViewController *editProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNEditProfileViewController"];
+            editProfileViewController.hidesBottomBarWhenPushed = YES;
             if (self.mineInfo) {
                 editProfileViewController.userInfo = self.mineInfo;
             }

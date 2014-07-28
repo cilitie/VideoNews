@@ -13,6 +13,7 @@
 #import "VNNewsDetailViewController.h"
 #import "VNSearchField.h"
 #import "VNSearchWordViewController.h"
+#import "VNProfileViewController.h"
 
 @interface VNResultViewController () <UITextFieldDelegate, TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
@@ -225,9 +226,12 @@
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
 }
 
--(void)TapUserView:(VNNews *)news
-{
+-(void)TapUserView:(VNNews *)news {
     NSLog(@"Tap user View");
+    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+    VNUser *user = news.author;
+    profileViewController.uid = user.uid;
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
 /*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {

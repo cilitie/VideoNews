@@ -17,6 +17,7 @@
 #import "VNLoginViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "AGEmojiKeyboardView.h"
+#import "VNProfileViewController.h"
 
 @interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNCommentTableViewCellDelegate, AGEmojiKeyboardViewDelegate, AGEmojiKeyboardViewDataSource> {
     BOOL isKeyboardShowing;
@@ -115,6 +116,13 @@ static NSString *shareStr;
     self.headerView.nameLabel.text = self.news.author.name;
     
     __weak typeof(self) weakSelf = self;
+    
+    self.headerView.profileHandler = ^{
+        VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        VNUser *user = weakSelf.news.author;
+        profileViewController.uid = user.uid;
+        [weakSelf.navigationController pushViewController:profileViewController animated:YES];
+    };
     
     self.headerView.moreHandler = ^{
         UIActionSheet *actionSheet = nil;
@@ -782,7 +790,10 @@ static NSString *shareStr;
                 break;
                 //查看个人主页
             case 1: {
-                //TODO:查看个人主页
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                VNUser *user = self.curComment.author;
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
             }
                 break;
                 //删除评论
@@ -874,6 +885,10 @@ static NSString *shareStr;
                 //查看个人主页
             case 1: {
                 //TODO:查看个人主页
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                VNUser *user = self.curComment.author;
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
             }
                 break;
                 //举报评论

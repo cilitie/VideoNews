@@ -12,6 +12,7 @@
 #import "VNSearchWordViewController.h"
 #import "VNSearchField.h"
 #import "VNLoginViewController.h"
+#import "VNProfileViewController.h"
 
 
 @interface VNUserResultViewController () <UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate> {
@@ -239,7 +240,10 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    //TODO: 个人主页
+    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+    VNUser *user = [self.userResultArr objectAtIndex:indexPath.item];
+    profileViewController.uid = user.uid;
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
 #pragma mark - UITextFieldDelegate

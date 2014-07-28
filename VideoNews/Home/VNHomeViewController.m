@@ -11,6 +11,7 @@
 #import "TMQuiltView.h"
 #import "VNQuiltViewCell.h"
 #import "VNNewsDetailViewController.h"
+#import "VNProfileViewController.h"
 
 @interface VNHomeViewController () <TMQuiltViewDataSource,TMQuiltViewDelegate,VNQuiltViewCellDelegate> {
     TMQuiltView *newsQuiltView;
@@ -172,9 +173,12 @@
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
 }
 
--(void)TapUserView:(VNNews *)news
-{
+-(void)TapUserView:(VNNews *)news {
     NSLog(@"Tap user View");
+    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+    VNUser *user = news.author;
+    profileViewController.uid = user.uid;
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 /*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
     selectedItemIndex = indexPath.item;

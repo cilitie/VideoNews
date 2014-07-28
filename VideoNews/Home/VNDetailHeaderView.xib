@@ -42,6 +42,10 @@
                         </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    <gestureRecognizers/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="9l7-hQ-4Fe" appends="YES" id="jxH-nj-ezE"/>
+                    </connections>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GA1-lw-n6C">
                     <rect key="frame" x="0.0" y="40" width="300" height="300"/>
@@ -183,6 +187,11 @@
                 <outlet property="titleLabel" destination="i6i-fz-e4t" id="BSW-TD-JZn"/>
             </connections>
         </view>
+        <tapGestureRecognizer id="9l7-hQ-4Fe">
+            <connections>
+                <action selector="tap:" destination="Ywd-gi-04L" id="UvN-dB-cpp"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="30-30comment" width="15" height="15"/>
