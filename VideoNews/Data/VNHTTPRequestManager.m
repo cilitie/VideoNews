@@ -752,9 +752,10 @@ static int pagesize = 10;
     //http://182.92.103.134:8080/engine/uploadUserInfo.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c&name=alen&location=beijing&sex=female&description=xxxxxx&constellation=baiyang&birthday=123434352345
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-    NSString *URLStr = [VNHost stringByAppendingString:@"uploadUserInfo.php"];
-    NSDictionary *param = @{@"uid": uid, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp], @"name": [userInfo[@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], @"location": [userInfo[@"location"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], @"sex": [userInfo[@"sex"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], @"description": [userInfo[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], @"constellation": [userInfo[@"constellation"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], @"birthday": userInfo[@"birthday"]};
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSString *paramStr = [NSString stringWithFormat:@"uploadUserInfo.php?timestamp=%@&token=%@&uid=%@&user_token=%@&name=%@&location=%@&sex=%@&description=%@&constellation=%@&birthday=%@", [self timestamp], [self token], uid, user_token, userInfo[@"name"], userInfo[@"location"], userInfo[@"sex"], userInfo[@"description"], userInfo[@"constellation"], userInfo[@"birthday"]];
+    NSString *URLStr = [[VNHost stringByAppendingString:paramStr] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         BOOL updateSuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
