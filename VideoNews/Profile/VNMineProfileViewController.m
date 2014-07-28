@@ -92,7 +92,6 @@ static NSString *shareStr;
             }
         }
     }
-    [super viewDidDisappear:animated];
     if (isTabBarHidden) {
         [self showTabBar];
     }

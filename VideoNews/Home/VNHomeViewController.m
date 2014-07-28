@@ -102,8 +102,8 @@
     [self.view addSubview:newsQuiltView];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     if (isTabBarHidden) {
         [self showTabBar];
     }
