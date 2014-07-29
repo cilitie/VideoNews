@@ -8,16 +8,24 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (add)
+@protocol VNUploadManagerDelegate <NSObject>
 
-- (NSString *)md5;
+@required
+
+// Upload completed successfully.
+- (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret;
+
+// Upload failed.
+- (void)uploadFailed:(NSString *)key error:(NSError *)error;
 
 @end
 
 @interface VNUploadManager : NSObject
 
+@property (assign,nonatomic) id<VNUploadManagerDelegate>delegate;
+
 #pragma mark - Upload
 //上传相关
-+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid Delegate:(id *)delegate completion:(void(^)(bool succeed,NSError *error))completion;
++(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
 
 @end
