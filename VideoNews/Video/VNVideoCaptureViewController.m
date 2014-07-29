@@ -64,69 +64,153 @@ static NSString *videoFilePath;
     self = [super init];
     if (self) {
         
+        self.view.backgroundColor = [UIColor blackColor];
+        
         videoFilePath = [VNUtility getNSCachePath:@"VideoFiles"];
-
-        self.captureSession = [[AVCaptureSession alloc] init];
-        [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
-
-        AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        [videoDevice lockForConfiguration:nil];
-        AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-        
-        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:nil];
-        self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
-        
-        self.movieOutput = [[AVCaptureMovieFileOutput alloc] init];
-        
-        [self.captureSession addInput:self.videoInput];
-        [self.captureSession addInput:self.audioInput];
-        [self.captureSession addOutput:self.movieOutput];
-        
-        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-        CGFloat y;
-        if (screenH == 568) {
-            y = -6;
-        }else {
-            y = 0;
-        }
-        previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
-        [self.view.layer addSublayer:previewLayer];
-        
-        [self.view addSubview:self.overlayView];
-        
-        self.videoPieceCount = 0;
-        self.videoTotalDuration = 0;
         
         _videoTimePointArr = [NSMutableArray arrayWithCapacity:1];
         _videoPathArr = [NSMutableArray arrayWithCapacity:1];
+        self.videoPieceCount = 0;
+        self.videoTotalDuration = 0;
         
-        BOOL _isDir;
-
-        if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] isDirectory:&_isDir]){
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] withIntermediateDirectories:YES attributes:nil error:nil]) {
-
-            }
-        }
+        [self initCaptureSession];
+        [self initDir];
         
-        if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] isDirectory:&_isDir]){
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] withIntermediateDirectories:YES attributes:nil error:nil]) {
-                
-            }
-        }
     }
     return self;
+}
+
+- (id)initWithVideoClips
+{
+    self = [super init];
+    if (self) {
+        
+        self.view.backgroundColor = [UIColor blackColor];
+
+        videoFilePath = [VNUtility getNSCachePath:@"VideoFiles"];
+        
+        _videoTimePointArr = [NSMutableArray arrayWithCapacity:1];
+        _videoPathArr = [NSMutableArray arrayWithCapacity:1];
+        self.videoPieceCount = 0;
+        self.videoTotalDuration = 0;
+        
+        NSString *clipsFilePath = [videoFilePath stringByAppendingPathComponent:@"Clips"];
+        
+        NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:clipsFilePath error:nil];
+        
+        if (arr && arr.count > 0) {
+            for (NSString *path in arr) {
+                
+                NSString *filePath = [clipsFilePath stringByAppendingPathComponent:path];
+                [_videoPathArr addObject:filePath];
+                
+                AVAsset *anAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:filePath] options:nil];
+                float currVideoDuration = anAsset.duration.value / anAsset.duration.timescale;
+                
+                self.videoPieceCount++;
+                
+                self.videoTotalDuration += currVideoDuration;
+                
+                [_videoTimePointArr addObject:[NSNumber numberWithFloat:self.videoTotalDuration]];
+            }
+        }
+        
+        [self initCaptureSession];
+        [self initDir];
+        
+        CGFloat percent = self.videoTotalDuration / 30.0 ;
+        [_overlayView setProgressTimeArr:_videoTimePointArr];
+        [_overlayView updateProgressViewToPercentage:percent];
+        [_overlayView setTrashBtnEnabled:YES];
+        if (self.videoTotalDuration < MIN_VIDEO_DURATION) {
+            [self.overlayView setAlbumAndSubmitBtnStatus:NO];
+        }else {
+            [self.overlayView setAlbumAndSubmitBtnStatus:YES];
+        }
+        
+        NSString *cropFilePath = [videoFilePath stringByAppendingPathComponent:@"Temp/VN_Video_Cropped.mp4"];
+        
+        BOOL existCropFile = [[NSFileManager defaultManager] fileExistsAtPath:cropFilePath];
+        if (existCropFile) {
+            
+            __weak VNVideoCaptureViewController *weakSelf = self;
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+                coverSettingCtl.videoPath = cropFilePath;
+                [weakSelf.navigationController pushViewController:coverSettingCtl animated:NO];
+            });
+        }
+        
+    }
+    return self;
+}
+
+- (void) initCaptureSession
+{
+    
+    _captureSession = [[AVCaptureSession alloc] init];
+    [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+    
+    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [videoDevice lockForConfiguration:nil];
+    AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    
+    _videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:nil];
+    _audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
+    
+    self.movieOutput = [[AVCaptureMovieFileOutput alloc] init];
+    
+    [self.captureSession addInput:self.videoInput];
+    [self.captureSession addInput:self.audioInput];
+    [self.captureSession addOutput:self.movieOutput];
+    
+    AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
+    CGFloat y;
+    if (screenH == 568) {
+        y = -6;
+    }else {
+        y = 0;
+    }
+    previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
+    [self.view.layer addSublayer:previewLayer];
+    
+    [self.view addSubview:self.overlayView];
+
+}
+
+- (void)initDir
+{
+    BOOL _isDir;
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] isDirectory:&_isDir]){
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Clips"] withIntermediateDirectories:YES attributes:nil error:nil]) {
+            
+        }
+    }
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] isDirectory:&_isDir]){
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:[videoFilePath stringByAppendingPathComponent:@"Temp"] withIntermediateDirectories:YES attributes:nil error:nil]) {
+            
+        }
+    }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.captureSession startRunning];
+    
+    __weak VNVideoCaptureViewController *weakSelf = self;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf.captureSession startRunning];
+    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -151,7 +235,6 @@ static NSString *videoFilePath;
 - (void)refreshVideoDuration:(NSTimer *)timer
 {
     self.videoTotalDuration += 0.1;
-    NSLog(@"video total time...:%f",self.videoTotalDuration);
     
     CGFloat percent = self.videoTotalDuration / 30.0 ;
     [_overlayView updateProgressViewToPercentage:percent];
@@ -208,7 +291,7 @@ static NSString *videoFilePath;
     
     //export the combined video
     
-    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mov",TEMP_VIDEO_NAME_PREFIX]];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
@@ -222,7 +305,7 @@ static NSString *videoFilePath;
         
         AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:composition presetName:AVAssetExportPresetPassthrough];
         exporter.outputURL = url;
-        exporter.outputFileType = [[exporter supportedFileTypes] objectAtIndex:0];
+        exporter.outputFileType = AVFileTypeQuickTimeMovie;
         
         [exporter exportAsynchronouslyWithCompletionHandler:^{
             
@@ -230,13 +313,11 @@ static NSString *videoFilePath;
                 switch ([exporter status]) {
                     case AVAssetExportSessionStatusFailed:
                     {
-                        [weakSelf.overlayView hideCombiningMsg];
                         NSLog(@"111111Export failed: %@", [[exporter error] localizedDescription]);
                     }
                         break;
                     case AVAssetExportSessionStatusCancelled:
                     {
-                        [weakSelf.overlayView hideCombiningMsg];
                         NSLog(@"111111Export canceled");
                     }
                         break;
@@ -258,9 +339,9 @@ static NSString *videoFilePath;
     
     NSString *combinedPath;
     if (self.videoPieceCount == 1) {
-        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@1.mp4",TEMP_VIDEO_NAME_PREFIX]];
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@1.mov",TEMP_VIDEO_NAME_PREFIX]];
     }else {
-        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mp4",TEMP_VIDEO_NAME_PREFIX]];
+        combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Combined.mov",TEMP_VIDEO_NAME_PREFIX]];
     }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
@@ -276,7 +357,7 @@ static NSString *videoFilePath;
         
         //create a video instruction
         AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(30, asset.duration.timescale));
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(60, asset.duration.timescale));
         
         AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
         
@@ -459,7 +540,7 @@ static NSString *videoFilePath;
 {
     //删除当前片段
     
-    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mp4",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount]];
+    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount]];
     
     NSError *err;
     [[NSFileManager defaultManager] removeItemAtPath:currVideoPath error:&err];
@@ -490,7 +571,7 @@ static NSString *videoFilePath;
 {
 //    [self.overlayView setProgressViewBlinking:NO];
     
-    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mp4",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
     
     [self.videoPathArr addObject:currVideoPath];
 
@@ -510,10 +591,6 @@ static NSString *videoFilePath;
     }
     
     [self.movieOutput stopRecording];
-    
-    if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
-        [self doSubmitWholeVideo];
-    }
 }
 
 /**
@@ -535,9 +612,9 @@ static NSString *videoFilePath;
 
 - (void) pushToCoverSettingCtl
 {
-    NSString *combinedPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    NSString *cropPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
     VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
-    coverSettingCtl.videoPath = combinedPath;
+    coverSettingCtl.videoPath = cropPath;
     [self.navigationController pushViewController:coverSettingCtl animated:YES];
 }
 
@@ -589,9 +666,8 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
         //video duration array stores video files' duration data, for process bar
         
         if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
-            [self combineAndCropSingleVideo];
+            [self doSubmitWholeVideo];
         }
-        
     }
 }
 

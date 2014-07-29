@@ -113,6 +113,7 @@
         
         UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
         pressGesture.delegate = self;
+        pressGesture.cancelsTouchesInView = NO;
         [self addGestureRecognizer:pressGesture];
     }
     return self;
@@ -124,15 +125,17 @@
 //handle long press gesture...
 - (void)handlePress:(UILongPressGestureRecognizer *)ges
 {
-    if (ges.state == UIGestureRecognizerStateBegan) {
-        if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
-            
-            [delegate doStartNewVideoRecord];
-        }
-    }else if (ges.state == UIGestureRecognizerStateEnded) {
-        if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
-            
-            [delegate doEndCurVideo];
+    if ([ges locationInView:self].y > 64 && [ges locationInView:self].y < 384) {
+        if (ges.state == UIGestureRecognizerStateBegan) {
+            if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
+                
+                [delegate doStartNewVideoRecord];
+            }
+        }else if (ges.state == UIGestureRecognizerStateEnded) {
+            if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
+                
+                [delegate doEndCurVideo];
+            }
         }
     }
 }
@@ -153,7 +156,8 @@
     topBaseView.backgroundColor = [UIColor blackColor];
     
     UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
-    [closeBtn setTitle:@"X" forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateSelected];
     closeBtn.backgroundColor = [UIColor clearColor];
     [closeBtn addTarget:self action:@selector(doClosePickerCtl) forControlEvents:UIControlEventTouchUpInside];
     closeBtn.showsTouchWhenHighlighted = YES;
@@ -188,16 +192,15 @@
     
     [bottomBaseView addSubview:self.trashBtn];
     
-    //commented by zhangxue 20140726 due to requirement change...
-//    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
-//    [takeVideoBtn setTitle:@"Go" forState:UIControlStateNormal];
-//    [takeVideoBtn setTitle:@"On" forState:UIControlStateSelected];
-//    takeVideoBtn.backgroundColor = [UIColor redColor];
-//    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
-//    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
-//    takeVideoBtn.showsTouchWhenHighlighted = YES;
-//    takeVideoBtn.selected = NO;
-//    [bottomBaseView addSubview:takeVideoBtn];
+    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
+    [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+    [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
+    takeVideoBtn.backgroundColor = [UIColor clearColor];
+    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
+    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
+    takeVideoBtn.showsTouchWhenHighlighted = YES;
+    takeVideoBtn.selected = NO;
+    [bottomBaseView addSubview:takeVideoBtn];
     
     [bottomBaseView addSubview:self.submitBtn];
     
@@ -322,11 +325,6 @@
         
         self.submitBtn.enabled = NO;
         
-        for (UIGestureRecognizer *ges in self.gestureRecognizers) {
-            if ([ges isKindOfClass:[UILongPressGestureRecognizer class]]) {
-                ges.enabled = NO;
-            }
-        }
     }else {
         
         //处理progressBar 和 本地video文件
@@ -339,40 +337,37 @@
         }
         
         self.submitBtn.enabled = YES;
-        
-        for (UIGestureRecognizer *ges in self.gestureRecognizers) {
-            if ([ges isKindOfClass:[UILongPressGestureRecognizer class]]) {
-                ges.enabled = YES;
-            }
-        }
     }
 }
 
 /**
- *  @description: startVideoRecord (commented by zhangxue 20140726 due to requirement change...)
+ *  @description: startVideoRecord
  *
  *  @param sender: input button
  */
-//- (void)doStartVideoRecord:(UIButton *)sender
-//{
-//    if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
-//        
-//        [delegate doStartNewVideoRecord];
-//    }
-//}
+- (void)doStartVideoRecord:(UIButton *)sender
+{
+    _progressView.status = ProgressViewStatusNormal;
+    _trashBtn.selected = NO;
+    
+    if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
+        
+        [delegate doStartNewVideoRecord];
+    }
+}
 
 /**
- *  @description: end current video record (commented by zhangxue 20140726 due to requirement change...)
+ *  @description: end current video record
  *
  *  @param sender: input button
  */
-//- (void)doEndVideoRecord:(UIButton *)sender
-//{
-//    if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
-//        
-//        [delegate doEndCurVideo];
-//    }
-//}
+- (void)doEndVideoRecord:(UIButton *)sender
+{
+    if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
+        
+        [delegate doEndCurVideo];
+    }
+}
 
 /**
  *  @description: if the video record has not been started yet, open the photo album, or if the video longer than a certain time period, submit the video.

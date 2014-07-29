@@ -68,7 +68,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
     
     //initialize top bar view.
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
@@ -149,7 +149,25 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)doPopBack
 {
+    [self clearTempVideo];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+/**
+ *  @description: clear temp videos in temp directory.
+ */
+- (void)clearTempVideo
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    NSString *videoFilePath = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
+    
+    NSArray *arr = [fm contentsOfDirectoryAtPath:videoFilePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[videoFilePath stringByAppendingPathComponent:dir] error:nil];
+    }
+    
 }
 
 - (void)soundSetting:(UIButton *)sender

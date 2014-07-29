@@ -264,6 +264,8 @@
 
 - (void)doSubmit
 {
+    //clear clips and temp video after submit success.
+    [self clearTempVideos];
     
     if (self.shareSina) {
         //分享新浪
@@ -271,6 +273,33 @@
     if (self.shareWeixin) {
         //分享朋友圈
     }
+}
+
+/**
+ *  @description: clear temp videos in temp directory.
+ */
+- (void)clearTempVideos
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    NSString *videoFilePath = [VNUtility getNSCachePath:@"VideoFiles"];
+    
+    NSString *filePath = [videoFilePath stringByAppendingPathComponent:@"Clips"];
+    
+    NSArray *arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
+    }
+    
+    filePath = [videoFilePath stringByAppendingPathComponent:@"Temp"];
+    
+    arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
+    }
+    
 }
 
 #pragma mark - UIGestureRecognizerDelgate

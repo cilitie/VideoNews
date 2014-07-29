@@ -41,10 +41,10 @@
         
         [self setItemBadgeValue];
         
-    }else {
-        //to see if there's any video clip left(after video capture last time of application launch).
-        [self checkVideoCapture];
     }
+    
+    //to see if there's any video clip left(after video capture last time of application launch).
+    [self checkVideoCapture];
     
     return YES;
 }
@@ -150,35 +150,47 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
 - (void)checkVideoCapture
 {
     NSString *dirPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:@"Clips"];
-    
+    NSString *cropFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_Cropped.mp4"];
     BOOL _isDir;
     
-    if([[NSFileManager defaultManager] fileExistsAtPath:dirPath isDirectory:&_isDir]){
-        NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath error:nil];
+    BOOL existCropFile = [[NSFileManager defaultManager] fileExistsAtPath:cropFilePath];
+    BOOL existClipFile = [[NSFileManager defaultManager] fileExistsAtPath:dirPath isDirectory:&_isDir];
+    
+    NSArray *clipsArr;
+    
+    if (existClipFile) {
+        clipsArr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath error:nil];
+    }
+    
+    if (existCropFile || (clipsArr && clipsArr.count > 0)) {
         
-        if (arr && arr.count > 0) {
-            //alert if user need to edit base on these clips.
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"上次视频编辑未完成，是否继续，继续编辑还没加" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            void (^clearVideoBlock)(NSInteger) = ^(NSInteger buttonIndex){
-                if (buttonIndex == 0) {
-                    //delete those clips.
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"上次视频编辑未完成，是否继续" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        
+        void (^clearVideoBlock)(NSInteger) = ^(NSInteger buttonIndex){
+            if (buttonIndex == 0) {
+                //delete those clips.
+                
+                if (clipsArr && clipsArr.count > 0) {
                     NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath error:nil];
                     
                     for (NSString *dir in arr) {
                         [[NSFileManager defaultManager] removeItemAtPath:[dirPath stringByAppendingPathComponent:dir] error:nil];
                     }
-                } else {
-                    //go to video capture view.
-//                    [self ];
                 }
-            };
-            objc_setAssociatedObject(alert, @"continueEdittingVideo",
-                                     clearVideoBlock, OBJC_ASSOCIATION_COPY);
-            
-            [alert show];
-        }else {
-            //no clips here.
-        }
+                
+                if (existCropFile) {
+                    [[NSFileManager defaultManager] removeItemAtPath:cropFilePath error:nil];
+                }
+            } else {
+                //go to video capture view.
+                VNTabBarViewController *tabbarCtl = (VNTabBarViewController *)self.window.rootViewController;
+                [tabbarCtl presentVideoCaptureView];
+            }
+        };
+        objc_setAssociatedObject(alert, @"continueEdittingVideo",
+                                 clearVideoBlock, OBJC_ASSOCIATION_COPY);
+        
+        [alert show];
     }
 }
 

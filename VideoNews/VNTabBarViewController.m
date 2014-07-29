@@ -148,7 +148,7 @@
 #pragma mark - UserInteractionMethods
 
 /**
- *  @description: open UIImagePickerController, start video capture.
+ *  @description: open video capture view , start video capture.
  */
 - (void)doOpenImagePickerCtl
 {
@@ -157,6 +157,16 @@
     actionSheet.delegate = self;
     actionSheet.superView = self.view;
     [actionSheet show];
+}
+
+- (void)presentVideoCaptureView
+{
+    [MobClick event:@"video_record" label:@"camera"];
+    
+    VNVideoCaptureViewController *captureCtl = [[VNVideoCaptureViewController alloc] initWithVideoClips];
+    UINavigationController *videoNav = [[UINavigationController alloc] initWithRootViewController:captureCtl];
+    videoNav.navigationBarHidden = YES;
+    [self presentViewController:videoNav animated:YES completion:nil];
 }
 
 #pragma mark - VNCustomizedActionSheetDelegate

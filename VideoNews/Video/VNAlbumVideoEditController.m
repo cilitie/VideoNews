@@ -33,13 +33,14 @@
 @implementation VNAlbumVideoEditController
 
 #define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
+#define screenH ([[UIScreen mainScreen] bounds].size.height)
 
 #pragma mark - Initialization
 
 - (UIScrollView *)videoScrollView
 {
     if (!_videoScrollView) {
-        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 64, 320, 320)];
         _videoScrollView.backgroundColor = [UIColor clearColor];
         _videoScrollView.showsVerticalScrollIndicator = NO;
         
@@ -75,6 +76,8 @@
     self = [super init];
     if (self) {
 
+        self.view.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
+        
         //initialize top bar view.
         UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
         topView.backgroundColor = [UIColor colorWithRGBValue:0xF1F1F1];
@@ -138,10 +141,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.view.backgroundColor = [UIColor whiteColor];
     
-    VNProgressViewForAlbum *progressView = [[VNProgressViewForAlbum alloc] initWithFrame:CGRectMake(0, 384, 320, 10)];
+    VNProgressViewForAlbum *progressView = [[VNProgressViewForAlbum alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 384, 320, 10)];
     [progressView addTarget:self action:@selector(progressValueChanged:) forControlEvents:UIControlEventValueChanged];
     
     [self.view addSubview:self.videoScrollView];
@@ -154,7 +155,7 @@
         [weakSelf playVideo];
         
         //generate images of video
-        weakSelf.videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, 394, 320, 30) andVideoPath:self.videoPath];
+        weakSelf.videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 392, 320, 30) andVideoPath:self.videoPath];
         weakSelf.videoFramesView.backgroundColor = [UIColor clearColor];
         [weakSelf.videoFramesView hideDisplayImageView];
         weakSelf.videoFramesView.userInteractionEnabled = NO;
@@ -168,12 +169,13 @@
             progressView.maximumValue = currVideoDuration;
             progressView.value = currVideoDuration;
             self.duration = currVideoDuration;
-            [weakSelf.view addSubview:progressView];
             [weakSelf.view addSubview:self.videoFramesView];
+            [weakSelf.view addSubview:progressView];
             
-            UIButton *playBtn = [[UIButton alloc] initWithFrame:CGRectMake(140, 140, 40, 40)];
-            playBtn.backgroundColor = [UIColor blueColor];
-            [playBtn setTitle:@"Play" forState:UIControlStateNormal];
+            UIButton *playBtn = [[UIButton alloc] initWithFrame:CGRectMake(130, (screenH - 64 - 360) / 2 + 194, 60, 60)];
+            playBtn.backgroundColor = [UIColor clearColor];
+            [playBtn setImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateNormal];
+            [playBtn setImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateSelected];
             [playBtn addTarget:weakSelf action:@selector(playTheVideo) forControlEvents:UIControlEventTouchUpInside];
             [weakSelf.view addSubview:playBtn];
             
@@ -292,7 +294,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         videoComposition.instructions = [NSArray arrayWithObject: instruction];
         
         //Create an Export Path to store the cropped video
-        NSString *cropPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+        NSString *cropPath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[NSFileManager defaultManager] removeItemAtPath:cropPath error:nil];
@@ -336,7 +338,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void) pushToCoverSettingCtl
 {
-    NSString *combinedPath = [[VNUtility getNSCachePath:@"VideoFiles"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@FinalCropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    NSString *combinedPath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
     VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
     coverSettingCtl.videoPath = combinedPath;
     [self.navigationController pushViewController:coverSettingCtl animated:YES];

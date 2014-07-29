@@ -10,4 +10,6 @@
 
 @interface VNVideoCaptureViewController : UIViewController
 
+- (id)initWithVideoClips;
+
 @end

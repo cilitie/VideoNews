@@ -9,10 +9,13 @@
 #import "VNCustomizedActionSheet.h"
 #import "UIImageView+LBBlurredImage.h"
 #import "VNAppDelegate.h"
+#import "VNTabBarViewController.h"
 
-@interface VNCustomizedActionSheet ()
+@interface VNCustomizedActionSheet () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UIView *actionSheetView;
+@property (nonatomic, strong) UIButton *draftBtn;
+@property (nonatomic, strong) UIButton *cameraBtn;
+@property (nonatomic, strong) UIButton *albumBtn;
 
 @end
 
@@ -21,7 +24,7 @@
 @synthesize delegate, superView;
 
 #define IPHONE_HEIGHT              [UIScreen mainScreen].bounds.size.height
-#define ACTION_SHEET_HEIGHT        182
+#define ACTION_SHEET_HEIGHT        216
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -51,59 +54,95 @@
                 }
             });
 
-        _actionSheetView = [[UIView alloc] initWithFrame:CGRectMake(0, IPHONE_HEIGHT, 320, ACTION_SHEET_HEIGHT)];
-        _actionSheetView.backgroundColor = [UIColor clearColor];
+        UIView *actionSheetView = [[UIView alloc] initWithFrame:CGRectMake(0, IPHONE_HEIGHT - ACTION_SHEET_HEIGHT, 320, ACTION_SHEET_HEIGHT)];
+        actionSheetView.backgroundColor = [UIColor clearColor];
         
         UIView *actionBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, ACTION_SHEET_HEIGHT - 49)];
         actionBgView.backgroundColor = [UIColor blackColor];
         
         UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 37)];
         titleLbl.text = @"选择视频";
-        titleLbl.textColor = [UIColor whiteColor];
+        titleLbl.textColor = [UIColor colorWithRed:177/255.0 green:177/255.0 blue:177/255.0 alpha:1];
         titleLbl.backgroundColor = [UIColor clearColor];
         titleLbl.textAlignment = NSTextAlignmentCenter;
         titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
         [actionBgView addSubview:titleLbl];
         
         
-        UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(8, 36, 74, 74)];
-        [draftBtn setTitle:@"Draft" forState:UIControlStateNormal];
-        draftBtn.backgroundColor = [UIColor greenColor];
-        [draftBtn addTarget:self action:@selector(doOpenDraftList) forControlEvents:UIControlEventTouchUpInside];
-        draftBtn.showsTouchWhenHighlighted = YES;
-        [actionBgView addSubview:draftBtn];
+        _draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, 56, 60, 60)];
+        [_draftBtn setImage:[UIImage imageNamed:@"video_draft"] forState:UIControlStateNormal];
+        [_draftBtn setImage:[UIImage imageNamed:@"video_draft"] forState:UIControlStateSelected];
+        _draftBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _draftBtn.backgroundColor = [UIColor clearColor];
+        [_draftBtn addTarget:self action:@selector(doOpenDraftList) forControlEvents:UIControlEventTouchUpInside];
+        _draftBtn.showsTouchWhenHighlighted = YES;
+        _draftBtn.alpha = 0.5;
+        [actionBgView addSubview:_draftBtn];
         
         
-        UIButton *cameraBtn = [[UIButton alloc] initWithFrame:CGRectMake(123, 36, 74, 74)];
-        [cameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
-        [cameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
-        cameraBtn.backgroundColor = [UIColor clearColor];
-        [cameraBtn addTarget:self action:@selector(doOpenCamera) forControlEvents:UIControlEventTouchUpInside];
-        cameraBtn.showsTouchWhenHighlighted = YES;
-        [actionBgView addSubview:cameraBtn];
+        _cameraBtn = [[UIButton alloc] initWithFrame:CGRectMake(130, 56, 60, 60)];
+        [_cameraBtn setImage:[UIImage imageNamed:@"video_camera"] forState:UIControlStateNormal];
+        [_cameraBtn setImage:[UIImage imageNamed:@"video_camera"] forState:UIControlStateSelected];
+        _cameraBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _cameraBtn.backgroundColor = [UIColor clearColor];
+        [_cameraBtn addTarget:self action:@selector(doOpenCamera) forControlEvents:UIControlEventTouchUpInside];
+        _cameraBtn.showsTouchWhenHighlighted = YES;
+        _cameraBtn.alpha = 0.5;
+        [actionBgView addSubview:_cameraBtn];
         
-        UIButton *albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(238, 36, 74, 74)];
-        [albumBtn setImage:[UIImage imageNamed:@"album"] forState:UIControlStateNormal];
-        [albumBtn setImage:[UIImage imageNamed:@"album"] forState:UIControlStateSelected];
-        albumBtn.backgroundColor = [UIColor clearColor];
-        [albumBtn addTarget:self action:@selector(doOpenAlbum) forControlEvents:UIControlEventTouchUpInside];
-        albumBtn.showsTouchWhenHighlighted = YES;
-        [actionBgView addSubview:albumBtn];
+        _albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(245, 56, 60, 60)];
+        [_albumBtn setImage:[UIImage imageNamed:@"video_album"] forState:UIControlStateNormal];
+        [_albumBtn setImage:[UIImage imageNamed:@"video_album"] forState:UIControlStateSelected];
+        _albumBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _albumBtn.backgroundColor = [UIColor clearColor];
+        [_albumBtn addTarget:self action:@selector(doOpenAlbum) forControlEvents:UIControlEventTouchUpInside];
+        _albumBtn.showsTouchWhenHighlighted = YES;
+        _albumBtn.alpha = 0.5;
+        [actionBgView addSubview:_albumBtn];
         
-        [_actionSheetView addSubview:actionBgView];
+        UILabel *draftLbl = [[UILabel alloc] initWithFrame:CGRectMake(1.5, 130, 87, 20)];
+        draftLbl.backgroundColor = [UIColor clearColor];
+        draftLbl.textColor = [UIColor colorWithRed:177/255.0 green:177/255.0 blue:177/255.0 alpha:1];
+        draftLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:12];
+        draftLbl.textAlignment = NSTextAlignmentCenter;
+        draftLbl.text = @"草稿";
+        [actionBgView addSubview:draftLbl];
+        
+        UILabel *cameraLbl = [[UILabel alloc] initWithFrame:CGRectMake(116.5, 130, 87, 20)];
+        cameraLbl.backgroundColor = [UIColor clearColor];
+        cameraLbl.textColor = [UIColor colorWithRed:177/255.0 green:177/255.0 blue:177/255.0 alpha:1];
+        cameraLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:12];
+        cameraLbl.textAlignment = NSTextAlignmentCenter;
+        cameraLbl.text = @"相机";
+        [actionBgView addSubview:cameraLbl];
+        
+        UILabel *albumLbl = [[UILabel alloc] initWithFrame:CGRectMake(231.5, 130, 87, 20)];
+        albumLbl.backgroundColor = [UIColor clearColor];
+        albumLbl.textColor = [UIColor colorWithRed:177/255.0 green:177/255.0 blue:177/255.0 alpha:1];
+        albumLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:12];
+        albumLbl.textAlignment = NSTextAlignmentCenter;
+        albumLbl.text = @"相册";
+        [actionBgView addSubview:albumLbl];
+        
+        [actionSheetView addSubview:actionBgView];
         
         UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, ACTION_SHEET_HEIGHT - 49, 320, 49)];
         imgView.image = [UIImage imageNamed:@"bottomBar"];
-        [_actionSheetView addSubview:imgView];
+        [actionSheetView addSubview:imgView];
 
         UIButton *cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(125, ACTION_SHEET_HEIGHT - 49, 70, 49)];
-        [cancelBtn setTitle:@"Cancel" forState:UIControlStateNormal];
-        cancelBtn.backgroundColor = [UIColor darkGrayColor];
+        [cancelBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateNormal];
+        [cancelBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateSelected];
+        cancelBtn.backgroundColor = [UIColor colorWithRed:48/255.0 green:48/255.0 blue:48/255.0 alpha:1];
         [cancelBtn addTarget:self action:@selector(dismissActionSheet) forControlEvents:UIControlEventTouchUpInside];
         cancelBtn.showsTouchWhenHighlighted = YES;
-        [_actionSheetView addSubview:cancelBtn];
+        [actionSheetView addSubview:cancelBtn];
         
-        [self addSubview:_actionSheetView];
+        [self addSubview:actionSheetView];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tapGesture.cancelsTouchesInView = NO;
+        [self addGestureRecognizer:tapGesture];
     }
     return self;
 }
@@ -122,11 +161,16 @@
 
 - (void)show
 {
-    VNAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    VNAppDelegate *appDelegate = (VNAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.window addSubview:self];
     
-    [UIView animateWithDuration:0.3f animations:^{
-        self.actionSheetView.frame = CGRectMake(0, IPHONE_HEIGHT - ACTION_SHEET_HEIGHT, 320, ACTION_SHEET_HEIGHT);
+    [UIView animateWithDuration:.3f animations:^{
+        _draftBtn.frame = CGRectMake(1.5, 42.5, 87, 87);
+        _draftBtn.alpha = 1;
+        _cameraBtn.frame = CGRectMake(116.5, 42.5, 87, 87);
+        _cameraBtn.alpha = 1;
+        _albumBtn.frame = CGRectMake(231.5, 42.5, 87, 87);
+        _albumBtn.alpha = 1;
     } ];
 }
 
@@ -136,15 +180,10 @@
 - (void) doOpenDraftList
 {
     
-    [UIView animateWithDuration:0.2f animations:^{
-        _actionSheetView.frame = CGRectMake(0, IPHONE_HEIGHT, 320, 160);
-    } completion:^(BOOL finish){
-        if ([self shouldPerforDelegateSelector:@selector(draftBtnDidPressed)]) {
-            [delegate draftBtnDidPressed];
-        }
-        [self removeFromSuperview];
-
-    }];
+    if ([self shouldPerforDelegateSelector:@selector(draftBtnDidPressed)]) {
+        [delegate draftBtnDidPressed];
+    }
+    [self removeFromSuperview];
 }
 
 /**
@@ -152,15 +191,10 @@
  */
 - (void)doOpenCamera
 {
-    [UIView animateWithDuration:0.2f animations:^{
-        _actionSheetView.frame = CGRectMake(0, IPHONE_HEIGHT, 320, 160);
-    } completion:^(BOOL finish){
-        if ([self shouldPerforDelegateSelector:@selector(cameraBtnDidPressed)]) {
-            [delegate cameraBtnDidPressed];
-        }
-        [self removeFromSuperview];
-        
-    }];
+    if ([self shouldPerforDelegateSelector:@selector(cameraBtnDidPressed)]) {
+        [delegate cameraBtnDidPressed];
+    }
+    [self removeFromSuperview];
 }
 
 /**
@@ -168,28 +202,18 @@
  */
 - (void)doOpenAlbum
 {
-    [UIView animateWithDuration:0.2f animations:^{
-        _actionSheetView.frame = CGRectMake(0, IPHONE_HEIGHT, 320, 160);
-    } completion:^(BOOL finish){
-        if ([self shouldPerforDelegateSelector:@selector(albumBtnDidPressed)]) {
-            [delegate albumBtnDidPressed];
-        }
-        [self removeFromSuperview];
-        
-    }];
+    if ([self shouldPerforDelegateSelector:@selector(albumBtnDidPressed)]) {
+        [delegate albumBtnDidPressed];
+    }
+    [self removeFromSuperview];
 }
 
 - (void)dismissActionSheet
 {
-    [UIView animateWithDuration:0.2f animations:^{
-        _actionSheetView.frame = CGRectMake(0, IPHONE_HEIGHT, 320, 160);
-    } completion:^(BOOL finish){
-        if ([self shouldPerforDelegateSelector:@selector(cancelBtnClicked)]) {
-            [delegate cancelBtnClicked];
-        }
-        [self removeFromSuperview];
-        
-    }];
+    if ([self shouldPerforDelegateSelector:@selector(cancelBtnClicked)]) {
+        [delegate cancelBtnClicked];
+    }
+    [self removeFromSuperview];
 }
 //
 //- (void)dismissActionSheetWithCompletionHandler:(CompletionHandlerBlock)block{
@@ -218,6 +242,45 @@
 
 - (void)dealloc
 {
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (void)handleTap:(UITapGestureRecognizer *)gesture
+{
+    CGFloat locationX, locationY;
+    
+    locationX = [gesture locationInView:self].x;
+    locationY = [gesture locationInView:self].y;
+    
+    if (locationY < IPHONE_HEIGHT - ACTION_SHEET_HEIGHT) {
+        [self removeFromSuperview];
+        return;
+    }
+    
+    if (locationY > IPHONE_HEIGHT - 49) {
+        
+        VNAppDelegate *appDelegate = (VNAppDelegate *)[[UIApplication sharedApplication] delegate];
+        VNTabBarViewController *tabbarCtl = (VNTabBarViewController *)appDelegate.window.rootViewController;
+
+        if (locationX <= 64) {
+            //tabbar index 0
+            tabbarCtl.selectedIndex = 0;
+        }else if (locationX > 64 && locationX <= 128) {
+            //tabbar index 1
+            tabbarCtl.selectedIndex = 1;
+        }else if (locationX > 128 && locationX <= 192) {
+            //tabbar index 2
+        }else if (locationX > 192 && locationX <= 256) {
+            //tabbar index 3
+            tabbarCtl.selectedIndex = 3;
+        }else if (locationX > 256 && locationX <= 320) {
+            //tabbar index 4
+            tabbarCtl.selectedIndex = 4;
+        }
+        
+        [self removeFromSuperview];
+    }
 }
 
 @end

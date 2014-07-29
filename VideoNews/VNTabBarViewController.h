@@ -10,4 +10,6 @@
 
 @interface VNTabBarViewController : UITabBarController
 
+- (void) presentVideoCaptureView;
+
 @end
