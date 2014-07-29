@@ -34,6 +34,9 @@
 //#define OSS_SIGN_CALC_SERVICE   "http://10.32.179.161:8080/ossFileApi/sign.json"
 #define OSS_SIGN_CALC_SERVICE   "http://182.92.103.134:8080/engine/signature.php"
 
+//qiniu上传相关
+
+
 //#import "VNNotificationTableViewController.h"
 
 @interface VNNotificationViewController ()
