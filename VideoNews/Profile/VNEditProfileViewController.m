@@ -9,6 +9,7 @@
 #import "VNEditProfileViewController.h"
 #import "VNEditProfileTableViewCell.h"
 #import "VNEditContentViewController.h"
+#import "VNUploadManager.h"
 
 typedef NS_ENUM(NSUInteger, EditPickerType) {
     EditPickerTypeGender,
@@ -304,9 +305,23 @@ static EditPickerType pickerType = EditPickerTypeGender;
         } else {
             imageData = UIImagePNGRepresentation(editedImage);
         }
-        //FIXME: 上传头像
-        
         [picker dismissViewControllerAnimated:YES completion:nil];
+        //FIXME: 上传头像
+        if (imageData) {
+            NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+            [VNUploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
+                    return ;
+                }
+                else {
+                    [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
+                }
+            }];
+        }
     }
 }
 
