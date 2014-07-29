@@ -19,7 +19,19 @@
 
 #pragma mark - Upload
 
-+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
++ (instancetype)sharedInstance{
+    static VNUploadManager *_sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[self alloc] init];
+        //        assert(_DefaultSpaceName);
+        //        _sharedInstance.spaceName = _DefaultSpaceName;
+    });
+    return _sharedInstance;
+}
+
+
+-(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
@@ -51,7 +63,7 @@
               
           }];
 }
-+ (NSString *)timestamp {
+- (NSString *)timestamp {
     //    NSLog(@"%@", [[self CCT_Date] description]);
     //    return [NSString stringWithFormat:@"%f", [[self CCT_Date] timeIntervalSince1970]];
     //http://zmysp.sinaapp.com/timestamp.php
@@ -70,7 +82,7 @@
     }
 }
 
-+ (NSString *)LoginToken {
+- (NSString *)LoginToken {
     NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     //NSLog(@"%@", originTokenStr);
     return [originTokenStr md5];

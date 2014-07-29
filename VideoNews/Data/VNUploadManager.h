@@ -26,6 +26,7 @@
 
 #pragma mark - Upload
 //上传相关
-+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
++ (instancetype)sharedInstance;
+-(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
 
 @end

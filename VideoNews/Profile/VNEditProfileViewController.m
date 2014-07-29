@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, EditPickerType) {
     EditPickerTypeBirthday
 };
 
-@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface VNEditProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,VNUploadManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *saveBtn;
@@ -309,7 +309,8 @@ static EditPickerType pickerType = EditPickerTypeGender;
         //FIXME: 上传头像
         if (imageData) {
             NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
-            [VNUploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
+            VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
+            [uploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -319,6 +320,18 @@ static EditPickerType pickerType = EditPickerTypeGender;
                 }
                 [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
             }];
+            /*[VNUploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (succeed) {
+                    [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
+                    return ;
+                }
+                else {
+                    [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
+                }
+            }];*/
         }
     }
 }
@@ -326,6 +339,16 @@ static EditPickerType pickerType = EditPickerTypeGender;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
+
+#pragma mark - uploadManagerDelegate
+
+// Upload completed successfully.
+- (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
+{}
+
+// Upload failed.
+- (void)uploadFailed:(NSString *)key error:(NSError *)error
+{}
 
 #pragma mark - SEL
 
