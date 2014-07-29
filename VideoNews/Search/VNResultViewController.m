@@ -131,25 +131,30 @@
         }];
         
         [newsQuiltView addInfiniteScrollingWithActionHandler:^{
-            NSString *moreTimeStamp = nil;
-            if (weakSelf.categoryNewsArr.count) {
-                VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
-                moreTimeStamp = lastNews.timestamp;
+            if (![VNHTTPRequestManager isReachable]) {
+                [VNUtility showHUDText:@"请检查您的网络!" forView:weakSelf.view];
             }
             else {
-                moreTimeStamp = [VNHTTPRequestManager timestamp];
-            }
-            
-            [VNHTTPRequestManager categoryNewsFromTime:moreTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+                NSString *moreTimeStamp = nil;
+                if (weakSelf.categoryNewsArr.count) {
+                    VNNews *lastNews = [weakSelf.categoryNewsArr lastObject];
+                    moreTimeStamp = lastNews.timestamp;
                 }
                 else {
-                    [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
-                    [weakQuiltView reloadData];
+                    moreTimeStamp = [VNHTTPRequestManager timestamp];
                 }
-                [weakQuiltView.infiniteScrollingView stopAnimating];
-            }];
+                
+                [VNHTTPRequestManager categoryNewsFromTime:moreTimeStamp category:weakSelf.category.cid completion:^(NSArray *newsArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        [weakSelf.categoryNewsArr addObjectsFromArray:newsArr];
+                        [weakQuiltView reloadData];
+                    }
+                    [weakQuiltView.infiniteScrollingView stopAnimating];
+                }];
+            }
         }];
         [newsQuiltView triggerPullToRefresh];
     }

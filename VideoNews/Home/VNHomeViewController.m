@@ -78,25 +78,30 @@
     }];
     
     [newsQuiltView addInfiniteScrollingWithActionHandler:^{
-        NSString *moreTimeStamp = nil;
-        if (weakSelf.newsArr.count) {
-            VNNews *lastNews = [weakSelf.newsArr lastObject];
-            moreTimeStamp = lastNews.timestamp;
+        if (![VNHTTPRequestManager isReachable]) {
+            [VNUtility showHUDText:@"请检查您的网络!" forView:weakSelf.view];
         }
         else {
-            moreTimeStamp = [VNHTTPRequestManager timestamp];
-        }
-        
-        [VNHTTPRequestManager newsListFromTime:moreTimeStamp completion:^(NSArray *newsArr, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
+            NSString *moreTimeStamp = nil;
+            if (weakSelf.newsArr.count) {
+                VNNews *lastNews = [weakSelf.newsArr lastObject];
+                moreTimeStamp = lastNews.timestamp;
             }
             else {
-                [weakSelf.newsArr addObjectsFromArray:newsArr];
-                [weakQuiltView reloadData];
+                moreTimeStamp = [VNHTTPRequestManager timestamp];
             }
-            [weakQuiltView.infiniteScrollingView stopAnimating];
-        }];
+            
+            [VNHTTPRequestManager newsListFromTime:moreTimeStamp completion:^(NSArray *newsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    [weakSelf.newsArr addObjectsFromArray:newsArr];
+                    [weakQuiltView reloadData];
+                }
+                [weakQuiltView.infiniteScrollingView stopAnimating];
+            }];
+        }
     }];
     [newsQuiltView triggerPullToRefresh];
     
