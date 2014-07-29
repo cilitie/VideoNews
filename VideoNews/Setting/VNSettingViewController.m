@@ -102,7 +102,40 @@
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if (indexPath.section == 0) {
+    }
+    else if (indexPath.section == 2) {
+        switch (indexPath.row) {
+            case 0: {
+            }
+                break;
+            case 1: {
+            }
+                break;
+            case 2: {
+            }
+                break;
+            case 3: {
+                [VNCacheDataManager cacheSizeWithCompletion:^(NSString *cacheSize) {
+                    NSString *curCacheSize = cacheSize;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [VNCacheDataManager clearCacheWithCompletion:^(BOOL succeeded) {
+                            if (succeeded) {
+                                [VNUtility showHUDText:[NSString stringWithFormat:@"清除缓存%@", curCacheSize] forView:self.view];
+                            }
+                            else {
+                                [VNUtility showHUDText:@"清除缓存失败" forView:self.view];
+                            }
+                        }];
+                    });
+                }];
+            }
+                break;
+        }
+    }
+    else if (indexPath.section == 3) {
+        
+    }
 }
 
 #pragma mark - SEL

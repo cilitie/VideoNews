@@ -317,9 +317,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
                     [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
                     return ;
                 }
-                else {
-                    [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
-                }
+                [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
             }];
         }
     }
