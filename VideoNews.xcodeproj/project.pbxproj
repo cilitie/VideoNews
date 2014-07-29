@@ -37,6 +37,7 @@
 		26A584C81987411500C34461 /* QiniuResumableUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B41987411500C34461 /* QiniuResumableUploader.m */; };
 		26A584C91987411500C34461 /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B71987411500C34461 /* QiniuSimpleUploader.m */; };
 		26A584CA1987411500C34461 /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584BA1987411500C34461 /* QiniuUtils.m */; };
+		26A584CD19875D5100C34461 /* VNUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584CC19875D5100C34461 /* VNUploadManager.m */; };
 		D64296C51964FB05004E218C /* VNResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C41964FB05004E218C /* VNResultViewController.m */; };
 		D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C719652AC4004E218C /* VNCacheDataManager.m */; };
 		D64296CB19652FB6004E218C /* VNSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CA19652FB6004E218C /* VNSearchField.m */; };
@@ -203,6 +204,8 @@
 		26A584B81987411500C34461 /* QiniuUploadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUploadDelegate.h; sourceTree = "<group>"; };
 		26A584B91987411500C34461 /* QiniuUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUtils.h; sourceTree = "<group>"; };
 		26A584BA1987411500C34461 /* QiniuUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuUtils.m; sourceTree = "<group>"; };
+		26A584CB19875D5100C34461 /* VNUploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadManager.h; sourceTree = "<group>"; };
+		26A584CC19875D5100C34461 /* VNUploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadManager.m; sourceTree = "<group>"; };
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
 		D64296C31964FB05004E218C /* VNResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNResultViewController.h; sourceTree = "<group>"; };
 		D64296C41964FB05004E218C /* VNResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNResultViewController.m; sourceTree = "<group>"; };
@@ -833,6 +836,8 @@
 				D64296C719652AC4004E218C /* VNCacheDataManager.m */,
 				D6FED790195C030D00AD10E0 /* VNKey.h */,
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
+				26A584CB19875D5100C34461 /* VNUploadManager.h */,
+				26A584CC19875D5100C34461 /* VNUploadManager.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1027,6 +1032,7 @@
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */,
+				26A584CD19875D5100C34461 /* VNUploadManager.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,

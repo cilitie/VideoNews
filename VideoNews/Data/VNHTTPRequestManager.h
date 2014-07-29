@@ -67,7 +67,8 @@
 + (void)userListForUser:(NSString *)uid type:(NSString *)type pageTime:(NSString *)pageTime completion:(void(^)(NSArray *userArr, NSString *lastTimeStamp, NSError *error))completion;
 + (void)updateUserInfo:(NSDictionary *)userInfo completion:(void(^)(BOOL succeed, NSError *error))completion;
 #pragma mark - Upload
-+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
+//上传相关
+//+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid Delegate:(id *)delegate completion:(void(^)(bool succeed,NSError *error))completion;
 
 
 #pragma mark - Utility

@@ -826,30 +826,6 @@ static int pagesize = 10;
     }];
     
 }
-#pragma mark - Upload
-+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    // NSString *path=[NSString stringWithFormat:@"%@%@",bucket,filePath];
-    
-    NSDictionary *parameters =@{@"key":[NSString stringWithFormat:@"thumbnail-%@.png",uid],@"uid":uid};
-    NSString *URLStr = [VNHost stringByAppendingString:@"qiniuToken.php"];
-    //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
-    [manager POST:URLStr parameters:parameters
-          success:^(AFHTTPRequestOperation *operation,id responseObject) {
-              //NSLog(@"Success: %@", responseObject);
-              //获得签名信息
-              if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-                 NSString *token=[responseObject objectForKey:@"token"];
-              }
-          } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
-              //NSLog(@"%@",operation.request.URL.absoluteString);
-              //NSLog(@"%@",operation);
-              NSLog(@"Error: %@", error);
-              
-              
-          }];
-}
 
 #pragma mark - Login
 
