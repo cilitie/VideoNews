@@ -81,18 +81,20 @@ static NSString *shareStr;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (self.headerViewArr.count) {
-        [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
-            }
-            if (userInfo) {
-                self.mineInfo = userInfo;
-                for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
-                    headerView.userInfo = userInfo;
-                    [headerView reload];
+        if ([VNHTTPRequestManager isReachable]) {
+            [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
                 }
-            }
-        }];
+                if (userInfo) {
+                    self.mineInfo = userInfo;
+                    for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                        headerView.userInfo = userInfo;
+                        [headerView reload];
+                    }
+                }
+            }];
+        }
     }
 }
 
@@ -142,25 +144,42 @@ static NSString *shareStr;
         VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
         VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
         self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
-        [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
-            }
-            if (userInfo) {
-                self.mineInfo = userInfo;
-                videoHeaderView.userInfo = userInfo;
-                [videoHeaderView reload];
-                
-                favHeaderView.userInfo = userInfo;
-                [favHeaderView reload];
-                
-                followHeaderView.userInfo = userInfo;
-                [followHeaderView reload];
-                
-                fansHeaderView.userInfo = userInfo;
-                [fansHeaderView reload];
-            }
-        }];
+        if ([VNHTTPRequestManager isReachable]) {
+            [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (userInfo) {
+                    self.mineInfo = userInfo;
+                    videoHeaderView.userInfo = userInfo;
+                    [videoHeaderView reload];
+                    
+                    favHeaderView.userInfo = userInfo;
+                    [favHeaderView reload];
+                    
+                    followHeaderView.userInfo = userInfo;
+                    [followHeaderView reload];
+                    
+                    fansHeaderView.userInfo = userInfo;
+                    [fansHeaderView reload];
+                }
+            }];
+        }
+        else {
+            VNUser *user = [[VNUser alloc] initWithDict:userInfo];
+            self.mineInfo = user;
+            videoHeaderView.userInfo = user;
+            [videoHeaderView reload];
+            
+            favHeaderView.userInfo = user;
+            [favHeaderView reload];
+            
+            followHeaderView.userInfo = user;
+            [followHeaderView reload];
+            
+            fansHeaderView.userInfo = user;
+            [fansHeaderView reload];
+        }
         
         __weak typeof(self) weakSelf = self;
         
