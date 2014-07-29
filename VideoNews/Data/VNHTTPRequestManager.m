@@ -7,14 +7,6 @@
 //
 
 #pragma mark - NSString Extension
-#import <CommonCrypto/CommonDigest.h>
-
-@interface NSString (addition)
-
-- (NSString *)md5;
-+ (NSString *)stringFromDate:(NSDate *)date;
-
-@end
 
 @implementation NSString (addition)
 

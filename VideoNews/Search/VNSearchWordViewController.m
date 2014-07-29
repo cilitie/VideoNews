@@ -132,14 +132,23 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.historyWordArr.count;
+    return self.historyWordArr.count+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"VNSearchResultTableViewCellIdentifier";
     VNSearchResultTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    cell.searchItemLabel.text = [self.historyWordArr objectAtIndex:indexPath.row];
+    if (indexPath.row == self.historyWordArr.count) {
+        cell.searchItemLabel.text = @"清除历史缓存";
+        cell.searchItemLabelXLC.constant = CGRectGetMinX(cell.searchIcon.frame);
+        cell.searchIcon.hidden = YES;
+    }
+    else {
+        cell.searchItemLabel.text = [self.historyWordArr objectAtIndex:indexPath.row];
+        cell.searchItemLabelXLC.constant = 52;
+        cell.searchIcon.hidden = NO;
+    }
     
     return cell;
 }
@@ -148,27 +157,39 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSString *searchKey = [self.historyWordArr objectAtIndex:indexPath.row];
-    [VNCacheDataManager addHistoryData:searchKey completion:^(BOOL succeeded) {
-        if (succeeded) {
-            NSLog(@"save search history success!");
-        }
-    }];
-    if (self.searchType == SearchTypeVideo) {
-        VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
-        resultViewController.type = ResultTypeSerach;
-        resultViewController.searchKey = searchKey;
-        resultViewController.searchType = @"news";
-        //UMeng analytics
-        [MobClick endEvent:@"Search" label:@"video"];
-        [self.navigationController pushViewController:resultViewController animated:YES];
+    if (indexPath.row == self.historyWordArr.count) {
+        [VNCacheDataManager clearCacheWithCompletion:^(BOOL succeeded) {
+            if (succeeded) {
+                NSLog(@"clear search history success!");
+                [self.historyWordArr removeAllObjects];
+                [self.resultTableView reloadData];
+                return ;
+            }
+        }];
     }
     else {
-        VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
-        userResultViewController.searchKey = searchKey;
-        //UMeng analytics
-        [MobClick endEvent:@"Search" label:@"user"];
-        [self.navigationController pushViewController:userResultViewController animated:YES];
+        NSString *searchKey = [self.historyWordArr objectAtIndex:indexPath.row];
+        [VNCacheDataManager addHistoryData:searchKey completion:^(BOOL succeeded) {
+            if (succeeded) {
+                NSLog(@"save search history success!");
+            }
+        }];
+        if (self.searchType == SearchTypeVideo) {
+            VNResultViewController *resultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNResultViewController"];
+            resultViewController.type = ResultTypeSerach;
+            resultViewController.searchKey = searchKey;
+            resultViewController.searchType = @"news";
+            //UMeng analytics
+            [MobClick endEvent:@"Search" label:@"video"];
+            [self.navigationController pushViewController:resultViewController animated:YES];
+        }
+        else {
+            VNUserResultViewController *userResultViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNUserResultViewController"];
+            userResultViewController.searchKey = searchKey;
+            //UMeng analytics
+            [MobClick endEvent:@"Search" label:@"user"];
+            [self.navigationController pushViewController:userResultViewController animated:YES];
+        }
     }
 }
 

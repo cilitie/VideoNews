@@ -16,6 +16,15 @@
 #import "VNAuthUser.h"
 #import "VNMessage.h"
 
+#import <CommonCrypto/CommonDigest.h>
+
+@interface NSString (addition)
+
+- (NSString *)md5;
++ (NSString *)stringFromDate:(NSDate *)date;
+
+@end
+
 @interface VNHTTPRequestManager : NSObject
 
 #pragma mark - Home

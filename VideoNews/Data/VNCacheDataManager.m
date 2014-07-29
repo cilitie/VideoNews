@@ -10,6 +10,54 @@
 
 @implementation VNCacheDataManager
 
++ (NSString *)pathForURL:(NSString *)URL
+{
+    NSString *URLCacheDir = [[VNCacheDataManager cacheDirectory] stringByAppendingPathComponent:@"URLCache"];
+    BOOL isDir = YES;
+    NSError *error;
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:URLCacheDir isDirectory:&isDir]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:URLCacheDir withIntermediateDirectories:YES attributes:nil error:&error];
+    }
+    
+    return [URLCacheDir stringByAppendingPathComponent:[URL md5]];
+}
+
++ (void)addCacheData:(NSArray *)addArr fromURL:(NSString *)URL completion:(void (^)(BOOL succeeded))block
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSMutableData *data = [[NSMutableData alloc] init];
+        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+        [archiver encodeObject:addArr forKey:[URL md5]];
+        [archiver finishEncoding];
+        BOOL succeeded = [data writeToFile:[self pathForURL:URL] atomically:YES];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (block) {
+                block (succeeded);
+            }
+        });
+    });
+}
+
++ (void)cacheDataFromURL:(NSString *)URL completion:(void (^)(NSArray *queryArr))block
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSData *data = [[NSMutableData alloc] initWithContentsOfFile:[self pathForURL:URL]];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+        NSArray *resultQueryArr = [unarchiver decodeObjectForKey:[URL md5]];
+        [unarchiver finishDecoding];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (block) {
+                block (resultQueryArr);
+            }
+        });
+    });
+}
+
 #pragma mark - SearchHistory
 
 + (NSString *)historyDataPath
