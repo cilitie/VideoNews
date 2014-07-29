@@ -30,6 +30,22 @@
 		269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */; };
 		269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */; };
 		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
+		26A584BB1987411500C34461 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584991987411500C34461 /* AFHTTPRequestOperation.m */; };
+		26A584BC1987411500C34461 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A5849B1987411500C34461 /* AFHTTPRequestOperationManager.m */; };
+		26A584BD1987411500C34461 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A5849D1987411500C34461 /* AFHTTPSessionManager.m */; };
+		26A584BE1987411500C34461 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584A01987411500C34461 /* AFNetworkReachabilityManager.m */; };
+		26A584BF1987411500C34461 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584A21987411500C34461 /* AFSecurityPolicy.m */; };
+		26A584C01987411500C34461 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584A41987411500C34461 /* AFURLConnectionOperation.m */; };
+		26A584C11987411500C34461 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584A61987411500C34461 /* AFURLRequestSerialization.m */; };
+		26A584C21987411500C34461 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584A81987411500C34461 /* AFURLResponseSerialization.m */; };
+		26A584C31987411500C34461 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584AA1987411500C34461 /* AFURLSessionManager.m */; };
+		26A584C41987411500C34461 /* QiniuBlkputRet.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584AC1987411500C34461 /* QiniuBlkputRet.m */; };
+		26A584C51987411500C34461 /* QiniuConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584AE1987411500C34461 /* QiniuConfig.m */; };
+		26A584C61987411500C34461 /* QiniuHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B01987411500C34461 /* QiniuHttpClient.m */; };
+		26A584C71987411500C34461 /* QiniuResumableClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B21987411500C34461 /* QiniuResumableClient.m */; };
+		26A584C81987411500C34461 /* QiniuResumableUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B41987411500C34461 /* QiniuResumableUploader.m */; };
+		26A584C91987411500C34461 /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B71987411500C34461 /* QiniuSimpleUploader.m */; };
+		26A584CA1987411500C34461 /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584BA1987411500C34461 /* QiniuUtils.m */; };
 		D64296C51964FB05004E218C /* VNResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C41964FB05004E218C /* VNResultViewController.m */; };
 		D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C719652AC4004E218C /* VNCacheDataManager.m */; };
 		D64296CB19652FB6004E218C /* VNSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CA19652FB6004E218C /* VNSearchField.m */; };
@@ -180,6 +196,41 @@
 		269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationUserTableViewCell.xib; sourceTree = "<group>"; };
 		269B0825197DF96400CF4ADC /* OSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
 		269B0826197DF96400CF4ADC /* OSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
+		26A584981987411500C34461 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
+		26A584991987411500C34461 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
+		26A5849A1987411500C34461 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
+		26A5849B1987411500C34461 /* AFHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationManager.m; sourceTree = "<group>"; };
+		26A5849C1987411500C34461 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
+		26A5849D1987411500C34461 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
+		26A5849E1987411500C34461 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
+		26A5849F1987411500C34461 /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
+		26A584A01987411500C34461 /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
+		26A584A11987411500C34461 /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
+		26A584A21987411500C34461 /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
+		26A584A31987411500C34461 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
+		26A584A41987411500C34461 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
+		26A584A51987411500C34461 /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
+		26A584A61987411500C34461 /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
+		26A584A71987411500C34461 /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
+		26A584A81987411500C34461 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
+		26A584A91987411500C34461 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
+		26A584AA1987411500C34461 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		26A584AB1987411500C34461 /* QiniuBlkputRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuBlkputRet.h; sourceTree = "<group>"; };
+		26A584AC1987411500C34461 /* QiniuBlkputRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuBlkputRet.m; sourceTree = "<group>"; };
+		26A584AD1987411500C34461 /* QiniuConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuConfig.h; sourceTree = "<group>"; };
+		26A584AE1987411500C34461 /* QiniuConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuConfig.m; sourceTree = "<group>"; };
+		26A584AF1987411500C34461 /* QiniuHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuHttpClient.h; sourceTree = "<group>"; };
+		26A584B01987411500C34461 /* QiniuHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuHttpClient.m; sourceTree = "<group>"; };
+		26A584B11987411500C34461 /* QiniuResumableClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableClient.h; sourceTree = "<group>"; };
+		26A584B21987411500C34461 /* QiniuResumableClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableClient.m; sourceTree = "<group>"; };
+		26A584B31987411500C34461 /* QiniuResumableUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableUploader.h; sourceTree = "<group>"; };
+		26A584B41987411500C34461 /* QiniuResumableUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableUploader.m; sourceTree = "<group>"; };
+		26A584B51987411500C34461 /* QiniuSDK-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "QiniuSDK-Prefix.pch"; sourceTree = "<group>"; };
+		26A584B61987411500C34461 /* QiniuSimpleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuSimpleUploader.h; sourceTree = "<group>"; };
+		26A584B71987411500C34461 /* QiniuSimpleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSimpleUploader.m; sourceTree = "<group>"; };
+		26A584B81987411500C34461 /* QiniuUploadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUploadDelegate.h; sourceTree = "<group>"; };
+		26A584B91987411500C34461 /* QiniuUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUtils.h; sourceTree = "<group>"; };
+		26A584BA1987411500C34461 /* QiniuUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuUtils.m; sourceTree = "<group>"; };
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
 		D64296C31964FB05004E218C /* VNResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNResultViewController.h; sourceTree = "<group>"; };
 		D64296C41964FB05004E218C /* VNResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNResultViewController.m; sourceTree = "<group>"; };
@@ -442,10 +493,61 @@
 		269B0824197DF96400CF4ADC /* upload */ = {
 			isa = PBXGroup;
 			children = (
+				26A584961987411500C34461 /* QiniuSDK */,
 				269B0825197DF96400CF4ADC /* OSSClient.h */,
 				269B0826197DF96400CF4ADC /* OSSClient.m */,
 			);
 			path = upload;
+			sourceTree = "<group>";
+		};
+		26A584961987411500C34461 /* QiniuSDK */ = {
+			isa = PBXGroup;
+			children = (
+				26A584971987411500C34461 /* AFNetworking */,
+				26A584AB1987411500C34461 /* QiniuBlkputRet.h */,
+				26A584AC1987411500C34461 /* QiniuBlkputRet.m */,
+				26A584AD1987411500C34461 /* QiniuConfig.h */,
+				26A584AE1987411500C34461 /* QiniuConfig.m */,
+				26A584AF1987411500C34461 /* QiniuHttpClient.h */,
+				26A584B01987411500C34461 /* QiniuHttpClient.m */,
+				26A584B11987411500C34461 /* QiniuResumableClient.h */,
+				26A584B21987411500C34461 /* QiniuResumableClient.m */,
+				26A584B31987411500C34461 /* QiniuResumableUploader.h */,
+				26A584B41987411500C34461 /* QiniuResumableUploader.m */,
+				26A584B51987411500C34461 /* QiniuSDK-Prefix.pch */,
+				26A584B61987411500C34461 /* QiniuSimpleUploader.h */,
+				26A584B71987411500C34461 /* QiniuSimpleUploader.m */,
+				26A584B81987411500C34461 /* QiniuUploadDelegate.h */,
+				26A584B91987411500C34461 /* QiniuUtils.h */,
+				26A584BA1987411500C34461 /* QiniuUtils.m */,
+			);
+			path = QiniuSDK;
+			sourceTree = "<group>";
+		};
+		26A584971987411500C34461 /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				26A584981987411500C34461 /* AFHTTPRequestOperation.h */,
+				26A584991987411500C34461 /* AFHTTPRequestOperation.m */,
+				26A5849A1987411500C34461 /* AFHTTPRequestOperationManager.h */,
+				26A5849B1987411500C34461 /* AFHTTPRequestOperationManager.m */,
+				26A5849C1987411500C34461 /* AFHTTPSessionManager.h */,
+				26A5849D1987411500C34461 /* AFHTTPSessionManager.m */,
+				26A5849E1987411500C34461 /* AFNetworking.h */,
+				26A5849F1987411500C34461 /* AFNetworkReachabilityManager.h */,
+				26A584A01987411500C34461 /* AFNetworkReachabilityManager.m */,
+				26A584A11987411500C34461 /* AFSecurityPolicy.h */,
+				26A584A21987411500C34461 /* AFSecurityPolicy.m */,
+				26A584A31987411500C34461 /* AFURLConnectionOperation.h */,
+				26A584A41987411500C34461 /* AFURLConnectionOperation.m */,
+				26A584A51987411500C34461 /* AFURLRequestSerialization.h */,
+				26A584A61987411500C34461 /* AFURLRequestSerialization.m */,
+				26A584A71987411500C34461 /* AFURLResponseSerialization.h */,
+				26A584A81987411500C34461 /* AFURLResponseSerialization.m */,
+				26A584A91987411500C34461 /* AFURLSessionManager.h */,
+				26A584AA1987411500C34461 /* AFURLSessionManager.m */,
+			);
+			path = AFNetworking;
 			sourceTree = "<group>";
 		};
 		D64296D919668EE4004E218C /* Umeng */ = {
@@ -976,20 +1078,25 @@
 				D64296CB19652FB6004E218C /* VNSearchField.m in Sources */,
 				D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */,
 				D6676F99197CBACD00F484FE /* VNMineProfileHeaderView.m in Sources */,
+				26A584C41987411500C34461 /* QiniuBlkputRet.m in Sources */,
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
 				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
 				D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
+				26A584BD1987411500C34461 /* AFHTTPSessionManager.m in Sources */,
 				D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */,
 				D6676F53196B799800F484FE /* VNWeixinCodeResponse.m in Sources */,
 				269B0827197DF96400CF4ADC /* OSSClient.m in Sources */,
+				26A584C91987411500C34461 /* QiniuSimpleUploader.m in Sources */,
 				269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */,
 				144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */,
+				26A584C61987411500C34461 /* QiniuHttpClient.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
 				D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */,
+				26A584C81987411500C34461 /* QiniuResumableUploader.m in Sources */,
 				D6FED75E195AC1C100AD10E0 /* VNAppDelegate.m in Sources */,
 				144BF5491984F58000A6C6B7 /* VNVideoCaptureViewController.m in Sources */,
 				D64296D719654C5B004E218C /* VNSearchResultTableViewCell.m in Sources */,
@@ -1004,6 +1111,7 @@
 				D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */,
 				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
 				D6676F89197806CE00F484FE /* VNProfileViewController.m in Sources */,
+				26A584BC1987411500C34461 /* AFHTTPRequestOperationManager.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
 				D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */,
 				D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */,
@@ -1012,34 +1120,44 @@
 				144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */,
 				D6FED7AC195ECD2800AD10E0 /* VNCategoryCollectionViewCell.m in Sources */,
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
+				26A584C51987411500C34461 /* QiniuConfig.m in Sources */,
+				26A584C11987411500C34461 /* AFURLRequestSerialization.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */,
 				144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */,
 				D68CB4F41980F0D600236517 /* VNProfileDetailViewController.m in Sources */,
+				26A584BE1987411500C34461 /* AFNetworkReachabilityManager.m in Sources */,
 				144BF5441984F58000A6C6B7 /* VNCustomizedActionSheet.m in Sources */,
 				D64296D119653E51004E218C /* VNSearchTabHeaderView.m in Sources */,
 				2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */,
 				D6676F74196F940C00F484FE /* VNUserResultCollectionViewCell.m in Sources */,
+				26A584BB1987411500C34461 /* AFHTTPRequestOperation.m in Sources */,
 				D6FED7A7195D5CD600AD10E0 /* VNSearchViewController.m in Sources */,
 				269755C919710E75005DEDEE /* VNNotificationReplyTableViewCell.m in Sources */,
 				144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */,
 				D66F7A4519619FAF00EA72BC /* VNDetailHeaderView.m in Sources */,
+				26A584C01987411500C34461 /* AFURLConnectionOperation.m in Sources */,
 				26962048196E4AF600EA06B3 /* VNMessage.m in Sources */,
+				26A584C31987411500C34461 /* AFURLSessionManager.m in Sources */,
 				144BF5481984F58000A6C6B7 /* VNProgressViewForAlbum.m in Sources */,
+				26A584CA1987411500C34461 /* QiniuUtils.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */,
+				26A584C21987411500C34461 /* AFURLResponseSerialization.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
+				26A584BF1987411500C34461 /* AFSecurityPolicy.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 				D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */,
 				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
 				D6676F68196E81BB00F484FE /* NavigationControllerDelegate.m in Sources */,
 				144BF5461984F58000A6C6B7 /* VNDraftListController.m in Sources */,
+				26A584C71987411500C34461 /* QiniuResumableClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
