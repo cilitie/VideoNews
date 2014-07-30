@@ -64,12 +64,12 @@
               
           }];
 }
--(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags ThumbnailTime:(CGFloat *)thumbnailTime completion:(void(^)(bool succeed,NSError *error))completion
+-(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags ThumbnailTime:(CGFloat )thumbnailTime completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *key=[NSString stringWithFormat:@"video-%@-%@.mp4",uid,[self timestamp]];
     
-    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
