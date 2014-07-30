@@ -34,9 +34,10 @@
 -(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *key=[NSString stringWithFormat:@"thumbnail-%@-%@.png",uid,[self timestamp]];
     
-    NSDictionary *parameters =@{@"key":[NSString stringWithFormat:@"thumbnail-%@.png",uid],@"uid":uid,@"token":[self LoginToken], @"timestamp": [self timestamp]};
-    NSString *URLStr = [VNHost stringByAppendingString:@"qiniuToken.php"];
+    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSString *URLStr = [VNHost stringByAppendingString:@"qiniuImageToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
               //NSLog(@"Success: %@", responseObject);
@@ -48,7 +49,7 @@
                   QiniuPutExtra *extra=[[QiniuPutExtra alloc]init];
                   extra.params= @{@"x:uid":uid};
                   kQiniuUpHosts[0]=@"http://upload.qiniu.com/";
-                  [sUploader uploadFileData:imageData key:[NSString stringWithFormat:@"thumbnail-%@.png",uid] extra:extra];
+                  [sUploader uploadFileData:imageData key:key extra:extra];
               }
               if (completion) {
                   completion(YES, nil);
@@ -62,6 +63,40 @@
               }
               
           }];
+}
+-(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags completion:(void(^)(bool succeed,NSError *error))completion
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *key=[NSString stringWithFormat:@"video-%@-%@.mp4",uid,[self timestamp]];
+    
+    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoToken.php"];
+    [manager POST:URLStr parameters:parameters
+          success:^(AFHTTPRequestOperation *operation,id responseObject) {
+              //NSLog(@"Success: %@", responseObject);
+              //获得签名信息
+              if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]&&[responseObject objectForKey:@"status"]) {
+                  NSString *token=[responseObject objectForKey:@"Qtoken"];
+                  QiniuSimpleUploader *sUploader=[QiniuSimpleUploader uploaderWithToken:token];
+                  sUploader.delegate= self;
+                  QiniuPutExtra *extra=[[QiniuPutExtra alloc]init];
+                  extra.params= @{@"x:uid":uid};
+                  kQiniuUpHosts[0]=@"http://upload.qiniu.com/";
+                  [sUploader uploadFileData:videoData key:key extra:extra];
+              }
+              if (completion) {
+                  completion(YES, nil);
+              }
+          } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+              //NSLog(@"%@",operation.request.URL.absoluteString);
+              //NSLog(@"%@",operation);
+              NSLog(@"Error: %@", error);
+              if (completion) {
+                  completion(NO, error);
+              }
+              
+          }];
+
 }
 - (NSString *)timestamp {
     //    NSLog(@"%@", [[self CCT_Date] description]);

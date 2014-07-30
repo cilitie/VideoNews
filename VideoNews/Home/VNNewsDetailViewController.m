@@ -281,7 +281,7 @@ static NSString *shareStr;
     int row=sender.tag;
     _curComment=_commentArr[row-KReplyButton];
     
-    [self.inputTextView setText:[NSString stringWithFormat:@"@%@:", self.curComment.author.name]];
+    [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
     [self.inputTextView becomeFirstResponder];
     
 }
@@ -519,7 +519,7 @@ static NSString *shareStr;
             return;
         }
         else {
-            if ([self.inputTextView.text hasPrefix:@"回复"]) {
+            if ([self.inputTextView.text hasPrefix:@"回复"] && self.curComment!=nil && self.curComment.author!=nil) {
                 //NSLog(@"%@",self.curComment);
                 [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
                     if (error) {
