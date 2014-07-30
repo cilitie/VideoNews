@@ -30,3 +30,5 @@ extern NSString *const WXAppkey;
 extern NSString *const WXAppScrectkey;
 extern NSString *const QQAppID;
 extern NSString *const QQAppKey;
+
+extern NSString *const AppID;

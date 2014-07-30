@@ -296,7 +296,7 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
+//    self.navigationController.navigationBarHidden = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -308,7 +308,7 @@ static NSString *shareStr;
         case SourceViewControllerTypeProfile:
             break;
         default:
-            self.navigationController.navigationBarHidden = NO;
+//            self.navigationController.navigationBarHidden = NO;
             break;
     }
 }

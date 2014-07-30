@@ -30,3 +30,5 @@ NSString *const WXAppkey = @"wxe0372fefc13da965";
 NSString *const WXAppScrectkey = @"8335fd5e515fad953850d07f4642e205";
 NSString *const QQAppID = @"1101719889";
 NSString *const QQAppKey = @"xScM0nFWCPJqVlaD";
+//FIXME: 替换上线后的AppID
+NSString *const AppID = @"888245642";

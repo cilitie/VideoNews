@@ -166,6 +166,7 @@ static NSString *shareStr;
             }];
         }
         else {
+            NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNProfileInfo];
             VNUser *user = [[VNUser alloc] initWithDict:userInfo];
             self.mineInfo = user;
             videoHeaderView.userInfo = user;

@@ -8,6 +8,8 @@
 
 #import "VNSettingViewController.h"
 #import "VNSettingTableViewCell.h"
+#import "UMFeedback.h"
+#import "VNLoginViewController.h"
 
 @interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -107,12 +109,16 @@
     else if (indexPath.section == 2) {
         switch (indexPath.row) {
             case 0: {
+                [MobClick checkUpdate];
             }
                 break;
             case 1: {
+                [UMFeedback showFeedback:self withAppkey:UmengAppkey];
             }
                 break;
             case 2: {
+                NSString *appStoreURLStr = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@", AppID];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appStoreURLStr]];
             }
                 break;
             case 3: {
@@ -134,7 +140,8 @@
         }
     }
     else if (indexPath.section == 3) {
-        
+        VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        [self presentViewController:loginViewController animated:YES completion:nil];
     }
 }
 
