@@ -266,7 +266,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
             picker.delegate = self;
             picker.allowsEditing = YES;
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                picker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+                picker.videoQuality = UIImagePickerControllerQualityTypeLow;
                 picker.sourceType = UIImagePickerControllerSourceTypeCamera;
                 [self presentViewController:picker
                                    animated:YES
@@ -306,7 +306,6 @@ static EditPickerType pickerType = EditPickerTypeGender;
             imageData = UIImagePNGRepresentation(editedImage);
         }
         [picker dismissViewControllerAnimated:YES completion:nil];
-        //FIXME: 上传头像
         if (imageData) {
             NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
