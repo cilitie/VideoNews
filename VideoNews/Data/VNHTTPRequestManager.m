@@ -61,7 +61,7 @@ static int pagesize = 10;
         }
         else {
             [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                //        NSLog(@"%@", responseObject);
+                        //NSLog(@"%@", responseObject);
                 VNNews *news = nil;
                 VNMedia *media = nil;
                 NSMutableArray *newsArr = [NSMutableArray array];

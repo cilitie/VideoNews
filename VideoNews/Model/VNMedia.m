@@ -14,6 +14,7 @@ static NSString *kURL = @"url";
 static NSString *kHeight = @"height";
 static NSString *kWidth = @"width";
 static NSString *kDescription = @"description";
+static NSString *KUid=@"uid";
 
 @implementation VNMedia
 
@@ -39,6 +40,10 @@ static NSString *kDescription = @"description";
 
 - (NSString *)description {
     return makeSureNotNull([self.basicDict objectForKey:kDescription]);
+}
+
+- (NSString *)uid {
+    return makeSureNotNull([self.basicDict objectForKey:KUid]);
 }
 
 @end

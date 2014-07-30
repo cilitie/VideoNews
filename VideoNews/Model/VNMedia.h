@@ -16,5 +16,6 @@
 @property (assign, nonatomic, readonly) int height;
 @property (assign, nonatomic, readonly) int width;
 @property (strong, nonatomic, readonly) NSString *description;
+@property (strong,nonatomic,readonly) NSString *uid;
 
 @end
