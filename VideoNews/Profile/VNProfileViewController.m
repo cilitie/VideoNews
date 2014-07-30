@@ -24,6 +24,8 @@
     CGPoint previousScrollOffset;
     BOOL isToBottom;
     BOOL isTabBarHidden;
+    
+    BOOL isAutoPlayOption;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *followBtn;
@@ -66,6 +68,7 @@ static NSString *shareStr;
         _fansLastPageTime = nil;
         _shareNews = nil;
         isTabBarHidden = NO;
+        isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
     }
     return self;
 }
@@ -503,7 +506,7 @@ static NSString *shareStr;
         VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
         cell.news = news;
         [cell reload];
-        if (indexPath.row == 0 && firstLoading) {
+        if (indexPath.row == 0 && firstLoading && isAutoPlayOption) {
             [cell startOrPausePlaying:YES];
             firstLoading = NO;
         }
@@ -813,24 +816,26 @@ static NSString *shareStr;
     userScrolling = NO;
     initialScrollOffset = CGPointMake(0, 0);
     
-    UITableView *tableView = (UITableView *)scrollView;
-    if (tableView == self.videoTableView) {
-        NSArray *visibleCells=[tableView visibleCells];
-        CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
-        VNProfileVideoTableViewCell *curCell = nil;
-        for (VNProfileVideoTableViewCell *cell in visibleCells) {
-            CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
-            CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-            NSLog(@"%f", self.view.window.center.y);
-            CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
-            if (gap < minGap) {
-                NSLog(@"%f, %f", minGap, gap);
-                minGap = gap;
-                curCell = cell;
+    if (isAutoPlayOption) {
+        UITableView *tableView = (UITableView *)scrollView;
+        if (tableView == self.videoTableView) {
+            NSArray *visibleCells=[tableView visibleCells];
+            CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
+            VNProfileVideoTableViewCell *curCell = nil;
+            for (VNProfileVideoTableViewCell *cell in visibleCells) {
+                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
+                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                NSLog(@"%f", self.view.window.center.y);
+                CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
+                if (gap < minGap) {
+                    NSLog(@"%f, %f", minGap, gap);
+                    minGap = gap;
+                    curCell = cell;
+                }
             }
-        }
-        if (curCell && !curCell.isPlaying) {
-            [curCell startOrPausePlaying:YES];
+            if (curCell && !curCell.isPlaying) {
+                [curCell startOrPausePlaying:YES];
+            }
         }
     }
 }

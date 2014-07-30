@@ -25,6 +25,8 @@
     CGFloat keyboardHeight;
     BOOL isPlaying;
     BOOL isDefaultKeyboard;
+    
+    BOOL isAutoPlayOption;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *commentTableView;
@@ -72,6 +74,7 @@ static NSString *shareStr;
     if (self) {
         _commentArr = [NSMutableArray arrayWithCapacity:0];
         _commentArrNotify=[NSMutableArray arrayWithCapacity:0];
+        isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
     }
     return self;
 }
@@ -186,7 +189,7 @@ static NSString *shareStr;
     self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.playBtn.frame = CGRectMake(0, 0, 100.0, 100.0);
     self.playBtn.center = self.headerView.newsImageView.center;
-    if ([VNHTTPRequestManager isReachableViaWiFi]) {
+    if ([VNHTTPRequestManager isReachableViaWiFi] && isAutoPlayOption) {
         //[self.moviePlayer play];
         [self playAndCount];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
@@ -508,7 +511,7 @@ static NSString *shareStr;
     NSMutableString *commentStr = [[NSMutableString alloc] init];
     [commentStr setString:str];
     CFStringTrimWhitespace((CFMutableStringRef)commentStr);
-    
+    NSLog(@"%@", commentStr);
     if (commentStr.length == 0) {
         [VNUtility showHUDText:@"发送内容为空!" forView:self.view];
         return;

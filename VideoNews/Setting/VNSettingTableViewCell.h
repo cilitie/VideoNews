@@ -13,7 +13,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelHeadLC;
 @property (strong, nonatomic) UISwitch *autoPlaySwitch;
-@property (assign, nonatomic) BOOL isAutoPlay;
 
 - (void)reload;
 

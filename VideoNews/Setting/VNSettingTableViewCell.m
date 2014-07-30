@@ -34,9 +34,16 @@
 - (void)reload {
     if (!self.autoPlaySwitch) {
         self.autoPlaySwitch = [[UISwitch alloc] init];
+        [self.autoPlaySwitch addTarget:self action:@selector(switchPlayOption:) forControlEvents:UIControlEventValueChanged];
         self.accessoryView = self.autoPlaySwitch;
     }
-    self.autoPlaySwitch.on = self.isAutoPlay;
+    BOOL isAutoPlay = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
+    self.autoPlaySwitch.on = isAutoPlay;
+}
+
+- (void)switchPlayOption:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:sender.on] forKey:VNIsWiFiAutoPlay];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

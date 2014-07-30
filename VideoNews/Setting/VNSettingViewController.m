@@ -68,7 +68,6 @@
     }
     else if (indexPath.section == 1) {
         cell.titleLabel.text = @"WiFi下自动播放";
-        cell.isAutoPlay = YES;
         [cell reload];
     }
     else if (indexPath.section == 2) {
