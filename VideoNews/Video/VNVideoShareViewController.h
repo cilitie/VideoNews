@@ -10,7 +10,7 @@
 
 @interface VNVideoShareViewController : UIViewController
 
-@property (nonatomic, strong) NSString *draftNameString;
+@property (nonatomic, assign) BOOL fromDraft;
 
 - (id)initWithVideoPath:(NSString *)path andCoverImage:(UIImage *)img;
 

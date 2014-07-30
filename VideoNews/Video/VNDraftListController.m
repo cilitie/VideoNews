@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) NSMutableArray *dataSourceArr;
 
+@property (nonatomic, strong) UITableView *draftListTableView;
+
 @end
 
 @implementation VNDraftListController
@@ -77,26 +79,47 @@
     __weak VNDraftListController *weakSelf = self;
     
     dispatch_after(0.3, dispatch_get_main_queue(), ^{
-        UITableView *draftListTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, 320, self.view.frame.size.height - 64) style:UITableViewStylePlain];
-        draftListTableView.delegate = self;
-        draftListTableView.dataSource = self;
-        draftListTableView.separatorInset = UIEdgeInsetsZero;
-        draftListTableView.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
-        [weakSelf.view addSubview:draftListTableView];
+        weakSelf.draftListTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, 320, self.view.frame.size.height - 64) style:UITableViewStylePlain];
+        weakSelf.draftListTableView.delegate = self;
+        weakSelf.draftListTableView.dataSource = self;
+        weakSelf.draftListTableView.separatorInset = UIEdgeInsetsZero;
+        weakSelf.draftListTableView.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
+        [weakSelf.view addSubview:weakSelf.draftListTableView];
     });
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDraftList:) name:@"RefreshDraftListNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    
 }
 
 #pragma mark - SelfMethods
 
 - (void)doDismiss
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RefreshDraftListNotification" object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)refreshDraftList:(NSNotification *)not
+{
+    [_dataSourceArr removeAllObjects];
+    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
+
+    NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+    
+    if (arr && arr.count > 0) {
+        [_dataSourceArr addObjectsFromArray:arr];
+    }
+    
+    [self.draftListTableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource && Delegate
@@ -126,7 +149,6 @@
     
     NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
     NSString *coverPath = [[filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
-    NSLog(@" v....draft cover path :%@",coverPath);
     
     UIImage *img = [UIImage imageWithContentsOfFile:coverPath];
     
@@ -146,7 +168,8 @@
         NSString *fileNamePath = [filePath stringByAppendingPathComponent:[weakSelf.dataSourceArr objectAtIndex:indexPath.row]];
         
         VNVideoShareViewController *shareCtl = [[VNVideoShareViewController alloc] initWithVideoPath:fileNamePath andCoverImage:img];
-        [self.navigationController pushViewController:shareCtl animated:YES];
+        shareCtl.fromDraft = YES;
+        [weakSelf.navigationController pushViewController:shareCtl animated:YES];
     }];
     
     return cell;
@@ -168,7 +191,7 @@
     NSString *fileNamePath = [filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]];
     NSString *coverPath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
     NSString *coverImagePath = [[coverPath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
-
+    
     NSError *err;
     [[NSFileManager defaultManager] removeItemAtPath:fileNamePath error:&err];
     [[NSFileManager defaultManager] removeItemAtPath:coverImagePath error:nil];

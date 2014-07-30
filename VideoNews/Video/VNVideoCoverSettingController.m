@@ -131,7 +131,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)dealloc
 {
-    
+    NSLog(@"dealloc......:%s",__FUNCTION__);
 }
 
 /*
@@ -150,6 +150,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)doPopBack
 {
     [self clearTempVideo];
+    
+    [self.videoPlayer removeObserver:self forKeyPath:@"status"];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -275,6 +277,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     if (self.isVolumePositive) {
         
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:self.videoCoverImgView.image];
+        shareViewCtl.fromDraft = NO;
         [self.navigationController pushViewController:shareViewCtl animated:YES];
         
     }else {
@@ -332,6 +335,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                     default:
                     {
                         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:weakSelf.videoPath andCoverImage:weakSelf.videoCoverImgView.image];
+                        shareViewCtl.fromDraft = NO;
                         [weakSelf.navigationController pushViewController:shareViewCtl animated:YES];
                     }
                         break;

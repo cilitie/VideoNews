@@ -23,16 +23,19 @@
 
 @end
 
+
 @implementation VNCameraOverlayView
 
 @synthesize delegate;
+
+#define screenH ([[UIScreen mainScreen] bounds].size.height)
 
 #pragma mark - Initialization
 
 - (UIButton *)torchBtn
 {
     if (!_torchBtn) {
-        _torchBtn = [[UIButton alloc] initWithFrame:CGRectMake(195, 20, 60, 44)];
+        _torchBtn = [[UIButton alloc] initWithFrame:CGRectMake(195, 0, 60, 60)];
         [_torchBtn setImage:[UIImage imageNamed:@"video_flash_off"] forState:UIControlStateNormal];
         [_torchBtn setImage:[UIImage imageNamed:@"video_flash_on"] forState:UIControlStateSelected];
         _torchBtn.backgroundColor = [UIColor clearColor];
@@ -46,7 +49,12 @@
 - (UIButton *)trashBtn
 {
     if (!_trashBtn) {
-        _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 52, 76, 76)];
+        
+        CGFloat y = 12;
+        if (screenH == 568) {
+            y = 52;
+        }
+        _trashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, y, 76, 76)];
         [_trashBtn setImage:[UIImage imageNamed:@"video_back"] forState:UIControlStateNormal];
         [_trashBtn setImage:[UIImage imageNamed:@"video_trash"] forState:UIControlStateSelected];
         _trashBtn.backgroundColor = [UIColor clearColor];
@@ -62,10 +70,16 @@
 {
     if (!_submitBtn) {
         //album and submit button
-        _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, 45, 90, 90)];
-        [_submitBtn setTitle:@"Album" forState:UIControlStateNormal];
-        [_submitBtn setTitle:@"Submit" forState:UIControlStateSelected];
-        _submitBtn.backgroundColor = [UIColor blueColor];
+        CGFloat y = 12;
+        if (screenH == 568) {
+            y = 52;
+        }
+        _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, y, 90, 90)];
+        [_submitBtn setTitle:@"OFF" forState:UIControlStateNormal];
+        [_submitBtn setTitle:@"ON" forState:UIControlStateSelected];
+        [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+        _submitBtn.backgroundColor = [UIColor clearColor];
         [_submitBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
         _submitBtn.showsTouchWhenHighlighted = YES;
         _submitBtn.enabled = NO;
@@ -119,6 +133,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+
+}
+
 - (void)doPinch
 {}
 
@@ -155,7 +174,7 @@
     UIView *topBaseView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
     topBaseView.backgroundColor = [UIColor blackColor];
     
-    UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
+    UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     [closeBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateNormal];
     [closeBtn setImage:[UIImage imageNamed:@"camera_close"] forState:UIControlStateSelected];
     closeBtn.backgroundColor = [UIColor clearColor];
@@ -165,7 +184,7 @@
     
     [topBaseView addSubview:self.torchBtn];
     
-    UIButton *changeCameraDeviceBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
+    UIButton *changeCameraDeviceBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 0, 60, 60)];
     [changeCameraDeviceBtn setImage:[UIImage imageNamed:@"flip_camera"] forState:UIControlStateNormal];
     [changeCameraDeviceBtn setImage:[UIImage imageNamed:@"flip_camera"] forState:UIControlStateSelected];
     changeCameraDeviceBtn.backgroundColor = [UIColor clearColor];
@@ -192,7 +211,11 @@
     
     [bottomBaseView addSubview:self.trashBtn];
     
-    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, 45, 110, 90)];
+    CGFloat y = 5;
+    if (screenH == 568) {
+        y = 45;
+    }
+    UIButton *takeVideoBtn = [[UIButton alloc] initWithFrame:CGRectMake(105, y, 110, 90)];
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
     takeVideoBtn.backgroundColor = [UIColor clearColor];

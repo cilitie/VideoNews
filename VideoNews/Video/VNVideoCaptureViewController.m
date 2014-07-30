@@ -199,7 +199,8 @@ static NSString *videoFilePath;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearVideoClips) name:@"ClearVideoClipsNotification" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -231,6 +232,20 @@ static NSString *videoFilePath;
 }
 
 #pragma mark - Methods
+
+- (void)clearVideoClips
+{
+    [_videoTimePointArr removeAllObjects];
+    [_videoPathArr removeAllObjects];
+    self.videoPieceCount = 0;
+    self.videoTotalDuration = 0;
+
+    [_overlayView setProgressTimeArr:_videoTimePointArr];
+    [_overlayView updateProgressViewToPercentage:0];
+    [_overlayView setTrashBtnEnabled:NO];
+    [self.overlayView setAlbumAndSubmitBtnStatus:NO];
+
+}
 
 - (void)refreshVideoDuration:(NSTimer *)timer
 {
@@ -428,6 +443,8 @@ static NSString *videoFilePath;
                 //do nothing...
             } else {
                 [self clearTempVideos];
+                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearVideoClipsNotification" object:nil];
+                [self dismissViewControllerAnimated:YES completion:nil];
             }
         };
         objc_setAssociatedObject(alert, @"ClearVideosAlert",
@@ -435,9 +452,9 @@ static NSString *videoFilePath;
         
         [alert show];
     }else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearVideoClipsNotification" object:nil];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-    
 }
 
 /**
@@ -629,7 +646,6 @@ static NSString *videoFilePath;
     
     objc_removeAssociatedObjects(alertView);
     
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - AVCaptureFileOutputRecordingDelegate

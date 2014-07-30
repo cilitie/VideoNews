@@ -47,10 +47,6 @@
                     backgroundImage = nil;
                     
                     [weakSelf insertSubview:imageView atIndex:0];
-                    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, IPHONE_HEIGHT)];
-                    v.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
-                
-                    [weakSelf insertSubview:v atIndex:1];
                 }
             });
 
@@ -69,35 +65,35 @@
         [actionBgView addSubview:titleLbl];
         
         
-        _draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, 56, 60, 60)];
+        _draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 61, 50, 50)];
         [_draftBtn setImage:[UIImage imageNamed:@"video_draft"] forState:UIControlStateNormal];
         [_draftBtn setImage:[UIImage imageNamed:@"video_draft"] forState:UIControlStateSelected];
         _draftBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         _draftBtn.backgroundColor = [UIColor clearColor];
         [_draftBtn addTarget:self action:@selector(doOpenDraftList) forControlEvents:UIControlEventTouchUpInside];
         _draftBtn.showsTouchWhenHighlighted = YES;
-        _draftBtn.alpha = 0.5;
+        _draftBtn.alpha = 0;
         [actionBgView addSubview:_draftBtn];
         
         
-        _cameraBtn = [[UIButton alloc] initWithFrame:CGRectMake(130, 56, 60, 60)];
+        _cameraBtn = [[UIButton alloc] initWithFrame:CGRectMake(135, 61, 50, 50)];
         [_cameraBtn setImage:[UIImage imageNamed:@"video_camera"] forState:UIControlStateNormal];
         [_cameraBtn setImage:[UIImage imageNamed:@"video_camera"] forState:UIControlStateSelected];
         _cameraBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         _cameraBtn.backgroundColor = [UIColor clearColor];
         [_cameraBtn addTarget:self action:@selector(doOpenCamera) forControlEvents:UIControlEventTouchUpInside];
         _cameraBtn.showsTouchWhenHighlighted = YES;
-        _cameraBtn.alpha = 0.5;
+        _cameraBtn.alpha = 0;
         [actionBgView addSubview:_cameraBtn];
         
-        _albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(245, 56, 60, 60)];
+        _albumBtn = [[UIButton alloc] initWithFrame:CGRectMake(250, 61, 50, 50)];
         [_albumBtn setImage:[UIImage imageNamed:@"video_album"] forState:UIControlStateNormal];
         [_albumBtn setImage:[UIImage imageNamed:@"video_album"] forState:UIControlStateSelected];
         _albumBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         _albumBtn.backgroundColor = [UIColor clearColor];
         [_albumBtn addTarget:self action:@selector(doOpenAlbum) forControlEvents:UIControlEventTouchUpInside];
         _albumBtn.showsTouchWhenHighlighted = YES;
-        _albumBtn.alpha = 0.5;
+        _albumBtn.alpha = 0;
         [actionBgView addSubview:_albumBtn];
         
         UILabel *draftLbl = [[UILabel alloc] initWithFrame:CGRectMake(1.5, 130, 87, 20)];
@@ -161,17 +157,29 @@
 
 - (void)show
 {
+    
     VNAppDelegate *appDelegate = (VNAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.window addSubview:self];
+
+    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, IPHONE_HEIGHT - ACTION_SHEET_HEIGHT)];
+    v.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+    v.alpha = 0;
+    [self insertSubview:v atIndex:1];
     
-    [UIView animateWithDuration:.3f animations:^{
-        _draftBtn.frame = CGRectMake(1.5, 42.5, 87, 87);
-        _draftBtn.alpha = 1;
-        _cameraBtn.frame = CGRectMake(116.5, 42.5, 87, 87);
-        _cameraBtn.alpha = 1;
-        _albumBtn.frame = CGRectMake(231.5, 42.5, 87, 87);
-        _albumBtn.alpha = 1;
-    } ];
+    __weak VNCustomizedActionSheet *weakSelf = self;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:.2f animations:^{
+            weakSelf.draftBtn.frame = CGRectMake(1.5, 42.5, 87, 87);
+            weakSelf.draftBtn.alpha = 1;
+            weakSelf.cameraBtn.frame = CGRectMake(116.5, 42.5, 87, 87);
+            weakSelf.cameraBtn.alpha = 1;
+            weakSelf.albumBtn.frame = CGRectMake(231.5, 42.5, 87, 87);
+            weakSelf.albumBtn.alpha = 1;
+            v.alpha = 1;
+            
+        } ];
+    });
 }
 
 /**

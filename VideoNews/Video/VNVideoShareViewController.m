@@ -7,6 +7,7 @@
 //
 // 草稿中文件的保存
 // 路径 cache/VideoFiles/Draft/时间戳.mp4 视频文件
+// 路径 cache/VideoFiles/DraftCover/时间戳.jpg 封面文件
 
 #import "VNVideoShareViewController.h"
 #import "WXApi.h"
@@ -28,6 +29,8 @@
 @end
 
 @implementation VNVideoShareViewController
+
+@synthesize fromDraft;
 
 #define screenH ([[UIScreen mainScreen] bounds].size.height)
 
@@ -105,16 +108,21 @@
     [topView addSubview:titleLbl];
     
     UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
-    [draftBtn setTitle:@"draft" forState:UIControlStateNormal];
-    [draftBtn setTitle:@"Record" forState:UIControlStateSelected];
-    [draftBtn addTarget:self action:@selector(doSaveToDraft:) forControlEvents:UIControlEventTouchUpInside];
-    if (self.draftNameString) {
-        draftBtn.selected = YES;
-    }else {
+    if (!fromDraft) {
+        
+        [draftBtn setTitle:@"draft" forState:UIControlStateNormal];
+        [draftBtn setTitle:@"继续" forState:UIControlStateSelected];
+        [draftBtn addTarget:self action:@selector(doSaveToDraft:) forControlEvents:UIControlEventTouchUpInside];
         [draftBtn setSelected:NO];
+    }else {
+        
+        [draftBtn setTitle:@"已保存" forState:UIControlStateNormal];
+        [draftBtn setTitle:@"已保存" forState:UIControlStateSelected];
+        [draftBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateNormal];
+        [draftBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateSelected];
     }
     [topView addSubview:draftBtn];
-    
+
     [self.view addSubview:topView];
     
     UIImageView *videoCoverView = [[UIImageView alloc] initWithFrame:CGRectMake(120, 85, 80, 80)];
@@ -236,16 +244,22 @@
         [[NSFileManager defaultManager] copyItemAtPath:self.videoPath toPath:[filePath stringByAppendingPathComponent:time] error:&err];
         
         if (!err) {
+            
             MBProgressHUD *hud = [[MBProgressHUD alloc] init];
             hud.labelText = @"已存草稿";
             [self.view addSubview:hud];
             [hud show:YES];
-            [hud hide:YES afterDelay:2];
+            [hud hide:YES afterDelay:1];
             
             sender.selected = YES;
         }
         
     }else {
+        
+        [self clearTempVideos];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearVideoClipsNotification" object:nil userInfo:nil];
+
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
@@ -264,8 +278,14 @@
 
 - (void)doSubmit
 {
-    //clear clips and temp video after submit success.
-    [self clearTempVideos];
+    //process after submit success.
+    if (self.fromDraft) {
+        //clear draft video
+        [self clearDraftVideo];
+    }else {
+        //clear clips and temp video.
+        [self clearTempVideos];
+    }
     
     if (self.shareSina) {
         //分享新浪
@@ -300,6 +320,18 @@
         [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
     }
     
+}
+
+- (void)clearDraftVideo
+{
+    
+    NSString *coverImgPath = [[self.videoPath stringByReplacingOccurrencesOfString:@"/Draft/" withString:@"/DraftCover/"] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
+    NSLog(@"cover image path:%@",coverImgPath);
+    NSError *err;
+    [[NSFileManager defaultManager] removeItemAtPath:self.videoPath error:&err];
+    [[NSFileManager defaultManager] removeItemAtPath:coverImgPath error:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshDraftListNotification" object:nil userInfo:nil];
 }
 
 #pragma mark - UIGestureRecognizerDelgate
