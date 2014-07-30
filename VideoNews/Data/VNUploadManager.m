@@ -64,7 +64,7 @@
               
           }];
 }
--(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags completion:(void(^)(bool succeed,NSError *error))completion
+-(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags ThumbnailTime:(CGFloat *)thumbnailTime completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *key=[NSString stringWithFormat:@"video-%@-%@.mp4",uid,[self timestamp]];
