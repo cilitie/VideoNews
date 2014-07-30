@@ -69,7 +69,8 @@
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *key=[NSString stringWithFormat:@"video-%@-%@.mp4",uid,[self timestamp]];
     
-    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    //NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSDictionary *parameters =@{@"key":key,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
@@ -80,7 +81,7 @@
                   QiniuSimpleUploader *sUploader=[QiniuSimpleUploader uploaderWithToken:token];
                   sUploader.delegate= self;
                   QiniuPutExtra *extra=[[QiniuPutExtra alloc]init];
-                  extra.params= @{@"x:uid":uid};
+                  extra.params= @{@"x:uid":uid,@"x:title":title,@"x:tags":tags};
                   kQiniuUpHosts[0]=@"http://upload.qiniu.com/";
                   [sUploader uploadFileData:videoData key:key extra:extra];
               }
