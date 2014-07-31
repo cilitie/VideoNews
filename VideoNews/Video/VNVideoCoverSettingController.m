@@ -27,6 +27,8 @@
 
 @property (nonatomic, copy) NSString *audioPath;
 
+@property (nonatomic, assign) CGFloat coverTime;
+
 @end
 
 @implementation VNVideoCoverSettingController
@@ -318,6 +320,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)setVideoCoverWithTime:(CGFloat)time
 {
     
+    self.coverTime = time;
     AVAsset *myAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
     AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:myAsset];
     imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
@@ -347,6 +350,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:self.videoCoverImgView.image];
         shareViewCtl.fromDraft = NO;
+        shareViewCtl.coverTime = self.coverTime;
         [self.navigationController pushViewController:shareViewCtl animated:YES];
         
     }else {
@@ -405,6 +409,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                     {
                         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:weakSelf.videoPath andCoverImage:weakSelf.videoCoverImgView.image];
                         shareViewCtl.fromDraft = NO;
+                        shareViewCtl.coverTime = self.coverTime;
                         [weakSelf.navigationController pushViewController:shareViewCtl animated:YES];
                     }
                         break;

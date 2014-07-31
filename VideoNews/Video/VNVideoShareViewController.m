@@ -32,7 +32,7 @@
 
 @implementation VNVideoShareViewController
 
-@synthesize fromDraft;
+@synthesize fromDraft, coverTime;
 
 #define screenH ([[UIScreen mainScreen] bounds].size.height)
 
@@ -303,7 +303,7 @@
 
     NSData *videoData = [NSData dataWithContentsOfFile:self.videoPath];
     
-    [uploadManager uploadVideo:videoData Uid:uid Title:titleText Tags:tagsText completion:^(bool success, NSError *err){
+    [uploadManager uploadVideo:videoData Uid:uid Title:titleText Tags:tagsText ThumbnailTime:self.coverTime completion:^(bool success, NSError *err){
         if (err) {
             NSLog(@"%@", err.localizedDescription);
         }
@@ -320,7 +320,6 @@
             return ;
         }
     }];
-    
 }
 
 /**

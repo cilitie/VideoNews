@@ -133,7 +133,7 @@
 // Upload failed.
 - (void)uploadFailed:(NSString *)filePath error:(NSError *)error
 {
-    [self uploadFailed:filePath error:error];
+    [self.delegate uploadFailed:filePath error:error];
 }
 
 

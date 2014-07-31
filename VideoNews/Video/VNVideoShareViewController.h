@@ -11,6 +11,7 @@
 @interface VNVideoShareViewController : UIViewController
 
 @property (nonatomic, assign) BOOL fromDraft;
+@property (nonatomic, assign) CGFloat coverTime;
 
 - (id)initWithVideoPath:(NSString *)path andCoverImage:(UIImage *)img;
 
