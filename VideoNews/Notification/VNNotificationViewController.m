@@ -257,7 +257,7 @@
     
     if ([message.type isEqualToString: @"user"]) {
         VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
         cell.nameLabel.text=message.sender.name;
@@ -269,7 +269,7 @@
     else if ([message.type isEqualToString:@"comment"])
     {
         VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
         cell.nameLabel.text=message.sender.name;
@@ -301,7 +301,7 @@
         return cell;
     }
         VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
         

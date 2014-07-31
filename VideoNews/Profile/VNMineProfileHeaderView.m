@@ -29,7 +29,7 @@
 
 - (void)reload {
     if (self.userInfo) {
-        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.userInfo.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.userInfo.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [self.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([self.thumbnailImgView bounds]) / 2];
         self.thumbnailImgView.layer.masksToBounds = YES;
         [self.nameLabel setText:self.userInfo.name];

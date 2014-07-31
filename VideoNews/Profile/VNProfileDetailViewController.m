@@ -34,7 +34,7 @@
     self.reportBtn.layer.masksToBounds = YES;
     if (self.user) {
         //videoHeaderView
-        [self.thumbnail setImageWithURL:[NSURL URLWithString:self.user.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.thumbnail setImageWithURL:[NSURL URLWithString:self.user.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
         self.thumbnail.layer.masksToBounds = YES;
         NSLog(@"%@", self.user.name);

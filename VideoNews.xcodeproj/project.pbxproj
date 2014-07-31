@@ -23,7 +23,6 @@
 		144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */; };
 		144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */; };
 		14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B8951F198A3F22006244D9 /* VNAudioListController.m */; };
-		14B89529198A4243006244D9 /* Audios in Resources */ = {isa = PBXBuildFile; fileRef = 14B89528198A4243006244D9 /* Audios */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
 		269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C4197061BD005DEDEE /* VNUserViewController.m */; };
@@ -178,7 +177,6 @@
 		144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
 		14B8951E198A3F22006244D9 /* VNAudioListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAudioListController.h; sourceTree = "<group>"; };
 		14B8951F198A3F22006244D9 /* VNAudioListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAudioListController.m; sourceTree = "<group>"; };
-		14B89528198A4243006244D9 /* Audios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audios; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
@@ -421,7 +419,7 @@
 		144BF52219848AF700A6C6B7 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				14B89528198A4243006244D9 /* Audios */,
+				269C0FDB198A999C00F80019 /* Audios */,
 				144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */,
 				144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */,
 				144BF5281984F58000A6C6B7 /* VNAlbumVideoEditController.h */,
@@ -481,6 +479,13 @@
 				269B0826197DF96400CF4ADC /* OSSClient.m */,
 			);
 			path = upload;
+			sourceTree = "<group>";
+		};
+		269C0FDB198A999C00F80019 /* Audios */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Audios;
 			sourceTree = "<group>";
 		};
 		26A584961987411500C34461 /* QiniuSDK */ = {
@@ -981,7 +986,6 @@
 				D6676F7D197523A900F484FE /* EmojisList.plist in Resources */,
 				D642971119668EE4004E218C /* UMShareEditViewControlleriPad.xib in Resources */,
 				D642971019668EE4004E218C /* UMShareEditViewController.xib in Resources */,
-				14B89529198A4243006244D9 /* Audios in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

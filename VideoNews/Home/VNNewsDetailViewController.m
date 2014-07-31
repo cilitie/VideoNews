@@ -114,7 +114,7 @@ static NSString *shareStr;
     }
 
     self.headerView = loadXib(@"VNDetailHeaderView");
-    [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
     [self.headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.headerView.thumbnailImageView bounds]) / 2];
     self.headerView.thumbnailImageView.layer.masksToBounds = YES;
     self.headerView.nameLabel.text = self.news.author.name;
@@ -153,7 +153,7 @@ static NSString *shareStr;
             self.vedioMedia = obj;
         }
     }];
-    [self.headerView.newsImageView setImageWithURL:[NSURL URLWithString:self.media.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [self.headerView.newsImageView setImageWithURL:[NSURL URLWithString:self.media.url] placeholderImage:[UIImage imageNamed:@"600-600pic"]];
     
     CGFloat diff = 0;
     self.headerView.titleLabel.text = self.news.title;
@@ -356,7 +356,7 @@ static NSString *shareStr;
     VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
     [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
     cell.thumbnail.layer.masksToBounds = YES;
     cell.nameLabel.text = comment.author.name;

@@ -55,7 +55,7 @@
             self.locationLabel.text = @"位置未知";
         }
         
-        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.user.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.thumbnailImgView setImageWithURL:[NSURL URLWithString:self.user.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         
         CGFloat fansCountLabelWidth = 0;
         self.fansCountLabel.text = self.user.fans_count;

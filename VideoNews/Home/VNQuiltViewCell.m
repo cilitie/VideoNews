@@ -127,7 +127,7 @@ static CGFloat totleWidth = 145.0;
 - (void)reloadCell {
     //FIXME: Hard Code
     _newsImageView.frame=CGRectMake(0.0, 0.0, totleWidth, self.imageMedia.height);
-    [_newsImageView setImageWithURL:[NSURL URLWithString:self.imageMedia.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [_newsImageView setImageWithURL:[NSURL URLWithString:self.imageMedia.url] placeholderImage:[UIImage imageNamed:@"300-300pic"]];
     
     _titleLabel.frame=CGRectMake(cellMargin, CGRectGetMaxY(_newsImageView.frame)+5, totleWidth-cellMargin*2, cellMargin*2);
     [_titleLabel setText:_news.title];
@@ -143,7 +143,7 @@ static CGFloat totleWidth = 145.0;
     
     _thumbnailImageView.frame=CGRectMake(cellMargin, CGRectGetMaxY(_line.frame)+cellMargin, thumbnailHeight, thumbnailHeight);
     _mask.frame=CGRectMake(cellMargin, CGRectGetMaxY(_line.frame)+cellMargin, thumbnailHeight, thumbnailHeight);
-    [_thumbnailImageView setImageWithURL:[NSURL URLWithString:_news.author.avatar] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [_thumbnailImageView setImageWithURL:[NSURL URLWithString:_news.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
     //[_thumbnailImageView addSubview:[UIImage imageNamed:@"profile@2x.png"]];
     NSLog(@"%@", _news.author.avatar);
     

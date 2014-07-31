@@ -24,7 +24,7 @@
     // Do any additional setup after loading the view.
     
     self.originImgView = [[UIImageView alloc] init];
-    [self.originImgView setImageWithURL:[NSURL URLWithString:self.imgURL] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [self.originImgView setImageWithURL:[NSURL URLWithString:self.imgURL] placeholderImage:[UIImage imageNamed:@"600-600pic"]];
     [self.originImgView sizeToFit];
     self.originImgView.center = self.view.center;
     [self.view addSubview:self.originImgView];

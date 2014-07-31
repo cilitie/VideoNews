@@ -90,7 +90,7 @@ static int selectedItemIndex;
     VNCategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VNCategoryCollectionViewCellIdentifier" forIndexPath:indexPath];
     VNCategory *category = [self.categoryArr objectAtIndex:indexPath.item];
     
-    [cell.bgImageView setImageWithURL:[NSURL URLWithString:category.img_url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+    [cell.bgImageView setImageWithURL:[NSURL URLWithString:category.img_url] placeholderImage:[UIImage imageNamed:@"300-300pic"]];
     [cell.titleLabel setText:category.name];
     return cell;
 }

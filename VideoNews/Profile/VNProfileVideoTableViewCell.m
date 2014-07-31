@@ -95,7 +95,7 @@
 - (void)reload {
     if (self.news) {
         
-        [self.videoImgView setImageWithURL:[NSURL URLWithString:self.news.imgMdeia.url] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.videoImgView setImageWithURL:[NSURL URLWithString:self.news.imgMdeia.url] placeholderImage:[UIImage imageNamed:@"600-600pic"]];
         
         NSLog(@"%@", self.news.title);
         self.titleLabel.text = self.news.title;

@@ -32,7 +32,7 @@
         self.accessoryType = UITableViewCellAccessoryNone;
     }
     if (self.thumbnailURLstr) {
-        [self.thumbnail setImageWithURL:[NSURL URLWithString:self.thumbnailURLstr] placeholderImage:[UIImage imageNamed:@"placeHolder"]];
+        [self.thumbnail setImageWithURL:[NSURL URLWithString:self.thumbnailURLstr] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
         self.thumbnail.layer.masksToBounds = YES;
     }
