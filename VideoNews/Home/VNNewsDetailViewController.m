@@ -511,7 +511,7 @@ static NSString *shareStr;
     NSMutableString *commentStr = [[NSMutableString alloc] init];
     [commentStr setString:str];
     CFStringTrimWhitespace((CFMutableStringRef)commentStr);
-    NSLog(@"%@", commentStr);
+    //NSLog(@"%@", commentStr);
     if (commentStr.length == 0) {
         [VNUtility showHUDText:@"发送内容为空!" forView:self.view];
         return;

@@ -45,6 +45,30 @@ static int pagesize = 10;
 @implementation VNHTTPRequestManager
 
 #pragma mark - Home
++(void)isNewsDeleted:(int)nid completion:(void(^)(BOOL isDeleted,NSError *error))completion
+{
+    //http://182.92.103.134:8080/engine/isNewsDeleted.php?token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&nid=1
+    NSString *URLStr = [VNHost stringByAppendingString:@"isNewsDeleted.php"];
+    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp],@"nid":[NSNumber numberWithInt:nid]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        BOOL isDeleted=false;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                isDeleted=[[responseObject objectForKey:@"isDeleted"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(isDeleted,nil);
+        }
+        
+    }
+    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+                        completion(false, error);
+        }
+    }];
+}
 
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion {
     //http://182.92.103.134:8080/engine/viewnews.php?pagesize=10&pagetime=1406600863&timestamp=1406600863&token=4bd5bd40d36deecab5e9f152da873b5e

@@ -28,6 +28,7 @@
 @interface VNHTTPRequestManager : NSObject
 
 #pragma mark - Home
++(void)isNewsDeleted:(int)nid completion:(void(^)(BOOL isDeleted,NSError *error))completion;
 
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, NSError *error))completion;
