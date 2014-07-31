@@ -299,12 +299,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
     if (editedImage) {
-        NSData *imageData = nil;
-        if (UIImagePNGRepresentation(editedImage) == nil) {
-            imageData = UIImageJPEGRepresentation(editedImage, 1);
-        } else {
-            imageData = UIImagePNGRepresentation(editedImage);
-        }
+        NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.75);
         [picker dismissViewControllerAnimated:YES completion:nil];
         if (imageData) {
             NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
@@ -319,18 +314,6 @@ static EditPickerType pickerType = EditPickerTypeGender;
                 }
                 [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
             }];
-            /*[VNUploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
-                    return ;
-                }
-                else {
-                    [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
-                }
-            }];*/
         }
     }
 }

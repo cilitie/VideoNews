@@ -34,7 +34,7 @@
 -(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *key=[NSString stringWithFormat:@"thumbnail-%@-%@.png",uid,[self timestamp]];
+    NSString *key=[NSString stringWithFormat:@"thumbnail-%@-%@.jpeg",uid,[self timestamp]];
     
     NSDictionary *parameters =@{@"key":key,@"uid":uid,@"token":[self LoginToken], @"timestamp": [self timestamp]};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuImageToken.php"];
