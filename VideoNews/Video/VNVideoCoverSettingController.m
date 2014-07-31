@@ -12,8 +12,9 @@
 #import "ColorUtils.h"
 #import "VNVideoFramesView.h"
 #import "VNVideoShareViewController.h"
+#import "VNAudioListController.h"
 
-@interface VNVideoCoverSettingController () <VNVideoFramesViewDelegate>
+@interface VNVideoCoverSettingController () <VNVideoFramesViewDelegate, VNAudioListDelegate>
 
 @property (nonatomic, strong) VNAVPlayerPlayView *videoPlayView;     //播放视频的view
 @property (nonatomic ,strong) AVPlayer *videoPlayer;                  //播放视频player
@@ -24,11 +25,18 @@
 
 @property (nonatomic, assign) BOOL isVolumePositive;              //声音是否打开
 
+@property (nonatomic, copy) NSString *audioPath;
+
 @end
 
 @implementation VNVideoCoverSettingController
 
 @synthesize videoPath;
+
+#define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
+#define screenH ([[UIScreen mainScreen] bounds].size.height)
+
+static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPlayerDemoPlaybackViewControllerStatusObservationContext;
 
 #pragma mark - Initialization
 
@@ -44,7 +52,15 @@
 - (UIImageView *)videoCoverImgView
 {
     if (!_videoCoverImgView) {
-        _videoCoverImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 395, 130, 130)];
+        CGFloat coverY,coverH;
+        if (screenH == 568) {
+            coverY = 395;
+            coverH = 130;
+        }else {
+            coverY = 395;
+            coverH = 50;
+        }
+        _videoCoverImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, coverY, coverH, coverH)];
         _videoCoverImgView.backgroundColor = [UIColor clearColor];
     }
     return _videoCoverImgView;
@@ -61,9 +77,6 @@
     return self;
 }
 
-#define TEMP_VIDEO_NAME_PREFIX @"VN_Video_"
-static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPlayerDemoPlaybackViewControllerStatusObservationContext;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -74,7 +87,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
     topView.backgroundColor = [UIColor colorWithRGBValue:0xF1F1F1];
     
-    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 45, 44)];
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
     [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
     [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
@@ -88,7 +101,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
     [topView addSubview:titleLbl];
     
-    UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
+    UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
     [submitBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [submitBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
     [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
@@ -105,18 +118,55 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     self.isVolumePositive = YES;
     
     //generate images of video
-    _videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, 535, 320, 30) andVideoPath:self.videoPath];
+    
+    CGFloat framesY,framesH, btnY, lblY;
+    if (screenH == 568) {
+        framesY = 535;
+        framesH = 30;
+        btnY = 400;
+        lblY = 435;
+    }else {
+        framesY = 450;
+        framesH = 26;
+        btnY = 395;
+        lblY = 430;
+    }
+    _videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, framesY, 320, framesH) andVideoPath:self.videoPath];
     _videoFramesView.delegate = self;
     _videoFramesView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_videoFramesView];
     
-    UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, 400, 30, 30)];
+    UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, 30, 30)];
+    addMusicBtn.backgroundColor = [UIColor clearColor];
+    [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateNormal];
+    [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateSelected];
+    [addMusicBtn addTarget:self action:@selector(selectMusic) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:addMusicBtn];
+    
+    UILabel *addMusicLbl = [[UILabel alloc] initWithFrame:CGRectMake(160, lblY, 80, 20)];
+    addMusicLbl.backgroundColor = [UIColor clearColor];
+    addMusicLbl.textColor = [UIColor colorWithRGBValue:0x606366];
+    addMusicLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:10];
+    addMusicLbl.textAlignment = NSTextAlignmentCenter;
+    addMusicLbl.text = @"添加音乐";
+    [self.view addSubview:addMusicLbl];
+    
+    UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, btnY, 30, 30)];
     soundBtn.backgroundColor = [UIColor clearColor];
     [soundBtn setImage:[UIImage imageNamed:@"audio_on"] forState:UIControlStateNormal];
     [soundBtn setImage:[UIImage imageNamed:@"audio_off"] forState:UIControlStateSelected];
     [soundBtn addTarget:self action:@selector(soundSetting:) forControlEvents:UIControlEventTouchUpInside];
     soundBtn.selected = NO;   //on-sound off-nosound
     [self.view addSubview:soundBtn];
+    
+    UILabel *soundLbl = [[UILabel alloc] initWithFrame:CGRectMake(240, lblY, 80, 20)];
+    soundLbl.backgroundColor = [UIColor clearColor];
+    soundLbl.textColor = [UIColor colorWithRGBValue:0x606366];
+    soundLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:10];
+    soundLbl.textAlignment = NSTextAlignmentCenter;
+    soundLbl.text = @"原声关闭";
+    [self.view addSubview:soundLbl];
+    
     
     [self setVideoCoverWithTime:0];
 
@@ -172,6 +222,23 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
 }
 
+/**
+ *  @description: select music.
+ */
+- (void)selectMusic
+{
+    [self.videoPlayer pause];
+    VNAudioListController *audioListCtl = [[VNAudioListController alloc] init];
+    audioListCtl.delegate = self;
+    audioListCtl.onSelectionAudioPath = self.audioPath;
+    [self presentViewController:audioListCtl animated:YES completion:nil];
+}
+
+/**
+ *  @description: turn on/off the original audio
+ *
+ *  @param sender : input button
+ */
 - (void)soundSetting:(UIButton *)sender
 {
     NSURL *videoUrl = [NSURL fileURLWithPath:self.videoPath];
@@ -191,6 +258,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
             self.isVolumePositive = NO;
         }
+        NSLog(@"track id: %d",[track trackID]);
+
         [audioInputParams setTrackID:[track trackID]];
         [allAudioParams addObject:audioInputParams];
     }
@@ -311,7 +380,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         AVAssetExportSession *exporter = [[AVAssetExportSession alloc]
                                            initWithAsset:composition
-                                           presetName:AVAssetExportPresetHighestQuality];
+                                           presetName:AVAssetExportPresetMediumQuality];
         
         exporter.outputURL = [NSURL fileURLWithPath:filePath];
         
@@ -350,6 +419,98 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)didSelecteTime:(CGFloat)time
 {
     [self setVideoCoverWithTime:time];
+}
+
+#pragma mark - VNAudioListDelegate
+
+- (void)didSelectedAudioAtFilePath:(NSString *)filePath
+{
+    self.audioPath = filePath;
+    
+    NSString *finalVideoPath = [VNUtility getNSCachePath:@"VideoFiles/Temp/"];
+    NSString *withMusicPath = [finalVideoPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Music.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[NSFileManager defaultManager] removeItemAtPath:withMusicPath error:nil];
+    });
+    
+    AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+    AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
+    AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+    
+    AVMutableComposition* mixComposition = [AVMutableComposition composition];
+    
+    AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                        preferredTrackID:kCMPersistentTrackID_Invalid];
+    
+    [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                        ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
+                                         atTime:kCMTimeZero error:nil];
+    
+    AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                         preferredTrackID:kCMPersistentTrackID_Invalid];
+    [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                         ofTrack:[[audioAssetUser tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
+                                          atTime:kCMTimeZero error:nil];
+    
+    AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                                   preferredTrackID:kCMPersistentTrackID_Invalid];
+    [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                   ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
+                                    atTime:kCMTimeZero error:nil];
+    
+    AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
+                                                                          presetName:AVAssetExportPresetHighestQuality];
+    
+    NSURL *exportUrl = [NSURL fileURLWithPath:withMusicPath];
+    
+    _assetExport.outputFileType = AVFileTypeMPEG4;
+    _assetExport.outputURL = exportUrl;
+    _assetExport.shouldOptimizeForNetworkUse = YES;
+    
+    __weak VNVideoCoverSettingController *weakSelf = self;
+    
+    [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            switch ([_assetExport status]) {
+                case AVAssetExportSessionStatusFailed:
+                {
+                    NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
+                }
+                    break;
+                case AVAssetExportSessionStatusCancelled:
+                {
+                    NSLog(@"111111Export canceled");
+                }
+                    break;
+                default:
+                {
+                    [[NSNotificationCenter defaultCenter] removeObserver:weakSelf name:AVPlayerItemDidPlayToEndTimeNotification object:weakSelf.videoPlayerItem];
+                    [weakSelf.videoPlayer removeObserver:weakSelf forKeyPath:@"status" context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+                    
+                    NSURL *videoUrl = [NSURL fileURLWithPath:withMusicPath];
+                    AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+                    
+                    weakSelf.videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+                    
+                    [[NSNotificationCenter defaultCenter] addObserver:weakSelf
+                                                             selector:@selector(playerItemDidReachEnd:)
+                                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                                               object:weakSelf.videoPlayerItem];
+                    
+                    weakSelf.videoPlayer = [AVPlayer playerWithPlayerItem:weakSelf.videoPlayerItem];
+                    [weakSelf.videoPlayer addObserver:weakSelf forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+                    
+                    [weakSelf.videoPlayer seekToTime:kCMTimeZero];
+                    [weakSelf.videoPlayer play];
+                    
+                }
+                    break;
+            }
+        });
+    }];
+
 }
 
 @end

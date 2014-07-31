@@ -151,7 +151,7 @@ static NSString *videoFilePath;
     
     _captureSession = [[AVCaptureSession alloc] init];
     [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
-    
+
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     [videoDevice lockForConfiguration:nil];
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
@@ -403,6 +403,7 @@ static NSString *videoFilePath;
         
         //Export
         AVAssetExportSession *finalExporter = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality] ;
+
         finalExporter.videoComposition = videoComposition;
         finalExporter.outputURL = exportUrl;
         finalExporter.outputFileType = AVFileTypeMPEG4;

@@ -60,7 +60,7 @@
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
     topView.backgroundColor = [UIColor colorWithRGBValue:0xF1F1F1];
     
-    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 45, 44)];
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
     [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
     [backBtn addTarget:self action:@selector(doDismiss) forControlEvents:UIControlEventTouchUpInside];

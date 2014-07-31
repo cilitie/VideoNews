@@ -13,8 +13,9 @@
 #import "WXApi.h"
 #import "UMSocialAccountManager.h"
 #import "UMSocialSnsPlatformManager.h"
+#import "VNUploadManager.h"
 
-@interface VNVideoShareViewController () <UIGestureRecognizerDelegate>
+@interface VNVideoShareViewController () <UIGestureRecognizerDelegate,VNUploadManagerDelegate>
 
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, strong) UIImage *coverImg;
@@ -25,6 +26,7 @@
 
 @property (nonatomic, assign) BOOL shareSina;
 @property (nonatomic, assign) BOOL shareWeixin;
+
 
 @end
 
@@ -93,7 +95,7 @@
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
     topView.backgroundColor = [UIColor colorWithRGBValue:0xF1F1F1];
     
-    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 45, 44)];
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
     [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
     [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
@@ -107,7 +109,7 @@
     titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
     [topView addSubview:titleLbl];
     
-    UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
+    UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
     if (!fromDraft) {
         
         [draftBtn setTitle:@"draft" forState:UIControlStateNormal];
@@ -278,21 +280,47 @@
 
 - (void)doSubmit
 {
-    //process after submit success.
-    if (self.fromDraft) {
-        //clear draft video
-        [self clearDraftVideo];
-    }else {
-        //clear clips and temp video.
-        [self clearTempVideos];
+    
+    NSString *titleText = [self.titleTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (!titleText || titleText.length == 0 || [titleText isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"亲~ 标题一定要有内容哦~" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+        [alert show];
+        return;
     }
     
-    if (self.shareSina) {
-        //分享新浪
+    NSString *tagsText = [self.tagsTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (!tagsText) {
+        tagsText = @"";
     }
-    if (self.shareWeixin) {
-        //分享朋友圈
-    }
+    
+    VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
+    uploadManager.delegate = self;
+    
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    
+    NSLog(@"filesize....:%f M",[[[NSFileManager defaultManager] attributesOfItemAtPath:self.videoPath error:nil] fileSize]/1024.0/1024.0);
+    NSLog(@"开始上传");
+
+    NSData *videoData = [NSData dataWithContentsOfFile:self.videoPath];
+    
+    [uploadManager uploadVideo:videoData Uid:uid Title:titleText Tags:tagsText completion:^(bool success, NSError *err){
+        if (err) {
+            NSLog(@"%@", err.localizedDescription);
+        }
+        else if (success) {
+            //process after submit success.
+            if (self.fromDraft) {
+                //clear draft video
+                [self clearDraftVideo];
+            }else {
+                //clear clips and temp video.
+                [self clearTempVideos];
+            }
+            
+            return ;
+        }
+    }];
+    
 }
 
 /**
@@ -340,6 +368,29 @@
 {
     [self.titleTF resignFirstResponder];
     [self.tagsTF resignFirstResponder];
+}
+
+#pragma mark - VNUploadManagerDelegate
+
+// Upload completed successfully.
+- (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
+{
+    NSLog(@"key path :%@",key);
+    NSLog(@"dic....:%@",ret);
+    
+    if (self.shareSina) {
+        //分享新浪
+    }
+    if (self.shareWeixin) {
+        //分享朋友圈
+    }
+    
+}
+
+// Upload failed.
+- (void)uploadFailed:(NSString *)key error:(NSError *)error
+{
+    NSLog(@"%@", error.localizedDescription);
 }
 
 @end

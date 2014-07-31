@@ -82,7 +82,7 @@
         UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
         topView.backgroundColor = [UIColor colorWithRGBValue:0xF1F1F1];
         
-        UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 45, 44)];
+        UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
         [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
         [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
         [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
@@ -96,7 +96,7 @@
         titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
         [topView addSubview:titleLbl];
         
-        UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(275, 20, 45, 44)];
+        UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
         [submitBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
         [submitBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
         [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];

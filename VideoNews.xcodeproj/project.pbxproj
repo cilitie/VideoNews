@@ -22,6 +22,8 @@
 		144BF54A1984F58000A6C6B7 /* VNVideoCoverSettingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53B1984F58000A6C6B7 /* VNVideoCoverSettingController.m */; };
 		144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */; };
 		144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */; };
+		14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B8951F198A3F22006244D9 /* VNAudioListController.m */; };
+		14B89529198A4243006244D9 /* Audios in Resources */ = {isa = PBXBuildFile; fileRef = 14B89528198A4243006244D9 /* Audios */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
 		269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C4197061BD005DEDEE /* VNUserViewController.m */; };
@@ -174,6 +176,9 @@
 		144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFramesView.m; sourceTree = "<group>"; };
 		144BF53E1984F58000A6C6B7 /* VNVideoShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoShareViewController.h; sourceTree = "<group>"; };
 		144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
+		14B8951E198A3F22006244D9 /* VNAudioListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAudioListController.h; sourceTree = "<group>"; };
+		14B8951F198A3F22006244D9 /* VNAudioListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAudioListController.m; sourceTree = "<group>"; };
+		14B89528198A4243006244D9 /* Audios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audios; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
@@ -416,6 +421,7 @@
 		144BF52219848AF700A6C6B7 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				14B89528198A4243006244D9 /* Audios */,
 				144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */,
 				144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */,
 				144BF5281984F58000A6C6B7 /* VNAlbumVideoEditController.h */,
@@ -444,6 +450,8 @@
 				144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */,
 				144BF53E1984F58000A6C6B7 /* VNVideoShareViewController.h */,
 				144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */,
+				14B8951E198A3F22006244D9 /* VNAudioListController.h */,
+				14B8951F198A3F22006244D9 /* VNAudioListController.m */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -973,6 +981,7 @@
 				D6676F7D197523A900F484FE /* EmojisList.plist in Resources */,
 				D642971119668EE4004E218C /* UMShareEditViewControlleriPad.xib in Resources */,
 				D642971019668EE4004E218C /* UMShareEditViewController.xib in Resources */,
+				14B89529198A4243006244D9 /* Audios in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1091,6 +1100,7 @@
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */,
+				14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
