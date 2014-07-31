@@ -24,4 +24,6 @@
 
 @property (assign,nonatomic,readonly)int reply_pid;
 
+@property (assign,nonatomic,readonly)int mid;
+
 @end

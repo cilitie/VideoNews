@@ -545,7 +545,7 @@ static int pagesize = 10;
     //FIXME: test
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //        NSLog(@"%@", responseObject);
-        NSLog(@"url:%@",operation.request.URL.absoluteString);
+        //NSLog(@"url:%@",operation.request.URL.absoluteString);
         VNMessage *message = nil;
         NSMutableArray *messageArr = [NSMutableArray array];
         

@@ -16,6 +16,7 @@ static NSString *KTime=@"time";
 static NSString *KText=@"text";
 static NSString *KReplyText=@"reply_text";
 static NSString *KReplyPid=@"reply_pid";
+static NSString *KMid=@"mid";
 
 
 @implementation VNMessage
@@ -58,6 +59,10 @@ static NSString *KReplyPid=@"reply_pid";
 
 - (int)reply_pid {
     return [makeSureNotNull([self.basicDict objectForKey:KReplyPid])intValue];
+}
+
+- (int)mid {
+    return [makeSureNotNull([self.basicDict objectForKey:KMid])intValue];
 }
 
 @end
