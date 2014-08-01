@@ -15,6 +15,13 @@ extern NSString *const kArchivingHistoryWord;
 extern NSString *const VNHistoryDidAddNotification;
 extern NSString *const VNHistoryDidClearNotification;
 extern NSString *const VNSearchTypeDidChangeNotification;
+extern NSString *const VNHomeCellDeleteNotification;
+extern NSString *const VNCategoryCellDeleteNotification;
+extern NSString *const VNProfileCellDeleteNotification;
+extern NSString *const VNMineProfileCellDeleteNotification;
+extern NSString *const VNNotificationCellDeleteNotification;
+extern NSString *const VNSearchCellDeleteNotification;
+
 
 //NSUserDefault
 extern NSString *const VNLoginUser;

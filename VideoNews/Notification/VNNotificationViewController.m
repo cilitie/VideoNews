@@ -306,7 +306,7 @@
         cell.thumbnail.layer.masksToBounds = YES;
         
         cell.nameLabel.text=message.sender.name;
-        NSString *text=[NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
+        NSString *text=[NSString stringWithFormat:@"在你发布的\"%@\"中评论了你",message.news.title];
         
         //cell.contentLabel.numberOfLines=0;
         cell.timeLabel.text=message.time;
