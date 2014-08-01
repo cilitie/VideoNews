@@ -131,7 +131,9 @@ static NSString *shareStr;
     if (self.isPush) {
         self.popBtn.hidden = NO;
     }
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeVideoCellForNewsDeleted:) name:VNMineProfileVideoCellDeleteNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFavouriteCellForNewsDeleted:) name:VNMineProfileFavouriteCellDeleteNotification object:nil];
+
     [self reload];
 }
 
@@ -504,6 +506,26 @@ static NSString *shareStr;
     // Pass the selected object to the new view controller.
 }
 */
+- (void)removeVideoCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    //NSLog(@"%d",[notification.object integerValue]);
+    NSIndexPath *index=notification.object;
+    [_mineVideoArr removeObjectAtIndex:index.row];
+    [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    //[_videoTableView deleteCellAtIndexPath:notification.object];
+    [_videoTableView reloadData];
+}
+
+- (void)removeFavouriteCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    //NSLog(@"%d",[notification.object integerValue]);
+    NSIndexPath *index=notification.object;
+    //NSLog(@"%d",index.row);
+    [_favVideoArr removeObjectAtIndex:index.row];
+    [_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    //[_videoTableView deleteCellAtIndexPath:notification.object];
+    [_favouriteTableView reloadData];
+}
 
 #pragma mark - UITableView Datasource
 
@@ -540,6 +562,7 @@ static NSString *shareStr;
         cell.commentHandler = ^(){
             VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
             newsDetailViewController.news = news;
+            newsDetailViewController.indexPath=indexPath;
             newsDetailViewController.hidesBottomBarWhenPushed = YES;
             newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
@@ -567,6 +590,7 @@ static NSString *shareStr;
         cell.commentHandler = ^(){
             VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
             newsDetailViewController.news = news;
+            newsDetailViewController.indexPath=indexPath;
             newsDetailViewController.hidesBottomBarWhenPushed = YES;
             newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
@@ -641,16 +665,18 @@ static NSString *shareStr;
         VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
         VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
         newsDetailViewController.news = news;
+        newsDetailViewController.indexPath=indexPath;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
-        newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+        newsDetailViewController.controllerType = SourceViewControllerTypeMineProfileVideo;
         [self.navigationController pushViewController:newsDetailViewController animated:YES];
     }
     else if (tableView == self.favouriteTableView) {
         VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
         VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
         newsDetailViewController.news = news;
+        newsDetailViewController.indexPath=indexPath;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
-        newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+        newsDetailViewController.controllerType = SourceViewControllerTypeMineProfileFavourite;
         [self.navigationController pushViewController:newsDetailViewController animated:YES];
     }
     else if (tableView == self.followTableView) {

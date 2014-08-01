@@ -18,9 +18,9 @@ NSString *const VNSearchTypeDidChangeNotification = @"kVNSearchTypeDidChangeNoti
 NSString *const VNHomeCellDeleteNotification=@"KVNHomeCellDeleteNotification";
 NSString *const VNCategoryCellDeleteNotification=@"KVNCategoryCellDeleteNotification";
 NSString *const VNProfileCellDeleteNotification=@"KVNProfileCellDeleteNotification";
-NSString *const VNMineProfileCellDeleteNotification=@"KVNMineProfileCellDeleteNotification";
+NSString *const VNMineProfileVideoCellDeleteNotification=@"KVNMineProfileVideoCellDeleteNotification";
 NSString *const VNNotificationCellDeleteNotification=@"KVNNotificationCellDeleteNotification";
-NSString *const VNSearchCellDeleteNotification=@"KVNSearchCellDeleteNotification";
+NSString *const VNMineProfileFavouriteCellDeleteNotification=@"KVNMineProfileFavouriteCellDeleteNotification";
 
 //NSUserDefault
 NSString *const VNLoginUser = @"kVNLoginUser";

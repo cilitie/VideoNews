@@ -138,6 +138,16 @@ static NSString *shareStr;
     };
     
     self.headerView.moreHandler = ^{
+        [VNHTTPRequestManager isNewsDeleted:weakSelf.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
+         {
+             isNewsDeleted=YES;
+             if (error) {
+                 NSLog(@"%@", error.localizedDescription);
+             }
+             else if (isNewsDeleted) {
+                 [weakSelf deleteCellAndPop];
+             }
+         }];
         UIActionSheet *actionSheet = nil;
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         NSString *mineID = [userInfo objectForKey:@"openid"];
@@ -225,6 +235,7 @@ static NSString *shareStr;
 //                                               object:nil];
 //    
     [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error) {
+        //isNewsDeleted=YES;
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
@@ -243,6 +254,7 @@ static NSString *shareStr;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:refreshTimeStamp completion:^(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error) {
+                //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -272,6 +284,7 @@ static NSString *shareStr;
         }
         
         [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:moreTimeStamp completion:^(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error) {
+            //isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -296,7 +309,8 @@ static NSString *shareStr;
 {
     int row=sender.tag;
     _curComment=_commentArr[row-KReplyButton];
-    _curIndexPath=[NSIndexPath indexPathWithIndex:(row-KReplyButton)];
+    _curIndexPath=[NSIndexPath indexPathForRow: (row-KReplyButton) inSection:0];
+   // NSLog(@"%d",_curIndexPath.row);
     
     [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.curComment.author.name]];
     [self.inputTextView becomeFirstResponder];
@@ -486,6 +500,7 @@ static NSString *shareStr;
     
     if (button.isSelected) {
         [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, NSError *error) {
+            //isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -528,22 +543,23 @@ static NSString *shareStr;
 {
     switch (_controllerType) {
         case SourceViewControllerTypeHome:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNHomeCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+            //NSLog(@"%d",_indexPath.row);
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNHomeCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeCategory:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNCategoryCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNCategoryCellDeleteNotification object:_indexPath];
             break;
-        case SourceViewControllerTypeMineProfile:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+        case SourceViewControllerTypeMineProfileVideo:
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileVideoCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeNotification:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNNotificationCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNNotificationCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeProfile:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileCellDeleteNotification object:_indexPath];
             break;
-        case SourceViewControllerTypeSearch:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNSearchCellDeleteNotification object:[NSNumber numberWithInt:_news.nid]];
+        case SourceViewControllerTypeMineProfileFavourite:
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:_indexPath];
             break;
             
         default:
@@ -555,6 +571,17 @@ static NSString *shareStr;
 }
 
 - (IBAction)share:(id)sender {
+    [VNHTTPRequestManager isNewsDeleted:self.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
+     {
+         //isNewsDeleted=YES;
+         if (error) {
+             NSLog(@"%@", error.localizedDescription);
+         }
+         else if (isNewsDeleted) {
+             [self deleteCellAndPop];
+         }
+     }];
+
     UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:@"分享到" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
     [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
     shareActionSheet.tag = kTagShare;
@@ -581,6 +608,7 @@ static NSString *shareStr;
                 //NSLog(@"%@",self.curComment);
                 __weak typeof(self) weakSelf = self;
                 [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, NSError *error) {
+                    //isCommentDeleted=YES;
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -589,8 +617,11 @@ static NSString *shareStr;
                     }
                     else if (isCommentDeleted)
                     {
+                        //NSLog(@"%@",_curIndexPath);
                         [weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
                         [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                        weakSelf.inputTextView.text=@"";
+                        [weakSelf.inputTextView resignFirstResponder];
                         [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
                     }
                     else if (succeed) {
@@ -611,6 +642,7 @@ static NSString *shareStr;
             }
             else {
                 [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, NSError *error) {
+                    //isNewsDeleted=YES;
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -888,6 +920,7 @@ static NSString *shareStr;
                 //删除评论
             case 2: {
                 NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                __weak typeof(self) weakSelf = self;
                 if (userInfo && userInfo.count) {
                     NSString *uid = [userInfo objectForKey:@"openid"];
                     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
@@ -901,9 +934,14 @@ static NSString *shareStr;
                                 [self deleteCellAndPop];
                             }
                             else if (succeed) {
-                                [VNUtility showHUDText:@"删除评论成功!" forView:self.view];
+                                
                                 self.inputTextView.text = @"";
-                                [self.commentTableView triggerPullToRefresh];
+                                //[self.commentTableView triggerPullToRefresh];
+                                [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
+                                [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                //weakSelf.inputTextView.text=@"";
+                                //[weakSelf.inputTextView resignFirstResponder];
+                                [VNUtility showHUDText:@"删除评论成功!" forView:self.view];
                             }
                             else {
                                 [VNUtility showHUDText:@"删除评论失败!" forView:self.view];
@@ -1047,6 +1085,7 @@ static NSString *shareStr;
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
         [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, NSError *error) {
+            isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }

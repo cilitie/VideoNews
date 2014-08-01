@@ -15,7 +15,7 @@ extern CGFloat const thumbnailHeight;
 
 @optional
 
--(void)TapImageView:(VNNews *)news;
+-(void)TapImageView:(VNNews *)news IndexPath:(NSIndexPath *)indexPath;
 
 -(void)TapUserView:(VNNews *)news;
 
@@ -25,6 +25,8 @@ extern CGFloat const thumbnailHeight;
 @interface VNQuiltViewCell : TMQuiltViewCell
 
 @property (strong, nonatomic) VNNews *news;
+
+@property (strong,nonatomic)NSIndexPath *indexPath;
 
 @property (nonatomic, assign) id<VNQuiltViewCellDelegate> delegate;
 

@@ -106,8 +106,8 @@ static CGFloat totleWidth = 145.0;
         return;
     }
     //CGPoint tapPoint = [recognizer locationInView:self];
-    if ([self.delegate respondsToSelector:@selector(TapImageView:)]) {
-        [self.delegate TapImageView:_news];
+    if ([self.delegate respondsToSelector:@selector(TapImageView:IndexPath:)]) {
+        [self.delegate TapImageView:_news IndexPath:_indexPath];
     }
     
 }
