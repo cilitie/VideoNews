@@ -958,9 +958,13 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
-        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
+        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
+            }
+            else if (isNewsDeleted)
+            {
+                //删除相应的cell
             }
             else if (succeed) {
                 NSLog(@"分享添加评论成功！");
