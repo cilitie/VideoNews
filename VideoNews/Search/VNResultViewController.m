@@ -182,7 +182,10 @@
         [self showTabBar];
     }
 }
-
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNCategoryCellDeleteNotification object:nil];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

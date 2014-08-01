@@ -495,6 +495,13 @@ static NSString *shareStr;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileFavouriteCellDeleteNotification object:nil];
+   
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileVideoCellDeleteNotification object:nil];
+    
+}
 
 /*
 #pragma mark - Navigation
