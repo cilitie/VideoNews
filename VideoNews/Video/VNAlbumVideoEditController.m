@@ -97,8 +97,8 @@
         [topView addSubview:titleLbl];
         
         UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
-        [submitBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-        [submitBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
+        [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateNormal];
+        [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateSelected];
         [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
         [topView addSubview:submitBtn];
         
@@ -191,6 +191,13 @@
 {
     [super didReceiveMemoryWarning];
 
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (self.videoPlayer) {
+        [self.videoPlayer pause];
+    }
 }
 
 #pragma mark - User & Interaction Methods

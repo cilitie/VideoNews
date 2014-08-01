@@ -44,7 +44,11 @@
     }
     
     //to see if there's any video clip left(after video capture last time of application launch).
-    [self checkVideoCapture];
+    NSDictionary *loginInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    if (loginInfo[@"openid"] && user_token) {
+        [self checkVideoCapture];
+    }
     
     return YES;
 }
