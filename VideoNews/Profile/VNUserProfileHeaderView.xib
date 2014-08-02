@@ -91,7 +91,7 @@
                             <rect key="frame" x="29" y="124" width="48" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <color key="textColor" red="0.63529413940000001" green="0.63529413940000001" blue="0.63529413940000001" alpha="1" colorSpace="deviceRGB"/>
+                            <color key="textColor" red="0.80392163991928101" green="0.098039224743843079" blue="0.14509804546833038" alpha="1" colorSpace="deviceRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cJe-Ut-pJX">
@@ -157,13 +157,16 @@
                 <outlet property="constellationLabel" destination="Lqr-hg-kuy" id="tgh-uM-qKq"/>
                 <outlet property="descriptionLabel" destination="XpE-Te-6jc" id="oys-GS-URA"/>
                 <outlet property="fansCountLabel" destination="met-WF-XFz" id="Xn4-jN-fyc"/>
+                <outlet property="fansTitleLabel" destination="AkE-4L-bAO" id="thK-oV-E9E"/>
                 <outlet property="followCountLabel" destination="cJe-Ut-pJX" id="ge8-qj-3jV"/>
+                <outlet property="followTitleLabel" destination="TCM-mu-Qlo" id="h1D-S8-IKy"/>
                 <outlet property="genderImgView" destination="5Tp-R8-p7J" id="5ug-iM-FoE"/>
                 <outlet property="locationLabel" destination="SV4-cZ-hgh" id="ehb-49-FR3"/>
                 <outlet property="nameLabel" destination="Ad9-13-fqG" id="HcF-9f-suu"/>
                 <outlet property="nameLabelWidthLC" destination="21v-CM-Ppf" id="RxI-Ue-ZZD"/>
                 <outlet property="thumbnailImgView" destination="NXx-Zb-dU2" id="jpu-8X-zoW"/>
                 <outlet property="videoCountLabel" destination="lw1-QT-3do" id="qei-WY-woP"/>
+                <outlet property="videoTitleLabel" destination="Yhc-nL-vip" id="M0U-07-46i"/>
             </connections>
         </view>
         <tapGestureRecognizer id="hHU-Sf-OZK">

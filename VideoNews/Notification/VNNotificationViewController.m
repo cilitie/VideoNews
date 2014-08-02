@@ -14,32 +14,27 @@
 
 #import "VNNewsDetailViewController.h"
 
-#import "UIButton+AFNetworking.h"
-
 #import "SVPullToRefresh.h"
 
 #import "VNUserViewController.h"
 
-#import "VNHTTPRequestManager.h"
-#import "AFNetworking.h"
-////上传相关
-#import "OSSClient.h"
+//#import "VNHTTPRequestManager.h"
+//#import "AFNetworking.h"
+//////上传相关
+//#import "OSSClient.h"
 
 #import "VNTabBarViewController.h"
-//OSS Bucket的基址，可以是自定义域名或者OSS默认域名
-//#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
-#define OSS_BUCKET_BASE_URL     "http://fashion-test.oss-cn-beijing.aliyuncs.com/"
-//#define OSS_BUCKET_BASE_URL     "http://oss-cn-beijing.aliyuncs.com/"
-//用于计算签名的服务端接口服务
-//#define OSS_SIGN_CALC_SERVICE   "http://10.32.179.161:8080/ossFileApi/sign.json"
-#define OSS_SIGN_CALC_SERVICE   "http://182.92.103.134:8080/engine/signature.php"
+////OSS Bucket的基址，可以是自定义域名或者OSS默认域名
+////#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
+//#define OSS_BUCKET_BASE_URL     "http://fashion-test.oss-cn-beijing.aliyuncs.com/"
+////#define OSS_BUCKET_BASE_URL     "http://oss-cn-beijing.aliyuncs.com/"
+////用于计算签名的服务端接口服务
+////#define OSS_SIGN_CALC_SERVICE   "http://10.32.179.161:8080/ossFileApi/sign.json"
+//#define OSS_SIGN_CALC_SERVICE   "http://182.92.103.134:8080/engine/signature.php"
 
 //qiniu上传相关
 
-
-//#import "VNNotificationTableViewController.h"
-
-@interface VNNotificationViewController ()
+@interface VNNotificationViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *messageTableView;
 
@@ -54,15 +49,6 @@
 @end
 
 @implementation VNNotificationViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -81,8 +67,9 @@
     
     [self removeBadgeValue];
 
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:nil] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:nil] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
+    
     VNAuthUser *authUser = nil;
     NSString *user_token = @"";
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:isLogin] boolValue]) {
@@ -100,18 +87,18 @@
     }
     //userToken:(NSString *)user_token
     __weak typeof(self) weakSelf = self;
-    _openUid=authUser.openid;
-    _user_token=user_token;
-
-    [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        else {
-            [weakSelf.messageArr addObjectsFromArray:messageArr];
-            [weakSelf.messageTableView reloadData];
-        }
-    }];
+//    _openUid=authUser.openid;
+//    _user_token=user_token;
+//
+//    [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
+//        if (error) {
+//            NSLog(@"%@", error.localizedDescription);
+//        }
+//        else {
+//            [weakSelf.messageArr addObjectsFromArray:messageArr];
+//            [weakSelf.messageTableView reloadData];
+//        }
+//    }];
     
     [self.messageTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
@@ -170,70 +157,58 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.messageTableView triggerPullToRefresh];
+//    [self.messageTableView triggerPullToRefresh];
     [self removeBadgeValue];
- //   __weak typeof(self) weakSelf = self;
-    
-//    [VNHTTPRequestManager messageListForUser:_openUid userToken:_user_token timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *messageArr, NSError *error) {
-//        if (error) {
-//            NSLog(@"%@", error.localizedDescription);
+}
+//-(void)uploadImage:(NSString *)filePath Bucket:(NSString *)bucket
+//{
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    NSString *path=[NSString stringWithFormat:@"%@%@",bucket,filePath];
+//    
+//    NSDictionary *parameters =@{@"method":@"PUT",@"path":path};
+//        NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
+//    //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
+//    [manager POST:URLStr parameters:parameters
+//          success:^(AFHTTPRequestOperation *operation,id responseObject) {
+//        //NSLog(@"Success: %@", responseObject);
+//              //获得签名信息
+//        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+//            NSString *(^signCalculatorBlock)(OSSMethod ,NSString *,NSMutableDictionary *)=^(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options){
+//                NSLog(@"GET SIGN FROM SERVER");
+//                //return @"OSS bmJjNn9pYaftA46d:yh55h8wESbuoC0nET7BJt0qTHps=";
+//                //return getSignFromServer(method,ossFilePath,options);
+//                return [responseObject objectForKey:@"signature"];
+//            };
+//
+//            
+//            OSSClient *ossClient=[[OSSClient alloc] initWithBucketBaseUrl:[NSURL URLWithString:@OSS_BUCKET_BASE_URL]
+//                                                         bucketPermission:PRIVATE
+//                                                           signCalculator:signCalculatorBlock
+//                                                                     Date:[responseObject objectForKey:@"date"]
+//                                  ];
+//            
+//            NSData *data=[@"HELLO OBJECTIVE C - FROM IOS\n" dataUsingEncoding:NSASCIIStringEncoding];
+//            
+//            OSSMethodResult *result=nil;
+//            //NSMutableDictionary *options=nil;
+//            
+//            result=[ossClient putFile:filePath data:data options:nil];
+//            //NSLog(@"%@",result.headers);
+//            //NSLog(@"%@",result.error);
+//            //NSLog(@"%@",result.data);
+//            if (result.error==nil && result.statusCode==200) {
+//                NSLog(@"PUT OK");
+//            }
+//
 //        }
-//        else {
-//            [weakSelf.messageArr addObjectsFromArray:messageArr];
-//            [weakSelf.messageTableView reloadData];
-//        }
+//    } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+//        //NSLog(@"%@",operation.request.URL.absoluteString);
+//        //NSLog(@"%@",operation);
+//        NSLog(@"Error: %@", error);
+//        
+//        
 //    }];
-
-}
--(void)uploadImage:(NSString *)filePath Bucket:(NSString *)bucket
-{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *path=[NSString stringWithFormat:@"%@%@",bucket,filePath];
-    
-    NSDictionary *parameters =@{@"method":@"PUT",@"path":path};
-        NSString *URLStr = [VNHost stringByAppendingString:@"signature.php"];
-    //NSString *URLStr=@"fashion-test.oss-cn-beijing.aliyuncs.com";
-    [manager POST:URLStr parameters:parameters
-          success:^(AFHTTPRequestOperation *operation,id responseObject) {
-        //NSLog(@"Success: %@", responseObject);
-              //获得签名信息
-        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-            NSString *(^signCalculatorBlock)(OSSMethod ,NSString *,NSMutableDictionary *)=^(OSSMethod method,NSString *ossFilePath,NSMutableDictionary *options){
-                NSLog(@"GET SIGN FROM SERVER");
-                //return @"OSS bmJjNn9pYaftA46d:yh55h8wESbuoC0nET7BJt0qTHps=";
-                //return getSignFromServer(method,ossFilePath,options);
-                return [responseObject objectForKey:@"signature"];
-            };
-
-            
-            OSSClient *ossClient=[[OSSClient alloc] initWithBucketBaseUrl:[NSURL URLWithString:@OSS_BUCKET_BASE_URL]
-                                                         bucketPermission:PRIVATE
-                                                           signCalculator:signCalculatorBlock
-                                                                     Date:[responseObject objectForKey:@"date"]
-                                  ];
-            
-            NSData *data=[@"HELLO OBJECTIVE C - FROM IOS\n" dataUsingEncoding:NSASCIIStringEncoding];
-            
-            OSSMethodResult *result=nil;
-            //NSMutableDictionary *options=nil;
-            
-            result=[ossClient putFile:filePath data:data options:nil];
-            //NSLog(@"%@",result.headers);
-            //NSLog(@"%@",result.error);
-            //NSLog(@"%@",result.data);
-            if (result.error==nil && result.statusCode==200) {
-                NSLog(@"PUT OK");
-            }
-
-        }
-    } failure:^(AFHTTPRequestOperation *operation,NSError *error) {
-        //NSLog(@"%@",operation.request.URL.absoluteString);
-        //NSLog(@"%@",operation);
-        NSLog(@"Error: %@", error);
-        
-        
-    }];
-}
+//}
 
 - (void)didReceiveMemoryWarning
 {
@@ -254,86 +229,26 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+    NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
+    if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
+        cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
+    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    if ([message.type isEqualToString: @"user"]) {
-        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
-        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
-        cell.thumbnail.layer.masksToBounds = YES;
-        cell.nameLabel.text=message.sender.name;
-        //NSString *text=[NSString stringWithFormat:@"@%@关注了你",message.sender.name];
-        cell.contentLabel.text=@"关注了你";
-        cell.timeLabel.text=message.time;
-        return cell;
+    if (cell) {
+        if ([message.type isEqualToString: @"user"]) {
+            VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
+            userCell.message = message;
+            [userCell reload];
+        }
+        else if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"])
+        {
+            VNNotificationReplyTableViewCell *replyCell = (VNNotificationReplyTableViewCell *)cell;
+            replyCell.message = message;
+            [replyCell reload];
+        }
     }
-    else if ([message.type isEqualToString:@"comment"])
-    {
-        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
-        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
-        cell.thumbnail.layer.masksToBounds = YES;
-        cell.nameLabel.text=message.sender.name;
-        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
-        cell.contentLabel.text=text;
-        cell.timeLabel.text=message.time;
-        //cell.contentLabel.numberOfLines=0;
-        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
-        CGRect rect = [cell.contentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        //    NSLog(@"%@", NSStringFromCGRect(rect));
-        CGRect titleLabelframe = cell.contentLabel.frame;
-        titleLabelframe.size.height = CGRectGetHeight(rect);
-        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
-        cell.contentLabel.frame = titleLabelframe;
-        
-        
-        //text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
-        cell.replyContentLabel.text=message.reply_text;
-        //cell.replyContentLabel.numberOfLines=0;
-        //cell.timeLabel.text=message.time;
-        
-        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
-        rect = [cell.replyContentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        //    NSLog(@"%@", NSStringFromCGRect(rect));
-        titleLabelframe = cell.replyContentLabel.frame;
-        titleLabelframe.size.height = CGRectGetHeight(rect);
-        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
-        cell.replyContentLabel.frame = titleLabelframe;
         return cell;
-    }
-        VNNotificationReplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
-        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
-        cell.thumbnail.layer.masksToBounds = YES;
-        
-        cell.nameLabel.text=message.sender.name;
-        NSString *text=[NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
-        
-        //cell.contentLabel.numberOfLines=0;
-        cell.timeLabel.text=message.time;
-        
-        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
-        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-          // NSLog(@"%@", NSStringFromCGRect(rect));
-        CGRect titleLabelframe = cell.contentLabel.frame;
-        titleLabelframe.size.height = CGRectGetHeight(rect);
-        //NSLog(@"%f", titleLabelframe.size.height);
-        //NSLog(@"%f",cell.contentLabel.frame.size.height);
-        cell.contentLabel.frame = titleLabelframe;
-        //NSLog(@"%f",cell.contentLabel.frame.size.height);
-        cell.contentLabel.text=text;
-        //cell.contentLabel.backgroundColor=[UIColor blackColor];
-        
-        cell.replyContentLabel.text=message.reply_text;
-        //cell.replyContentLabel.numberOfLines=0;
-        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
-        rect = [cell.replyContentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        //    NSLog(@"%@", NSStringFromCGRect(rect));
-        titleLabelframe = cell.replyContentLabel.frame;
-        titleLabelframe.size.height = CGRectGetHeight(rect);
-        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
-        cell.replyContentLabel.frame = titleLabelframe;
-        return cell;
-    //}
 }
 
 #pragma mark - UITableView Delegate methods
@@ -359,47 +274,40 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat diff = 0;
     VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    //    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-    VNNotificationReplyTableViewCell *cell = loadXib(@"VNNotificationReplyTableViewCell");
-    
-    if ([message.type isEqualToString:@"comment"]) {
-        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
-        NSString *text=[NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"",message.news.title,message.text];
-        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        //    NSLog(@"%@", NSStringFromCGRect(rect));
-        if (CGRectGetHeight(rect) > 15) {
-            diff = CGRectGetHeight(rect)-15;
-        }
-        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
-        rect = [message.reply_text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        if (CGRectGetHeight(rect)>15) {
-            diff=diff+CGRectGetHeight(rect)-15;
-        }
-        return diff+80;
+    if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
+        return [self cellHeightFor:message];
     }
-    else if ([message.type isEqualToString:@"news"])
-    {
-        NSDictionary *attribute = @{NSFontAttributeName:cell.contentLabel.font};
-        NSString *text=[NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
-        CGRect rect = [text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        //    NSLog(@"%@", NSStringFromCGRect(rect));
-        if (CGRectGetHeight(rect) > 15) {
-            diff = CGRectGetHeight(rect)-15;
-        }
-        attribute = @{NSFontAttributeName:cell.replyContentLabel.font};
-        rect = [message.reply_text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.replyContentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-        if (CGRectGetHeight(rect)>15) {
-            diff=diff+CGRectGetHeight(rect)-15;
-        }
-        return 80+diff;
+    else {
+        return 80;
     }
-    //NSLog(@"%f",diff);
-        return 50;
 }
 
+#pragma mark - SEL
 
+- (CGFloat)cellHeightFor:(VNMessage *)message {
+    __block CGFloat cellHeight = 120.0;
+    
+    NSDictionary *attribute = @{NSFontAttributeName:[UIFont systemFontOfSize:15.0]};
+    CGRect rect = [message.reply_text boundingRectWithSize:CGSizeMake(260.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+    cellHeight += CGRectGetHeight(rect);
+    NSLog(@"%f", cellHeight);
+    
+    if ([message.type isEqualToString:@"comment"]) {
+        NSString *text = [NSString stringWithFormat:@"在\"%@\"中回复了你的评论：\n\"%@\"", message.news.title, message.text];
+        rect = [text boundingRectWithSize:CGSizeMake(260.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        cellHeight += CGRectGetHeight(rect);
+        NSLog(@"%f", cellHeight);
+    }
+    else if ([message.type isEqualToString:@"news"]) {
+        NSString *text = [NSString stringWithFormat:@"在你的大作\"%@\"中评论了你",message.news.title];
+        rect = [text boundingRectWithSize:CGSizeMake(260.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        cellHeight += CGRectGetHeight(rect);
+        NSLog(@"%f", cellHeight);
+    }
+    
+    return cellHeight;
+}
 
 #pragma mark - Navigation
 

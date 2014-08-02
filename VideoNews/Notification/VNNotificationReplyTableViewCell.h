@@ -9,10 +9,18 @@
 #import <UIKit/UIKit.h>
 
 @interface VNNotificationReplyTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIButton *thumbnail;
+@property (weak, nonatomic) IBOutlet UIImageView *thumbnail;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *replyContentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *contentLabel;
+@property (weak, nonatomic) IBOutlet UIView *contentBgView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *replyContentLabelLC;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentBgLC;
+
+@property (strong, nonatomic) VNMessage *message;
+
+- (void)reload;
 
 @end

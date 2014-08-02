@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VNNotificationViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+@interface VNNotificationViewController : UIViewController
 
 @end

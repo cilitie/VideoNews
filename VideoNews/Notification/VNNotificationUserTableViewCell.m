@@ -22,4 +22,14 @@
     // Configure the view for the selected state
 }
 
+- (void)reload {
+    if (self.message) {
+        [self.thumbnail setImageWithURL:[NSURL URLWithString:self.message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
+        [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
+        self.thumbnail.layer.masksToBounds = YES;
+        self.nameLabel.text = self.message.sender.name;
+        self.timeLabel.text = self.message.time;
+    }
+}
+
 @end
