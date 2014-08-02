@@ -209,7 +209,7 @@
             NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
             if (uid && user_token) {
                 if ([user.uid isEqualToString:uid]) {
-                    [VNUtility showHUDText:@"你不能关注自己!" forView:self.view];
+                    [VNUtility showHUDText:@"不能关注自己!" forView:self.view];
                     return ;
                 }
                 [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed, NSError *error) {
