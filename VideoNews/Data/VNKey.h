@@ -21,6 +21,7 @@ extern NSString *const VNProfileCellDeleteNotification;
 extern NSString *const VNMineProfileVideoCellDeleteNotification;
 extern NSString *const VNNotificationCellDeleteNotification;
 extern NSString *const VNMineProfileFavouriteCellDeleteNotification;
+extern NSString *const VNSignOutNotification;
 
 
 //NSUserDefault

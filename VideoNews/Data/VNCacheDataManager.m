@@ -209,7 +209,7 @@
 
 + (NSString *)cacheDirectory
 {
-    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"com.chinaso.mobileSearch_cache"];
+    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"com.Manyu-Zhu.VideoNews_cache"];
     BOOL isDir = YES;
     NSError *error;
     

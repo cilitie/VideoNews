@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, SourceViewType) {
+    SourceVCTypeMineProfile=0
+};
+
+
 @interface VNLoginViewController : UIViewController
+
+@property (assign, nonatomic) SourceViewType controllerType;
+
 
 @end

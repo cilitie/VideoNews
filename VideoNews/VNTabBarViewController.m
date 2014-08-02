@@ -25,6 +25,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userSignOut:)  name:VNSignOutNotification object:nil];
     [self.tabBar setBarTintColor:[UIColor whiteColor]];
     [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x3f3f3f]]];
     self.delegate = self;
@@ -74,6 +75,8 @@
         else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
             [alert show];
+            //VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+            //[self presentViewController:loginViewController animated:YES completion:nil];
         }
     }
     
@@ -89,6 +92,18 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:VNSignOutNotification object:nil];
+}
+
+-(void)userSignOut:(NSNotification *)notification
+{
+    //VNTabBarViewController *tabbarCtl=(VNTabBarViewController *)self.tabBarController;
+    //tabbarCtl.selectedIndex=0;
+    self.selectedIndex=0;
 }
 
 /*

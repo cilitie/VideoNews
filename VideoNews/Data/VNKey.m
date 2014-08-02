@@ -21,6 +21,7 @@ NSString *const VNProfileCellDeleteNotification=@"KVNProfileCellDeleteNotificati
 NSString *const VNMineProfileVideoCellDeleteNotification=@"KVNMineProfileVideoCellDeleteNotification";
 NSString *const VNNotificationCellDeleteNotification=@"KVNNotificationCellDeleteNotification";
 NSString *const VNMineProfileFavouriteCellDeleteNotification=@"KVNMineProfileFavouriteCellDeleteNotification";
+NSString *const VNSignOutNotification=@"KVNSignOutNotification";
 
 //NSUserDefault
 NSString *const VNLoginUser = @"kVNLoginUser";

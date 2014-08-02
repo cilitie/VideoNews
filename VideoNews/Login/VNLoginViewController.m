@@ -11,6 +11,7 @@
 #import "VNWeixinCodeResponse.h"
 #import "VNAuthUser.h"
 #import "UMSocial.h"
+#import "VNTabBarViewController.h"
 
 @interface VNLoginViewController () <WXApiDelegate>
 
@@ -36,12 +37,18 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)dealloc
+{
+    
 }
 
 /*
@@ -132,6 +139,10 @@
 }
 
 - (IBAction)dismiss:(id)sender {
+    //VNTabBarViewController *tabbarCtl = (VNTabBarViewController *)self.window.rootViewController;
+    if (_controllerType==SourceVCTypeMineProfile) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNSignOutNotification object:nil];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

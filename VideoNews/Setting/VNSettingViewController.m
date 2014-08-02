@@ -139,7 +139,16 @@
         }
     }
     else if (indexPath.section == 3) {
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNLoginUser];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:isLogin];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNLoginDate];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNPushToken];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNUserToken];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNProfileInfo];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNIsWiFiAutoPlay];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        loginViewController.controllerType=SourceVCTypeMineProfile;
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
 }
