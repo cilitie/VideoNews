@@ -30,7 +30,8 @@
 @property (strong, nonatomic) VNSearchField *searchField;
 
 @property (strong, nonatomic) NSMutableArray *categoryNewsArr;
-@property (strong,nonatomic)VNNews *curNews;
+@property (strong, nonatomic)VNNews *curNews;
+@property (strong ,nonatomic)NSIndexPath *seletedIndexPath;
 - (IBAction)popBack:(id)sender;
 
 @end
@@ -62,7 +63,12 @@
         NSLog(@"%@", NSStringFromCGRect(self.searchField.frame));
         self.searchField.text = self.searchKey;
         [self.navBar addSubview:self.searchField];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNSearchCellDeleteNotification object:nil];
+
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNCategoryCellDeleteNotification object:nil];
+
     
     
     [self.view setBackgroundColor:[UIColor colorWithRGBValue:0xe1e1e1]];
@@ -164,11 +170,22 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+   /* if (_type==ResultTypeCategory) {
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:VNCategoryCellDeleteNotification object:nil];
+    }
+    else
+    {
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:VNSearchCellDeleteNotification object:nil];
+        
+    }*/
     if (isTabBarHidden) {
         [self showTabBar];
     }
 }
-
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNCategoryCellDeleteNotification object:nil];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -186,6 +203,7 @@
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
         //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.news=_curNews;
+        newsDetailViewController.indexPath=_seletedIndexPath;
         newsDetailViewController.controllerType = SourceViewControllerTypeCategory;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
     }
@@ -205,6 +223,7 @@
     VNNews *news =[self.categoryNewsArr objectAtIndex:indexPath.item];
     cell.delegate=self;
     cell.news=news;
+    cell.indexPath=indexPath;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
     return cell;
@@ -225,10 +244,11 @@
     return 10.0;
 }
 
--(void)TapImageView:(VNNews *)news
+-(void)TapImageView:(VNNews *)news IndexPath:(NSIndexPath *)indexPath
 {
     //selectedItemIndex = indexPath.item;
     _curNews=news;
+    _seletedIndexPath=indexPath;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
 }
 
@@ -262,6 +282,13 @@
 }
 
 #pragma mark - SEL
+- (void)removeCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    NSIndexPath *index=notification.object;
+    [_categoryNewsArr removeObjectAtIndex:index.row];
+    [newsQuiltView deleteCellAtIndexPath:notification.object];
+    [newsQuiltView reloadData];
+}
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
     __block CGFloat cellHeight = 0.0;

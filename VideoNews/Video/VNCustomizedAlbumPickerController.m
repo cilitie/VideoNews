@@ -26,7 +26,15 @@
         self.delegate = self;
         
         BOOL _isDir;
-        NSString *fileDir = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
+        NSString *fileDir = [VNUtility getNSCachePath:@"VideoFiles/Album"];
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:fileDir isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
+            }
+        }
+        
+        fileDir = [VNUtility getNSCachePath:@"VideoFiles/Clips"];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:fileDir isDirectory:&_isDir]){
             if (![[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:YES attributes:nil error:nil]) {
@@ -92,8 +100,8 @@
             [self popViewControllerAnimated:YES];
         }else if (currVideoDuration <= 30.0){
             
-            NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
-            NSString *filePath = [videoPath stringByAppendingPathComponent:@"VN_Video_Final.mp4"];
+            NSString *videoPath = [VNUtility getNSCachePath:@"VideoFiles/Album"];
+            NSString *filePath = [videoPath stringByAppendingPathComponent:@"VN_Video_1.mp4"];
             
             if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
@@ -140,7 +148,7 @@
             
         }else {
             
-            NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_Final.mp4"];
+            NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Album"] stringByAppendingPathComponent:@"VN_Video_1.mp4"];
 
             if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];

@@ -27,6 +27,8 @@
 
 @property (strong, nonatomic) VNNews *curNews;
 
+@property (strong, nonatomic) NSIndexPath *selectedIndexPath;
+
 @end
 
 //static int selectedItemIndex;
@@ -47,6 +49,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNHomeCellDeleteNotification object:nil];
+
     
     [self.view setBackgroundColor:[UIColor colorWithRGBValue:0xe1e1e1]];
     
@@ -110,6 +114,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    //[[NSNotificationCenter defaultCenter]removeObserver:self name:VNHomeCellDeleteNotification object:nil];
     if (isTabBarHidden) {
         [self showTabBar];
     }
@@ -121,6 +126,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNHomeCellDeleteNotification object:nil];
+}
 
 #pragma mark - Navigation
 
@@ -133,6 +142,7 @@
         VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
         //newsDetailViewController.news = [self.newsArr objectAtIndex:selectedItemIndex];
         newsDetailViewController.news = _curNews;
+        newsDetailViewController.indexPath=_selectedIndexPath;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
         newsDetailViewController.controllerType = SourceViewControllerTypeHome;
     }
@@ -151,6 +161,7 @@
     }
     VNNews *news =[self.newsArr objectAtIndex:indexPath.item];
     cell.news=news;
+    cell.indexPath=indexPath;
     cell.delegate=self;
     [cell reloadCell];
     NSLog(@"%@", news.basicDict);
@@ -172,10 +183,11 @@
     return 10.0;
 }
 
--(void)TapImageView:(VNNews *)news
+-(void)TapImageView:(VNNews *)news IndexPath:(NSIndexPath *)indexPath
 {
     //selectedItemIndex = indexPath.item;
     _curNews=news;
+    _selectedIndexPath=indexPath;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewController" sender:self];
 }
 
@@ -202,6 +214,14 @@
 }
 */
 #pragma mark - SEL
+- (void)removeCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    //NSLog(@"%d",[notification.object integerValue]);
+    NSIndexPath *index=notification.object;
+    [_newsArr removeObjectAtIndex:index.row];
+    [newsQuiltView deleteCellAtIndexPath:notification.object];
+    [newsQuiltView reloadData];
+}
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
     __block CGFloat cellHeight = 0.0;

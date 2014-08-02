@@ -10,12 +10,18 @@
 #import "VNVideoDraftTableViewCell.h"
 #import <AVFoundation/AVFoundation.h>
 #import "VNVideoShareViewController.h"
+#import "VNAVPlayerPlayView.h"
 
-@interface VNDraftListController () <UITableViewDataSource, UITableViewDelegate>
+@interface VNDraftListController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *dataSourceArr;
 
 @property (nonatomic, strong) UITableView *draftListTableView;
+
+@property (nonatomic, strong) VNAVPlayerPlayView *videoPlayView;     //播放视频的view
+@property (nonatomic ,strong) AVPlayer *videoPlayer;                  //播放视频player
+@property (nonatomic, strong) AVPlayerItem *videoPlayerItem;
+
 
 @end
 
@@ -88,6 +94,13 @@
     });
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDraftList:) name:@"RefreshDraftListNotification" object:nil];
+    
+    _videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 0, 320, screenH)];
+    _videoPlayView.backgroundColor = [UIColor lightGrayColor];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    tapGesture.delegate = self;
+    [_videoPlayView addGestureRecognizer:tapGesture];
 }
 
 - (void)didReceiveMemoryWarning
@@ -178,6 +191,20 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //show video
+    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
+    NSString *fileNamePath = [filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]];
+    NSURL *videoUrl = [NSURL fileURLWithPath:fileNamePath];
+    AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+    
+    self.videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:_videoPlayerItem];
+    
+    self.videoPlayer = [AVPlayer playerWithPlayerItem:_videoPlayerItem];
+    [self.videoPlayer addObserver:self forKeyPath:@"status" options:0 context:@"AVPlayerDemoPlaybackViewControllerStatusObservationContext"];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -204,5 +231,38 @@
         [alert show];
     }
 }
+
+#pragma mark - VideoPlayRelated
+
+- (void)handleTap:(UITapGestureRecognizer *)gest
+{
+    if (_videoPlayView.superview) {
+        [_videoPlayer pause];
+        
+        [self.videoPlayer removeObserver:self forKeyPath:@"status" context:@"AVPlayerDemoPlaybackViewControllerStatusObservationContext"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_videoPlayerItem];
+        
+        [_videoPlayView removeFromSuperview];
+    }
+}
+
+//observe for player start.
+- (void)observeValueForKeyPath:(NSString*) path ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+    if (_videoPlayer.status == AVPlayerStatusReadyToPlay) {
+        
+        [self.view addSubview:self.videoPlayView];
+        [(AVPlayerLayer *)[self.videoPlayView layer] setPlayer:_videoPlayer];
+        [_videoPlayer play];
+    }
+}
+
+//observe for player stop, replay.
+- (void)playerItemDidReachEnd:(AVPlayerItem *)playerItem
+{
+    [_videoPlayer seekToTime:kCMTimeZero];
+    [_videoPlayer play];
+}
+
 
 @end

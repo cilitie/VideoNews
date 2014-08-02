@@ -13,6 +13,7 @@
 #import "VNVideoFramesView.h"
 #import "VNVideoShareViewController.h"
 #import "VNAudioListController.h"
+#import <MBProgressHUD.h>
 
 @interface VNVideoCoverSettingController () <VNVideoFramesViewDelegate, VNAudioListDelegate>
 
@@ -28,6 +29,10 @@
 @property (nonatomic, copy) NSString *audioPath;
 
 @property (nonatomic, assign) CGFloat coverTime;
+
+@property (nonatomic, strong) AVAudioPlayer *audioPlayer;           //音频播放器
+
+@property (nonatomic, strong) MBProgressHUD *hud;                   //提示
 
 @end
 
@@ -68,6 +73,16 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     return _videoCoverImgView;
 }
 
+- (MBProgressHUD *)hud
+{
+    if (!_hud) {
+        _hud = [[MBProgressHUD alloc] init];
+        _hud.minSize = CGSizeMake(100, 100);
+        _hud.labelText = @"生成视频...";
+    }
+    return _hud;
+}
+
 #pragma mark - ViewLifeCycle
 
 - (id)init
@@ -104,8 +119,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     [topView addSubview:titleLbl];
     
     UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
-    [submitBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
-    [submitBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
+    [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateNormal];
+    [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateSelected];
     [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
     [topView addSubview:submitBtn];
     
@@ -118,7 +133,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     [self.view addSubview:self.videoCoverImgView];
     
     self.isVolumePositive = YES;
-    
+    self.audioPath = nil;
     //generate images of video
     
     CGFloat framesY,framesH, btnY, lblY;
@@ -133,6 +148,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         btnY = 395;
         lblY = 430;
     }
+    
     _videoFramesView = [[VNVideoFramesView alloc] initWithFrame:CGRectMake(0, framesY, 320, framesH) andVideoPath:self.videoPath];
     _videoFramesView.delegate = self;
     _videoFramesView.backgroundColor = [UIColor clearColor];
@@ -169,10 +185,31 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     soundLbl.text = @"原声关闭";
     [self.view addSubview:soundLbl];
     
-    
     [self setVideoCoverWithTime:0];
 
     [self playVideoWithSound:YES];
+    
+    [self.view addSubview:_hud];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    if (self.videoPlayer) {
+        [self.videoPlayer play];
+    }
+    if (self.audioPlayer) {
+        [self.audioPlayer play];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (self.videoPlayer) {
+        [self.videoPlayer pause];
+    }
+    if (self.audioPlayer) {
+        [_audioPlayer pause];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -229,7 +266,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
  */
 - (void)selectMusic
 {
-    [self.videoPlayer pause];
     VNAudioListController *audioListCtl = [[VNAudioListController alloc] init];
     audioListCtl.delegate = self;
     audioListCtl.onSelectionAudioPath = self.audioPath;
@@ -244,13 +280,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)soundSetting:(UIButton *)sender
 {
     NSURL *videoUrl = [NSURL fileURLWithPath:self.videoPath];
+    
     AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     
     NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
     
     NSMutableArray *allAudioParams = [NSMutableArray array];
     for (AVAssetTrack *track in audioTracks) {
-        AVMutableAudioMixInputParameters *audioInputParams =    [AVMutableAudioMixInputParameters audioMixInputParameters];
+
+        AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
         if (sender.selected) {
             //set volume to 1.0
             [audioInputParams setVolume:1.0 atTime:kCMTimeZero];
@@ -260,7 +298,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
             self.isVolumePositive = NO;
         }
-        NSLog(@"track id: %d",[track trackID]);
 
         [audioInputParams setTrackID:[track trackID]];
         [allAudioParams addObject:audioInputParams];
@@ -288,6 +325,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
     [_videoPlayer seekToTime:kCMTimeZero];
     [_videoPlayer play];
+    [_audioPlayer stop];
+    _audioPlayer.currentTime = 0;
+    [_audioPlayer play];
 }
 
 //play a video.
@@ -346,7 +386,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)doSubmit
 {
 
-    if (self.isVolumePositive) {
+    if (self.isVolumePositive && !self.audioPath) {
         
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:self.videoCoverImgView.image];
         shareViewCtl.fromDraft = NO;
@@ -355,49 +395,70 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
     }else {
         
+        [self.hud show:YES];
+        
         NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            }
+        });
+        
+        AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+        
+        AVMutableComposition* mixComposition = [AVMutableComposition composition];
+        
+        if (self.isVolumePositive) {
+            AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+            AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                                 preferredTrackID:kCMPersistentTrackID_Invalid];
+            [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                                 ofTrack:[[audioAssetUser tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
+                                                  atTime:kCMTimeZero error:nil];
+        }
+
+        
+        if (self.audioPath) {
+            
+            AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
+            
+            AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                                preferredTrackID:kCMPersistentTrackID_Invalid];
+            
+            [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                                ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
+                                                 atTime:kCMTimeZero error:nil];
         }
         
-        AVMutableComposition *composition = [AVMutableComposition
-                                             composition];
+    
+        AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                                       preferredTrackID:kCMPersistentTrackID_Invalid];
+        [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                       ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
+                                        atTime:kCMTimeZero error:nil];
         
-        AVURLAsset * sourceAsset = [[AVURLAsset alloc] initWithURL:[NSURL
-                                                                    fileURLWithPath:self.videoPath] options:nil];
+        AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
+                                                                              presetName:AVAssetExportPresetHighestQuality];
         
-        AVMutableCompositionTrack *compositionVideoTrack = [composition
-                                                            addMutableTrackWithMediaType:AVMediaTypeVideo
-                                                            preferredTrackID:kCMPersistentTrackID_Invalid];
+        NSURL *exportUrl = [NSURL fileURLWithPath:filePath];
         
-        BOOL ok = NO;
-        
-        AVAssetTrack * sourceVideoTrack = [[sourceAsset
-                                            tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        
-        CMTimeRange x = CMTimeRangeMake(kCMTimeZero, [sourceAsset
-                                                      duration]);
-        
-        ok = [compositionVideoTrack insertTimeRange:x ofTrack:sourceVideoTrack
-                                             atTime:kCMTimeZero error:nil];
-        
-        AVAssetExportSession *exporter = [[AVAssetExportSession alloc]
-                                           initWithAsset:composition
-                                           presetName:AVAssetExportPresetMediumQuality];
-        
-        exporter.outputURL = [NSURL fileURLWithPath:filePath];
-        
-        exporter.outputFileType = AVFileTypeMPEG4;
+        _assetExport.outputFileType = AVFileTypeMPEG4;
+        _assetExport.outputURL = exportUrl;
+        _assetExport.shouldOptimizeForNetworkUse = YES;
         
         __weak VNVideoCoverSettingController *weakSelf = self;
         
-        [exporter exportAsynchronouslyWithCompletionHandler:^{
+        [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+            
             dispatch_async(dispatch_get_main_queue(), ^{
-                switch ([exporter status]) {
+                
+                [weakSelf.hud hide:YES];
+                
+                switch ([_assetExport status]) {
                     case AVAssetExportSessionStatusFailed:
                     {
-                        NSLog(@"111111Export failed: %@", [[exporter error] localizedDescription]);
+                        NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
                     }
                         break;
                     case AVAssetExportSessionStatusCancelled:
@@ -407,10 +468,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                         break;
                     default:
                     {
-                        VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:weakSelf.videoPath andCoverImage:weakSelf.videoCoverImgView.image];
+                        
+                        VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:filePath andCoverImage:weakSelf.videoCoverImgView.image];
                         shareViewCtl.fromDraft = NO;
                         shareViewCtl.coverTime = self.coverTime;
                         [weakSelf.navigationController pushViewController:shareViewCtl animated:YES];
+                        
                     }
                         break;
                 }
@@ -432,90 +495,24 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
     self.audioPath = filePath;
     
-    NSString *finalVideoPath = [VNUtility getNSCachePath:@"VideoFiles/Temp/"];
-    NSString *withMusicPath = [finalVideoPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Music.mp4",TEMP_VIDEO_NAME_PREFIX]];
+    //replay video.
+    [_videoPlayer seekToTime:kCMTimeZero];
+    [_videoPlayer play];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[NSFileManager defaultManager] removeItemAtPath:withMusicPath error:nil];
-    });
-    
-    AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
-    AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
-    AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
-    
-    AVMutableComposition* mixComposition = [AVMutableComposition composition];
-    
-    AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                                        preferredTrackID:kCMPersistentTrackID_Invalid];
-    
-    [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                        ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
-                                         atTime:kCMTimeZero error:nil];
-    
-    AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                                         preferredTrackID:kCMPersistentTrackID_Invalid];
-    [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                         ofTrack:[[audioAssetUser tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
-                                          atTime:kCMTimeZero error:nil];
-    
-    AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
-                                                                                   preferredTrackID:kCMPersistentTrackID_Invalid];
-    [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                   ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
-                                    atTime:kCMTimeZero error:nil];
-    
-    AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
-                                                                          presetName:AVAssetExportPresetHighestQuality];
-    
-    NSURL *exportUrl = [NSURL fileURLWithPath:withMusicPath];
-    
-    _assetExport.outputFileType = AVFileTypeMPEG4;
-    _assetExport.outputURL = exportUrl;
-    _assetExport.shouldOptimizeForNetworkUse = YES;
-    
-    __weak VNVideoCoverSettingController *weakSelf = self;
-    
-    [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+    if (!filePath) {
+        [_audioPlayer stop];
+        _audioPlayer = nil;
+    }else {
+        NSError *error;
+        NSURL *audioFileUrl = [NSURL fileURLWithPath:self.audioPath];
+        _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileUrl error:&error];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            switch ([_assetExport status]) {
-                case AVAssetExportSessionStatusFailed:
-                {
-                    NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
-                }
-                    break;
-                case AVAssetExportSessionStatusCancelled:
-                {
-                    NSLog(@"111111Export canceled");
-                }
-                    break;
-                default:
-                {
-                    [[NSNotificationCenter defaultCenter] removeObserver:weakSelf name:AVPlayerItemDidPlayToEndTimeNotification object:weakSelf.videoPlayerItem];
-                    [weakSelf.videoPlayer removeObserver:weakSelf forKeyPath:@"status" context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
-                    
-                    NSURL *videoUrl = [NSURL fileURLWithPath:withMusicPath];
-                    AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
-                    
-                    weakSelf.videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
-                    
-                    [[NSNotificationCenter defaultCenter] addObserver:weakSelf
-                                                             selector:@selector(playerItemDidReachEnd:)
-                                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                                               object:weakSelf.videoPlayerItem];
-                    
-                    weakSelf.videoPlayer = [AVPlayer playerWithPlayerItem:weakSelf.videoPlayerItem];
-                    [weakSelf.videoPlayer addObserver:weakSelf forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
-                    
-                    [weakSelf.videoPlayer seekToTime:kCMTimeZero];
-                    [weakSelf.videoPlayer play];
-                    
-                }
-                    break;
-            }
-        });
-    }];
-
+        if (!audioFileUrl || error) {
+            NSLog(@"音频读取出错了。。。");
+        }else {
+            [_audioPlayer play];
+        }
+    }
 }
 
 @end

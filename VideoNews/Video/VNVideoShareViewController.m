@@ -15,7 +15,7 @@
 #import "UMSocialSnsPlatformManager.h"
 #import "VNUploadManager.h"
 
-@interface VNVideoShareViewController () <UIGestureRecognizerDelegate,VNUploadManagerDelegate>
+@interface VNVideoShareViewController () <UIGestureRecognizerDelegate,VNUploadManagerDelegate,UMSocialUIDelegate>
 
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, strong) UIImage *coverImg;
@@ -27,6 +27,7 @@
 @property (nonatomic, assign) BOOL shareSina;
 @property (nonatomic, assign) BOOL shareWeixin;
 
+@property (nonatomic, strong) MBProgressHUD *uploadHud;
 
 @end
 
@@ -71,6 +72,16 @@
     tf.attributedPlaceholder = [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName: color,NSFontAttributeName:font}];
 }
 
+- (MBProgressHUD *)uploadHud
+{
+    if (!_uploadHud) {
+        _uploadHud = [[MBProgressHUD alloc] init];
+        _uploadHud.minSize = CGSizeMake(150, 150);
+        _uploadHud.labelText = @"上传中...";
+    }
+    return _uploadHud;
+}
+
 #pragma mark - ViewLifeCycle
 
 - (id)initWithVideoPath:(NSString *)path andCoverImage:(UIImage *)img
@@ -109,21 +120,23 @@
     titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
     [topView addSubview:titleLbl];
     
-    UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
     if (!fromDraft) {
         
-        [draftBtn setTitle:@"draft" forState:UIControlStateNormal];
+        UIButton *draftBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
+
+        [draftBtn setImage:[UIImage imageNamed:@"save_draft"] forState:UIControlStateNormal];
+        [draftBtn setImage:[UIImage imageNamed:@"blank"] forState:UIControlStateSelected];
+        
+        [draftBtn setTitle:@"" forState:UIControlStateNormal];
         [draftBtn setTitle:@"继续" forState:UIControlStateSelected];
+        [draftBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateSelected];
+        
         [draftBtn addTarget:self action:@selector(doSaveToDraft:) forControlEvents:UIControlEventTouchUpInside];
         [draftBtn setSelected:NO];
-    }else {
         
-        [draftBtn setTitle:@"已保存" forState:UIControlStateNormal];
-        [draftBtn setTitle:@"已保存" forState:UIControlStateSelected];
-        [draftBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateNormal];
-        [draftBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateSelected];
+        [topView addSubview:draftBtn];
     }
-    [topView addSubview:draftBtn];
+    
 
     [self.view addSubview:topView];
     
@@ -201,12 +214,19 @@
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
+    
+    [self.view addSubview:self.uploadHud];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 
+}
+
+- (void)dealloc
+{
+    NSLog(@"dealloc ..... :%s",__FUNCTION__);
 }
 
 #pragma mark - UserInteractionMethods
@@ -298,10 +318,13 @@
     
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     
-    NSLog(@"filesize....:%f M",[[[NSFileManager defaultManager] attributesOfItemAtPath:self.videoPath error:nil] fileSize]/1024.0/1024.0);
-    NSLog(@"开始上传");
+//    NSLog(@"filesize....:%f M",[[[NSFileManager defaultManager] attributesOfItemAtPath:self.videoPath error:nil] fileSize]/1024.0/1024.0);
+//    NSLog(@"开始上传");
 
+    [self.uploadHud show:YES];
     NSData *videoData = [NSData dataWithContentsOfFile:self.videoPath];
+    
+    __weak VNVideoShareViewController *weakSelf = self;
     
     [uploadManager uploadVideo:videoData Uid:uid Title:titleText Tags:tagsText ThumbnailTime:self.coverTime completion:^(bool success, NSError *err){
         if (err) {
@@ -309,12 +332,12 @@
         }
         else if (success) {
             //process after submit success.
-            if (self.fromDraft) {
+            if (weakSelf.fromDraft) {
                 //clear draft video
-                [self clearDraftVideo];
+                [weakSelf clearDraftVideo];
             }else {
                 //clear clips and temp video.
-                [self clearTempVideos];
+                [weakSelf clearTempVideos];
             }
             
             return ;
@@ -374,22 +397,62 @@
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
 {
-    NSLog(@"key path :%@",key);
-    NSLog(@"dic....:%@",ret);
+    
+    [self.uploadHud hide:YES];
+
+    NSString *titleText = [self.titleTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
+    
+    NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
+    
+    NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleText, nickNameString, urlString];
     
     if (self.shareSina) {
         //分享新浪
+        
+        [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:self.coverImg socialUIDelegate:self];
+        
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
+        
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
     }
     if (self.shareWeixin) {
         //分享朋友圈
+        
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
+        
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
     }
     
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 // Upload failed.
 - (void)uploadFailed:(NSString *)key error:(NSError *)error
 {
-    NSLog(@"%@", error.localizedDescription);
+    self.uploadHud.labelText = @"失败了";
+    [self.uploadHud hide:YES];
 }
+
+#pragma mark - UMSocialUIDelegate
+
+-(void)didCloseUIViewController:(UMSViewControllerType)fromViewControllerType
+{
+}
+
+//下面得到分享完成的回调
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    NSLog(@"didFinishGetUMSocialDataInViewController with response is %@",response);
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess) {
+        //得到分享到的微博平台名
+
+        self.uploadHud.labelText = [[response.data allKeys] objectAtIndex:0];
+        [self.uploadHud show:YES];
+        [self.uploadHud hide:YES afterDelay:0.4];
+    }
+}
+
 
 @end

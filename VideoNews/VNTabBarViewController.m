@@ -154,11 +154,18 @@
  */
 - (void)doOpenImagePickerCtl
 {
-    CGFloat height = [UIScreen mainScreen].bounds.size.height;
-    VNCustomizedActionSheet *actionSheet = [[VNCustomizedActionSheet alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
-    actionSheet.delegate = self;
-    actionSheet.superView = self.view;
-    [actionSheet show];
+    NSDictionary *loginInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    if (loginInfo[@"openid"] && user_token) {
+        CGFloat height = [UIScreen mainScreen].bounds.size.height;
+        VNCustomizedActionSheet *actionSheet = [[VNCustomizedActionSheet alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+        actionSheet.delegate = self;
+        actionSheet.superView = self.view;
+        [actionSheet show];
+    }else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+        [alert show];
+    }
 }
 
 - (void)presentVideoCaptureView

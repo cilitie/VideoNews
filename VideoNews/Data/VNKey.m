@@ -15,6 +15,12 @@ NSString *const kArchivingHistoryWord = @"kArchivingHistoryWord";
 NSString *const VNHistoryDidAddNotification = @"kVNHistoryDidAddNotification";
 NSString *const VNHistoryDidClearNotification = @"kVNHistoryDidClearNotification";
 NSString *const VNSearchTypeDidChangeNotification = @"kVNSearchTypeDidChangeNotification";
+NSString *const VNHomeCellDeleteNotification=@"KVNHomeCellDeleteNotification";
+NSString *const VNCategoryCellDeleteNotification=@"KVNCategoryCellDeleteNotification";
+NSString *const VNProfileCellDeleteNotification=@"KVNProfileCellDeleteNotification";
+NSString *const VNMineProfileVideoCellDeleteNotification=@"KVNMineProfileVideoCellDeleteNotification";
+NSString *const VNNotificationCellDeleteNotification=@"KVNNotificationCellDeleteNotification";
+NSString *const VNMineProfileFavouriteCellDeleteNotification=@"KVNMineProfileFavouriteCellDeleteNotification";
 
 //NSUserDefault
 NSString *const VNLoginUser = @"kVNLoginUser";

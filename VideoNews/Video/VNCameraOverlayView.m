@@ -75,7 +75,7 @@
             y = 52;
         }
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, y, 90, 90)];
-        [_submitBtn setTitle:@"OFF" forState:UIControlStateNormal];
+        [_submitBtn setTitle:@"ON" forState:UIControlStateNormal];
         [_submitBtn setTitle:@"ON" forState:UIControlStateSelected];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
@@ -103,7 +103,7 @@
         _msgLbl.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
         _msgLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:20];
         _msgLbl.textColor = [UIColor blackColor];
-        _msgLbl.text = @"正在生成视频";
+        _msgLbl.text = @"生成视频...";
         _msgLbl.textAlignment = NSTextAlignmentCenter;
         _msgLbl.alpha = 0;
     }
@@ -230,6 +230,7 @@
     [self addSubview:bottomBaseView];
     
     [self addSubview:self.msgLbl];
+    
 }
 
 - (void)setTorchBtnHidden:(BOOL)hidden

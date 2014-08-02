@@ -226,7 +226,7 @@
     
     if (self.status == ProgressViewStatusEditing) {
         
-        [[UIColor yellowColor] setFill] ;
+        [[UIColor colorWithRGBValue:0xDC5119] setFill] ;
         
         CGFloat x_start,x_end;
         
@@ -242,7 +242,7 @@
             
             NSNumber *time = [timePointArr objectAtIndex:timePointArr.count - 2];
             
-            x_start = time.floatValue / 30 * kProgressBarWidth;
+            x_start = time.floatValue / 30 * kProgressBarWidth + 1;
             
             time = [timePointArr objectAtIndex:timePointArr.count - 1];
             

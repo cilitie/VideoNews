@@ -36,6 +36,7 @@
 @property (strong, nonatomic) NSMutableArray *userVideoArr;
 @property (strong, nonatomic) NSMutableArray *followArr;
 @property (strong, nonatomic) NSMutableArray *fansArr;
+//@property (strong, nonatomic) NSIndexPath *seletedIndexPath;
 //为了检测用户与其他user的关系
 @property (strong, nonatomic) NSMutableArray *idolListArr;
 @property (strong, nonatomic) VNUser *userInfo;
@@ -102,6 +103,7 @@ static NSString *shareStr;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
     
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
@@ -470,6 +472,10 @@ static NSString *shareStr;
     // Dispose of any resources that can be recreated.
 }
 
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileCellDeleteNotification object:nil];
+}
 /*
 #pragma mark - Navigation
 
@@ -513,6 +519,7 @@ static NSString *shareStr;
         cell.commentHandler = ^(){
             VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
             newsDetailViewController.news = news;
+            newsDetailViewController.indexPath=indexPath;
             newsDetailViewController.hidesBottomBarWhenPushed = YES;
             newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
@@ -534,11 +541,19 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed, NSError *error) {
+            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted, NSError *error) {
+                //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
-                if (succeed) {
+                else if (isNewsDeleted) {
+                    //删除相应的cell
+                    [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                    [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                    
+                }
+                else if (succeed) {
                     NSUInteger curFavCount = [weakCell.favouriteLabel.text integerValue];
                     weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", curFavCount+1];
                     [VNUtility showHUDText:@"点赞成功!" forView:self.view];
@@ -620,6 +635,7 @@ static NSString *shareStr;
         VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
         VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
         newsDetailViewController.news = news;
+        newsDetailViewController.indexPath=indexPath;
         newsDetailViewController.hidesBottomBarWhenPushed = YES;
         newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
         [self.navigationController pushViewController:newsDetailViewController animated:YES];
@@ -665,6 +681,15 @@ static NSString *shareStr;
 
 
 #pragma mark - SEL
+- (void)removeCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    //NSLog(@"%d",[notification.object integerValue]);
+    NSIndexPath *index=notification.object;
+    [_userVideoArr removeObjectAtIndex:index.row];
+    [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    //[_videoTableView deleteCellAtIndexPath:notification.object];
+    [_videoTableView reloadData];
+}
 
 - (CGFloat)cellHeightFor:(VNNews *)news {
     __block CGFloat cellHeight = 390.0;
@@ -965,9 +990,13 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
-        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, VNComment *comment, NSError *error) {
+        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
+            }
+            else if (isNewsDeleted)
+            {
+                //删除cell
             }
             else if (succeed) {
                 NSLog(@"分享添加评论成功！");
