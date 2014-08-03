@@ -11,12 +11,12 @@
 // 路径 cache/VideoFiles/Draft/时间戳/时间戳     封面时间记录文件
 
 #import "VNVideoShareViewController.h"
+#import "VNAppDelegate.h"
+#import "VNTabBarViewController.h"
+#import "UMSocial.h"
 #import "WXApi.h"
-#import "UMSocialAccountManager.h"
-#import "UMSocialSnsPlatformManager.h"
-#import "VNUploadManager.h"
 
-@interface VNVideoShareViewController () <UIGestureRecognizerDelegate,VNUploadManagerDelegate,UMSocialUIDelegate>
+@interface VNVideoShareViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, strong) UIImage *coverImg;
@@ -27,8 +27,6 @@
 
 @property (nonatomic, assign) BOOL shareSina;
 @property (nonatomic, assign) BOOL shareWeixin;
-
-@property (nonatomic, strong) MBProgressHUD *uploadHud;
 
 @end
 
@@ -71,16 +69,6 @@
     UIFont *font = [UIFont fontWithName:@"STHeitiSC-Light" size:13];
     UIColor *color = [UIColor colorWithRed:58/255.0 green:57/255.0 blue:62/255.0 alpha:1];
     tf.attributedPlaceholder = [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName: color,NSFontAttributeName:font}];
-}
-
-- (MBProgressHUD *)uploadHud
-{
-    if (!_uploadHud) {
-        _uploadHud = [[MBProgressHUD alloc] init];
-        _uploadHud.minSize = CGSizeMake(150, 150);
-        _uploadHud.labelText = @"上传中...";
-    }
-    return _uploadHud;
 }
 
 #pragma mark - ViewLifeCycle
@@ -216,7 +204,6 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
     
-    [self.view addSubview:self.uploadHud];
 }
 
 - (void)didReceiveMemoryWarning
@@ -321,37 +308,26 @@
     if (!tagsText) {
         tagsText = @"";
     }
+ 
+    VNAppDelegate *appDelegate = (VNAppDelegate *)[[UIApplication sharedApplication] delegate];
+    VNTabBarViewController *tabbarCtl = (VNTabBarViewController *)appDelegate.window.rootViewController;
+    tabbarCtl.selectedIndex = 4;
     
-    VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
-    uploadManager.delegate = self;
-    
-    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
-    
-//    NSLog(@"filesize....:%f M",[[[NSFileManager defaultManager] attributesOfItemAtPath:self.videoPath error:nil] fileSize]/1024.0/1024.0);
-//    NSLog(@"开始上传");
-
-    [self.uploadHud show:YES];
-    NSData *videoData = [NSData dataWithContentsOfFile:self.videoPath];
+    NSDictionary *userInfoDic = @{@"title":titleText,@"tags":tagsText,@"coverTime":[NSNumber numberWithFloat:self.coverTime],@"videoPath":self.videoPath,@"isSinaOn":[NSNumber numberWithBool:self.shareSina],@"isWeChatOn":[NSNumber numberWithBool:self.shareWeixin],@"isFromDraft":[NSNumber numberWithBool:self.fromDraft],@"coverImg":self.coverImg};
     
     __weak VNVideoShareViewController *weakSelf = self;
     
-    [uploadManager uploadVideo:videoData Uid:uid Title:titleText Tags:tagsText ThumbnailTime:self.coverTime completion:^(bool success, NSError *err){
-        if (err) {
-            NSLog(@"%@", err.localizedDescription);
-        }
-        else if (success) {
-            //process after submit success.
-            if (weakSelf.fromDraft) {
-                //clear draft video
-                [weakSelf clearDraftVideo];
-            }else {
-                //clear clips and temp video.
-                [weakSelf clearTempVideos];
-            }
+    [weakSelf dismissViewControllerAnimated:YES completion:^{
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
-            return ;
-        }
+            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileUploadVideoNotifiction object:nil userInfo:userInfoDic];
+            
+        });
     }];
+    
+
+    
 }
 
 /**
@@ -381,18 +357,6 @@
     
 }
 
-- (void)clearDraftVideo
-{
-    
-    NSString *filesPath = [self.videoPath stringByDeletingLastPathComponent];
-
-    NSError *err;
-    [[NSFileManager defaultManager] removeItemAtPath:filesPath error:&err];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshDraftListNotification" object:nil userInfo:nil];
-    
-}
-
 #pragma mark - UIGestureRecognizerDelgate
 
 - (void)handleTap:(UITapGestureRecognizer *)gesture
@@ -400,68 +364,5 @@
     [self.titleTF resignFirstResponder];
     [self.tagsTF resignFirstResponder];
 }
-
-#pragma mark - VNUploadManagerDelegate
-
-// Upload completed successfully.
-- (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
-{
-    
-    [self.uploadHud hide:YES];
-
-    NSString *titleText = [self.titleTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
-    
-    NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
-    
-    NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleText, nickNameString, urlString];
-    
-    if (self.shareSina) {
-        //分享新浪
-        
-        [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:self.coverImg socialUIDelegate:self];
-        
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
-        
-        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
-    }
-    if (self.shareWeixin) {
-        //分享朋友圈
-        
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
-        
-        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-// Upload failed.
-- (void)uploadFailed:(NSString *)key error:(NSError *)error
-{
-    self.uploadHud.labelText = @"失败了";
-    [self.uploadHud hide:YES];
-}
-
-#pragma mark - UMSocialUIDelegate
-
--(void)didCloseUIViewController:(UMSViewControllerType)fromViewControllerType
-{
-}
-
-//下面得到分享完成的回调
--(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
-{
-    NSLog(@"didFinishGetUMSocialDataInViewController with response is %@",response);
-    //根据`responseCode`得到发送结果,如果分享成功
-    if(response.responseCode == UMSResponseCodeSuccess) {
-        //得到分享到的微博平台名
-
-        self.uploadHud.labelText = [[response.data allKeys] objectAtIndex:0];
-        [self.uploadHud show:YES];
-        [self.uploadHud hide:YES afterDelay:0.4];
-    }
-}
-
 
 @end

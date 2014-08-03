@@ -18,8 +18,9 @@
 #import "VNOriginImgViewController.h"
 #import "VNEditProfileViewController.h"
 #import "VNSettingViewController.h"
+#import "VNUploadManager.h"
 
-@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate> {
+@interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNUploadManagerDelegate> {
     BOOL userScrolling;
     CGPoint initialScrollOffset;
     CGPoint previousScrollOffset;
@@ -50,6 +51,9 @@
 @property (strong, nonatomic) VNNews *shareNews;
 @property (strong, nonatomic) NSArray *headerViewArr;
 
+@property (nonatomic, strong) MBProgressHUD *uploadHud;    //上传hud
+@property (nonatomic, strong) NSDictionary *uploadVideoInfo;    //上传video信息
+
 - (IBAction)setting:(id)sender;
 - (IBAction)pop:(id)sender;
 
@@ -59,6 +63,16 @@ static BOOL firstLoading = YES;
 static NSString *shareStr;
 
 @implementation VNMineProfileViewController
+
+- (MBProgressHUD *)uploadHud
+{
+    if (!_uploadHud) {
+        _uploadHud = [[MBProgressHUD alloc] init];
+        _uploadHud.minSize = CGSizeMake(150, 150);
+        _uploadHud.labelText = @"上传中...";
+    }
+    return _uploadHud;
+}
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -133,8 +147,12 @@ static NSString *shareStr;
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeVideoCellForNewsDeleted:) name:VNMineProfileVideoCellDeleteNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFavouriteCellForNewsDeleted:) name:VNMineProfileFavouriteCellDeleteNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoFile:) name:VNMineProfileUploadVideoNotifiction object:nil];
 
     [self reload];
+    
+    [self.view addSubview:self.uploadHud];
+
 }
 
 - (void)reload {
@@ -501,6 +519,7 @@ static NSString *shareStr;
    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileVideoCellDeleteNotification object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileUploadVideoNotifiction object:nil];
 }
 
 /*
@@ -532,6 +551,76 @@ static NSString *shareStr;
     [_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
     //[_videoTableView deleteCellAtIndexPath:notification.object];
     [_favouriteTableView reloadData];
+}
+
+- (void)uploadVideoFile:(NSNotification *)not
+{
+    
+    self.uploadVideoInfo = not.userInfo;
+    
+    VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
+    uploadManager.delegate = self;
+    
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    
+    [self.uploadHud show:YES];
+    
+    NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
+    NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
+    NSString *tagsString = [self.uploadVideoInfo valueForKey:@"tags"];
+    CGFloat coverTime = [[self.uploadVideoInfo valueForKey:@"coverTime"] floatValue];
+    
+    NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
+    
+    [uploadManager uploadVideo:videoData Uid:uid Title:titleString Tags:tagsString ThumbnailTime:coverTime completion:^(bool success, NSError *err){
+        if (err) {
+            NSLog(@"%@", err.localizedDescription);
+        }
+        else if (success) {
+            //process after submit success.
+        }
+    }];
+}
+
+- (void)clearDraftVideo
+{
+    
+    NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
+
+    NSString *filesPath = [videoPath stringByDeletingLastPathComponent];
+    
+    NSError *err;
+    [[NSFileManager defaultManager] removeItemAtPath:filesPath error:&err];
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshDraftListNotification" object:nil userInfo:nil];
+    
+}
+
+/**
+ *  @description: clear temp videos in temp directory.
+ */
+- (void)clearTempVideos
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    NSString *videoFilePath = [VNUtility getNSCachePath:@"VideoFiles"];
+    
+    NSString *filePath = [videoFilePath stringByAppendingPathComponent:@"Clips"];
+    
+    NSArray *arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
+    }
+    
+    filePath = [videoFilePath stringByAppendingPathComponent:@"Temp"];
+    
+    arr = [fm contentsOfDirectoryAtPath:filePath error:nil];
+    
+    for (NSString *dir in arr) {
+        [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
+    }
+    
 }
 
 #pragma mark - UITableView Datasource
@@ -1029,4 +1118,107 @@ static NSString *shareStr;
 - (IBAction)pop:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark - VNUploadManagerDelegate
+
+// Upload completed successfully.
+- (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
+{
+    
+    [self.uploadHud hide:YES];
+    
+    BOOL fromDraft = [[self.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+
+    if (fromDraft) {
+        //clear draft video
+        [self clearDraftVideo];
+    }else {
+        //clear clips and temp video.
+        [self clearTempVideos];
+    }
+    
+    NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
+    
+    NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
+    
+    NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
+    
+    NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
+    
+    UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
+    
+    [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:coverImage socialUIDelegate:self];
+
+    if ([[self.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
+        //分享新浪
+        
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
+        
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+    }
+    if ([[self.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
+        //分享朋友圈
+        
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
+        
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+    }
+    
+    [self reload];
+}
+
+// Upload failed.
+- (void)uploadFailed:(NSString *)key error:(NSError *)error
+{
+    self.uploadHud.labelText = @"失败了,已保存到草稿";
+    [self.uploadHud hide:YES afterDelay:1];
+    
+    [self doSaveToDraft];
+    
+    BOOL fromDraft = [[self.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+    
+    if (fromDraft) {
+        //clear draft video
+        [self clearDraftVideo];
+    }else {
+        //clear clips and temp video.
+        [self clearTempVideos];
+    }
+}
+
+- (void)doSaveToDraft
+{
+    
+    double timeInterval = [NSDate timeIntervalSinceReferenceDate];
+    
+    NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%lf",timeInterval]];
+    
+    
+    BOOL _isDir;
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&_isDir]){
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil]) {
+            
+        }
+    }
+    
+    NSString *videoFilePath = [NSString stringWithFormat:@"%@/%lf.mp4",filePath,timeInterval];
+    NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.jpg",filePath,timeInterval];
+    NSString *coverTimePointFilePath = [NSString stringWithFormat:@"%@/%lf",filePath,timeInterval];
+    
+    NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
+    NSString *coverTimeString = [self.uploadVideoInfo valueForKey:@"coverTime"];
+    UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
+
+    NSError *err;
+    
+    [coverTimeString writeToFile:coverTimePointFilePath atomically:YES encoding:NSUTF8StringEncoding error:&err];
+    
+    NSData *data = UIImageJPEGRepresentation(coverImage, 1);
+    [data writeToFile:coverFilePath atomically:YES];
+    
+    [[NSFileManager defaultManager] copyItemAtPath:videoPath toPath:videoFilePath error:&err];
+    
+}
+
 @end

@@ -93,7 +93,7 @@
         [weakSelf.view addSubview:weakSelf.draftListTableView];
     });
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDraftList:) name:@"RefreshDraftListNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDraftList:) name:@"RefreshDraftListNotification" object:nil];
     
     _videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 0, 320, screenH)];
     _videoPlayView.backgroundColor = [UIColor lightGrayColor];
@@ -117,23 +117,23 @@
 
 - (void)doDismiss
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RefreshDraftListNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RefreshDraftListNotification" object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)refreshDraftList:(NSNotification *)not
-{
-    [_dataSourceArr removeAllObjects];
-    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
-
-    NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
-    
-    if (arr && arr.count > 0) {
-        [_dataSourceArr addObjectsFromArray:arr];
-    }
-    
-    [self.draftListTableView reloadData];
-}
+//- (void)refreshDraftList:(NSNotification *)not
+//{
+//    [_dataSourceArr removeAllObjects];
+//    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
+//
+//    NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+//    
+//    if (arr && arr.count > 0) {
+//        [_dataSourceArr addObjectsFromArray:arr];
+//    }
+//    
+//    [self.draftListTableView reloadData];
+//}
 
 #pragma mark - UITableViewDataSource && Delegate
 
