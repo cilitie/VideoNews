@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
 		1400128D198DDE7800D4A057 /* Audios in Resources */ = {isa = PBXBuildFile; fileRef = 1400128C198DDE7800D4A057 /* Audios */; };
+		14001291198E69AD00D4A057 /* VNUploadVideoProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */; };
 		144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */; };
 		144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */; };
 		144BF5411984F58000A6C6B7 /* VNAlbumVideoEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5291984F58000A6C6B7 /* VNAlbumVideoEditController.m */; };
@@ -149,6 +150,8 @@
 
 /* Begin PBXFileReference section */
 		1400128C198DDE7800D4A057 /* Audios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audios; sourceTree = "<group>"; };
+		1400128F198E69AD00D4A057 /* VNUploadVideoProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadVideoProgressView.h; sourceTree = "<group>"; };
+		14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadVideoProgressView.m; sourceTree = "<group>"; };
 		144BF5231984F52900A6C6B7 /* VNVideoDraftTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoDraftTableViewCell.h; sourceTree = "<group>"; };
 		144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoDraftTableViewCell.m; sourceTree = "<group>"; };
 		144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
@@ -679,6 +682,8 @@
 				D68CB4FC19823D1700236517 /* VNEditProfileTableViewCell.m */,
 				D68CB4FE1982503F00236517 /* VNEditContentViewController.h */,
 				D68CB4FF1982503F00236517 /* VNEditContentViewController.m */,
+				1400128F198E69AD00D4A057 /* VNUploadVideoProgressView.h */,
+				14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -1073,6 +1078,7 @@
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
 				D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */,
 				D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */,
+				14001291198E69AD00D4A057 /* VNUploadVideoProgressView.m in Sources */,
 				D6676F95197916F600F484FE /* VNProfileFansTableViewCell.m in Sources */,
 				D6FED792195C030D00AD10E0 /* VNKey.m in Sources */,
 				144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */,

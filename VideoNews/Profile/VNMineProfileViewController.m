@@ -19,6 +19,7 @@
 #import "VNEditProfileViewController.h"
 #import "VNSettingViewController.h"
 #import "VNUploadManager.h"
+#import "VNUploadVideoProgressView.h"
 
 @interface VNMineProfileViewController () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNUploadManagerDelegate> {
     BOOL userScrolling;
@@ -52,9 +53,8 @@
 @property (strong, nonatomic) VNNews *shareNews;
 @property (strong, nonatomic) NSArray *headerViewArr;
 
-@property (nonatomic, strong) MBProgressHUD *uploadHud;    //上传hud
 @property (nonatomic, strong) NSDictionary *uploadVideoInfo;    //上传video信息
-
+@property (nonatomic, strong) VNUploadVideoProgressView *progressView;   //进度条
 - (IBAction)setting:(id)sender;
 - (IBAction)pop:(id)sender;
 
@@ -65,14 +65,12 @@ static NSString *shareStr;
 
 @implementation VNMineProfileViewController
 
-- (MBProgressHUD *)uploadHud
+- (VNUploadVideoProgressView *)progressView
 {
-    if (!_uploadHud) {
-        _uploadHud = [[MBProgressHUD alloc] init];
-        _uploadHud.minSize = CGSizeMake(150, 150);
-        _uploadHud.labelText = @"上传中...";
+    if (!_progressView) {
+        _progressView = [[VNUploadVideoProgressView alloc] initWithFrame:CGRectMake(0, 64, 320, 20)];
     }
-    return _uploadHud;
+    return _progressView;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -153,7 +151,7 @@ static NSString *shareStr;
 
     [self reload];
     
-    [self.view addSubview:self.uploadHud];
+    [self.view addSubview:self.progressView];
 
 }
 
@@ -576,7 +574,7 @@ static NSString *shareStr;
     
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     
-    [self.uploadHud show:YES];
+    [self.progressView show];
     
     NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
     NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
@@ -587,30 +585,33 @@ static NSString *shareStr;
     
     __weak VNMineProfileViewController *weakSelf = self;
     
-    [uploadManager uploadVideo:videoData Uid:uid Title:titleString Tags:tagsString ThumbnailTime:coverTime completion:^(bool success, NSError *err){
-        if (err) {
-            NSLog(@"%@", err.localizedDescription);
-            
-            weakSelf.uploadHud.labelText = @"失败了,已保存到草稿";
-            [weakSelf.uploadHud hide:YES afterDelay:1];
-            
-            [weakSelf doSaveToDraft];
-            
-            BOOL fromDraft = [[weakSelf.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
-            
-            if (fromDraft) {
-                //clear draft video
-                [weakSelf clearDraftVideo];
-            }else {
-                //clear clips and temp video.
-                [weakSelf clearTempVideos];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        [uploadManager uploadVideo:videoData Uid:uid Title:titleString Tags:tagsString ThumbnailTime:coverTime completion:^(bool success, NSError *err){
+            if (err) {
+                NSLog(@"%@", err.localizedDescription);
+                
+                [weakSelf.progressView hide];
+                
+                [weakSelf doSaveToDraft];
+                
+                BOOL fromDraft = [[weakSelf.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+                
+                if (fromDraft) {
+                    //clear draft video
+                    [weakSelf clearDraftVideo];
+                }else {
+                    //clear clips and temp video.
+                    [weakSelf clearTempVideos];
+                }
+                
             }
-            
-        }
-        else if (success) {
-            //process after submit success.
-        }
-    }];
+            else if (success) {
+                //process after submit success.
+            }
+        }];
+    });
+    
 }
 
 - (void)clearDraftVideo
@@ -1251,7 +1252,7 @@ static NSString *shareStr;
 - (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
 {
     
-    [self.uploadHud hide:YES];
+    [self.progressView hide];
     
     [self reload];
 
@@ -1307,7 +1308,12 @@ static NSString *shareStr;
 // Upload failed.
 - (void)uploadFailed:(NSString *)key error:(NSError *)error
 {
+    [self.progressView hide];
+}
 
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent
+{
+    self.progressView.progress = percent;
 }
 
 - (void)doSaveToDraft
