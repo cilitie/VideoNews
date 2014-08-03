@@ -67,7 +67,7 @@
 + (void)userInfoForUser:(NSString *)uid completion:(void(^)(VNUser *userInfo, NSError *error))completion;
 + (void)userListForUser:(NSString *)uid type:(NSString *)type pageTime:(NSString *)pageTime completion:(void(^)(NSArray *userArr, NSString *lastTimeStamp, NSError *error))completion;
 + (void)updateUserInfo:(NSDictionary *)userInfo completion:(void(^)(BOOL succeed, NSError *error))completion;
-+(void)thumbnailURLForUser:(NSString *)uid completion:(void(^)(BOOL succeed, NSString *thumbnailURL, NSError *error))completion;
+//+(void)thumbnailURLForUser:(NSString *)uid completion:(void(^)(BOOL succeed, NSString *thumbnailURL, NSError *error))completion;
 
 #pragma mark - Upload
 //上传相关

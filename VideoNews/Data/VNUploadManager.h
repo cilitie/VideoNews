@@ -12,9 +12,9 @@
 
 @optional
 
-- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
-
 @required
+
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
 
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret;

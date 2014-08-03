@@ -134,7 +134,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
     if (indexPath.section == 0) {
         cell.thumbnailURLstr = [self.profileInfo objectForKey:@"avatar"];
         cell.titleLabel.text = @"用户头像";
-        _thumbnailCell=cell;
+        //_thumbnailCell=cell;
         [cell reload];
     }
     else if (indexPath.section == 1) {
@@ -301,11 +301,14 @@ static EditPickerType pickerType = EditPickerTypeGender;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
     if (editedImage) {
-        NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.75);
+        //CGSize size=CGSizeMake(300, 300);//把大小压缩
+        //UIImage *newImage=[self scaleToSize:size withImage:editedImage];
+        NSData *imageData = UIImageJPEGRepresentation(editedImage, 0.5);
         [picker dismissViewControllerAnimated:YES completion:nil];
         if (imageData) {
             NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
+            uploadManager.delegate=self;
             [uploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -324,16 +327,31 @@ static EditPickerType pickerType = EditPickerTypeGender;
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - 
+#pragma mark -resizeImage
+-(UIImage *)scaleToSize:(CGSize)size withImage:(UIImage*)image
+{
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+#pragma mark - uploadDelegate
 
 // Upload completed successfully.
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent
+{
+    
+}
 - (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
 {
-    __weak __typeof(self)weakSelf = self;
-    [VNHTTPRequestManager thumbnailURLForUser:_userInfo.uid completion:^(BOOL succeed,NSString *thumbnailURL,NSError *error){
-        weakSelf.thumbnailCell.thumbnailURLstr=thumbnailURL;
-        [weakSelf.thumbnailCell reload];
-    }];
+    //self.thumbnailCell.thumbnailURLstr=[ret objectForKey:@"avatar"];
+    [self.profileInfo setObject:[ret objectForKey:@"avatar"] forKey:@"avatar"];
+    [[NSUserDefaults standardUserDefaults] setObject:self.profileInfo forKey:VNProfileInfo];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.editTableView reloadData];
+    //[self.thumbnailCell reload];
     [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
 }
 
