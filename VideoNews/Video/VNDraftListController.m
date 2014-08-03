@@ -160,12 +160,13 @@
         cell = [[VNVideoDraftTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"draft"];
     }
     
-    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
-    NSString *coverPath = [[filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
+    NSString *timeIntervalStr = [self.dataSourceArr objectAtIndex:indexPath.row];
+    NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%@",timeIntervalStr]];
+    NSString *coverPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeIntervalStr]];
     
     UIImage *img = [UIImage imageWithContentsOfFile:coverPath];
     
-    double time = [[[self.dataSourceArr objectAtIndex:indexPath.row] stringByReplacingOccurrencesOfString:@".mov" withString:@""] doubleValue];
+    double time = [[self.dataSourceArr objectAtIndex:indexPath.row] doubleValue];
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -177,11 +178,14 @@
     __weak VNDraftListController *weakSelf = self;
     
     [cell setShareHandlerBlock:^{
-        NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
-        NSString *fileNamePath = [filePath stringByAppendingPathComponent:[weakSelf.dataSourceArr objectAtIndex:indexPath.row]];
+        NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%@",timeIntervalStr]];
+        NSString *videoFilePath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",timeIntervalStr]];
+        NSString *coverTimeFilePath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",timeIntervalStr]];
+        NSString *coverTimeStr = [NSString stringWithContentsOfFile:coverTimeFilePath encoding:NSUTF8StringEncoding error:nil];
         
-        VNVideoShareViewController *shareCtl = [[VNVideoShareViewController alloc] initWithVideoPath:fileNamePath andCoverImage:img];
+        VNVideoShareViewController *shareCtl = [[VNVideoShareViewController alloc] initWithVideoPath:videoFilePath andCoverImage:img];
         shareCtl.fromDraft = YES;
+        shareCtl.coverTime = [coverTimeStr floatValue];
         [weakSelf.navigationController pushViewController:shareCtl animated:YES];
     }];
     
@@ -191,9 +195,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //show video
-    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
-    NSString *fileNamePath = [filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]];
-    NSURL *videoUrl = [NSURL fileURLWithPath:fileNamePath];
+    NSString *timeIntervalStr = [self.dataSourceArr objectAtIndex:indexPath.row];
+    NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%@",timeIntervalStr]];
+    NSString *videoFilePath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",timeIntervalStr]];
+    NSURL *videoUrl = [NSURL fileURLWithPath:videoFilePath];
     AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     
     self.videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
@@ -212,16 +217,14 @@
     return UITableViewCellEditingStyleDelete;
 }
 
+//commit deleting.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
-    NSString *fileNamePath = [filePath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]];
-    NSString *coverPath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
-    NSString *coverImagePath = [[coverPath stringByAppendingPathComponent:[self.dataSourceArr objectAtIndex:indexPath.row]] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
+    NSString *timeIntervalStr = [self.dataSourceArr objectAtIndex:indexPath.row];
+    NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%@",timeIntervalStr]];
     
     NSError *err;
-    [[NSFileManager defaultManager] removeItemAtPath:fileNamePath error:&err];
-    [[NSFileManager defaultManager] removeItemAtPath:coverImagePath error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:&err];
     
     if (!err) {
         [self.dataSourceArr removeObjectAtIndex:indexPath.row];
@@ -234,6 +237,11 @@
 
 #pragma mark - VideoPlayRelated
 
+/**
+ *  @description: handle tap gesture for avplayer (close it)
+ *
+ *  @param gest ,input UITapGestureRecognizer
+ */
 - (void)handleTap:(UITapGestureRecognizer *)gest
 {
     if (_videoPlayView.superview) {
@@ -246,7 +254,13 @@
     }
 }
 
-//observe for player start.
+/**
+ *  @description :observe for player start.
+ *  @param path
+ *  @param object
+ *  @param change
+ *  @param context
+ */
 - (void)observeValueForKeyPath:(NSString*) path ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
     if (_videoPlayer.status == AVPlayerStatusReadyToPlay) {
@@ -257,7 +271,12 @@
     }
 }
 
-//observe for player stop, replay.
+/**
+ *  @description:observe for player stop, replay.
+
+ *
+ *  @param playerItem
+ */
 - (void)playerItemDidReachEnd:(AVPlayerItem *)playerItem
 {
     [_videoPlayer seekToTime:kCMTimeZero];

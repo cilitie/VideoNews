@@ -6,8 +6,9 @@
 //  Copyright (c) 2014年 Manyu Zhu. All rights reserved.
 //
 // 草稿中文件的保存
-// 路径 cache/VideoFiles/Draft/时间戳.mp4 视频文件
-// 路径 cache/VideoFiles/DraftCover/时间戳.jpg 封面文件
+// 路径 cache/VideoFiles/Draft/时间戳/时间戳.mp4 视频文件
+// 路径 cache/VideoFiles/Draft/时间戳/时间戳.jpg 封面文件
+// 路径 cache/VideoFiles/Draft/时间戳/时间戳     封面时间记录文件
 
 #import "VNVideoShareViewController.h"
 #import "WXApi.h"
@@ -238,9 +239,16 @@
 
 - (void)doSaveToDraft:(UIButton *)sender
 {
+    
     if (!sender.selected) {
-        NSString *filePath = [VNUtility getNSCachePath:@"VideoFiles/Draft"];
-        NSString *coverPath = [VNUtility getNSCachePath:@"VideoFiles/DraftCover"];
+        
+        double timeInterval = [NSDate timeIntervalSinceReferenceDate];
+
+        NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%lf",timeInterval]];
+
+        NSLog(@"before......:%@",[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[VNUtility getNSCachePath:@"VideoFiles/Draft"] error:nil]);
+
+        
         BOOL _isDir;
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&_isDir]){
@@ -249,21 +257,19 @@
             }
         }
         
-        if(![[NSFileManager defaultManager] fileExistsAtPath:coverPath isDirectory:&_isDir]){
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:coverPath withIntermediateDirectories:YES attributes:nil error:nil]) {
-                
-            }
-        }
+        NSString *videoFilePath = [NSString stringWithFormat:@"%@/%lf.mp4",filePath,timeInterval];
+        NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.jpg",filePath,timeInterval];
+        NSString *coverTimePointFilePath = [NSString stringWithFormat:@"%@/%lf",filePath,timeInterval];
         
         NSError *err;
-        double timeInterval = [NSDate timeIntervalSinceReferenceDate];
-        NSString *time = [NSString stringWithFormat:@"%lf.mp4",timeInterval];
-        NSString *timeCover = [NSString stringWithFormat:@"%lf.jpg",timeInterval];
+        
+        NSString *coverTimeString = [NSString stringWithFormat:@"%f",self.coverTime];
+        [coverTimeString writeToFile:coverTimePointFilePath atomically:YES encoding:NSUTF8StringEncoding error:&err];
         
         NSData *data = UIImageJPEGRepresentation(self.coverImg, 1);
-        [data writeToFile:[coverPath stringByAppendingPathComponent:timeCover] atomically:YES];
-        NSLog(@"cover path :%@",[coverPath stringByAppendingPathComponent:timeCover]);
-        [[NSFileManager defaultManager] copyItemAtPath:self.videoPath toPath:[filePath stringByAppendingPathComponent:time] error:&err];
+        [data writeToFile:coverFilePath atomically:YES];
+
+        [[NSFileManager defaultManager] copyItemAtPath:self.videoPath toPath:videoFilePath error:&err];
         
         if (!err) {
             
@@ -275,6 +281,9 @@
             
             sender.selected = YES;
         }
+        
+        NSLog(@"after......:%@",[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[VNUtility getNSCachePath:@"VideoFiles/Draft"] error:nil]);
+
         
     }else {
         
@@ -375,13 +384,13 @@
 - (void)clearDraftVideo
 {
     
-    NSString *coverImgPath = [[self.videoPath stringByReplacingOccurrencesOfString:@"/Draft/" withString:@"/DraftCover/"] stringByReplacingOccurrencesOfString:@".mp4" withString:@".jpg"];
-    NSLog(@"cover image path:%@",coverImgPath);
+    NSString *filesPath = [self.videoPath stringByDeletingLastPathComponent];
+
     NSError *err;
-    [[NSFileManager defaultManager] removeItemAtPath:self.videoPath error:&err];
-    [[NSFileManager defaultManager] removeItemAtPath:coverImgPath error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:filesPath error:&err];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshDraftListNotification" object:nil userInfo:nil];
+    
 }
 
 #pragma mark - UIGestureRecognizerDelgate

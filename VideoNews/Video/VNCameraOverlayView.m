@@ -102,7 +102,7 @@
         _msgLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
         _msgLbl.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
         _msgLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:20];
-        _msgLbl.textColor = [UIColor blackColor];
+        _msgLbl.textColor = [UIColor colorWithRGBValue:0xCE2426];
         _msgLbl.text = @"生成视频...";
         _msgLbl.textAlignment = NSTextAlignmentCenter;
         _msgLbl.alpha = 0;
