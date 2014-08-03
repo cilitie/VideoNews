@@ -12,6 +12,7 @@
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
 #import "VNTabBarViewController.h"
+#import "VNLoginViewController.h"
 #import <objc/runtime.h>
 
 @implementation VNAppDelegate
@@ -27,6 +28,24 @@
     [UMSocialQQHandler setSupportQzoneSSO:YES];
     //注册通知
     [UIResponder registerRemote];
+    
+    //若没有登陆，则加载登陆页面
+    NSDictionary *loginInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    if (loginInfo[@"openid"] && user_token) {
+        
+        [self checkVideoCapture];
+    }
+    else
+    {
+        UIStoryboard *storyBoard=[UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        VNLoginViewController *loginViewController = [storyBoard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        //[_window addSubview:loginViewController.view];
+        VNTabBarViewController *tabBarViewController=(VNTabBarViewController *)self.window.rootViewController;
+        [tabBarViewController presentViewController:loginViewController animated:YES completion:nil];
+
+    }
+
     
     if ([UIApplication sharedApplication].applicationIconBadgeNumber!=0) {
         //使用badge number判断，计数不正确
@@ -44,11 +63,11 @@
     }
     
     //to see if there's any video clip left(after video capture last time of application launch).
-    NSDictionary *loginInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-    if (loginInfo[@"openid"] && user_token) {
-        [self checkVideoCapture];
-    }
+    //NSDictionary *loginInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    //NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    //if (loginInfo[@"openid"] && user_token) {
+    //    [self checkVideoCapture];
+    //}
     
     return YES;
 }

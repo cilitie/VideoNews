@@ -43,7 +43,7 @@
     [self.bgView addSubview:self.moviePlayer.view];
     
     self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.playBtn.frame = CGRectMake(0, 0, 100.0, 100.0);
+    self.playBtn.frame = CGRectMake(0, 0, 300.0, 300.0);
     self.playBtn.center = self.videoImgView.center;
     [self.bgView addSubview:self.playBtn];
 }

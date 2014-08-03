@@ -46,7 +46,7 @@
         NSLog(@"%@", self.userInfo.name);
         [self.nameLabel setText:self.userInfo.name];
         NSDictionary *attribute = @{NSFontAttributeName: self.nameLabel.font};
-        CGRect rect = [self.userInfo.name boundingRectWithSize:CGSizeMake(150.0, CGRectGetHeight(self.nameLabel.frame)) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        CGRect rect = [self.userInfo.name boundingRectWithSize:CGSizeMake(200.0, CGRectGetHeight(self.nameLabel.frame)) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
         self.nameLabelWidthLC.constant = CGRectGetWidth(rect)+1;
         
         if (self.userInfo.sex) {

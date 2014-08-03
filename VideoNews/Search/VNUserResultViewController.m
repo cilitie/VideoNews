@@ -29,6 +29,7 @@
 @property (strong, nonatomic) NSMutableArray *userResultArr;
 @property (strong, nonatomic) NSMutableArray *idolListArr;
 @property (strong, nonatomic) VNSearchField *searchField;
+@property (strong, nonatomic) NSString *myUid;
 
 - (IBAction)popBack:(id)sender;
 
@@ -67,6 +68,7 @@
     if (userInfo && userInfo.count) {
         NSString *uid = [userInfo objectForKey:@"openid"];
         NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        _myUid=uid;
         if (uid && user_token) {
             [VNHTTPRequestManager idolListForUser:uid userToken:user_token completion:^(NSArray *idolArr, NSError *error) {
                 if (error) {
@@ -166,7 +168,11 @@
     VNUserResultCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VNUserResultCollectionViewCellIdentifier" forIndexPath:indexPath];
     VNUser *user = [self.userResultArr objectAtIndex:indexPath.item];
     cell.user = user;
+    cell.isMineIdol=user.isMineIdol;
     [cell reloadCell];
+    if ([_myUid isEqualToString: user.uid]) {
+        cell.followBtn.hidden=YES;
+    }
     
     __weak typeof(cell) weakCell = cell;
     cell.followHandler = ^(VNUser *user){
@@ -175,11 +181,11 @@
             NSString *uid = [userInfo objectForKey:@"openid"];
             NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
             if ([user.uid isEqualToString:uid]) {
-                [VNUtility showHUDText:@"你不能关注自己!" forView:self.view];
+                [VNUtility showHUDText:@"不能关注自己!" forView:self.view];
                 return ;
             }
             if (uid && user_token) {
-                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -187,6 +193,17 @@
                         [VNUtility showHUDText:@"关注成功!" forView:self.view];
                         [weakCell.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                         [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+                        //int fansCount=[weakCell.user.fans_count intValue]+1;                        int fansCount=fans_count+1;
+                        //weakCell.user.fans_count =[NSString stringWithFormat:@"%d",fansCount];
+                        NSString *fansCountStr;
+                        if (fans_count>10000) {
+                            fansCountStr=[NSString stringWithFormat:@"%d万",fans_count/10000];
+                        }
+                        else
+                        {
+                            fansCountStr=[NSString stringWithFormat:@"%d",fans_count];
+                        }
+                        weakCell.fansCountLabel.text=fansCountStr;
                         weakCell.isMineIdol = YES;
                     }
                     else {
@@ -212,7 +229,7 @@
                     [VNUtility showHUDText:@"不能关注自己!" forView:self.view];
                     return ;
                 }
-                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed, NSError *error) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed,int fans_count, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -220,6 +237,17 @@
                         [VNUtility showHUDText:@"取消关注成功!" forView:self.view];
                         [weakCell.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
                         [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+                        //int fansCount=[weakCell.user.fans_count intValue]-1;
+                        //int fansCount=fans_count-1;
+                        NSString *fansCountStr;
+                        if (fans_count>10000) {
+                            fansCountStr=[NSString stringWithFormat:@"%d万",fans_count/10000];
+                        }
+                        else
+                        {
+                            fansCountStr=[NSString stringWithFormat:@"%d",fans_count];
+                        }
+                        weakCell.fansCountLabel.text=fansCountStr;
                         weakCell.isMineIdol = NO;
                     }
                     else {

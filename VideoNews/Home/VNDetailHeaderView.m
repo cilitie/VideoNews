@@ -35,6 +35,12 @@
             self.moreHandler();
         }
     }
+    else
+    {
+        if (self.profileHandler) {
+            self.profileHandler();
+        }
+    }
 }
 
 - (IBAction)tap:(UITapGestureRecognizer *)sender {

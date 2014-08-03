@@ -42,6 +42,7 @@
 @property (strong, nonatomic) VNUser *userInfo;
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
+@property (strong, nonatomic) NSString *likeListArr;
 
 @property (strong, nonatomic) NSString *mineUid;
 @property (strong, nonatomic) NSString *mineUser_token;
@@ -65,6 +66,7 @@ static NSString *shareStr;
         _followArr = [NSMutableArray array];
         _fansArr = [NSMutableArray array];
         _idolListArr = [NSMutableArray array];
+        _likeListArr = [NSMutableArray array];
         _followLastPageTime = nil;
         _fansLastPageTime = nil;
         _shareNews = nil;
@@ -541,7 +543,7 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted, NSError *error) {
+            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, NSError *error) {
                 //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -554,9 +556,17 @@ static NSString *shareStr;
                     
                 }
                 else if (succeed) {
-                    NSUInteger curFavCount = [weakCell.favouriteLabel.text integerValue];
-                    weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", curFavCount+1];
-                    [VNUtility showHUDText:@"点赞成功!" forView:self.view];
+                    //NSUInteger curFavCount = [weakCell.favouriteLabel.text integerValue];
+                    //weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", curFavCount+1];
+                    if (like_count>10000) {
+                        weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                    }
+                    else
+                    {
+                        weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                    }
+
+                    //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                 }
                 else {
                     [VNUtility showHUDText:@"已点赞!" forView:self.view];
@@ -579,7 +589,7 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -608,7 +618,7 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -736,7 +746,7 @@ static NSString *shareStr;
     }
     
     if ([button.currentTitle isEqual:@"关注"]) {
-        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, NSError *error) {
+        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed,int fans_count, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -751,7 +761,7 @@ static NSString *shareStr;
         }];
     }
     else {
-        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"remove" completion:^(BOOL succeed, NSError *error) {
+        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"remove" completion:^(BOOL succeed,int fans_count, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -990,7 +1000,7 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
-        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, NSError *error) {
+        [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }

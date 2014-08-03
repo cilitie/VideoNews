@@ -181,8 +181,23 @@ static NSString *shareStr;
     
     self.headerView.timeLabel.text = self.news.date;
     self.headerView.tagLabel.text = self.news.tags;
-    self.headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
-    self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+   
+    if (self.news.comment_count>10000) {
+        NSString *comment_count_str=[NSString stringWithFormat:@"%d万",self.news.comment_count/10000];
+        self.headerView.commentLabel.text=comment_count_str;
+    }
+    else
+    {
+        self.headerView.commentLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
+    }
+    if (self.news.like_count>10000) {
+        NSString *like_count_str=[NSString stringWithFormat:@"%d万",self.news.like_count/10000];
+        self.headerView.likeNumLabel.text=like_count_str;
+    }
+    else
+    {
+        self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+    }
     
     //视频URL
     NSLog(@"%@", self.vedioMedia.url);
@@ -198,7 +213,7 @@ static NSString *shareStr;
     [self.headerView addSubview:self.moviePlayer.view];
     
     self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.playBtn.frame = CGRectMake(0, 0, 100.0, 100.0);
+    self.playBtn.frame = CGRectMake(0, 0, 300.0, 300.0);
     self.playBtn.center = self.headerView.newsImageView.center;
     if ([VNHTTPRequestManager isReachableViaWiFi] && isAutoPlayOption) {
         //[self.moviePlayer play];
@@ -216,7 +231,7 @@ static NSString *shareStr;
     
     self.commentTableView.tableHeaderView = self.headerView;
     [self.commentTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
-    self.commentTableView.layer.cornerRadius = 5.0;
+    //self.commentTableView.layer.cornerRadius = 5.0;
     self.commentTableView.layer.masksToBounds = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -499,7 +514,7 @@ static NSString *shareStr;
     }
     
     if (button.isSelected) {
-        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, NSError *error) {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
             //isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -511,7 +526,8 @@ static NSString *shareStr;
             }
             else if (succeed) {
                 [button setSelected:NO];
-                [VNUtility showHUDText:@"已取消!" forView:self.view];
+                //[VNUtility showHUDText:@"已取消!" forView:self.view];
+
             }
             else {
                 [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
@@ -519,7 +535,7 @@ static NSString *shareStr;
         }];
     }
     else {
-        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, NSError *error) {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -531,7 +547,7 @@ static NSString *shareStr;
             }
             else if (succeed) {
                 [button setSelected:YES];
-                [VNUtility showHUDText:@"点赞成功!" forView:self.view];
+                //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
             }
             else {
                 [VNUtility showHUDText:@"已点赞!" forView:self.view];
@@ -607,7 +623,7 @@ static NSString *shareStr;
             if ([self.inputTextView.text hasPrefix:@"回复"] && self.curComment!=nil && self.curComment.author!=nil) {
                 //NSLog(@"%@",self.curComment);
                 __weak typeof(self) weakSelf = self;
-                [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, NSError *error) {
+                [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, int comment_count,NSError *error) {
                     //isCommentDeleted=YES;
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -634,6 +650,14 @@ static NSString *shareStr;
                             [self.commentArr insertObject:comment atIndex:0];
                             [self.commentTableView reloadData];
                         }
+                        if (comment_count>10000) {
+                            self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                        }
+                        else
+                        {
+                            self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                        }
+                        
                     }
                     else {
                         [VNUtility showHUDText:@"回复失败!" forView:self.view];
@@ -641,7 +665,7 @@ static NSString *shareStr;
                 }];
             }
             else {
-                [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, NSError *error) {
+                [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
                     //isNewsDeleted=YES;
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -660,6 +684,14 @@ static NSString *shareStr;
                             [self.commentArr insertObject:comment atIndex:0];
                             [self.commentTableView reloadData];
                         }
+                        if (comment_count>10000) {
+                            self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                        }
+                        else
+                        {
+                            self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                        }
+                        
                     }
                     else {
                         [VNUtility showHUDText:@"评论失败!" forView:self.view];
@@ -925,7 +957,7 @@ static NSString *shareStr;
                     NSString *uid = [userInfo objectForKey:@"openid"];
                     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                     if (uid && user_token) {
-                        [VNHTTPRequestManager deleteComment:self.curComment.cid news:self.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, BOOL isNewsDeleted,NSError *error) {
+                        [VNHTTPRequestManager deleteComment:self.curComment.cid news:self.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, BOOL isNewsDeleted,int comment_count,NSError *error) {
                             if (error) {
                                 NSLog(@"%@", error.localizedDescription);
                             }
@@ -939,9 +971,17 @@ static NSString *shareStr;
                                 //[self.commentTableView triggerPullToRefresh];
                                 [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
                                 [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                if (comment_count>10000) {
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                }
+                                else
+                                {
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                }
+
                                 //weakSelf.inputTextView.text=@"";
                                 //[weakSelf.inputTextView resignFirstResponder];
-                                [VNUtility showHUDText:@"删除评论成功!" forView:self.view];
+                                //[VNUtility showHUDText:@"删除评论成功!" forView:self.view];
                             }
                             else {
                                 [VNUtility showHUDText:@"删除评论失败!" forView:self.view];
@@ -1084,7 +1124,7 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
-        [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, NSError *error) {
+        [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
             isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -1097,6 +1137,14 @@ static NSString *shareStr;
                 if (comment) {
                     [self.commentArr insertObject:comment atIndex:0];
                     [self.commentTableView reloadData];
+                    if (comment_count>10000) {
+                        self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                    }
+                    else
+                    {
+                        self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                    }
+                    
                 }
             }
         }];
