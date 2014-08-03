@@ -585,9 +585,27 @@ static NSString *shareStr;
     
     NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
     
+    __weak VNMineProfileViewController *weakSelf = self;
+    
     [uploadManager uploadVideo:videoData Uid:uid Title:titleString Tags:tagsString ThumbnailTime:coverTime completion:^(bool success, NSError *err){
         if (err) {
             NSLog(@"%@", err.localizedDescription);
+            
+            weakSelf.uploadHud.labelText = @"失败了,已保存到草稿";
+            [weakSelf.uploadHud hide:YES afterDelay:1];
+            
+            [weakSelf doSaveToDraft];
+            
+            BOOL fromDraft = [[weakSelf.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+            
+            if (fromDraft) {
+                //clear draft video
+                [weakSelf clearDraftVideo];
+            }else {
+                //clear clips and temp video.
+                [weakSelf clearTempVideos];
+            }
+            
         }
         else if (success) {
             //process after submit success.
@@ -1235,6 +1253,8 @@ static NSString *shareStr;
     
     [self.uploadHud hide:YES];
     
+    [self reload];
+
     BOOL fromDraft = [[self.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
 
     if (fromDraft) {
@@ -1245,53 +1265,49 @@ static NSString *shareStr;
         [self clearTempVideos];
     }
     
-    NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
+    __weak VNMineProfileViewController *weakSelf = self;
     
-    NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
-    
-    NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
-    
-    NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
-    
-    UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
-    
-    [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:coverImage socialUIDelegate:self];
-
-    if ([[self.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
-        //分享新浪
+    dispatch_async(dispatch_get_main_queue(), ^{
         
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
+        NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
         
-        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
-    }
-    if ([[self.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
-        //分享朋友圈
+        NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
         
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
+        NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
         
-        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
-    }
-    
-    [self reload];
+        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
+        
+        UIImage *coverImage = [weakSelf.uploadVideoInfo valueForKey:@"coverImg"];
+        
+        if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
+            //分享新浪
+            [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToSina] content:shareText image:coverImage location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+                if (response.responseCode == UMSResponseCodeSuccess) {
+                    NSLog(@"新浪微博分享成功了");
+                } else if(response.responseCode != UMSResponseCodeCancel) {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:@"新浪微博分享失败" delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+                    [alertView show];
+                }
+            }];
+        }
+        if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
+            //分享朋友圈
+            [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToWechatTimeline] content:shareText image:coverImage location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+                if (response.responseCode == UMSResponseCodeSuccess) {
+                    NSLog(@"朋友圈分享成功了");
+                } else if(response.responseCode != UMSResponseCodeCancel) {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:@"微信朋友圈分享失败" delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+                    [alertView show];
+                }
+            }];
+        }
+    });
 }
 
 // Upload failed.
 - (void)uploadFailed:(NSString *)key error:(NSError *)error
 {
-    self.uploadHud.labelText = @"失败了,已保存到草稿";
-    [self.uploadHud hide:YES afterDelay:1];
-    
-    [self doSaveToDraft];
-    
-    BOOL fromDraft = [[self.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
-    
-    if (fromDraft) {
-        //clear draft video
-        [self clearDraftVideo];
-    }else {
-        //clear clips and temp video.
-        [self clearTempVideos];
-    }
+
 }
 
 - (void)doSaveToDraft
@@ -1315,7 +1331,7 @@ static NSString *shareStr;
     NSString *coverTimePointFilePath = [NSString stringWithFormat:@"%@/%lf",filePath,timeInterval];
     
     NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
-    NSString *coverTimeString = [self.uploadVideoInfo valueForKey:@"coverTime"];
+    NSString *coverTimeString = [NSString stringWithFormat:@"%@",[self.uploadVideoInfo valueForKey:@"coverTime"]];
     UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
 
     NSError *err;

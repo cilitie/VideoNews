@@ -232,9 +232,6 @@
         double timeInterval = [NSDate timeIntervalSinceReferenceDate];
 
         NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%lf",timeInterval]];
-
-        NSLog(@"before......:%@",[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[VNUtility getNSCachePath:@"VideoFiles/Draft"] error:nil]);
-
         
         BOOL _isDir;
         
@@ -268,9 +265,6 @@
             
             sender.selected = YES;
         }
-        
-        NSLog(@"after......:%@",[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[VNUtility getNSCachePath:@"VideoFiles/Draft"] error:nil]);
-
         
     }else {
         
