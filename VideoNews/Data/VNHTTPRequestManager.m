@@ -877,6 +877,29 @@ static int pagesize = 10;
     
 }
 
++(void)thumbnailURLForUser:(NSString *)uid completion:(void(^)(BOOL succeed,NSString *thumbnailURL,NSError *error))completion
+{
+    NSString *URLStr = [VNHost stringByAppendingString:@"userThumbnail.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        NSString *thumbnailURL=@"";
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                thumbnailURL = [responseObject objectForKey:@"thumbnailURL"];
+            }
+        }
+        if (completion) {
+            completion(YES,thumbnailURL, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO,@"", error);
+        }
+    }];
+}
+
 #pragma mark - Login
 
 + (void)loginWithUser:(VNAuthUser *)user completion:(void(^)(BOOL succeed, NSError *error))completion {

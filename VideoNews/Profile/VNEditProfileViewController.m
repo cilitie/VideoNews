@@ -28,6 +28,7 @@ typedef NS_ENUM(NSUInteger, EditPickerType) {
 @property (weak, nonatomic) IBOutlet UIPickerView *customPicker;
 
 @property (strong, nonatomic) NSMutableDictionary *profileInfo;
+@property (strong, nonatomic) VNEditProfileTableViewCell *thumbnailCell;
 
 @property (strong, nonatomic) NSArray *genderArr;
 @property (strong, nonatomic) NSArray *constellationArr;
@@ -133,6 +134,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
     if (indexPath.section == 0) {
         cell.thumbnailURLstr = [self.profileInfo objectForKey:@"avatar"];
         cell.titleLabel.text = @"用户头像";
+        _thumbnailCell=cell;
         [cell reload];
     }
     else if (indexPath.section == 1) {
@@ -309,10 +311,10 @@ static EditPickerType pickerType = EditPickerTypeGender;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (succeed) {
-                    [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
-                    return ;
+                    //[VNUtility showHUDText:@"头像更新成功！" forView:self.view];
+                    //return ;
                 }
-                [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
+                //[VNUtility showHUDText:@"头像更新失败！" forView:self.view];
             }];
         }
     }
@@ -322,15 +324,24 @@ static EditPickerType pickerType = EditPickerTypeGender;
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - uploadManagerDelegate
+#pragma mark - 
 
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)key ret:(NSDictionary *)ret
-{}
+{
+    __weak __typeof(self)weakSelf = self;
+    [VNHTTPRequestManager thumbnailURLForUser:_userInfo.uid completion:^(BOOL succeed,NSString *thumbnailURL,NSError *error){
+        weakSelf.thumbnailCell.thumbnailURLstr=thumbnailURL;
+        [weakSelf.thumbnailCell reload];
+    }];
+    [VNUtility showHUDText:@"头像更新成功！" forView:self.view];
+}
 
 // Upload failed.
 - (void)uploadFailed:(NSString *)key error:(NSError *)error
-{}
+{
+    [VNUtility showHUDText:@"头像更新失败！" forView:self.view];
+}
 
 #pragma mark - SEL
 
