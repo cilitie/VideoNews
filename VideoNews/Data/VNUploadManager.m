@@ -126,6 +126,11 @@
     return [originTokenStr md5];
 }
 
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent
+{
+    [self.delegate uploadProgressUpdated:filePath percent:percent];
+}
+
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret
 {

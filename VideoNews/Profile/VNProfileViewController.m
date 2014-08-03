@@ -42,7 +42,7 @@
 @property (strong, nonatomic) VNUser *userInfo;
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
-@property (strong, nonatomic) NSString *likeListArr;
+@property (strong, nonatomic) NSMutableArray *favouriteNewsArr;
 
 @property (strong, nonatomic) NSString *mineUid;
 @property (strong, nonatomic) NSString *mineUser_token;
@@ -66,7 +66,7 @@ static NSString *shareStr;
         _followArr = [NSMutableArray array];
         _fansArr = [NSMutableArray array];
         _idolListArr = [NSMutableArray array];
-        _likeListArr = [NSMutableArray array];
+        _favouriteNewsArr = [NSMutableArray array];
         _followLastPageTime = nil;
         _fansLastPageTime = nil;
         _shareNews = nil;
@@ -130,6 +130,16 @@ static NSString *shareStr;
                         [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
                     }
+            }
+        }];
+        [VNHTTPRequestManager favouriteNewsListFor:_mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if (favouriteNewsArr.count) {
+                NSLog(@"%@", favouriteNewsArr);
+                [self.favouriteNewsArr removeAllObjects];
+                [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
             }
         }];
     }
@@ -513,6 +523,15 @@ static NSString *shareStr;
         VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileVideoTableViewCellIdentifier"];
         VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
         cell.news = news;
+        //if ([self.favouriteNewsArr containsObject:[NSNumber numberWithInt:news.nid]])
+        for (NSDictionary *dic in self.favouriteNewsArr) {
+                if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
+                    cell.isFavouriteNews=YES;
+                    //[self.favouriteBtn setSelected:YES];
+                    break;
+                }
+        }
+        //}
         [cell reload];
         if (indexPath.row == 0 && firstLoading && isAutoPlayOption) {
             [cell startOrPausePlaying:YES];
@@ -528,21 +547,43 @@ static NSString *shareStr;
         };
         
         __weak typeof(self) weakSelf = self;
+        __weak typeof(cell) weakCell = cell;
+
         cell.moreHandler = ^{
-            UIActionSheet *actionSheet = nil;
+            [VNHTTPRequestManager isNewsDeleted:weakCell.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
+             {
+                 //isNewsDeleted=YES;
+                 if (error) {
+                     NSLog(@"%@", error.localizedDescription);
+                 }
+                 else if (isNewsDeleted) {
+                     [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                     [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+
+                 }
+                 else
+                 {
+                     UIActionSheet *actionSheet = nil;
+                     actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                     weakSelf.shareNews = news;
+                     [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+                 }
+             }];
+            
+           /* UIActionSheet *actionSheet = nil;
             actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
             weakSelf.shareNews = news;
-            [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+            [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
         };
         
-        __weak typeof(cell) weakCell = cell;
         cell.likeHandler = ^(){
             if (!self.mineUid || !self.mineUser_token) {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
                 [alert show];
                 return;
             }
-            
+            if (!weakCell.isFavouriteNews) {
             [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, NSError *error) {
                 //isNewsDeleted=YES;
                 if (error) {
@@ -553,11 +594,9 @@ static NSString *shareStr;
                     [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
                     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
                     [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
-                    
                 }
                 else if (succeed) {
-                    //NSUInteger curFavCount = [weakCell.favouriteLabel.text integerValue];
-                    //weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", curFavCount+1];
+                    weakCell.isFavouriteNews=YES;
                     if (like_count>10000) {
                         weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                     }
@@ -572,6 +611,37 @@ static NSString *shareStr;
                     [VNUtility showHUDText:@"已点赞!" forView:self.view];
                 }
             }];
+            }
+            else
+            {
+                [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, NSError *error) {
+                    //isNewsDeleted=YES;
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (isNewsDeleted) {
+                        //删除相应的cell
+                        [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                        [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                    }
+                    else if (succeed) {
+                        weakCell.isFavouriteNews=NO;
+                        if (like_count>10000) {
+                            weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                        }
+                        else
+                        {
+                            weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                        }
+                        
+                        //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
+                    }
+                }];
+            }
         };
         
         return cell;

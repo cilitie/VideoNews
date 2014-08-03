@@ -11,6 +11,7 @@
 #import "VNResultViewController.h"
 #import "VNSearchField.h"
 #import "VNSearchWordViewController.h"
+#import "SVPullToRefresh.h"
 
 @interface VNSearchViewController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -55,6 +56,26 @@ static int selectedItemIndex;
             [self.categoryCollectionView reloadData];
         }
     }];
+    [self.categoryCollectionView addPullToRefreshWithActionHandler:^{
+        // FIXME: Hard code
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+            [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", [error localizedDescription]);
+                }
+                else {
+                    [weakSelf.categoryArr addObjectsFromArray:categoryArr];
+                    [self.categoryCollectionView reloadData];
+                }
+                [weakSelf.categoryCollectionView.pullToRefreshView stopAnimating];
+
+            }];;
+        });
+    }];
+    //[self.categoryCollectionView triggerPullToRefresh];
+
+
 }
 
 - (void)didReceiveMemoryWarning

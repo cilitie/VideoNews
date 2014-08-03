@@ -140,20 +140,29 @@ static NSString *shareStr;
     self.headerView.moreHandler = ^{
         [VNHTTPRequestManager isNewsDeleted:weakSelf.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
          {
-             isNewsDeleted=YES;
+             //isNewsDeleted=YES;
              if (error) {
                  NSLog(@"%@", error.localizedDescription);
              }
              else if (isNewsDeleted) {
                  [weakSelf deleteCellAndPop];
              }
+             else
+             {
+                 UIActionSheet *actionSheet = nil;
+                 NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+                 NSString *mineID = [userInfo objectForKey:@"openid"];
+                 actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [weakSelf.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
+                 actionSheet.tag = kTagNews;
+                 [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+             }
          }];
-        UIActionSheet *actionSheet = nil;
+        /*UIActionSheet *actionSheet = nil;
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         NSString *mineID = [userInfo objectForKey:@"openid"];
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [weakSelf.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
         actionSheet.tag = kTagNews;
-        [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+        [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
     };
     
     [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
@@ -587,6 +596,8 @@ static NSString *shareStr;
 }
 
 - (IBAction)share:(id)sender {
+    __weak typeof(self) weakSelf = self;
+
     [VNHTTPRequestManager isNewsDeleted:self.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
      {
          //isNewsDeleted=YES;
@@ -596,12 +607,19 @@ static NSString *shareStr;
          else if (isNewsDeleted) {
              [self deleteCellAndPop];
          }
+         else
+         {
+             UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:@"分享到" delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
+             [shareActionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+             shareActionSheet.tag = kTagShare;
+             shareActionSheet.delegate = weakSelf;
+         }
      }];
 
-    UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:@"分享到" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
+    /*UIActionSheet * shareActionSheet = [[UIActionSheet alloc] initWithTitle:@"分享到" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", nil];
     [shareActionSheet showFromTabBar:self.tabBarController.tabBar];
     shareActionSheet.tag = kTagShare;
-    shareActionSheet.delegate = self;
+    shareActionSheet.delegate = self;*/
 }
 
 - (IBAction)sendComment:(id)sender {
@@ -1125,7 +1143,7 @@ static NSString *shareStr;
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
         [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
-            isNewsDeleted=YES;
+            //isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }

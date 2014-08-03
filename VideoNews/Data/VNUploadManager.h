@@ -10,6 +10,10 @@
 
 @protocol VNUploadManagerDelegate <NSObject>
 
+@optional
+
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
+
 @required
 
 // Upload completed successfully.
