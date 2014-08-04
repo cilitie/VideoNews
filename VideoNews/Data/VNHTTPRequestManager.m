@@ -235,6 +235,34 @@ static int pagesize = 10;
     }];
 }
 
++ (void)deleteNews:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed,NSError *error))completion{
+    //http://182.92.103.134:8080/engine/deleteNews.php?token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&nid=1&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"deleteNews.php"];
+    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"uid": uid, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //NSLog(@"%@", operation);
+        BOOL operationSuccess = NO;
+        //BOOL isNewsDeleted=NO;
+        //int like_count=0;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                operationSuccess = [[responseObject objectForKey:@"success"] boolValue];
+                //isNewsDeleted = [[responseObject objectForKey:@"newsDeleted"] boolValue];
+                //like_count=[[responseObject objectForKey:@"like_count"] intValue];
+            }
+        }
+        if (completion) {
+            completion(operationSuccess,nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO,error);
+        }
+    }];
+}
+
 #pragma mark - 评论相关
 
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, VNComment *comment ,int comment_count,NSError *error))completion {

@@ -47,10 +47,12 @@
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
 @property (strong, nonatomic) NSMutableArray *favouriteNewsArr;
+@property (strong, nonatomic) UIAlertView *deleteAlert;
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
 @property (strong, nonatomic) VNNews *shareNews;
+@property (strong, nonatomic) NSIndexPath *shareNewsIndexPath;
 @property (strong, nonatomic) NSArray *headerViewArr;
 
 @property (nonatomic, strong) NSDictionary *uploadVideoInfo;    //上传video信息
@@ -86,6 +88,7 @@ static NSString *shareStr;
         _followLastPageTime = nil;
         _fansLastPageTime = nil;
         _shareNews = nil;
+        _shareNewsIndexPath=nil;
         _uid = nil;
         _user_token = nil;
         _isPush = NO;
@@ -710,6 +713,7 @@ static NSString *shareStr;
             UIActionSheet *actionSheet = nil;
             actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
             weakSelf.shareNews = news;
+            weakSelf.shareNewsIndexPath=indexPath;
             [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
         };
         cell.likeHandler = ^(){
@@ -1144,6 +1148,11 @@ static NSString *shareStr;
                 NSString *buttonTitle = [actionSheet buttonTitleAtIndex:8];
                 if ([buttonTitle isEqualToString:@"删除"]) {
                     //TODO: 删除帖子
+                    [actionSheet dismissWithClickedButtonIndex:9 animated:YES];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定要永久删除视频？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+                    _deleteAlert=alert;
+                    [alert show];
+
                 }
                 else if ([buttonTitle isEqualToString:@"举报"]) {
                     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -1225,6 +1234,34 @@ static NSString *shareStr;
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (_deleteAlert ==alertView) {
+        if (buttonIndex==1) {
+            NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+            NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            if (mineUid && user_token) {
+                [VNHTTPRequestManager deleteNews:_shareNews.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,NSError *error)
+                 {
+                     if (error) {
+                         NSLog(@"%@", error.localizedDescription);
+                     }
+                     else if(succeed)
+                     {
+                         //[self deleteCellAndPop:1];
+                         [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                         [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                     }
+                     else
+                     {
+                         [VNUtility showHUDText:@"删除视频失败" forView:self.view];
+                     }
+                 }];
+            }
+        }
+        else
+        {return;}
+        return;
+    }
     if (buttonIndex == 0) {
         return;
     }

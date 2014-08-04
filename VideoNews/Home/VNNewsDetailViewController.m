@@ -44,6 +44,7 @@
 @property (weak, nonatomic) IBOutlet UIView *dismissTapView;
 @property (weak, nonatomic) IBOutlet UIButton *keyboardToggleBtn;
 @property (strong, nonatomic) AGEmojiKeyboardView *emojiKeyboardView;
+@property (strong, nonatomic)UIAlertView *deleteAlert;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarHeightLC;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputTextViewHeightLC;
@@ -145,7 +146,7 @@ static NSString *shareStr;
                  NSLog(@"%@", error.localizedDescription);
              }
              else if (isNewsDeleted) {
-                 [weakSelf deleteCellAndPop];
+                 [weakSelf deleteCellAndPop:0];
              }
              else
              {
@@ -265,7 +266,7 @@ static NSString *shareStr;
         }
         else if (isNewsDeleted)
         {
-            [self deleteCellAndPop];
+            [self deleteCellAndPop:0];
         }
         else {
             [self.commentArr addObjectsFromArray:commemtArr];
@@ -284,7 +285,7 @@ static NSString *shareStr;
                 }
                 else if (isNewsDeleted)
                 {
-                    [self deleteCellAndPop];
+                    [self deleteCellAndPop:0];
                 }
                 else {
                     [weakSelf.commentArr removeAllObjects];
@@ -314,7 +315,7 @@ static NSString *shareStr;
             }
             else if (isNewsDeleted)
             {
-                [self deleteCellAndPop];
+                [self deleteCellAndPop:0];
             }
             else {
                 [weakSelf.commentArr addObjectsFromArray:commemtArr];
@@ -345,7 +346,19 @@ static NSString *shareStr;
 {
     int row=sender.tag;
     _curComment=_commentArr[row-KReplyButton];
-    NSLog(@"nid:%@",_curComment.author.uid);
+    //NSLog(@"nid:%@",_curComment.author.uid);
+    VNUser *user = _curComment.author;
+    NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    if (mineUid && [mineUid isEqualToString:user.uid]) {
+        VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+        mineProfileViewController.isPush = YES;
+        [self.navigationController pushViewController:mineProfileViewController animated:YES];
+    }
+    else {
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        profileViewController.uid = user.uid;
+        [self.navigationController pushViewController:profileViewController animated:YES];
+    }
     
 }
 
@@ -531,7 +544,7 @@ static NSString *shareStr;
             else if(isNewsDeleted)
             {
                 //pop，并且发通知
-                [self deleteCellAndPop];
+                [self deleteCellAndPop:0];
             }
             else if (succeed) {
                 [button setSelected:NO];
@@ -551,7 +564,7 @@ static NSString *shareStr;
             else if (isNewsDeleted)
             {
                 //pop，并且发通知
-                [self deleteCellAndPop];
+                [self deleteCellAndPop:0];
                 
             }
             else if (succeed) {
@@ -564,7 +577,7 @@ static NSString *shareStr;
         }];
     }
 }
--(void)deleteCellAndPop
+-(void)deleteCellAndPop:(int)tag
 {
     switch (_controllerType) {
         case SourceViewControllerTypeHome:
@@ -590,8 +603,13 @@ static NSString *shareStr;
         default:
             break;
     }
-    
-    [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+    if (tag==0) {
+        [VNUtility showHUDText:@"视频已被删除!" forView:self.view];
+    }
+    else
+    {
+        [VNUtility showHUDText:@"视频删除成功!" forView:self.view];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -605,7 +623,7 @@ static NSString *shareStr;
              NSLog(@"%@", error.localizedDescription);
          }
          else if (isNewsDeleted) {
-             [self deleteCellAndPop];
+             [self deleteCellAndPop:0];
          }
          else
          {
@@ -647,7 +665,7 @@ static NSString *shareStr;
                         NSLog(@"%@", error.localizedDescription);
                     }
                     else if (isNewsDeleted) {
-                        [self deleteCellAndPop];
+                        [self deleteCellAndPop:0];
                     }
                     else if (isCommentDeleted)
                     {
@@ -659,7 +677,7 @@ static NSString *shareStr;
                         [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
                     }
                     else if (succeed) {
-                        [VNUtility showHUDText:@"回复成功!" forView:self.view];
+                        //[VNUtility showHUDText:@"回复成功!" forView:self.view];
                         self.inputTextView.text = @"";
                         self.inputBarHeightLC.constant = 44.0;
                         self.inputTextViewHeightLC.constant = 30.0;
@@ -690,10 +708,10 @@ static NSString *shareStr;
                     }
                     else if (isNewsDeleted)
                     {
-                        [self deleteCellAndPop];
+                        [self deleteCellAndPop:0];
                     }
                     else if (succeed) {
-                        [VNUtility showHUDText:@"评论成功!" forView:self.view];
+                        //[VNUtility showHUDText:@"评论成功!" forView:self.view];
                         self.inputTextView.text = @"";
                         self.inputBarHeightLC.constant = 44.0;
                         self.inputTextViewHeightLC.constant = 30.0;
@@ -896,6 +914,11 @@ static NSString *shareStr;
                 NSString *buttonTitle = [actionSheet buttonTitleAtIndex:8];
                 if ([buttonTitle isEqualToString:@"删除"]) {
                     //TODO: 删除帖子
+                    [actionSheet dismissWithClickedButtonIndex:9 animated:YES];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定要永久删除视频？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+                    _deleteAlert=alert;
+                    [alert show];
+                    
                 }
                 else if ([buttonTitle isEqualToString:@"举报"]) {
                     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -981,7 +1004,7 @@ static NSString *shareStr;
                             }
                             else if(isNewsDeleted)
                             {
-                                [self deleteCellAndPop];
+                                [self deleteCellAndPop:0];
                             }
                             else if (succeed) {
                                 
@@ -1149,7 +1172,7 @@ static NSString *shareStr;
             }
             else if (isNewsDeleted)
             {
-                [self deleteCellAndPop];
+                [self deleteCellAndPop:0];
             }
             else if (succeed) {
                 if (comment) {
@@ -1273,6 +1296,31 @@ static NSString *shareStr;
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (_deleteAlert ==alertView) {
+        if (buttonIndex==1) {
+            NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+            NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            if (mineUid && user_token) {
+                [VNHTTPRequestManager deleteNews:_news.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,NSError *error)
+                 {
+                     if (error) {
+                         NSLog(@"%@", error.localizedDescription);
+                     }
+                     else if(succeed)
+                     {
+                         [self deleteCellAndPop:1];
+                     }
+                     else
+                     {
+                         [VNUtility showHUDText:@"删除视频失败" forView:self.view];
+                     }
+                 }];
+            }
+        }
+        else
+        {return;}
+        return;
+    }
     if (buttonIndex == 0) {
         return;
     }
