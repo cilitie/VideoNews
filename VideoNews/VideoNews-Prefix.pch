@@ -19,6 +19,7 @@
     #import "VNHTTPRequestManager.h"
     #import "VNCacheDataManager.h"
     #import "VNUtility.h"
+    #import "UIButton+HitTest.h"
     #import "MobClick.h"
     #define loadXib(name) [[[NSBundle mainBundle] loadNibNamed:name owner:nil options:nil] firstObject]
     #ifdef __OPTIMIZE__

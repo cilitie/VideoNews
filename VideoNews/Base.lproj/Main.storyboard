@@ -754,6 +754,9 @@
                                         <state key="normal" title="清空">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="clearMessage:" destination="x5y-8a-orm" eventType="touchUpInside" id="hJw-8C-gWb"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.9450981021" green="0.9450981021" blue="0.9450981021" alpha="1" colorSpace="deviceRGB"/>
@@ -929,6 +932,7 @@
                         <outlet property="fansTableView" destination="EMQ-Ky-wob" id="DYU-IW-wCJ"/>
                         <outlet property="followBtn" destination="A9X-Io-NNR" id="TvX-qu-L5x"/>
                         <outlet property="followTableView" destination="yfz-WP-hVY" id="1jr-xY-eQ0"/>
+                        <outlet property="popBtn" destination="OFn-Cn-P5B" id="2Rl-hX-kxF"/>
                         <outlet property="videoTableView" destination="EVp-ai-vI5" id="Yti-Ga-spV"/>
                         <segue destination="vvu-oQ-sH3" kind="push" identifier="pushVNProfileDetailViewController" id="twv-20-iMt"/>
                     </connections>

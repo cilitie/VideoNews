@@ -395,8 +395,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"id": objectID, @"type": type, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", operation.request.URL);
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", operation.request.URL);
+//        NSLog(@"%@", responseObject);
         BOOL reportSuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
@@ -446,7 +446,6 @@ static int pagesize = 10;
 + (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion {
     //http://182.92.103.134:8080/engine/class.php?timestamp=1406601037&token=4bd5bd40d36deecab5e9f152da873b5e
     NSString *URLStr = [VNHost stringByAppendingString:@"class.php"];
-    //FIXME: 接口有错误
     NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp]};
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (![self isReachable]) {
@@ -658,6 +657,32 @@ static int pagesize = 10;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
             completion(nil, error);
+        }
+    }];
+}
+
++ (void)deleteMessage:(NSString *)mid completion:(void(^)(BOOL succeed, NSError *error))completion {
+    //http://182.92.103.134:8080/engine/deleteMessage.php?token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&mid=1&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    NSString *URLStr = [VNHost stringByAppendingString:@"deleteMessage.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token, @"mid": mid};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", operation.request.URL);
+        NSLog(@"%@", responseObject);
+        BOOL delSuccess = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                delSuccess = [[responseObject objectForKey:@"success"] boolValue];
+            }
+        }
+        if (completion) {
+            completion(delSuccess, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
         }
     }];
 }

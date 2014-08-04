@@ -107,6 +107,7 @@
 		D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB4FF1982503F00236517 /* VNEditContentViewController.m */; };
 		D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB50419862E0B00236517 /* VNSettingViewController.m */; };
 		D68CB5081986305200236517 /* VNSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D68CB5071986305200236517 /* VNSettingTableViewCell.m */; };
+		D6995B39198F6BF000E1AA75 /* UIButton+HitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D6995B38198F6BF000E1AA75 /* UIButton+HitTest.m */; };
 		D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */; };
 		D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */; };
 		D6FED74E195AC1C100AD10E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FED74D195AC1C100AD10E0 /* Foundation.framework */; };
@@ -329,6 +330,8 @@
 		D68CB50419862E0B00236517 /* VNSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSettingViewController.m; sourceTree = "<group>"; };
 		D68CB5061986305200236517 /* VNSettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNSettingTableViewCell.h; sourceTree = "<group>"; };
 		D68CB5071986305200236517 /* VNSettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNSettingTableViewCell.m; sourceTree = "<group>"; };
+		D6995B37198F6BF000E1AA75 /* UIButton+HitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+HitTest.h"; sourceTree = "<group>"; };
+		D6995B38198F6BF000E1AA75 /* UIButton+HitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+HitTest.m"; sourceTree = "<group>"; };
 		D6E858971963E9FF0055C603 /* VNCommentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCommentTableViewCell.h; sourceTree = "<group>"; };
 		D6E858981963E9FF0055C603 /* VNCommentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCommentTableViewCell.m; sourceTree = "<group>"; };
 		D6E858991963E9FF0055C603 /* VNCommentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCommentTableViewCell.xib; sourceTree = "<group>"; };
@@ -622,6 +625,8 @@
 		D6676F63196E81BB00F484FE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				D6995B37198F6BF000E1AA75 /* UIButton+HitTest.h */,
+				D6995B38198F6BF000E1AA75 /* UIButton+HitTest.m */,
 				D6676F7E1976AD5C00F484FE /* BMNavigationController.h */,
 				D6676F7F1976AD5C00F484FE /* BMNavigationController.m */,
 				D6676F75197523A900F484FE /* AGEmojiKeyboard */,
@@ -1038,6 +1043,7 @@
 				144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */,
 				26A584CD19875D5100C34461 /* VNUploadManager.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,
+				D6995B39198F6BF000E1AA75 /* UIButton+HitTest.m in Sources */,
 				D68CB4FD19823D1700236517 /* VNEditProfileTableViewCell.m in Sources */,
 				D6676F90197916D400F484FE /* VNProfileVideoTableViewCell.m in Sources */,
 				D68CB4F71981063F00236517 /* VNOriginImgViewController.m in Sources */,

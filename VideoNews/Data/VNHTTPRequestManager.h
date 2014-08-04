@@ -28,6 +28,7 @@
 @interface VNHTTPRequestManager : NSObject
 
 #pragma mark - Home
+
 +(void)isNewsDeleted:(int)nid completion:(void(^)(BOOL isDeleted,NSError *error))completion;
 
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
@@ -57,6 +58,7 @@
 #pragma mark - Notification
 
 + (void)messageListForUser:(NSString *)uid userToken:(NSString *)user_token timestamp:(NSString *)timestamp completion:(void(^)(NSArray *messageArr, NSError *error))completion;
++ (void)deleteMessage:(NSString *)mid completion:(void(^)(BOOL succeed, NSError *error))completion;
 
 #pragma mark - User
 //关注相关

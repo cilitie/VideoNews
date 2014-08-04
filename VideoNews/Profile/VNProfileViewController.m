@@ -29,6 +29,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *followBtn;
+@property (weak, nonatomic) IBOutlet UIButton *popBtn;
 @property (weak, nonatomic) IBOutlet UITableView *videoTableView;
 @property (weak, nonatomic) IBOutlet UITableView *followTableView;
 @property (weak, nonatomic) IBOutlet UITableView *fansTableView;
@@ -105,6 +106,8 @@ static NSString *shareStr;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10.0, -10.0, -10.0, -10.0)];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
     
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];

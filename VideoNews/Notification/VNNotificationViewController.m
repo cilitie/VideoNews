@@ -28,7 +28,13 @@
 
 //qiniu上传相关
 
-@interface VNNotificationViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface VNNotificationViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate> {
+    BOOL userScrolling;
+    CGPoint initialScrollOffset;
+    CGPoint previousScrollOffset;
+    BOOL isToBottom;
+    BOOL isTabBarHidden;
+}
 
 @property (weak, nonatomic) IBOutlet UITableView *messageTableView;
 
@@ -40,6 +46,7 @@
 
 @property (strong,nonatomic)NSString *user_token;
 
+- (IBAction)clearMessage:(id)sender;
 @end
 
 @implementation VNNotificationViewController
@@ -49,6 +56,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         _messageArr = [NSMutableArray arrayWithCapacity:0];
+        isTabBarHidden = NO;
     }
     return self;
 }
@@ -149,10 +157,15 @@
     [[UIApplication sharedApplication ] setApplicationIconBadgeNumber:0];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated
-     ];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (isTabBarHidden) {
+        [self showTabBar];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self.messageTableView triggerPullToRefresh];
     [self removeBadgeValue];
 }
@@ -295,6 +308,23 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+        [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
+        [self.messageArr removeObjectAtIndex:indexPath.row];
+        [self.messageTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
+
 #pragma mark - SEL
 
 - (CGFloat)cellHeightFor:(VNMessage *)message {
@@ -319,6 +349,129 @@
     }
     
     return cellHeight;
+}
+
+#pragma mark - SEL
+
+- (IBAction)clearMessage:(id)sender {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定清空全部消息?" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alert show];
+}
+
+- (void)hideTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds), view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, CGRectGetHeight(self.view.bounds))];
+        }
+    }
+    isTabBarHidden = YES;
+    [UIView commitAnimations];
+}
+
+- (void)showTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds)-49, view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width,  CGRectGetHeight(self.view.bounds)-49)];
+        }
+    }
+    isTabBarHidden = NO;
+    [UIView commitAnimations];
+}
+
+#pragma mark - Scrollview Delegate
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    [self showTabBar];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    userScrolling = YES;
+    initialScrollOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!userScrolling) return;
+    
+    //initialize
+    if (scrollView.contentSize.height <= scrollView.bounds.size.height) {
+        [self showTabBar];
+        return;
+    }
+    
+    if (scrollView.contentOffset.y <= 0) {
+        //Scrolling above the page
+        [self showTabBar];
+        return;
+    }
+    
+    //contentOffset
+    CGFloat contentOffset = scrollView.contentOffset.y - initialScrollOffset.y;
+    
+    if (scrollView.contentOffset.y <= 24) {
+        contentOffset = scrollView.contentOffset.y;
+    } else {
+        if (contentOffset < 0 && (scrollView.contentOffset.y - previousScrollOffset.y) > 0) {
+            initialScrollOffset = scrollView.contentOffset;
+        }
+    }
+    
+    contentOffset = roundf(contentOffset);
+    
+    if (contentOffset >= 0 && (scrollView.contentOffset.y + self.messageTableView.frame.size.height < scrollView.contentSize.height) && scrollView.contentOffset.y > 24) {
+        [self hideTabBar];
+    }
+    
+    //scroll to bottom, quit fullScreen
+    if (scrollView.contentOffset.y + self.messageTableView.frame.size.height >= scrollView.contentSize.height+49) {
+        [self showTabBar];
+    }
+    
+    if (scrollView.contentOffset.y + scrollView.frame.size.height <= scrollView.contentSize.height) {
+        previousScrollOffset = scrollView.contentOffset;
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (velocity.y < -0.5) {
+        userScrolling = NO;
+        [self showTabBar];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    userScrolling = NO;
+    initialScrollOffset = CGPointMake(0, 0);
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
+        [VNHTTPRequestManager deleteMessage:@"" completion:^(BOOL succeed, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if (succeed) {
+                [VNUtility showHUDText:@"清空成功!" forView:self.view];
+                [self.messageArr removeAllObjects];
+                [self.messageTableView reloadData];
+            }
+        }];
+    }
 }
 
 @end
