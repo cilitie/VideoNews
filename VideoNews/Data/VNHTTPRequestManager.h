@@ -35,7 +35,7 @@
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error))completion;
 + (void)commentByCid:(int)cid completion:(void(^)(NSArray *comment, NSError *error))completion;
 + (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error))completion;
-+ (void)deleteNews:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed,NSError *error))completion;
++ (void)deleteNews:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed,int news_count,NSError *error))completion;
 //评论相关
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, VNComment *comment,int comment_count, NSError *error))completion;
 + (void)replyComment:(int)cid replyUser:(NSString *)reply_uid replyNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment,int comment_count, NSError *error))completion;

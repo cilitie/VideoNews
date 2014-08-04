@@ -745,7 +745,10 @@ static NSString *shareStr;
                         {
                             weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
                         }
-                        
+                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                            headerView.fansCountLabel.text = [self bigNumberToString:like_count];
+                            //[headerView reload];
+                        }
                         //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                     }
                     else {
@@ -775,7 +778,10 @@ static NSString *shareStr;
                         {
                             weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
                         }
-                        
+                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                            headerView.fansCountLabel.text = [self bigNumberToString:like_count];
+                            //[headerView reload];
+                        }
                         //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
                     }
                     else {
@@ -822,8 +828,9 @@ static NSString *shareStr;
                  else
                  {
                      UIActionSheet *actionSheet = nil;
-                     actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                     actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", @"取消喜欢",nil];
                      weakSelf.shareNews = news;
+                     weakSelf.shareNewsIndexPath=indexPath;
                      [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
                  }
              }];
@@ -847,7 +854,7 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (succeed) {
-                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                    //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
                     [self addIdolOrFans:NO];
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -871,7 +878,7 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (succeed) {
-                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                   // [VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
                     [self addIdolOrFans:YES];
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -885,6 +892,18 @@ static NSString *shareStr;
     }
     
     return nil;
+}
+
+-(NSString *)bigNumberToString:(int)number
+{
+    if (number>10000) {
+        return [NSString stringWithFormat:@"%d万",number/10000];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%d",number];
+    }
+
 }
 
 #pragma mark - UITableView Delegate methods
@@ -1150,7 +1169,7 @@ static NSString *shareStr;
                 NSString *buttonTitle = [actionSheet buttonTitleAtIndex:8];
                 if ([buttonTitle isEqualToString:@"删除"]) {
                     //TODO: 删除帖子
-                    [actionSheet dismissWithClickedButtonIndex:9 animated:YES];
+                    [actionSheet dismissWithClickedButtonIndex:10 animated:YES];
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定要永久删除视频？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
                     _deleteAlert=alert;
                     [alert show];
@@ -1183,8 +1202,41 @@ static NSString *shareStr;
                 }
             }
                 break;
+                //取消喜欢
+            case 9:{
+                NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+                NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                if (mineUid && user_token) {
+                    [VNHTTPRequestManager favouriteNews:_shareNews.nid operation:@"remove" userID:mineUid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error){
+                        //isNewsDeleted=YES;
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else if (isNewsDeleted)
+                        {
+                            [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                            [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                        }
+                        else if(succeed)
+                        {
+                            [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                            [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                                headerView.fansCountLabel.text = [self bigNumberToString:like_count];
+                                //[headerView reload];
+                            }
+                        }
+                        else
+                        {
+                            [VNUtility showHUDText:@"取消喜欢失败!" forView:self.view];
+                        }
+                    }];
+                }
+            }
+                break;
                 //取消
-            case 9: {
+            case 10: {
                 return ;
             }
                 break;
@@ -1241,7 +1293,7 @@ static NSString *shareStr;
             NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
             if (mineUid && user_token) {
-                [VNHTTPRequestManager deleteNews:_shareNews.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,NSError *error)
+                [VNHTTPRequestManager deleteNews:_shareNews.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,int news_count,NSError *error)
                  {
                      if (error) {
                          NSLog(@"%@", error.localizedDescription);
@@ -1251,6 +1303,10 @@ static NSString *shareStr;
                          //[self deleteCellAndPop:1];
                          [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
                          [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                             headerView.videoCountLabel.text = [self bigNumberToString:news_count];
+                             //[headerView reload];
+                         }
                          [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                      }
                      else
