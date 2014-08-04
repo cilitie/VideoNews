@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
-		1400128D198DDE7800D4A057 /* Audios in Resources */ = {isa = PBXBuildFile; fileRef = 1400128C198DDE7800D4A057 /* Audios */; };
 		14001291198E69AD00D4A057 /* VNUploadVideoProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */; };
 		144BF5251984F52900A6C6B7 /* VNVideoDraftTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5241984F52900A6C6B7 /* VNVideoDraftTableViewCell.m */; };
 		144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */; };
@@ -27,9 +26,7 @@
 		14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B8951F198A3F22006244D9 /* VNAudioListController.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
-		269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C4197061BD005DEDEE /* VNUserViewController.m */; };
 		269755C919710E75005DEDEE /* VNNotificationReplyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C719710E75005DEDEE /* VNNotificationReplyTableViewCell.m */; };
-		269755CA19710E75005DEDEE /* VNNotificationReplyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755C819710E75005DEDEE /* VNNotificationReplyTableViewCell.xib */; };
 		269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */; };
 		269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */; };
 		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
@@ -41,6 +38,7 @@
 		26A584C91987411500C34461 /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B71987411500C34461 /* QiniuSimpleUploader.m */; };
 		26A584CA1987411500C34461 /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584BA1987411500C34461 /* QiniuUtils.m */; };
 		26A584CD19875D5100C34461 /* VNUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584CC19875D5100C34461 /* VNUploadManager.m */; };
+		D6248EB0198F4CDC00DAFB4E /* VNNotificationReplyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6248EAF198F4CDC00DAFB4E /* VNNotificationReplyTableViewCell.xib */; };
 		D64296C51964FB05004E218C /* VNResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C41964FB05004E218C /* VNResultViewController.m */; };
 		D64296C819652AC4004E218C /* VNCacheDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296C719652AC4004E218C /* VNCacheDataManager.m */; };
 		D64296CB19652FB6004E218C /* VNSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = D64296CA19652FB6004E218C /* VNSearchField.m */; };
@@ -149,7 +147,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1400128C198DDE7800D4A057 /* Audios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audios; sourceTree = "<group>"; };
 		1400128F198E69AD00D4A057 /* VNUploadVideoProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadVideoProgressView.h; sourceTree = "<group>"; };
 		14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadVideoProgressView.m; sourceTree = "<group>"; };
 		144BF5231984F52900A6C6B7 /* VNVideoDraftTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoDraftTableViewCell.h; sourceTree = "<group>"; };
@@ -186,11 +183,8 @@
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
 		2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationViewController.m; sourceTree = "<group>"; };
-		269755C3197061BD005DEDEE /* VNUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUserViewController.h; sourceTree = "<group>"; };
-		269755C4197061BD005DEDEE /* VNUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUserViewController.m; sourceTree = "<group>"; };
 		269755C619710E75005DEDEE /* VNNotificationReplyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationReplyTableViewCell.h; sourceTree = "<group>"; };
 		269755C719710E75005DEDEE /* VNNotificationReplyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationReplyTableViewCell.m; sourceTree = "<group>"; };
-		269755C819710E75005DEDEE /* VNNotificationReplyTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationReplyTableViewCell.xib; sourceTree = "<group>"; };
 		269755CB19712580005DEDEE /* VNNotificationUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationUserTableViewCell.h; sourceTree = "<group>"; };
 		269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationUserTableViewCell.m; sourceTree = "<group>"; };
 		269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationUserTableViewCell.xib; sourceTree = "<group>"; };
@@ -215,6 +209,7 @@
 		26A584CB19875D5100C34461 /* VNUploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadManager.h; sourceTree = "<group>"; };
 		26A584CC19875D5100C34461 /* VNUploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadManager.m; sourceTree = "<group>"; };
 		CC7C0720D5F047B7B4DBA24C /* Pods-VideoNews.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoNews.xcconfig"; path = "Pods/Pods-VideoNews.xcconfig"; sourceTree = "<group>"; };
+		D6248EAF198F4CDC00DAFB4E /* VNNotificationReplyTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationReplyTableViewCell.xib; sourceTree = "<group>"; };
 		D64296C31964FB05004E218C /* VNResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNResultViewController.h; sourceTree = "<group>"; };
 		D64296C41964FB05004E218C /* VNResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNResultViewController.m; sourceTree = "<group>"; };
 		D64296C619652AC4004E218C /* VNCacheDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCacheDataManager.h; sourceTree = "<group>"; };
@@ -424,7 +419,6 @@
 		144BF52219848AF700A6C6B7 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				1400128C198DDE7800D4A057 /* Audios */,
 				144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */,
 				144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */,
 				144BF5281984F58000A6C6B7 /* VNAlbumVideoEditController.h */,
@@ -464,11 +458,9 @@
 			children = (
 				2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */,
 				2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */,
-				269755C3197061BD005DEDEE /* VNUserViewController.h */,
-				269755C4197061BD005DEDEE /* VNUserViewController.m */,
 				269755C619710E75005DEDEE /* VNNotificationReplyTableViewCell.h */,
 				269755C719710E75005DEDEE /* VNNotificationReplyTableViewCell.m */,
-				269755C819710E75005DEDEE /* VNNotificationReplyTableViewCell.xib */,
+				D6248EAF198F4CDC00DAFB4E /* VNNotificationReplyTableViewCell.xib */,
 				269755CB19712580005DEDEE /* VNNotificationUserTableViewCell.h */,
 				269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */,
 				269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */,
@@ -963,6 +955,7 @@
 				269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */,
 				D642970B19668EE4004E218C /* UMSocialLocalizable.strings in Resources */,
 				D642970A19668EE4004E218C /* umFeedback.bundle in Resources */,
+				D6248EB0198F4CDC00DAFB4E /* VNNotificationReplyTableViewCell.xib in Resources */,
 				D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */,
 				D6676FA0197F589800F484FE /* VNUserProfileHeaderView.xib in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
@@ -979,14 +972,12 @@
 				D642970F19668EE4004E218C /* UMSCommentInputControlleriPad.xib in Resources */,
 				D642971419668EE4004E218C /* UMSShareListController.xib in Resources */,
 				D642971519668EE4004E218C /* UMSocialSDKResourcesNew.bundle in Resources */,
-				269755CA19710E75005DEDEE /* VNNotificationReplyTableViewCell.xib in Resources */,
 				D6FED761195AC1C100AD10E0 /* Main.storyboard in Resources */,
 				D64296D319653E62004E218C /* VNSearchTabHeaderView.xib in Resources */,
 				D642971819668EE4004E218C /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				D6676F7D197523A900F484FE /* EmojisList.plist in Resources */,
 				D642971119668EE4004E218C /* UMShareEditViewControlleriPad.xib in Resources */,
 				D642971019668EE4004E218C /* UMShareEditViewController.xib in Resources */,
-				1400128D198DDE7800D4A057 /* Audios in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1044,7 +1035,6 @@
 				D6676F99197CBACD00F484FE /* VNMineProfileHeaderView.m in Sources */,
 				26A584C41987411500C34461 /* QiniuBlkputRet.m in Sources */,
 				D6676F71196F885100F484FE /* VNUserResultViewController.m in Sources */,
-				269755C5197061BD005DEDEE /* VNUserViewController.m in Sources */,
 				144BF5451984F58000A6C6B7 /* VNCustomizedAlbumPickerController.m in Sources */,
 				26A584CD19875D5100C34461 /* VNUploadManager.m in Sources */,
 				D64296CE19653A27004E218C /* VNSearchWordViewController.m in Sources */,

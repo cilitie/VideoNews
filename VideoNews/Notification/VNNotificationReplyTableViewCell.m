@@ -8,11 +8,18 @@
 
 #import "VNNotificationReplyTableViewCell.h"
 
+@interface VNNotificationReplyTableViewCell ()
+
+- (IBAction)tapThumbnail:(id)sender;
+
+@end
+
 @implementation VNNotificationReplyTableViewCell
 
 - (void)awakeFromNib
 {
-    // Initialization code
+    self.contentBgView.layer.cornerRadius = 10;
+    self.contentBgView.layer.masksToBounds = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -28,7 +35,7 @@
         [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
         self.thumbnail.layer.masksToBounds = YES;
         self.nameLabel.text = self.message.sender.name;
-        self.timeLabel.text= self.message.time;
+        self.timeLabel.text= [VNUtility strFromTimeStampSince1970:[self.message.time doubleValue]];
         
         self.replyContentLabel.text = self.message.reply_text;
         NSDictionary *attribute = @{NSFontAttributeName:self.replyContentLabel.font};
@@ -47,6 +54,12 @@
         attribute = @{NSFontAttributeName:self.contentLabel.font};
         rect = [self.contentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.contentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
         self.contentBgLC.constant = 20 + CGRectGetHeight(rect);
+    }
+}
+
+- (IBAction)tapThumbnail:(UITapGestureRecognizer *)sender {
+    if (self.tapHandler) {
+        self.tapHandler();
     }
 }
 

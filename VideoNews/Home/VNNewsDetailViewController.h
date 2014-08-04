@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, SourceViewControllerType) {
 @interface VNNewsDetailViewController : UIViewController
 
 @property (strong, nonatomic) VNNews *news;
-@property (strong,nonatomic) NSIndexPath *indexPath;
+@property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) VNMedia *media;
 @property (strong, nonatomic) VNMedia *vedioMedia;
 @property (assign, nonatomic) SourceViewControllerType controllerType;

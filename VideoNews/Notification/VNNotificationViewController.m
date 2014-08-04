@@ -7,23 +7,17 @@
 //
 
 #import "VNNotificationViewController.h"
-
 #import "VNNotificationReplyTableViewCell.h"
-
 #import "VNNotificationUserTableViewCell.h"
-
 #import "VNNewsDetailViewController.h"
-
 #import "SVPullToRefresh.h"
-
-#import "VNUserViewController.h"
+#import "VNProfileViewController.h"
 
 //#import "VNHTTPRequestManager.h"
 //#import "AFNetworking.h"
 //////上传相关
 //#import "OSSClient.h"
 
-#import "VNTabBarViewController.h"
 ////OSS Bucket的基址，可以是自定义域名或者OSS默认域名
 ////#define OSS_BUCKET_BASE_URL     "http://jwx-ios.oss-cn-hangzhou.aliyuncs.com/"
 //#define OSS_BUCKET_BASE_URL     "http://fashion-test.oss-cn-beijing.aliyuncs.com/"
@@ -67,8 +61,8 @@
     
     [self removeBadgeValue];
 
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:nil] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:nil] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     
     VNAuthUser *authUser = nil;
     NSString *user_token = @"";
@@ -141,12 +135,12 @@
             [weakSelf.messageTableView.infiniteScrollingView stopAnimating];
         }];
     }];
-    [self.messageTableView triggerPullToRefresh];
+//    [self.messageTableView triggerPullToRefresh];
 }
 
 -(void)removeBadgeValue
 {
-    VNTabBarViewController *tabBarViewController=(VNTabBarViewController *)self.tabBarController;
+    UITabBarController *tabBarViewController = self.tabBarController;
     UITabBarItem *item=[tabBarViewController.tabBar.items objectAtIndex:3];
     if (item.badgeValue!=nil)
     {
@@ -157,9 +151,12 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-//    [self.messageTableView triggerPullToRefresh];
+    [super viewWillAppear:animated
+     ];
+    [self.messageTableView triggerPullToRefresh];
     [self removeBadgeValue];
 }
+
 //-(void)uploadImage:(NSString *)filePath Bucket:(NSString *)bucket
 //{
 //    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -239,11 +236,24 @@
         if ([message.type isEqualToString: @"user"]) {
             VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
             userCell.message = message;
+            __weak typeof(userCell) weakUserCell = userCell;
+            userCell.tapHandler = ^(){
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                VNUser *user = weakUserCell.message.sender;
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
+            };
             [userCell reload];
         }
-        else if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"])
-        {
+        else if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
             VNNotificationReplyTableViewCell *replyCell = (VNNotificationReplyTableViewCell *)cell;
+            __weak typeof(replyCell) weakReplyCell = replyCell;
+            replyCell.tapHandler = ^(){
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                VNUser *user = weakReplyCell.message.sender;
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
+            };
             replyCell.message = message;
             [replyCell reload];
         }
@@ -258,19 +268,21 @@
     _curMessage=message;
     if ([message.type isEqualToString:@"user"]) {
         NSLog(@"uid:%@",message.sender.uid);
-        [self performSegueWithIdentifier:@"pushVNUserViewControllerForNotification" sender:self];
+        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+        VNUser *user = message.sender;
+        profileViewController.uid = user.uid;
+        [self.navigationController pushViewController:profileViewController animated:YES];
     }
-    else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"])
-    {
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyCommentFromNotification" object:self];
-        
-        [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForNotification" sender:self];
-        
+    else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"]) {
+        VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+        newsDetailViewController.news = _curMessage.news;
+        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
+        newsDetailViewController.sender_id=_curMessage.sender.uid;
+        newsDetailViewController.sender_name=_curMessage.sender.name;
+        newsDetailViewController.hidesBottomBarWhenPushed = YES;
+        newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
+        [self.navigationController pushViewController:newsDetailViewController animated:YES];
     }
-    //UIActionSheet *actionSheet = nil;
-    //NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    //NSString *mineID = [userInfo objectForKey:@"openid"];
-    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -308,32 +320,5 @@
     
     return cellHeight;
 }
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    if ([segue.identifier isEqualToString:@"pushVNNewsDetailViewControllerForNotification"]) {
-        VNNewsDetailViewController *newsDetailViewController = [segue destinationViewController];
-        //newsDetailViewController.news = [self.categoryNewsArr objectAtIndex:selectedItemIndex];
-        newsDetailViewController.news=_curMessage.news;
-        
-        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
-        newsDetailViewController.sender_id=_curMessage.sender.uid;
-        newsDetailViewController.sender_name=_curMessage.sender.name;
-        //newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.pid];
-        newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
-        newsDetailViewController.hidesBottomBarWhenPushed = YES;
-    }
-    if ([segue.identifier isEqualToString:@"pushVNUserViewControllerForNotification"]) {
-        VNUserViewController *newsDetailViewController = [segue destinationViewController];
-        newsDetailViewController.uid=_curMessage.sender.uid;
-    }
-    
-}
-
 
 @end

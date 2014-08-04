@@ -8,6 +8,12 @@
 
 #import "VNNotificationUserTableViewCell.h"
 
+@interface VNNotificationUserTableViewCell ()
+
+- (IBAction)tapThumbnail:(id)sender;
+
+@end
+
 @implementation VNNotificationUserTableViewCell
 
 - (void)awakeFromNib
@@ -28,8 +34,13 @@
         [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
         self.thumbnail.layer.masksToBounds = YES;
         self.nameLabel.text = self.message.sender.name;
-        self.timeLabel.text = self.message.time;
+        self.timeLabel.text= [VNUtility strFromTimeStampSince1970:[self.message.time doubleValue]];
     }
 }
 
+- (IBAction)tapThumbnail:(UITapGestureRecognizer *)sender {
+    if (self.tapHandler) {
+        self.tapHandler();
+    }
+}
 @end

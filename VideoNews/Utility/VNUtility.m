@@ -21,6 +21,13 @@
     [hud hide:YES afterDelay:2.0f];
 }
 
++ (NSString *)strFromTimeStampSince1970:(NSTimeInterval)timeInterval {
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"YYYY-MM-dd";
+    return [formatter stringFromDate:date];
+}
+
 /**
  *  @description: return the cache path(appending the user relative path) to user
  *

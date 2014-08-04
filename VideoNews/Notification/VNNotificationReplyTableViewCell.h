@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ClickEventHandler)();
+
 @interface VNNotificationReplyTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnail;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -20,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentBgLC;
 
 @property (strong, nonatomic) VNMessage *message;
+@property (copy, nonatomic) ClickEventHandler tapHandler;
 
 - (void)reload;
 

@@ -11,6 +11,7 @@
 @interface VNUtility : NSObject
 
 + (void)showHUDText:(NSString *)text forView:(UIView *)view;
-
++ (NSString *)strFromTimeStampSince1970:(NSTimeInterval)timeInterval;
 + (NSString *)getNSCachePath:(NSString *)filenameorpath;
+
 @end

@@ -8,14 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^ClickEventHandler)();
+
 @interface VNNotificationUserTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnail;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *contentLabel;
-
 @property (strong, nonatomic) VNMessage *message;
+
+@property (copy, nonatomic) ClickEventHandler tapHandler;
+
 - (void)reload;
 
 @end
