@@ -1371,7 +1371,7 @@ static NSString *shareStr;
             NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
             if (mineUid && user_token) {
-                [VNHTTPRequestManager deleteNews:_news.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,NSError *error)
+                [VNHTTPRequestManager deleteNews:_news.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,int news_count,NSError *error)
                  {
                      if (error) {
                          NSLog(@"%@", error.localizedDescription);

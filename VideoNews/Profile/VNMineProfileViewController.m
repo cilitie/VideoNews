@@ -746,7 +746,7 @@ static NSString *shareStr;
                             weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
                         }
                         for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
-                            headerView.fansCountLabel.text = [self bigNumberToString:like_count];
+                            headerView.favouriteCountLabel.text = [self bigNumberToString:like_count];
                             //[headerView reload];
                         }
                         //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
@@ -778,10 +778,11 @@ static NSString *shareStr;
                         {
                             weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
                         }
-                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
-                            headerView.fansCountLabel.text = [self bigNumberToString:like_count];
-                            //[headerView reload];
-                        }
+                        
+//                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+//                            headerView.favouriteCountLabel.text = [self bigNumberToString:like_count];
+//                            //[headerView reload];
+//                        }
                         //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
                     }
                     else {
