@@ -139,6 +139,7 @@
         [newsQuiltView addInfiniteScrollingWithActionHandler:^{
             if (![VNHTTPRequestManager isReachable]) {
                 [VNUtility showHUDText:@"请检查您的网络!" forView:weakSelf.view];
+                [weakQuiltView.infiniteScrollingView stopAnimating];
             }
             else {
                 NSString *moreTimeStamp = nil;

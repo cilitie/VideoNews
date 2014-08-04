@@ -35,8 +35,17 @@
             self.moreHandler();
         }
     }
-    else
-    {
+    else if (button == self.commentBtn) {
+        if (self.commentHandler) {
+            self.commentHandler();
+        }
+    }
+    else if (button == self.likeBtn) {
+        if (self.likeHandler) {
+            self.likeHandler();
+        }
+    }
+    else {
         if (self.profileHandler) {
             self.profileHandler();
         }

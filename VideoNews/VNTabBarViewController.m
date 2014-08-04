@@ -147,7 +147,7 @@
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-    if ([self.viewControllers indexOfObject:viewController] == 4) {
+    if ([self.viewControllers indexOfObject:viewController] == 4 || [self.viewControllers indexOfObject:viewController] == 3) {
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
         NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
         if (userInfo[@"openid"] && user_token) {

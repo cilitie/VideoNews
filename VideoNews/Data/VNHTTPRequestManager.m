@@ -212,8 +212,8 @@ static int pagesize = 10;
     NSString *URLStr = [VNHost stringByAppendingString:@"op.php"];
     NSDictionary *param = @{@"id": [NSNumber numberWithInt:nid], @"uid": uid, @"cmd": operation, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"%d",nid);
-        //NSLog(@"%@", responseObject);
+        NSLog(@"%d",nid);
+        NSLog(@"%@", responseObject);
         BOOL operationSuccess = NO;
         BOOL isNewsDeleted=NO;
         int like_count=0;

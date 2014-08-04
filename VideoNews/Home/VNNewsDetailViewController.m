@@ -45,6 +45,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *keyboardToggleBtn;
 @property (strong, nonatomic) AGEmojiKeyboardView *emojiKeyboardView;
 @property (strong, nonatomic)UIAlertView *deleteAlert;
+@property (assign, nonatomic) int curLikeCount;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarHeightLC;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputTextViewHeightLC;
@@ -77,6 +78,7 @@ static NSString *shareStr;
         _commentArr = [NSMutableArray arrayWithCapacity:0];
         _commentArrNotify=[NSMutableArray arrayWithCapacity:0];
         isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
+        _curLikeCount = 0;
     }
     return self;
 }
@@ -91,29 +93,6 @@ static NSString *shareStr;
     self.inputTextView.layer.borderWidth = 1.0;
     self.inputTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     isDefaultKeyboard = YES;
-    
-    //已收藏判断
-    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    if (userInfo && userInfo.count) {
-        NSString *uid = [userInfo objectForKey:@"openid"];
-        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-        if (uid && user_token) {
-            [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                if (favouriteNewsArr.count) {
-                    NSLog(@"%@", favouriteNewsArr);
-                    for (NSDictionary *dic in favouriteNewsArr) {
-                        if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
-                            [self.favouriteBtn setSelected:YES];
-                            break;
-                        }
-                    }
-                }
-            }];
-        }
-    }
 
     self.headerView = loadXib(@"VNDetailHeaderView");
     [self.headerView.thumbnailImageView setImageWithURL:[NSURL URLWithString:self.news.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
@@ -135,6 +114,67 @@ static NSString *shareStr;
             VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
             profileViewController.uid = user.uid;
             [weakSelf.navigationController pushViewController:profileViewController animated:YES];
+        }
+    };
+    
+    self.headerView.likeHandler = ^{
+        NSString *user_token = @"";
+        NSString *uid = @"";
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:isLogin] boolValue]) {
+            NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+            if (userInfo.count) {
+                uid = [userInfo objectForKey:@"openid"];
+            }
+            user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:weakSelf cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+            [alert show];
+            return;
+        }
+        
+        if (weakSelf.headerView.likeBtn.isSelected) {
+            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"remove" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if(isNewsDeleted)
+                {
+                    //pop，并且发通知
+                    [weakSelf deleteCellAndPop:0];
+                }
+                else if (succeed) {
+                    [weakSelf.headerView.likeBtn setSelected:NO];
+                    [weakSelf.favouriteBtn setSelected:NO];
+                    weakSelf.curLikeCount -= 1;
+                    weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
+                }
+                else {
+                    [VNUtility showHUDText:@"取消点赞失败!" forView:weakSelf.view];
+                }
+            }];
+        }
+        else {
+            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"add" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else if (isNewsDeleted)
+                {
+                    //pop，并且发通知
+                    [weakSelf deleteCellAndPop:0];
+                }
+                else if (succeed) {
+                    [weakSelf.headerView.likeBtn setSelected:YES];
+                    [weakSelf.favouriteBtn setSelected:YES];
+                    weakSelf.curLikeCount += 1;
+                    weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
+                    //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
+                }
+                else {
+                    [VNUtility showHUDText:@"已点赞!" forView:weakSelf.view];
+                }
+            }];
         }
     };
     
@@ -208,6 +248,7 @@ static NSString *shareStr;
     {
         self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
     }
+    self.curLikeCount = self.news.like_count;
     
     //视频URL
     NSLog(@"%@", self.vedioMedia.url);
@@ -238,6 +279,29 @@ static NSString *shareStr;
     }
     [self.headerView addSubview:self.playBtn];
     
+    //已收藏判断
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    if (userInfo && userInfo.count) {
+        NSString *uid = [userInfo objectForKey:@"openid"];
+        NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        if (uid && user_token) {
+            [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (favouriteNewsArr.count) {
+                    NSLog(@"%@", favouriteNewsArr);
+                    for (NSDictionary *dic in favouriteNewsArr) {
+                        if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
+                            [self.favouriteBtn setSelected:YES];
+                            [self.headerView.likeBtn setSelected:YES];
+                            break;
+                        }
+                    }
+                }
+            }];
+        }
+    }
     
     self.commentTableView.tableHeaderView = self.headerView;
     [self.commentTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
@@ -548,6 +612,9 @@ static NSString *shareStr;
             }
             else if (succeed) {
                 [button setSelected:NO];
+                self.curLikeCount -= 1;
+                [self.headerView.likeBtn setSelected:NO];
+                self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
                 //[VNUtility showHUDText:@"已取消!" forView:self.view];
 
             }
@@ -569,6 +636,9 @@ static NSString *shareStr;
             }
             else if (succeed) {
                 [button setSelected:YES];
+                [self.headerView.likeBtn setSelected:YES];
+                self.curLikeCount += 1;
+                self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
                 //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
             }
             else {

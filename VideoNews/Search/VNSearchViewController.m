@@ -13,7 +13,13 @@
 #import "VNSearchWordViewController.h"
 #import "SVPullToRefresh.h"
 
-@interface VNSearchViewController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface VNSearchViewController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate> {
+    BOOL userScrolling;
+    CGPoint initialScrollOffset;
+    CGPoint previousScrollOffset;
+    BOOL isToBottom;
+    BOOL isTabBarHidden;
+}
 
 @property (weak, nonatomic) IBOutlet UICollectionView *categoryCollectionView;
 @property (weak, nonatomic) IBOutlet UIView *navBar;
@@ -31,6 +37,7 @@ static int selectedItemIndex;
     self = [super initWithCoder:coder];
     if (self) {
         _categoryArr = [NSMutableArray array];
+        isTabBarHidden = NO;
     }
     return self;
 }
@@ -76,6 +83,13 @@ static int selectedItemIndex;
     //[self.categoryCollectionView triggerPullToRefresh];
 
 
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (isTabBarHidden) {
+        [self showTabBar];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -134,6 +148,104 @@ static int selectedItemIndex;
     VNSearchWordViewController *searchWordViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNSearchWordViewController"];
     [self.navigationController pushViewController:searchWordViewController animated:NO];
     return NO;
+}
+
+#pragma mark - SEL
+
+- (void)hideTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds), view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, CGRectGetHeight(self.view.bounds))];
+        }
+    }
+    isTabBarHidden = YES;
+    [UIView commitAnimations];
+}
+
+- (void)showTabBar {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    for(UIView *view in self.tabBarController.view.subviews) {
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, CGRectGetHeight(self.view.bounds)-49, view.frame.size.width, view.frame.size.height)];
+        }
+        else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width,  CGRectGetHeight(self.view.bounds)-49)];
+        }
+    }
+    isTabBarHidden = NO;
+    [UIView commitAnimations];
+}
+
+#pragma mark - Scrollview Delegate
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    [self showTabBar];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    userScrolling = YES;
+    initialScrollOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!userScrolling) return;
+    
+    //initialize
+    if (scrollView.contentSize.height <= scrollView.bounds.size.height) {
+        [self showTabBar];
+        return;
+    }
+    
+    if (scrollView.contentOffset.y <= 0) {
+        //Scrolling above the page
+        [self showTabBar];
+        return;
+    }
+    
+    //contentOffset
+    CGFloat contentOffset = scrollView.contentOffset.y - initialScrollOffset.y;
+    
+    if (scrollView.contentOffset.y <= 24) {
+        contentOffset = scrollView.contentOffset.y;
+    } else {
+        if (contentOffset < 0 && (scrollView.contentOffset.y - previousScrollOffset.y) > 0) {
+            initialScrollOffset = scrollView.contentOffset;
+        }
+    }
+    
+    contentOffset = roundf(contentOffset);
+    
+    if (contentOffset >= 0 && (scrollView.contentOffset.y + self.categoryCollectionView.frame.size.height < scrollView.contentSize.height) && scrollView.contentOffset.y > 24) {
+        [self hideTabBar];
+    }
+    
+    //scroll to bottom, quit fullScreen
+    if (scrollView.contentOffset.y + self.categoryCollectionView.frame.size.height >= scrollView.contentSize.height+49) {
+        [self showTabBar];
+    }
+    
+    if (scrollView.contentOffset.y + scrollView.frame.size.height <= scrollView.contentSize.height) {
+        previousScrollOffset = scrollView.contentOffset;
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (velocity.y < -0.5) {
+        userScrolling = NO;
+        [self showTabBar];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    userScrolling = NO;
+    initialScrollOffset = CGPointMake(0, 0);
 }
 
 @end
