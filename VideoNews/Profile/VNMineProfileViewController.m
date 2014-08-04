@@ -1350,16 +1350,6 @@ static NSString *shareStr;
     [self.progressView hide];
     
     [self reload];
-
-    BOOL fromDraft = [[self.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
-
-    if (fromDraft) {
-        //clear draft video
-        [self clearDraftVideo];
-    }else {
-        //clear clips and temp video.
-        [self clearTempVideos];
-    }
     
     __weak VNMineProfileViewController *weakSelf = self;
     
@@ -1372,8 +1362,8 @@ static NSString *shareStr;
         NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
         
         NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
-        
-        UIImage *coverImage = [weakSelf.uploadVideoInfo valueForKey:@"coverImg"];
+        NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
+        UIImage *coverImage = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
         
         if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
             //分享新浪
@@ -1398,6 +1388,21 @@ static NSString *shareStr;
             }];
         }
     });
+    
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        BOOL fromDraft = [[weakSelf.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+        
+        if (fromDraft) {
+            //clear draft video
+            [self clearDraftVideo];
+        }else {
+            //clear clips and temp video.
+            [self clearTempVideos];
+        }
+    });
+    
 }
 
 // Upload failed.

@@ -75,14 +75,14 @@
             y = 52;
         }
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, y, 90, 90)];
-        [_submitBtn setTitle:@"ON" forState:UIControlStateNormal];
-        [_submitBtn setTitle:@"ON" forState:UIControlStateSelected];
+        [_submitBtn setImage:[UIImage imageNamed:@"40_40check"] forState:UIControlStateNormal];
+        [_submitBtn setImage:[UIImage imageNamed:@"40_40check"] forState:UIControlStateSelected];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         _submitBtn.backgroundColor = [UIColor clearColor];
         [_submitBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
         _submitBtn.showsTouchWhenHighlighted = YES;
-        _submitBtn.enabled = NO;
+        _submitBtn.hidden = YES;
         
     }
     return _submitBtn;
@@ -256,7 +256,7 @@
 //        }
 //        self.currSubmitBtnStatus = st;
 //    }
-    self.submitBtn.enabled = enabled;
+    self.submitBtn.hidden = !enabled;
 }
 
 #pragma mark - UserInteractionMethods
