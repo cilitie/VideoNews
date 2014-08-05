@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UIView *navBar;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UICollectionView *userResultCollectionView;
+@property (weak, nonatomic) IBOutlet UIView *noResultTipView;
 @property (strong, nonatomic) NSMutableArray *userResultArr;
 @property (strong, nonatomic) NSMutableArray *idolListArr;
 @property (strong, nonatomic) VNSearchField *searchField;
@@ -90,6 +91,12 @@
         }
         else {
             [weakSelf.userResultArr addObjectsFromArray:resultNewsArr];
+            if (weakSelf.userResultArr.count == 0) {
+                weakSelf.noResultTipView.hidden = NO;
+            }
+            else {
+                weakSelf.noResultTipView.hidden = YES;
+            }
             for (VNUser *user in weakSelf.userResultArr) {
                 if ([self.idolListArr containsObject:user.uid]) {
                     user.isMineIdol = YES;

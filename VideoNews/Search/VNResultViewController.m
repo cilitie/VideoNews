@@ -27,6 +27,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView *navBar;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
+@property (weak, nonatomic) IBOutlet UIView *noResultTipView;
 @property (strong, nonatomic) VNSearchField *searchField;
 
 @property (strong, nonatomic) NSMutableArray *categoryNewsArr;
@@ -90,6 +91,12 @@
             }
             else {
                 [weakSelf.categoryNewsArr addObjectsFromArray:resultNewsArr];
+                if (weakSelf.categoryNewsArr.count == 0) {
+                    weakSelf.noResultTipView.hidden = NO;
+                }
+                else {
+                    weakSelf.noResultTipView.hidden = YES;
+                }
                 [weakQuiltView reloadData];
             }
         }];
@@ -166,7 +173,7 @@
         [newsQuiltView triggerPullToRefresh];
     }
     
-    [self.view addSubview:newsQuiltView];
+    [self.view insertSubview:newsQuiltView belowSubview:self.noResultTipView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

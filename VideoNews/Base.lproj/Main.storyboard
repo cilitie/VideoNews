@@ -446,13 +446,39 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.9450981021" green="0.9450981021" blue="0.9450981021" alpha="1" colorSpace="deviceRGB"/>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWK-ll-Pyf">
+                                <rect key="frame" x="68" y="230" width="184" height="108"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="138-90Sad" translatesAutoresizingMaskIntoConstraints="NO" id="ylY-iL-EOd">
+                                        <rect key="frame" x="58" y="15" width="69" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="抱歉，没有搜索结果~~" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2e5-Rs-70U">
+                                        <rect key="frame" x="15" y="75" width="154" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" red="0.50980395078659058" green="0.50980395078659058" blue="0.50980395078659058" alpha="1" colorSpace="deviceRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="184" id="6gQ-qP-Jyg"/>
+                                    <constraint firstAttribute="height" constant="108" id="ahf-2p-Tke"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="XWK-ll-Pyf" secondAttribute="centerX" id="D1R-re-NCF"/>
+                            <constraint firstAttribute="centerY" secondItem="XWK-ll-Pyf" secondAttribute="centerY" id="Thr-l7-FOJ"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="efE-Bm-Ze9"/>
                     <connections>
                         <outlet property="backBtn" destination="4jE-xD-7Ap" id="1GT-tf-Uwj"/>
                         <outlet property="navBar" destination="qEJ-w0-Tv9" id="NI5-1N-Cot"/>
+                        <outlet property="noResultTipView" destination="XWK-ll-Pyf" id="QMP-OK-9mv"/>
                         <segue destination="pds-Bb-2jX" kind="push" identifier="pushVNNewsDetailViewControllerForResult" id="Xbb-ie-jFU"/>
                     </connections>
                 </viewController>
@@ -599,13 +625,39 @@
                                     <outlet property="delegate" destination="fvV-R1-rvv" id="ciS-kI-gry"/>
                                 </connections>
                             </collectionView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ycl-Ag-fkf">
+                                <rect key="frame" x="68" y="230" width="184" height="108"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="138-90Sad" translatesAutoresizingMaskIntoConstraints="NO" id="Erv-F5-40p">
+                                        <rect key="frame" x="58" y="15" width="69" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="抱歉，没有搜索结果~~" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hC2-7d-bBF">
+                                        <rect key="frame" x="15" y="75" width="154" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" red="0.50980395079999996" green="0.50980395079999996" blue="0.50980395079999996" alpha="1" colorSpace="deviceRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="184" id="Hkx-7I-7bo"/>
+                                    <constraint firstAttribute="height" constant="108" id="XgF-Sm-jMy"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="Ycl-Ag-fkf" secondAttribute="centerY" id="cqy-qR-q6B"/>
+                            <constraint firstAttribute="centerX" secondItem="Ycl-Ag-fkf" secondAttribute="centerX" id="eKY-RH-696"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Hew-Ub-vDU"/>
                     <connections>
                         <outlet property="backBtn" destination="EeX-h3-XhH" id="W2Q-RC-bC8"/>
                         <outlet property="navBar" destination="7RO-gd-49s" id="y6Q-YJ-Jl6"/>
+                        <outlet property="noResultTipView" destination="Ycl-Ag-fkf" id="bKi-sA-lnE"/>
                         <outlet property="userResultCollectionView" destination="pCh-uf-Lg8" id="zdS-Nh-57d"/>
                     </connections>
                 </viewController>
@@ -1708,6 +1760,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         </scene>
     </scenes>
     <resources>
+        <image name="138-90Sad" width="69" height="45"/>
         <image name="150-150QQ" width="75" height="75"/>
         <image name="150-150weChat" width="75" height="75"/>
         <image name="150-150weibo" width="75" height="75"/>
@@ -1730,6 +1783,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="geg-gA-oE4"/>
+        <segue reference="Xbb-ie-jFU"/>
     </inferredMetricsTieBreakers>
 </document>
