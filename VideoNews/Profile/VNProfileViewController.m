@@ -106,7 +106,7 @@ static NSString *shareStr;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10.0, -10.0, -10.0, -10.0)];
+    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
     

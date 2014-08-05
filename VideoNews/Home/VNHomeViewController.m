@@ -116,9 +116,9 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     //[[NSNotificationCenter defaultCenter]removeObserver:self name:VNHomeCellDeleteNotification object:nil];
-    if (isTabBarHidden) {
-        [self showTabBar];
-    }
+//    if (isTabBarHidden) {
+//        [self showTabBar];
+//    }
 }
 
 - (void)didReceiveMemoryWarning

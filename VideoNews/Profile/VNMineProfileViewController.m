@@ -135,7 +135,7 @@ static NSString *shareStr;
             }
         }
     }
-    if (isTabBarHidden) {
+    if (isTabBarHidden && self.isPush) {
         [self showTabBar];
     }
 }
@@ -145,7 +145,7 @@ static NSString *shareStr;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10.0, -10.0, -10.0, -10.0)];
+    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     if (self.isPush) {
         self.popBtn.hidden = NO;
     }

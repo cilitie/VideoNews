@@ -159,9 +159,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (isTabBarHidden) {
-        [self showTabBar];
-    }
+//    if (isTabBarHidden) {
+//        [self showTabBar];
+//    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
