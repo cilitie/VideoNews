@@ -44,4 +44,31 @@
     return filenameorpath;
 }
 
++ (NSString *)timeFormatToDisplay:(NSTimeInterval)timeInterval
+{
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
+    NSTimeInterval now=[[NSDate date] timeIntervalSince1970];
+    NSTimeInterval diff=now-timeInterval;
+    if (diff<0) {
+        diff=-diff;
+    }
+    if (diff<86400) {//24*60*60
+        formatter.dateFormat = @"hh:mm";
+        return [formatter stringFromDate:date];
+    }
+    else if(diff<31536000){//365*24*60*60
+        formatter.dateFormat = @"MM-dd hh:mm";
+        return [formatter stringFromDate:date];
+    }
+    else{
+        formatter.dateFormat = @"YY-MM";
+        return [formatter stringFromDate:date];
+    }
+    
+    //return [VNUtility strFromTimeStampSince1970:[ doubleValue]];
+    
+}
+
+
 @end

@@ -34,7 +34,9 @@
         [self.thumbnail.layer setCornerRadius:CGRectGetHeight([self.thumbnail bounds]) / 2];
         self.thumbnail.layer.masksToBounds = YES;
         self.nameLabel.text = self.message.sender.name;
-        self.timeLabel.text= [VNUtility strFromTimeStampSince1970:[self.message.time doubleValue]];
+        //self.timeLabel.text= [VNUtility strFromTimeStampSince1970:[self.message.time doubleValue]];
+        self.timeLabel.text=[VNUtility timeFormatToDisplay:[self.message.time doubleValue]];
+
     }
 }
 

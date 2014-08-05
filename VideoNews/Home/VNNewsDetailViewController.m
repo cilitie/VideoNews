@@ -229,7 +229,8 @@ static NSString *shareStr;
     headerFrame.size.height += diff;
     self.headerView.bounds = headerFrame;
     
-    self.headerView.timeLabel.text = self.news.date;
+    //self.headerView.timeLabel.text = self.news.date;
+    self.headerView.timeLabel.text = [VNUtility timeFormatToDisplay:[self.news.timestamp floatValue]];
     self.headerView.tagLabel.text = self.news.tags;
    
     if (self.news.comment_count>10000) {
@@ -503,8 +504,9 @@ static NSString *shareStr;
 //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
     cell.commentLabel.frame = titleLabelframe;
     
-    cell.timeLabel.text = [comment.date substringToIndex:10];
-    
+    //cell.timeLabel.text = [comment.date substringToIndex:10];
+    cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
+
     return cell;
 }
 

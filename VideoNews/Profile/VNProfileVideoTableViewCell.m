@@ -103,7 +103,9 @@
         CGRect rect = [self.news.title boundingRectWithSize:CGSizeMake(280.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
         self.titleLabelHeightLC.constant = CGRectGetHeight(rect);
         
-        self.timeLabel.text = self.news.date;
+        //self.timeLabel.text = self.news.date;
+        self.timeLabel.text=[NSString stringWithFormat:@"上传于 %@",[VNUtility timeFormatToDisplay:[self.news.timestamp doubleValue]]];
+
         self.commentNumLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
         self.favouriteLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
         

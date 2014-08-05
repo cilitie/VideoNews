@@ -13,5 +13,6 @@
 + (void)showHUDText:(NSString *)text forView:(UIView *)view;
 + (NSString *)strFromTimeStampSince1970:(NSTimeInterval)timeInterval;
 + (NSString *)getNSCachePath:(NSString *)filenameorpath;
++ (NSString *)timeFormatToDisplay:(NSTimeInterval)timeInterval;
 
 @end
