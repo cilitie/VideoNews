@@ -859,16 +859,6 @@ static NSString *shareStr;
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     userScrolling = YES;
     initialScrollOffset = scrollView.contentOffset;
-    
-    UITableView *tableView = (UITableView *)scrollView;
-    if (tableView == self.videoTableView) {
-        NSArray *visibleCells=[tableView visibleCells];
-        for (VNProfileVideoTableViewCell *cell in visibleCells) {
-            if (cell.isPlaying) {
-                [cell startOrPausePlaying:NO];
-            }
-        }
-    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -923,6 +913,22 @@ static NSString *shareStr;
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     userScrolling = NO;
     initialScrollOffset = CGPointMake(0, 0);
+    
+    UITableView *tableView = (UITableView *)scrollView;
+    if (tableView == self.videoTableView) {
+        for (NSUInteger i=0; i<self.userVideoArr.count; i++) {
+            NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+            VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
+            if (cell.isPlaying) {
+                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
+                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
+                if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
+                    [cell startOrPausePlaying:NO];
+                }
+            }
+        }
+    }
     
     if (isAutoPlayOption) {
         UITableView *tableView = (UITableView *)scrollView;
