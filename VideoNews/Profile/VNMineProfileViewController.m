@@ -148,9 +148,9 @@ static NSString *shareStr;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     if (self.isPush) {
         self.popBtn.hidden = NO;
+        [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeVideoCellForNewsDeleted:) name:VNMineProfileVideoCellDeleteNotification object:nil];
