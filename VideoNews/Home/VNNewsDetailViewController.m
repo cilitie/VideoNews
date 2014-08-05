@@ -65,6 +65,7 @@
 #define kTagCommentMine 102
 #define kTagCommentAnybody 103
 #define kTagCommentOtherUser 104
+#define kTagCommentMineNews 106
 #define kTagNews 105
 #define KReplyButton 1000
 static NSString *shareStr;
@@ -521,7 +522,11 @@ static NSString *shareStr;
     NSString *mineID = [userInfo objectForKey:@"openid"];
     NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
     NSLog(@"openid:%@,length:%d",mineID, mineID.length);
-    if ([comment.author.uid isEqualToString:mineID]) {
+    if ([self.news.author.uid isEqualToString:mineID]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+        actionSheet.tag=kTagCommentMineNews;
+    }
+    else if ([comment.author.uid isEqualToString:mineID]) {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
         actionSheet.tag = kTagCommentMine;
     }
@@ -919,6 +924,7 @@ static NSString *shareStr;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    //NSLog(@"%d",actionSheet.tag);
     if (actionSheet.tag == kTagShare || actionSheet.tag == kTagNews) {
         NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
         //NSLog(@"%@", self.news.url);
@@ -1037,8 +1043,8 @@ static NSString *shareStr;
             snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
         }
     }
-    else if (actionSheet.tag == kTagCommentMine) {
-        NSLog(@"%d", buttonIndex);
+    else if (actionSheet.tag == kTagCommentMine ||actionSheet.tag==kTagCommentMineNews) {
+       // NSLog(@"%d", buttonIndex);
         switch (buttonIndex) {
                 //回复
             case 0: {

@@ -46,9 +46,11 @@
 @property (strong, nonatomic) VNUser *mineInfo;
 @property (strong, nonatomic) NSString *followLastPageTime;
 @property (strong, nonatomic) NSString *fansLastPageTime;
+@property (strong, nonatomic) NSString *favVideoPageTime;
 @property (strong, nonatomic) NSMutableArray *favouriteNewsArr;
 @property (strong, nonatomic) UIAlertView *deleteAlert;
 @property (strong, nonatomic) UITableView *curTableView;
+
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
@@ -381,7 +383,7 @@ static NSString *shareStr;
             // FIXME: Hard code
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+                [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSString *moreTimestamp,NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -389,6 +391,8 @@ static NSString *shareStr;
                         [weakSelf.favVideoArr removeAllObjects];
                         [weakSelf.favVideoArr addObjectsFromArray:videoArr];
                         [weakSelf.favouriteTableView reloadData];
+                        weakSelf.favVideoPageTime=moreTimestamp;
+
                     }
                     firstLoading = YES;
                     [weakSelf.favouriteTableView.pullToRefreshView stopAnimating];
@@ -397,22 +401,28 @@ static NSString *shareStr;
         }];
         
         [self.favouriteTableView addInfiniteScrollingWithActionHandler:^{
-            NSString *moreTimeStamp = nil;
-            if (weakSelf.favVideoArr.count) {
-                VNNews *lastNews = [weakSelf.favVideoArr lastObject];
-                moreTimeStamp = lastNews.timestamp;
+            //NSString *moreTimeStamp = nil;
+            if (!weakSelf.favVideoArr.count) {
+                //VNNews *lastNews = [weakSelf.favVideoArr lastObject];
+                //moreTimeStamp = lastNews.timestamp;
+                weakSelf.favVideoPageTime = [VNHTTPRequestManager timestamp];
+
             }
-            else {
+            /*else {
                 moreTimeStamp = [VNHTTPRequestManager timestamp];
-            }
+            }*/
             
-            [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:moreTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+            
+            [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:weakSelf.favVideoPageTime completion:^(NSArray *videoArr,NSString * moreTimestamp, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
                     [weakSelf.favVideoArr addObjectsFromArray:videoArr];
                     [weakSelf.favouriteTableView reloadData];
+                    if (moreTimestamp!=nil) {
+                        weakSelf.favVideoPageTime=moreTimestamp;
+                    }
                 }
                 [weakSelf.favouriteTableView.infiniteScrollingView stopAnimating];
                 

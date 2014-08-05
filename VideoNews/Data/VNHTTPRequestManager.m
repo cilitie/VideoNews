@@ -801,7 +801,7 @@ static int pagesize = 10;
     }];
 }
 
-+ (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion {
++ (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSString * moreTimestamp,NSError *error))completion {
     NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
     NSDictionary *param = @{@"uid": uid, @"user_token": user_token, @"cmd": @"likes", @"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": [self timestamp], @"pagetime": lastTimeStamp};
     
@@ -810,13 +810,15 @@ static int pagesize = 10;
         VNNews *news = nil;
         VNMedia *media = nil;
         NSMutableArray *newsArr = [NSMutableArray array];
+        NSString *moreTimestamp=nil;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
+                moreTimestamp=responseObject[@"result"][@"lastTimestamp"];
                 for (NSDictionary *newsDic in responseObject[@"result"][@"list"]) {
                     news = [[VNNews alloc] initWithDict:newsDic];
                     //FIXME: 待确认，timestamp是否这么获取
-                    [news.basicDict setObject:responseObject[@"result"][@"lastTimestamp"] forKey:@"timestamp"];
+                    //[news.basicDict setObject:responseObject[@"result"][@"lastTimestamp"] forKey:@"timestamp"];
                     
                     NSDictionary *userDic = [newsDic objectForKey:@"author"];
                     news.author = [[VNUser alloc] initWithDict:userDic];
@@ -841,11 +843,11 @@ static int pagesize = 10;
         }
         NSLog(@"%@", newsArr);
         if (completion) {
-            completion(newsArr, nil);
+            completion(newsArr,moreTimestamp, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
-            completion(nil, error);
+            completion(nil, nil,error);
         }
     }];
 }

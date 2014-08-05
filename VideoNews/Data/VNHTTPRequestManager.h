@@ -64,8 +64,8 @@
 //关注相关
 + (void)idolListForUser:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *idolArr, NSError *error))completion;
 + (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed,int fans_count, int idol_count,NSError *error))completion;
-+ (void)videoListForUser:(NSString *)uid type:(NSString *)type fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion;
-+ (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion;
++ (void)videoListForUser:(NSString *)uid type:(NSString *)type fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr,NSError *error))completion;
++ (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSString * moreTimestamp,NSError *error))completion;
 
 + (void)userInfoForUser:(NSString *)uid completion:(void(^)(VNUser *userInfo, NSError *error))completion;
 + (void)userListForUser:(NSString *)uid type:(NSString *)type pageTime:(NSString *)pageTime completion:(void(^)(NSArray *userArr, NSString *lastTimeStamp, NSError *error))completion;
