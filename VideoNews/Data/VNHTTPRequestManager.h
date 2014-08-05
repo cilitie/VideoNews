@@ -34,7 +34,7 @@
 + (void)newsListFromTime:(NSString *)time completion:(void(^)(NSArray *newsArr, NSError *error))completion;
 + (void)commentListForNews:(int)nid timestamp:(NSString *)timestamp completion:(void(^)(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error))completion;
 + (void)commentByCid:(int)cid completion:(void(^)(NSArray *comment, NSError *error))completion;
-+ (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error))completion;
++ (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error))completion;
 + (void)deleteNews:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed,int news_count,NSError *error))completion;
 //评论相关
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, VNComment *comment,int comment_count, NSError *error))completion;
@@ -63,7 +63,7 @@
 #pragma mark - User
 //关注相关
 + (void)idolListForUser:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *idolArr, NSError *error))completion;
-+ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed,int fans_count, NSError *error))completion;
++ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed,int fans_count, int idol_count,NSError *error))completion;
 + (void)videoListForUser:(NSString *)uid type:(NSString *)type fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion;
 + (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion;
 

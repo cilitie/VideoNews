@@ -134,7 +134,7 @@ static NSString *shareStr;
         }
         
         if (weakSelf.headerView.likeBtn.isSelected) {
-            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"remove" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"remove" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -155,7 +155,7 @@ static NSString *shareStr;
             }];
         }
         else {
-            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"add" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+            [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"add" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
@@ -600,7 +600,7 @@ static NSString *shareStr;
     }
     
     if (button.isSelected) {
-        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
             //isNewsDeleted=YES;
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -624,7 +624,7 @@ static NSString *shareStr;
         }];
     }
     else {
-        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error) {
+        [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }

@@ -207,7 +207,7 @@ static int pagesize = 10;
 }
 
 
-+ (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, int like_count,NSError *error))completion {
++ (void)favouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error))completion {
     //http://zmysp.sinaapp.com/op.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=add&id=1&user_token=f1517c15fd0da75cc1889e9537392a9c
     NSString *URLStr = [VNHost stringByAppendingString:@"op.php"];
     NSDictionary *param = @{@"id": [NSNumber numberWithInt:nid], @"uid": uid, @"cmd": operation, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
@@ -217,20 +217,22 @@ static int pagesize = 10;
         BOOL operationSuccess = NO;
         BOOL isNewsDeleted=NO;
         int like_count=0;
+        int user_like_count=0;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
                 operationSuccess = [[responseObject objectForKey:@"success"] boolValue];
                 isNewsDeleted = [[responseObject objectForKey:@"newsDeleted"] boolValue];
                 like_count=[[responseObject objectForKey:@"like_count"] intValue];
+                user_like_count=[[responseObject objectForKey:@"user_like_count"] intValue];
             }
         }
         if (completion) {
-            completion(operationSuccess,isNewsDeleted,like_count ,nil);
+            completion(operationSuccess,isNewsDeleted,like_count,user_like_count ,nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
-            completion(NO,NO,0,error);
+            completion(NO,NO,0,0,error);
         }
     }];
 }
@@ -721,7 +723,7 @@ static int pagesize = 10;
     }];
 }
 
-+ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed,int fans_count, NSError *error))completion {
++ (void)followIdol:(NSString *)idol_uid follower:(NSString *)fan_uid userToken:(NSString *)user_token operation:(NSString *)type completion:(void(^)(BOOL succeed,int fans_count,int idol_count, NSError *error))completion {
     //http://zmysp.sinaapp.com/op_following.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&fan_uid=1300000001&cmd=add&idol_uid=201365768878787&user_token=f1517c15fd0da75cc1889e9537392a9c
     NSString *URLStr = [VNHost stringByAppendingString:@"op_following.php"];
     NSDictionary *param = @{@"idol_uid": idol_uid, @"fan_uid": fan_uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token, @"cmd": type};
@@ -729,19 +731,22 @@ static int pagesize = 10;
         NSLog(@"%@", responseObject);
         BOOL followSuccess = NO;
         int fansC=0;
+        int idolC=0;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             followSuccess = [[responseObject objectForKey:@"success"] boolValue];
             if (responseStatus&& followSuccess) {
                 fansC=[[responseObject objectForKey:@"fans_count"] intValue];
+                idolC=[[responseObject objectForKey:@"idol_count"] intValue];
+
             }
         }
         if (completion) {
-            completion(followSuccess,fansC, nil);
+            completion(followSuccess,fansC,idolC, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
-            completion(NO,0, error);
+            completion(NO,0, 0,error);
         }
     }];
 }

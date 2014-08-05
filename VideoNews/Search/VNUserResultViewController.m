@@ -192,7 +192,7 @@
                 return ;
             }
             if (uid && user_token) {
-                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -236,7 +236,7 @@
                     [VNUtility showHUDText:@"不能关注自己!" forView:self.view];
                     return ;
                 }
-                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed,int fans_count, NSError *error) {
+                [VNHTTPRequestManager followIdol:user.uid follower:uid userToken:user_token operation:@"remove" completion:^(BOOL succeed,int fans_count, int idol_count,NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }

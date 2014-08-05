@@ -75,8 +75,8 @@
             y = 52;
         }
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, y, 90, 90)];
-        [_submitBtn setImage:[UIImage imageNamed:@"40_40check"] forState:UIControlStateNormal];
-        [_submitBtn setImage:[UIImage imageNamed:@"40_40check"] forState:UIControlStateSelected];
+        [_submitBtn setImage:[UIImage imageNamed:@"112-112@2x"] forState:UIControlStateNormal];
+        [_submitBtn setImage:[UIImage imageNamed:@"112-112@2x"] forState:UIControlStateSelected];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         _submitBtn.backgroundColor = [UIColor clearColor];
@@ -198,9 +198,9 @@
     UILabel *descLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 343, 320, 42)];
     descLbl.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     descLbl.textColor = [UIColor whiteColor];
-    descLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:15];
+    descLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:12];
     descLbl.textAlignment = NSTextAlignmentCenter;
-    descLbl.text = @"找到有趣的画，按任意位置开始拍摄";
+    descLbl.text = @"记录你的生活，分享你的穿搭，按住屏幕任意位置开始拍摄";
     [self addSubview:descLbl];
     
     //bottom base view initialization

@@ -587,7 +587,7 @@ static NSString *shareStr;
                 return;
             }
             if (!weakCell.isFavouriteNews) {
-            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, NSError *error) {
+            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
                 //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -617,7 +617,7 @@ static NSString *shareStr;
             }
             else
             {
-                [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, NSError *error) {
+                [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
                     //isNewsDeleted=YES;
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -662,12 +662,12 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
+            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (succeed) {
-                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                    //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }
@@ -691,12 +691,12 @@ static NSString *shareStr;
                 return;
             }
             
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,NSError *error) {
+            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (succeed) {
-                    [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                    //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                     weakCell.followBtn.hidden = YES;
                     weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }
@@ -819,12 +819,12 @@ static NSString *shareStr;
     }
     
     if ([button.currentTitle isEqual:@"关注"]) {
-        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed,int fans_count, NSError *error) {
+        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed,int fans_count, int idol_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else if (succeed) {
-                [VNUtility showHUDText:@"关注成功!" forView:self.view];
+                //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                 [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                 [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
             }
@@ -834,12 +834,12 @@ static NSString *shareStr;
         }];
     }
     else {
-        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"remove" completion:^(BOOL succeed,int fans_count, NSError *error) {
+        [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"remove" completion:^(BOOL succeed,int fans_count, int idol_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else if (succeed) {
-                [VNUtility showHUDText:@"取消关注成功!" forView:self.view];
+                //[VNUtility showHUDText:@"取消关注成功!" forView:self.view];
                 [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
                 [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
             }
@@ -1078,7 +1078,7 @@ static NSString *shareStr;
     if(response.responseCode == UMSResponseCodeSuccess) {
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
-        [VNUtility showHUDText:@"分享成功!" forView:self.view];
+        //[VNUtility showHUDText:@"分享成功!" forView:self.view];
         [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -1088,7 +1088,7 @@ static NSString *shareStr;
                 //删除cell
             }
             else if (succeed) {
-                NSLog(@"分享添加评论成功！");
+                //NSLog(@"分享添加评论成功！");
             }
         }];
     }
