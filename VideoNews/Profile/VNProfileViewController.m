@@ -49,6 +49,8 @@
 @property (strong, nonatomic) NSString *mineUser_token;
 @property (strong, nonatomic) VNNews *shareNews;
 
+@property (strong, nonatomic) NSArray *headerViewArr;
+
 - (IBAction)follow:(id)sender;
 - (IBAction)pop:(id)sender;
 
@@ -73,6 +75,7 @@ static NSString *shareStr;
         _shareNews = nil;
         isTabBarHidden = NO;
         isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
+        _headerViewArr = [NSArray array];
     }
     return self;
 }
@@ -153,6 +156,7 @@ static NSString *shareStr;
     VNUserProfileHeaderView *videoHeaderView = loadXib(@"VNUserProfileHeaderView");
     VNUserProfileHeaderView *followHeaderView = loadXib(@"VNUserProfileHeaderView");
     VNUserProfileHeaderView *fansHeaderView = loadXib(@"VNUserProfileHeaderView");
+    self.headerViewArr = @[videoHeaderView, followHeaderView, fansHeaderView];
     
     [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
         if (error) {
@@ -180,6 +184,11 @@ static NSString *shareStr;
                 [cell startOrPausePlaying:NO];
             }
         }
+        
+        for (VNUserProfileHeaderView *headView in self.headerViewArr) {
+            [headView reloadTabStatus:index];
+        }
+        
         switch (index) {
             case 0: {
                 firstLoading = YES;

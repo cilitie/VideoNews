@@ -247,6 +247,11 @@ static NSString *shareStr;
                     [cell startOrPausePlaying:NO];
                 }
             }
+            
+            for (VNMineProfileHeaderView *headView in self.headerViewArr) {
+                [headView reloadTabStatus:index];
+            }
+            
             switch (index) {
                 case 0: {
                     firstLoading = YES;

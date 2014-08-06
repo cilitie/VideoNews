@@ -10,6 +10,11 @@
 
 @interface VNMineProfileHeaderView ()
 
+@property (weak, nonatomic) IBOutlet UILabel *videoNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *likeNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *followNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fansNameLabel;
+
 - (IBAction)edit:(id)sender;
 - (IBAction)tap:(UITapGestureRecognizer *)sender;
 
@@ -71,5 +76,41 @@
         self.tabHandler(index);
     }
 }
+
+- (void)reloadTabStatus:(NSUInteger)status {
+    switch (status) {
+        case 0:{
+            self.videoNameLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+            self.likeNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.followNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.fansNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+        }
+            break;
+        case 1:{
+            self.videoNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.likeNameLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+            self.followNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.fansNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+        }
+            break;
+        case 2:{
+            self.videoNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.likeNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.followNameLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+            self.fansNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+        }
+            break;
+        case 3:{
+            self.videoNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.likeNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.followNameLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.fansNameLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
 
 @end

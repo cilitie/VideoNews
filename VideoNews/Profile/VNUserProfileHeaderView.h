@@ -27,5 +27,6 @@ typedef void(^ClickTabHandler)(NSUInteger index);
 @property (copy, nonatomic) ClickTabHandler tabHandler;
 
 - (void)reload;
+- (void)reloadTabStatus:(NSUInteger)status;
 
 @end

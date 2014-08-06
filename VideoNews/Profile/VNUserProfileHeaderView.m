@@ -89,22 +89,12 @@
     CGPoint point = [sender locationInView:self];
     NSUInteger index = 0;
     if (CGRectContainsPoint(CGRectMake(0, 94, 106, 50), point)) {
-        //FIXME: tab变化需要修改
-        self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
-        self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
-        self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
         index = 0;
     }
     else if (CGRectContainsPoint(CGRectMake(106, 94, 106, 50), point)) {
-        self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
-        self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
-        self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
         index = 1;
     }
     else if (CGRectContainsPoint(CGRectMake(106*2, 94, 106, 50), point)) {
-        self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
-        self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
-        self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
         index = 2;
     }
     else if (CGRectContainsPoint(CGRectMake(10, 10, 75, 75), point)) {
@@ -120,4 +110,30 @@
         self.tabHandler(index);
     }
 }
+
+- (void)reloadTabStatus:(NSUInteger)status {
+    switch (status) {
+        case 0:{
+            self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+            self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+        }
+            break;
+        case 1:{
+            self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+            self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+        }
+            break;
+        case 2:{
+            self.videoTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.followTitleLabel.textColor = [UIColor colorWithRGBValue:0xa2a2a2];
+            self.fansTitleLabel.textColor = [UIColor colorWithRGBValue:0xce2426];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
 @end

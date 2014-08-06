@@ -55,7 +55,7 @@
                             <rect key="frame" x="16" y="124" width="48" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <color key="textColor" red="0.63529413940000001" green="0.63529413940000001" blue="0.63529413940000001" alpha="1" colorSpace="deviceRGB"/>
+                            <color key="textColor" red="0.80392163991928101" green="0.098039224743843079" blue="0.14509804546833038" alpha="1" colorSpace="deviceRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lW2-ZO-gyY" userLabel="Horizontal Line2">
@@ -129,11 +129,15 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="fansCountLabel" destination="X9e-Xl-xen" id="N8M-aP-a1o"/>
+                <outlet property="fansNameLabel" destination="BFk-fY-haQ" id="yKC-Xj-r8M"/>
                 <outlet property="favouriteCountLabel" destination="JOd-hQ-94v" id="GLQ-mA-R3e"/>
                 <outlet property="followCountLabel" destination="UZD-A4-cQl" id="HH4-3y-PZd"/>
+                <outlet property="followNameLabel" destination="elJ-M5-ib0" id="eFc-SK-Doc"/>
+                <outlet property="likeNameLabel" destination="QSA-sl-l02" id="9kt-u9-ujC"/>
                 <outlet property="nameLabel" destination="NID-Fa-h33" id="KCr-3o-4QI"/>
                 <outlet property="thumbnailImgView" destination="MHw-jE-4DA" id="nTs-Zs-UOm"/>
                 <outlet property="videoCountLabel" destination="ZSX-MZ-occ" id="pWi-in-F5b"/>
+                <outlet property="videoNameLabel" destination="FIV-5W-FBz" id="1FR-RR-hiN"/>
             </connections>
         </view>
         <tapGestureRecognizer id="d89-Er-g9I">
