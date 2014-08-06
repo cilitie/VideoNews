@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UIView *noResultTipView;
 @property (strong, nonatomic) VNSearchField *searchField;
+@property (weak, nonatomic) IBOutlet UILabel *categoryTitle;
 
 @property (strong, nonatomic) NSMutableArray *categoryNewsArr;
 @property (strong, nonatomic)VNNews *curNews;
@@ -127,6 +128,7 @@
         }];
     }
     else if (self.type == ResultTypeCategory) {
+        _categoryTitle.text=_category.name;
         [newsQuiltView addPullToRefreshWithActionHandler:^{
             // FIXME: Hard code
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

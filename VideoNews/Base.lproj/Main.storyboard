@@ -38,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="首页" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aT-2c-ylf">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="首页" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aT-2c-ylf">
                                         <rect key="frame" x="143" y="31" width="34" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -444,6 +444,13 @@
                                             <action selector="popBack:" destination="lib-ei-pAS" eventType="touchUpInside" id="Zca-Zy-qfK"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tum-mi-Bot">
+                                        <rect key="frame" x="60" y="29" width="200" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.80392163989999998" green="0.09803922474" blue="0.14509804549999999" alpha="1" colorSpace="deviceRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.9450981021" green="0.9450981021" blue="0.9450981021" alpha="1" colorSpace="deviceRGB"/>
                             </view>
@@ -478,6 +485,7 @@
                     <navigationItem key="navigationItem" id="efE-Bm-Ze9"/>
                     <connections>
                         <outlet property="backBtn" destination="4jE-xD-7Ap" id="1GT-tf-Uwj"/>
+                        <outlet property="categoryTitle" destination="Tum-mi-Bot" id="gRw-U0-MdH"/>
                         <outlet property="navBar" destination="qEJ-w0-Tv9" id="NI5-1N-Cot"/>
                         <outlet property="noResultTipView" destination="XWK-ll-Pyf" id="QMP-OK-9mv"/>
                         <segue destination="pds-Bb-2jX" kind="push" identifier="pushVNNewsDetailViewControllerForResult" id="Xbb-ie-jFU"/>
@@ -1785,6 +1793,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="geg-gA-oE4"/>
+        <segue reference="Xbb-ie-jFU"/>
     </inferredMetricsTieBreakers>
 </document>
