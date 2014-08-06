@@ -101,8 +101,8 @@ static NSString *shareStr;
     [self.headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.headerView.thumbnailImageView bounds]) / 2];
     self.headerView.thumbnailImageView.layer.masksToBounds = YES;
     self.headerView.nameLabel.text = self.news.author.name;
-    //self.headerView.newsImageView.layer.masksToBounds=YES;
-    //[self.headerView.newsImageView.layer setCornerRadius:5];
+    self.headerView.newsImageView.layer.masksToBounds=YES;
+    [self.headerView.newsImageView.layer setCornerRadius:5];
 
     
     __weak typeof(self) weakSelf = self;
@@ -266,6 +266,8 @@ static NSString *shareStr;
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [self.moviePlayer.view setFrame:self.headerView.newsImageView.frame];
     self.moviePlayer.shouldAutoplay = NO;
+    self.moviePlayer.view.layer.masksToBounds=YES;
+    self.moviePlayer.view.layer.cornerRadius=5;
     [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
     [self.headerView addSubview:self.moviePlayer.view];
@@ -936,7 +938,7 @@ static NSString *shareStr;
         NSString *shareURL = self.news.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
             //shareURL = @"http://www.baidu.com";
-            shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.news.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d&start=1",self.news.nid];
             //NSLog(@"url:%@",shareURL);
         }
         NSString *snsName = nil;
