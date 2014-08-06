@@ -67,6 +67,8 @@
 
 static BOOL firstLoading = YES;
 static NSString *shareStr;
+#define KVideoTag 101
+#define KLikeTag 102
 
 @implementation VNMineProfileViewController
 
@@ -764,6 +766,7 @@ static NSString *shareStr;
             actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
             weakSelf.shareNews = news;
             weakSelf.shareNewsIndexPath=indexPath;
+            actionSheet.tag=KVideoTag;
             [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
         };
         cell.likeHandler = ^(){
@@ -877,6 +880,7 @@ static NSString *shareStr;
                  else
                  {
                      UIActionSheet *actionSheet = nil;
+                     actionSheet.tag=KLikeTag;
                      actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", @"取消喜欢",nil];
                      weakSelf.shareNews = news;
                      weakSelf.shareNewsIndexPath=indexPath;
@@ -1291,10 +1295,14 @@ static NSString *shareStr;
                 break;
                 //取消喜欢
             case 9:{
-                NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
-                NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-                if (mineUid && user_token) {
-                    [VNHTTPRequestManager favouriteNews:_shareNews.nid operation:@"remove" userID:mineUid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error){
+                NSString *buttonTitle = [actionSheet buttonTitleAtIndex:9];
+                if ([buttonTitle isEqualToString:@"取消喜欢"]) {
+                    
+                
+                   NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
+                   NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                   if (mineUid && user_token) {
+                      [VNHTTPRequestManager favouriteNews:_shareNews.nid operation:@"remove" userID:mineUid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error){
                         //isNewsDeleted=YES;
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1319,6 +1327,11 @@ static NSString *shareStr;
                             [VNUtility showHUDText:@"取消喜欢失败!" forView:self.view];
                         }
                     }];
+                   }
+                }
+                else
+                {
+                    return;
                 }
             }
                 break;
