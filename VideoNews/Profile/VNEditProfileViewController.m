@@ -225,6 +225,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
                 VNEditProfileTableViewCell *cell = (VNEditProfileTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
                 VNEditContentViewController *editContentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNEditContentViewController"];
                 editContentViewController.title = cell.titleLabel.text;
+                editContentViewController.initialStr=cell.contentLabel.text;
                 [self.navigationController pushViewController:editContentViewController animated:YES];
             }
                 break;
