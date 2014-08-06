@@ -161,8 +161,9 @@ static NSString *shareStr;
 
     [self reload];
     
+    [self.followTableView setTableFooterView:[[UIView alloc] init]];
+    [self.fansTableView setTableFooterView:[[UIView alloc] init]];
     [self.view addSubview:self.progressView];
-
 }
 
 - (void)reload {

@@ -144,6 +144,8 @@
         }];
     }];
 //    [self.messageTableView triggerPullToRefresh];
+    
+    [self.messageTableView setTableFooterView:[[UIView alloc] init]];
 }
 
 -(void)removeBadgeValue

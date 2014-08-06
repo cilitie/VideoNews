@@ -119,6 +119,9 @@ static NSString *shareStr;
     self.followBtn.layer.cornerRadius = 5.0;
     self.followBtn.layer.masksToBounds = YES;
     
+    [self.followTableView setTableFooterView:[[UIView alloc] init]];
+    [self.fansTableView setTableFooterView:[[UIView alloc] init]];
+    
     if (self.mineUid && self.mineUser_token) {
         [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
             if (error) {
