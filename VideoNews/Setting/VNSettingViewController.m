@@ -11,7 +11,7 @@
 #import "UMFeedback.h"
 #import "VNLoginViewController.h"
 
-@interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate,UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *settingTableView;
 
@@ -139,6 +139,25 @@
         }
     }
     else if (indexPath.section == 3) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定退出登录？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+        
+    }
+}
+
+#pragma mark - SEL
+
+- (IBAction)pop:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    else if (buttonIndex == 1) {
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNLoginUser];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:isLogin];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNLoginDate];
@@ -149,14 +168,10 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         loginViewController.controllerType=SourceVCTypeMineProfile;
+        [self.navigationController popViewControllerAnimated:YES];
         [self presentViewController:loginViewController animated:YES completion:nil];
+        
     }
-}
-
-#pragma mark - SEL
-
-- (IBAction)pop:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
