@@ -21,6 +21,7 @@
     CGPoint previousScrollOffset;
     BOOL isToBottom;
     BOOL isTabBarHidden;
+    BOOL willPushView;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *navBar;
@@ -143,7 +144,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    if (isTabBarHidden) {
+    if (isTabBarHidden && !willPushView) {
         [self showTabBar];
     }
 }
@@ -289,6 +290,7 @@
         profileViewController.uid = user.uid;
         [self.navigationController pushViewController:profileViewController animated:YES];
     }
+    willPushView = YES;
 }
 
 #pragma mark - UITextFieldDelegate

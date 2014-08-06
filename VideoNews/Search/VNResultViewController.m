@@ -23,6 +23,7 @@
     CGPoint previousScrollOffset;
     BOOL isToBottom;
     BOOL isTabBarHidden;
+    BOOL willPushView;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *navBar;
@@ -47,6 +48,7 @@
     if (self) {
         _categoryNewsArr = [NSMutableArray array];
         isTabBarHidden = NO;
+        willPushView = NO;
     }
     return self;
 }
@@ -186,7 +188,7 @@
         [[NSNotificationCenter defaultCenter]removeObserver:self name:VNSearchCellDeleteNotification object:nil];
         
     }*/
-    if (isTabBarHidden) {
+    if (isTabBarHidden && !willPushView) {
         [self showTabBar];
     }
 }
@@ -274,6 +276,7 @@
         profileViewController.uid = user.uid;
         [self.navigationController pushViewController:profileViewController animated:YES];
     }
+    willPushView = YES;
 }
 
 /*- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
