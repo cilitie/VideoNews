@@ -89,6 +89,7 @@ static NSString *shareStr;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.commentTableView.backgroundColor=[UIColor clearColor];
     self.inputTextView.layer.cornerRadius = 5;
     self.inputTextView.layer.masksToBounds = YES;
     self.inputTextView.layer.borderWidth = 1.0;
@@ -100,6 +101,9 @@ static NSString *shareStr;
     [self.headerView.thumbnailImageView.layer setCornerRadius:CGRectGetHeight([self.headerView.thumbnailImageView bounds]) / 2];
     self.headerView.thumbnailImageView.layer.masksToBounds = YES;
     self.headerView.nameLabel.text = self.news.author.name;
+    //self.headerView.newsImageView.layer.masksToBounds=YES;
+    //[self.headerView.newsImageView.layer setCornerRadius:5];
+
     
     __weak typeof(self) weakSelf = self;
     
@@ -309,7 +313,7 @@ static NSString *shareStr;
     self.commentTableView.tableHeaderView = self.headerView;
     [self.commentTableView registerNib:[UINib nibWithNibName:@"VNCommentTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNCommentTableViewCellIdentifier"];
     //self.commentTableView.layer.cornerRadius = 5.0;
-    self.commentTableView.layer.masksToBounds = YES;
+    //self.commentTableView.layer.masksToBounds = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
