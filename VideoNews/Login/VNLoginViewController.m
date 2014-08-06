@@ -70,35 +70,37 @@
     UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:@"sina"];
     snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
         NSLog(@"login response is %@",response);
-        [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToSina completion:^(UMSocialResponseEntity *respose){
-            NSLog(@"response is %@",respose);
-            VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-            authUser.openid = [@"12" stringByAppendingString:[[respose.data objectForKey:@"uid"] stringValue]];
-            authUser.nickname = [respose.data objectForKey:@"screen_name"];
-            authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
-//            if ([[respose.data objectForKey:@"gender"] intValue] == 1) {
-//                authUser.gender = @"male";
-//            }
-//            else if([[respose.data objectForKey:@"gender"] intValue] == 0) {
-//                authUser.gender = @"female";
-//            }
-            authUser.gender = [respose.data objectForKey:@"gender"];
-            [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+        if ([response.message isEqualToString:@"no error"]) {
+            [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToSina completion:^(UMSocialResponseEntity *respose){
+                NSLog(@"response is %@",respose);
+                VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
+                authUser.openid = [@"12" stringByAppendingString:[[respose.data objectForKey:@"uid"] stringValue]];
+                authUser.nickname = [respose.data objectForKey:@"screen_name"];
+                authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
+                if ([[respose.data objectForKey:@"gender"] intValue] == 1) {
+                    authUser.gender = @"male";
                 }
-                else if (succeed) {
-                    [VNUtility showHUDText:@"登录成功!" forView:self.view];
-                    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                else if([[respose.data objectForKey:@"gender"] intValue] == 0) {
+                    authUser.gender = @"female";
                 }
-                else {
-                    [VNUtility showHUDText:@"登录失败!" forView:self.view];
-                }
+                authUser.gender = [respose.data objectForKey:@"gender"];
+                [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"登录成功!" forView:self.view];
+                        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"登录失败!" forView:self.view];
+                    }
+                }];
             }];
-        }];
+        }
     });
 }
 
@@ -106,30 +108,32 @@
     UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:@"qq"];
     snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
         NSLog(@"login response is %@",response);
-        [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToQQ completion:^(UMSocialResponseEntity *respose){
-            NSLog(@"response is %@",respose);
-            VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-            authUser.openid = [@"13" stringByAppendingString:[respose.data objectForKey:@"openid"]];
-            authUser.nickname = [respose.data objectForKey:@"screen_name"];
-            authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
-            authUser.gender = [respose.data objectForKey:@"gender"];
-            NSLog(@"%@", authUser.basicDict);
-            [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    [VNUtility showHUDText:@"登录成功!" forView:self.view];
-                    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    [self dismissViewControllerAnimated:YES completion:nil];
-                }
-                else {
-                    [VNUtility showHUDText:@"登录失败!" forView:self.view];
-                }
+        if ([response.message isEqualToString:@"no error"]) {
+            [[UMSocialDataService defaultDataService] requestSnsInformation:UMShareToQQ completion:^(UMSocialResponseEntity *respose){
+                NSLog(@"response is %@",respose);
+                VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
+                authUser.openid = [@"13" stringByAppendingString:[respose.data objectForKey:@"openid"]];
+                authUser.nickname = [respose.data objectForKey:@"screen_name"];
+                authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
+                authUser.gender = [respose.data objectForKey:@"gender"];
+                NSLog(@"%@", authUser.basicDict);
+                [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        [VNUtility showHUDText:@"登录成功!" forView:self.view];
+                        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    }
+                    else {
+                        [VNUtility showHUDText:@"登录失败!" forView:self.view];
+                    }
+                }];
             }];
-        }];
+        }
     });
 }
 
