@@ -220,6 +220,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)dealloc
 {
+    [self.videoPlayer removeObserver:self forKeyPath:@"status"];
     NSLog(@"dealloc......:%s",__FUNCTION__);
 }
 
@@ -240,7 +241,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
     [self clearTempVideo];
     
-    [self.videoPlayer removeObserver:self forKeyPath:@"status"];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

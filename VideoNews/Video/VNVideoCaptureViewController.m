@@ -578,7 +578,12 @@ static NSString *videoFilePath;
         CGFloat percent = self.videoTotalDuration / 30.0 ;
         
         [_overlayView updateProgressViewToPercentage:percent];
-
+        
+        if (self.videoTotalDuration < MIN_VIDEO_DURATION) {
+            [self.overlayView setAlbumAndSubmitBtnStatus:NO];
+        }else {
+            [self.overlayView setAlbumAndSubmitBtnStatus:YES];
+        }
     }
 }
 

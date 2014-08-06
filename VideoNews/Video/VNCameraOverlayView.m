@@ -373,6 +373,7 @@
 {
     _progressView.status = ProgressViewStatusNormal;
     _trashBtn.selected = NO;
+    self.submitBtn.enabled = YES;
     
     if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
         

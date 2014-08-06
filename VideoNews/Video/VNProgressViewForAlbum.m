@@ -19,7 +19,7 @@
 @synthesize delegate;
 
 
-#define kProgressBarHeight  8.0f
+#define kProgressBarHeight  10.0f
 #define kProgressBarWidth	320.0f
 
 - (id)initWithFrame:(CGRect)frame

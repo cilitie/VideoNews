@@ -28,6 +28,14 @@
 @property (nonatomic, assign) CGFloat timeScale;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
+
+@property (nonatomic, strong) UIImageView *playBtnImg;
+
+@property (nonatomic, strong) id mTimeObserver;
+
+@property (nonatomic, assign) BOOL isPlaying;
+
+@property (nonatomic, assign) VNVideoOrientation orientation;
 @end
 
 @implementation VNAlbumVideoEditController
@@ -36,28 +44,6 @@
 #define screenH ([[UIScreen mainScreen] bounds].size.height)
 
 #pragma mark - Initialization
-
-- (UIScrollView *)videoScrollView
-{
-    if (!_videoScrollView) {
-        _videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 64, 320, 320)];
-        _videoScrollView.backgroundColor = [UIColor clearColor];
-        _videoScrollView.showsVerticalScrollIndicator = NO;
-        
-    }
-    return _videoScrollView;
-}
-
-- (UIView *)videoPlayView
-{
-    if (!_videoPlayView) {
-        
-        _videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
-        _videoPlayView.backgroundColor = [UIColor lightGrayColor];
-        
-    }
-    return _videoPlayView;
-}
 
 - (MBProgressHUD *)hud
 {
@@ -71,7 +57,7 @@
 
 #pragma mark - ViewLifeCycle
 
-- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s andScale:(CGFloat)scale
+- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s andScale:(CGFloat)scale andOrientation:(VNVideoOrientation)ori
 {
     self = [super init];
     if (self) {
@@ -108,15 +94,30 @@
         self.size = CGSizeMake(s.width, s.height);
         self.timeScale = scale;
         
+        self.isPlaying = NO;
+        
+        self.orientation = ori;
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    __weak VNAlbumVideoEditController *weakSelf = self;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
         CGFloat width, height, width2, height2;
         
-        if (self.size.height > self.size.width) {
+        if (weakSelf.size.height > weakSelf.size.width) {
             width = 320;
             width2 = 320;
-            height = 320 * self.size.height / self.size.width;
+            height = 320 * weakSelf.size.height / weakSelf.size.width;
             height2 = (height > 320)?height:320;
-        }else if (self.size.width > self.size.height) {
-            width = 320 * self.size.width / self.size.height;
+        }else if (weakSelf.size.width > weakSelf.size.height) {
+            width = 320 * weakSelf.size.width / weakSelf.size.height;
             width2 = (width > 320)?width:320;
             height = 320;
             height2 = 320;
@@ -127,30 +128,23 @@
             height2 = 320;
         }
         
-        _videoPlayView.frame = CGRectMake(0, 0, width2, height2);
-        _videoPlayView.backgroundColor = [UIColor lightGrayColor];
+        weakSelf.videoPlayView = [[VNAVPlayerPlayView alloc] initWithFrame:CGRectMake(0, 0, width2, height2)];
+        weakSelf.videoPlayView.backgroundColor = [UIColor lightGrayColor];
         
-        self.videoScrollView.contentSize = CGSizeMake(width2, height2);
+        weakSelf.videoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 64, 320, 320)];
+        weakSelf.videoScrollView.backgroundColor = [UIColor clearColor];
+        weakSelf.videoScrollView.showsVerticalScrollIndicator = NO;
+        weakSelf.videoScrollView.bounces = NO;
+        weakSelf.videoScrollView.contentSize = CGSizeMake(width2, height2);
         if (height2 > 320 || width2 > 320) {
-            [self.videoScrollView scrollRectToVisible:CGRectMake((width - 320) / 2, (height - 320)/2 , 320, 320) animated:NO];
+            [weakSelf.videoScrollView scrollRectToVisible:CGRectMake((width - 320) / 2, (height - 320)/2 , 320, 320) animated:NO];
         }
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    VNProgressViewForAlbum *progressView = [[VNProgressViewForAlbum alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 384, 320, 10)];
-    [progressView addTarget:self action:@selector(progressValueChanged:) forControlEvents:UIControlEventValueChanged];
-    
-    [self.view addSubview:self.videoScrollView];
-    [self.videoScrollView addSubview:self.videoPlayView];
-    
-    __weak VNAlbumVideoEditController *weakSelf = self;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        [weakSelf.view addSubview:weakSelf.videoScrollView];
+        [weakSelf.videoScrollView addSubview:weakSelf.videoPlayView];
+        
+        VNProgressViewForAlbum *progressView = [[VNProgressViewForAlbum alloc] initWithFrame:CGRectMake(0, (screenH - 64 - 360) / 2 + 384, 320, 10)];
+        [progressView addTarget:weakSelf action:@selector(progressValueChanged:) forControlEvents:UIControlEventValueChanged];
         
         [weakSelf playVideo];
         
@@ -168,16 +162,20 @@
                         
             progressView.maximumValue = currVideoDuration;
             progressView.value = currVideoDuration;
-            self.duration = currVideoDuration;
-            [weakSelf.view addSubview:self.videoFramesView];
+            weakSelf.duration = currVideoDuration;
+            [weakSelf.view addSubview:weakSelf.videoFramesView];
             [weakSelf.view addSubview:progressView];
             
-            UIButton *playBtn = [[UIButton alloc] initWithFrame:CGRectMake(130, (screenH - 64 - 360) / 2 + 194, 60, 60)];
-            playBtn.backgroundColor = [UIColor clearColor];
-            [playBtn setImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateNormal];
-            [playBtn setImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateSelected];
-            [playBtn addTarget:weakSelf action:@selector(playTheVideo) forControlEvents:UIControlEventTouchUpInside];
-            [weakSelf.view addSubview:playBtn];
+            weakSelf.playBtnImg = [[UIImageView alloc] initWithFrame:CGRectMake(130, (screenH - 64 - 360) / 2 + 194, 60, 60)];
+            weakSelf.playBtnImg.backgroundColor = [UIColor clearColor];
+            weakSelf.playBtnImg.image = [UIImage imageNamed:@"video_play"];
+//            [weakSelf.playBtn setImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateNormal];
+//            [weakSelf.playBtn setImage:[UIImage imageNamed:@"blank"] forState:UIControlStateSelected];
+//            [weakSelf.playBtn addTarget:weakSelf action:@selector(playTheVideo:) forControlEvents:UIControlEventTouchUpInside];
+            [weakSelf.view addSubview:weakSelf.playBtnImg];
+            
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+            [weakSelf.videoScrollView addGestureRecognizer:tapGesture];
             
             [weakSelf.view addSubview:self.hud];
 
@@ -185,6 +183,13 @@
         
     });
     
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)reg
+{
+    if (reg.state == UIGestureRecognizerStateEnded) {
+        [self playTheVideo:!self.isPlaying];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -196,15 +201,22 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (self.videoPlayer) {
+        self.isPlaying = NO;
         [self.videoPlayer pause];
     }
+}
+
+- (void)dealloc
+{
+    NSLog(@"dalloc......:%s",__FUNCTION__);
+    [self.videoPlayer removeObserver:self forKeyPath:@"status"];
+    [self.videoPlayer removeTimeObserver:_mTimeObserver];
 }
 
 #pragma mark - User & Interaction Methods
 
 - (void)doPopBack
 {
-    [self.videoPlayer removeObserver:self forKeyPath:@"status"];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -219,6 +231,17 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     self.videoPlayer = [AVPlayer playerWithPlayerItem:newPlayerItem];
     [self.videoPlayer addObserver:self forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+    
+    __weak VNAlbumVideoEditController *weakSelf = self;
+    _mTimeObserver = [self.videoPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time){
+        CGFloat currentSecond = weakSelf.videoPlayer.currentTime.value / weakSelf.videoPlayer.currentTime.timescale;// 计算当前在第几秒
+        if (currentSecond >= weakSelf.duration) {
+            weakSelf.isPlaying = NO;
+            [weakSelf.videoPlayer pause];
+            [weakSelf.playBtnImg setImage:[UIImage imageNamed:@"video_play"]];
+            [weakSelf.videoPlayer seekToTime:kCMTimeZero];
+        }
+    }];
     
 }
 
@@ -242,18 +265,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     self.duration = slider.value;
 }
 
-- (void)playTheVideo
+- (void)playTheVideo:(BOOL)select
 {
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(pauseVideo:) userInfo:nil repeats:NO];
-    [_videoPlayer seekToTime:kCMTimeZero];
-    [timer setFireDate:[NSDate dateWithTimeIntervalSinceNow:self.duration]];
-    [_videoPlayer play];
-}
-
-- (void)pauseVideo:(NSTimer *)timer
-{
-    [_videoPlayer pause];
-    [timer invalidate];
+    
+    if (select) {
+        self.isPlaying = YES;
+        [_videoPlayer play];
+        [self.playBtnImg setImage:[UIImage imageNamed:@"blank"]];
+    }else {
+        self.isPlaying = NO;
+        [_videoPlayer pause];
+        [self.playBtnImg setImage:[UIImage imageNamed:@"video_play"]];
+    }
 }
 
 - (void)doSubmit
@@ -268,7 +291,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         AVAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
         
         AVAssetTrack *clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        
+                
         //create a video composition and preset some settings
         AVMutableVideoComposition* videoComposition = [AVMutableVideoComposition videoComposition];
         videoComposition.frameDuration = CMTimeMake(1, 30);
@@ -281,19 +304,56 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(30, asset.duration.timescale));
         
         AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:clipVideoTrack];
+    
+        CGAffineTransform finalTransform;
         
-        CGFloat diff;
-        if (clipVideoTrack.naturalSize.width != clipVideoTrack.naturalSize.height) {
-            diff = - (weakSelf.videoScrollView.contentOffset.x + weakSelf.videoScrollView.contentOffset.y) * clipVideoTrack.naturalSize.height / 320;
-        }else {
-            diff = 0;
+        switch (self.orientation) {
+            case VNVideoOrientationLeft:
+            {
+                CGFloat diffX = weakSelf.videoScrollView.contentOffset.x * clipVideoTrack.naturalSize.width / weakSelf.videoScrollView.contentSize.width;
+                CGFloat diffY = weakSelf.videoScrollView.contentOffset.y * clipVideoTrack.naturalSize.height / weakSelf.videoScrollView.contentSize.height;
+                
+                CGAffineTransform t1 = CGAffineTransformMakeTranslation(-diffX, -diffY);
+                finalTransform = t1;
+            }
+                break;
+            case VNVideoOrientationRight:
+            {
+                CGFloat diffX =  (weakSelf.videoScrollView.contentSize.width - weakSelf.videoScrollView.contentOffset.x )/ weakSelf.videoScrollView.contentSize.width * clipVideoTrack.naturalSize.width ;
+                
+                CGAffineTransform t1 = CGAffineTransformMakeTranslation(diffX, clipVideoTrack.naturalSize.height);
+                finalTransform = CGAffineTransformRotate(t1, M_PI);
+            }
+                break;
+            case VNVideoOrientationPortrait:
+            {
+                CGFloat diff;
+                if (clipVideoTrack.naturalSize.width != clipVideoTrack.naturalSize.height) {
+                    diff = -  weakSelf.videoScrollView.contentOffset.y * clipVideoTrack.naturalSize.height / 320;
+                }else {
+                    diff = 0;
+                }
+                
+                CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, diff);
+                finalTransform = CGAffineTransformRotate(t1, M_PI_2);
+            }
+                break;
+            case VNVideoOrientationUpsideDown:
+            {
+                CGFloat diff;
+                if (clipVideoTrack.naturalSize.width != clipVideoTrack.naturalSize.height) {
+                    diff = (weakSelf.videoScrollView.contentSize.height + 320 - weakSelf.videoScrollView.contentOffset.y) * clipVideoTrack.naturalSize.height / weakSelf.videoScrollView.contentSize.height;
+                }else {
+                    diff = 0;
+                }
+                CGAffineTransform t1 = CGAffineTransformMakeTranslation(0, diff);
+                finalTransform = CGAffineTransformRotate(t1, -M_PI_2);
+            }
+                break;
+            default:
+                break;
         }
         
-        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, diff);
-        //Make sure the square is portrait
-        CGAffineTransform t2 = CGAffineTransformRotate(t1, M_PI_2);
-        
-        CGAffineTransform finalTransform = t2;
         [transformer setTransform:finalTransform atTime:kCMTimeZero];
         
         //add the transformer layer instructions, then add to video composition

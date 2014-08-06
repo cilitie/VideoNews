@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, VNVideoOrientation) {
+    VNVideoOrientationLeft = 0,
+    VNVideoOrientationRight,
+    VNVideoOrientationUpsideDown,
+    VNVideoOrientationPortrait
+};
+
 @interface VNAlbumVideoEditController : UIViewController
 
-- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s andScale:(CGFloat)scale;
+- (id)initWithVideoPath:(NSString *)videoP andSize:(CGSize)s andScale:(CGFloat)scale andOrientation:(VNVideoOrientation)ori;
 
 @end
