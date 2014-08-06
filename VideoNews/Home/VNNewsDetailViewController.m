@@ -136,6 +136,7 @@ static NSString *shareStr;
         
         if (weakSelf.headerView.likeBtn.isSelected) {
             [VNHTTPRequestManager favouriteNews:weakSelf.news.nid operation:@"remove" userID:uid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
+                //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }

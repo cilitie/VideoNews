@@ -66,6 +66,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
     //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNNotificationCellDeleteNotification object:nil];
     
     [self removeBadgeValue];
 
@@ -221,6 +222,10 @@
 //        
 //    }];
 //}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:VNNotificationCellDeleteNotification object:nil ];
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -234,7 +239,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"array count:%d",self.messageArr.count);
+   // NSLog(@"array count:%d",self.messageArr.count);
     return self.messageArr.count;
 }
 
@@ -291,6 +296,7 @@
     else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"]) {
         VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
         newsDetailViewController.news = _curMessage.news;
+        newsDetailViewController.indexPath=indexPath;
         newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
         newsDetailViewController.sender_id=_curMessage.sender.uid;
         newsDetailViewController.sender_name=_curMessage.sender.name;
@@ -328,6 +334,16 @@
 }
 
 #pragma mark - SEL
+
+- (void)removeCellForNewsDeleted:(NSNotification *)notification {
+    //int newsNid = [notification.object integerValue];
+    NSIndexPath *index=notification.object;
+    //NSLog(@"%d",index.row);
+    [_messageArr removeObjectAtIndex:index.row];
+    //[_messageTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.messageTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:index] withRowAnimation:UITableViewRowAnimationFade];
+    [_messageTableView reloadData];
+}
 
 - (CGFloat)cellHeightFor:(VNMessage *)message {
     __block CGFloat cellHeight = 120.0;
