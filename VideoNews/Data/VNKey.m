@@ -35,8 +35,10 @@ NSString *const VNIsWiFiAutoPlay = @"kVNIsWiFiAutoPlay";
 
 //友盟相关
 NSString *const UmengAppkey = @"53a91faf56240bf2de0016ef";
-NSString *const WXAppkey = @"wxe0372fefc13da965";
-NSString *const WXAppScrectkey = @"8335fd5e515fad953850d07f4642e205";
+NSString *const WXAppkey = @"wx1357f7d66126eb9b";
+NSString *const WXAppScrectkey = @"12560c6e36557fb3302f720ff0857523";
+//NSString *const WXAppkey = @"wxe0372fefc13da965";
+//NSString *const WXAppScrectkey = @"8335fd5e515fad953850d07f4642e205";
 NSString *const QQAppID = @"1101719889";
 NSString *const QQAppKey = @"xScM0nFWCPJqVlaD";
 //FIXME: 替换上线后的AppID

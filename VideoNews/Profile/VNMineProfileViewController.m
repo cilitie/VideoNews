@@ -1343,7 +1343,7 @@ static NSString *shareStr;
         }
         //设置分享内容，和回调对象
         if (buttonIndex < 7) {
-            NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.shareNews.title, self.shareNews.author.name,self.shareNews.url];
+            NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  self.shareNews.author.name,self.shareNews.title,self.shareNews.url];
             UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.shareNews.imgMdeia.url]]];
             shareStr = shareText;
             
@@ -1461,7 +1461,8 @@ static NSString *shareStr;
         
         NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
         
-        NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
+        //NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
+        NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
         NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
         UIImage *coverImage = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
         

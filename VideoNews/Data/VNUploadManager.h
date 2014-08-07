@@ -33,5 +33,6 @@
 + (instancetype)sharedInstance;
 -(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
 -(void)uploadVideo:(NSData *)videoData Uid:(NSString *)uid Title:(NSString *)title Tags:(NSString *)tags ThumbnailTime:(CGFloat )thumbnailTime completion:(void(^)(bool succeed,NSError *error))completion;
+-(void)uploadVideoThumbnail:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion;
 
 @end
