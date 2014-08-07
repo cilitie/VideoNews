@@ -262,6 +262,7 @@
     _curNews=news;
     _seletedIndexPath=indexPath;
     [self performSegueWithIdentifier:@"pushVNNewsDetailViewControllerForResult" sender:self];
+    willPushView = YES;
 }
 
 -(void)TapUserView:(VNNews *)news {
