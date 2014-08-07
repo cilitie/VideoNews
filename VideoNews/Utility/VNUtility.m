@@ -18,7 +18,7 @@
     hud.margin = 10.0f;
     hud.removeFromSuperViewOnHide = YES;
     
-    [hud hide:YES afterDelay:2.0f];
+    [hud hide:YES afterDelay:1.5f];
 }
 
 + (NSString *)strFromTimeStampSince1970:(NSTimeInterval)timeInterval {
