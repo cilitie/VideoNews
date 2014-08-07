@@ -967,7 +967,7 @@ static int pagesize = 10;
     //http://zmysp.sinaapp.com/login.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&name=abigapple&sex=male&device=d239132434c76fb47f0d185332fb1052ac640b07d8267a3c6e8f5f3e4311592
     NSString *URLStr = [VNHost stringByAppendingString:@"login.php"];
     NSString *pushToken = [[NSUserDefaults standardUserDefaults] objectForKey:VNPushToken];
-    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp], @"uid": user.openid, @"name": user.nickname, @"device": pushToken ? pushToken : @""};
+    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp], @"uid": user.openid, @"name": user.nickname, @"sex": user.gender,  @"device": pushToken ? pushToken : @""};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         BOOL successLogin = NO;

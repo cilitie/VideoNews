@@ -83,6 +83,9 @@
                 else if([[respose.data objectForKey:@"gender"] intValue] == 0) {
                     authUser.gender = @"female";
                 }
+                else {
+                    authUser.gender = @"";
+                }
                 authUser.gender = [respose.data objectForKey:@"gender"];
                 [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
                     if (error) {
@@ -115,6 +118,18 @@
                 authUser.openid = [@"13" stringByAppendingString:[respose.data objectForKey:@"openid"]];
                 authUser.nickname = [respose.data objectForKey:@"screen_name"];
                 authUser.avatar = [respose.data objectForKey:@"profile_image_url"];
+                
+                NSString *genderStr = [[respose.data objectForKey:@"gender"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                if ([genderStr isEqualToString:@"男"]) {
+                    authUser.gender = @"male";
+                }
+                else if([genderStr isEqualToString:@"女"]) {
+                    authUser.gender = @"female";
+                }
+                else {
+                    authUser.gender = @"";
+                }
+                
                 authUser.gender = [respose.data objectForKey:@"gender"];
                 NSLog(@"%@", authUser.basicDict);
                 [VNHTTPRequestManager loginWithUser:authUser completion:^(BOOL succeed, NSError *error) {
