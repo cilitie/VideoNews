@@ -279,6 +279,12 @@ static int pagesize = 10;
         uid = @"1";
     }
     //zmy modify
+    NSLog(@"%@",[self token]);
+    NSLog(@"%@",[self timestamp]);
+    NSLog(@"%@",user_token);
+    if (user_token==nil) {
+        user_token=@"";
+    }
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -306,6 +312,7 @@ static int pagesize = 10;
             completion(commentSuccess,isNewsDeleted, comment, comment_count,nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", operation);
         if (completion) {
             completion(NO, NO,nil,0, error);
         }

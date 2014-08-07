@@ -1042,7 +1042,8 @@ static NSString *shareStr;
         //设置分享内容，和回调对象
         if (buttonIndex < 7) {
             //NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", self.news.title,_news.author.name,_news.url];
-            NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  self.news.author.name,self.news.title,self.news.url];
+            //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  self.news.author.name,self.news.title,self.news.url];
+            NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”分享了一段视频，不看你后悔一辈子！：“%@”",self.news.url];
             UIImage *shareImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.media.url]]];
             shareStr = shareText;
             
