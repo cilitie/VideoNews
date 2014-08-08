@@ -26,7 +26,7 @@
     [UMSocialSinaHandler openSSOWithRedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
     [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
-    [UMSocialQQHandler setSupportQzoneSSO:YES];
+    [UMSocialQQHandler setSupportWebView:YES];
     //注册通知
     [UIResponder registerRemote];
     
