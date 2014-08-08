@@ -24,9 +24,17 @@
 +(void)setQQWithAppId:(NSString *)appId appKey:(NSString *)appKey url:(NSString *)url;
 
 /**
+ 设置在没有安装QQ客户端的情况下，是否支持单独授权到QQ互联
+ 
+ @param supportWebView 是否支持没有安装QQ客户端的情况下，是否支持单独授权
+ */
++(void)setSupportWebView:(BOOL)supportWebView;
+
+/**
+ deprecated API,默认使用Qzone SSO授权
  设置QQ空间是否用手机QQ客户端进行SSO授权，默认使用webview授权
  
  @param supportQzoneSSO 是否用手机QQ授权
  */
-+ (void)setSupportQzoneSSO:(BOOL)supportQzoneSSO;
+//+ (void)setSupportQzoneSSO:(BOOL)supportQzoneSSO;
 @end
