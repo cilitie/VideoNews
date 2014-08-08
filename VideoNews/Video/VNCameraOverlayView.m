@@ -146,16 +146,20 @@
 {
     if ([ges locationInView:self].y > 64 && [ges locationInView:self].y < 384) {
         if (ges.state == UIGestureRecognizerStateBegan) {
-            if ([self shouldPerforDelegateSelector:@selector(doStartNewVideoRecord)]) {
-                
-                [delegate doStartNewVideoRecord];
-            }
+            [self doStartVideoRecord:nil];
         }else if (ges.state == UIGestureRecognizerStateEnded) {
-            if ([self shouldPerforDelegateSelector:@selector(doEndCurVideo)]) {
-                
-                [delegate doEndCurVideo];
-            }
+            [self doEndVideoRecord:nil];
         }
+    }
+}
+
+//handle long press gesture...
+- (void)handleBtnPress:(UILongPressGestureRecognizer *)ges
+{
+    if (ges.state == UIGestureRecognizerStateBegan) {
+        [self doStartVideoRecord:nil];
+    }else if (ges.state == UIGestureRecognizerStateEnded) {
+        [self doEndVideoRecord:nil];
     }
 }
 
@@ -219,10 +223,16 @@
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
     takeVideoBtn.backgroundColor = [UIColor clearColor];
-    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
-    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
+//    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
+//    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
     takeVideoBtn.showsTouchWhenHighlighted = YES;
     takeVideoBtn.selected = NO;
+    
+    UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleBtnPress:)];
+    pressGesture.delegate = self;
+    pressGesture.cancelsTouchesInView = NO;
+    [takeVideoBtn addGestureRecognizer:pressGesture];
+    
     [bottomBaseView addSubview:takeVideoBtn];
     
     [bottomBaseView addSubview:self.submitBtn];

@@ -10,6 +10,7 @@
 #import "VNSettingTableViewCell.h"
 #import "UMFeedback.h"
 #import "VNLoginViewController.h"
+#import "VNDraftListController.h"
 
 @interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate,UIAlertViewDelegate>
 
@@ -31,6 +32,18 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)presentDraftViewCtl
+{
+    [MobClick event:@"video_record" label:@"draft"];
+    
+    VNDraftListController *draftCtl = [[VNDraftListController alloc] init];
+    
+    UINavigationController *draftNav = [[UINavigationController alloc] initWithRootViewController:draftCtl];
+    draftNav.navigationBarHidden = YES;
+    
+    [self presentViewController:draftNav animated:YES completion:nil];
 }
 
 /*
@@ -104,6 +117,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
+        
+        //present draft view controller
+        [self presentDraftViewCtl];
+        
     }
     else if (indexPath.section == 2) {
         switch (indexPath.row) {

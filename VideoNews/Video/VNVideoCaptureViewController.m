@@ -595,9 +595,11 @@ static NSString *videoFilePath;
 //    [self.overlayView setProgressViewBlinking:NO];
     
     NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:currVideoPath]) {
+        
+        [[NSFileManager defaultManager] removeItemAtPath:currVideoPath error:nil];
+    }
     
-    [self.videoPathArr addObject:currVideoPath];
-
     [self.movieOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:currVideoPath] recordingDelegate:self];
 }
 
@@ -613,7 +615,9 @@ static NSString *videoFilePath;
         _durationTimer = nil;
     }
     
-    [self.movieOutput stopRecording];
+    if ([self.movieOutput isRecording]) {
+        [self.movieOutput stopRecording];
+    }
 }
 
 /**
@@ -661,7 +665,9 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
       fromConnections:(NSArray *)connections
                 error:(NSError *)error
 {
+
     BOOL recordedSuccessfully = YES;
+    
     if ([error code] != noErr)
     {
         // A problem occurred: Find out if the recording was successful.
@@ -670,11 +676,12 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
             recordedSuccessfully = [value boolValue];
         // Logging the problem anyway:
         NSLog(@"A problem occurred while recording: %@", error);
-        [self.videoPathArr removeLastObject];
     }
     if (recordedSuccessfully) {
         
         //record videos' path & save current video to temp directory for later use.
+        NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+        [self.videoPathArr addObject:currVideoPath];
         
         self.videoPieceCount++;
         if (self.videoPieceCount > 0)
@@ -695,10 +702,10 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
 
 - (void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
 {
-    
     _durationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(refreshVideoDuration:) userInfo:nil repeats:YES];
     
     [_durationTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    
 }
 
 @end
