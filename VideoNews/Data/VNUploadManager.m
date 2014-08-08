@@ -102,10 +102,10 @@
 
 }
 
--(void)uploadVideoThumbnail:(NSData *)imageData Uid:(NSString *)uid completion:(void(^)(bool succeed,NSError *error))completion
+-(void)uploadVideoThumbnail:(NSData *)imageData Uid:(NSString *)uid timestamp:(NSString *)timestamp completion:(void(^)(bool succeed,NSError *error))completion
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *key=[NSString stringWithFormat:@"video-%@-%@-thumbnail.jpg",uid,[self timestamp]];
+    NSString *key=[NSString stringWithFormat:@"video-%@-%@-thumbnail.jpg",uid,timestamp];
     
     NSDictionary *parameters =@{@"key":key,@"token":[self LoginToken], @"timestamp": [self timestamp]};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoThumbnailToken.php"];

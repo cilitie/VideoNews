@@ -677,7 +677,7 @@ static NSString *shareStr;
     
 }
 
-- (void)uploadCoverImage
+- (void)uploadCoverImage:(NSString *)timestamp
 {
     //image data
     UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
@@ -690,7 +690,7 @@ static NSString *shareStr;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        [uploadManager uploadVideoThumbnail:imageData Uid:uid completion:^(bool success, NSError *err){
+        [uploadManager uploadVideoThumbnail:imageData Uid:uid timestamp:timestamp completion:^(bool success, NSError *err){
             if (err) {
                 NSLog(@"%@", err.localizedDescription);
                 
@@ -1570,8 +1570,9 @@ static NSString *shareStr;
     
     if ([key hasSuffix:@"mp4"]) {
         [self.progressView hide];
-        
-        [self uploadCoverImage];
+        NSArray *conpons=[[key stringByDeletingPathExtension] componentsSeparatedByString:@"-"];
+        NSString *timestamp=[conpons objectAtIndex:2];
+        [self uploadCoverImage:timestamp];
 
         __weak VNMineProfileViewController *weakSelf = self;
         
@@ -1639,6 +1640,8 @@ static NSString *shareStr;
         
     }else if ([key hasSuffix:@"jpg"]) {
         [VNUtility showHUDText:@"上传成功" forView:self.view];
+        NSLog(@"%@",ret);
+        NSLog(@"%@",key);
     }
 }
 
