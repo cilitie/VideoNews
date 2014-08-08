@@ -11,6 +11,7 @@
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
+#import "UMSocialSinaHandler.h"
 #import "VNTabBarViewController.h"
 #import "VNLoginViewController.h"
 #import <objc/runtime.h>
@@ -22,7 +23,7 @@
     [MobClick startWithAppkey:UmengAppkey reportPolicy:(ReportPolicy) REALTIME channelId:nil];
     [UMSocialData setAppKey:UmengAppkey];
     
-    [UMSocialConfig setSupportSinaSSO:YES appRedirectUrl:@"http://sns.whalecloud.com/sina2/callback"];
+    [UMSocialSinaHandler openSSOWithRedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
     [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setSupportQzoneSSO:YES];
