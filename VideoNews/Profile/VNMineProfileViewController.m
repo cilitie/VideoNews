@@ -1601,28 +1601,28 @@ static NSString *shareStr;
                 [shareArray addObject:UMShareToWechatTimeline];
             }
             
-            [[UMSocialDataService defaultDataService] postSNSWithTypes:UMShareToSina content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
-                if (response.responseCode == UMSResponseCodeSuccess) {
-                    NSLog(@"分享成功了");
-                } else if(response.responseCode != UMSResponseCodeCancel) {
-                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
-                    [alertView show];
-                }
-            }];
-            
             NSLog(@"arrya :%@",shareArray);
-//            if (shareArray.count > 0) {
-//                NSArray *shareArr = [NSArray arrayWithArray:shareArray];
-//                
-//                [[UMSocialDataService defaultDataService] postSNSWithTypes:shareArr content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
-//                    if (response.responseCode == UMSResponseCodeSuccess) {
-//                        NSLog(@"分享成功了");
-//                    } else if(response.responseCode != UMSResponseCodeCancel) {
-//                        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
-//                        [alertView show];
-//                    }
-//                }];
-//            }
+
+//            [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToWechatTimeline] content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+//                if (response.responseCode == UMSResponseCodeSuccess) {
+//                    NSLog(@"分享成功了");
+//                } else if(response.responseCode != UMSResponseCodeCancel) {
+//                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+//                    [alertView show];
+//                }
+//            }];
+            
+            if (shareArray.count > 0) {
+                
+                [[UMSocialDataService defaultDataService] postSNSWithTypes:shareArray content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+                    if (response.responseCode == UMSResponseCodeSuccess) {
+                        NSLog(@"分享成功了");
+                    } else if(response.responseCode != UMSResponseCodeCancel) {
+                        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                }];
+            }
         });
         
         
