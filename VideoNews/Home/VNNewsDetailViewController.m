@@ -33,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *inputTextView;
 @property (weak, nonatomic) IBOutlet UIView *inputBar;
 @property (weak, nonatomic) IBOutlet UIButton *favouriteBtn;
+@property (weak, nonatomic) IBOutlet UILabel *noCommentLabel;
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong, nonatomic) NSMutableArray *commentArrNotify;
 @property (strong,nonatomic)VNComment *curComment;
@@ -486,34 +487,52 @@ static NSString *shareStr;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.commentArr.count;
+    if (self.commentArr.count) {
+        return self.commentArr.count;
+    }
+    else {
+        return 1;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
     VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-    [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
-    [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
-    cell.thumbnail.layer.masksToBounds = YES;
-    cell.nameLabel.text = comment.author.name;
-    cell.delegate=self;
-    cell.replyBtn.tag=KReplyButton+indexPath.row;
-    cell.thumbnail.tag=KReplyButton+indexPath.row;
-    cell.commentLabel.text = comment.content;
-//    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-//    cell.commentLabel.text = testString;
-    NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
-    CGRect rect = [cell.commentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-//    NSLog(@"%@", NSStringFromCGRect(rect));
-    CGRect titleLabelframe = cell.commentLabel.frame;
-    titleLabelframe.size.height = CGRectGetHeight(rect);
-//    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
-    cell.commentLabel.frame = titleLabelframe;
-    
-    //cell.timeLabel.text = [comment.date substringToIndex:10];
-    cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
+    if (self.commentArr.count) {
+        VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+        if ([cell viewWithTag:1001]) {
+            UILabel *label = (UILabel *)[cell viewWithTag:1001];
+            [label removeFromSuperview];
+        }
+        [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
+        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
+        cell.thumbnail.layer.masksToBounds = YES;
+        cell.nameLabel.text = comment.author.name;
+        cell.delegate=self;
+        cell.replyBtn.tag=KReplyButton+indexPath.row;
+        cell.thumbnail.tag=KReplyButton+indexPath.row;
+        cell.commentLabel.text = comment.content;
+        NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
+        CGRect rect = [cell.commentLabel.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        CGRect titleLabelframe = cell.commentLabel.frame;
+        titleLabelframe.size.height = CGRectGetHeight(rect);
+        //    NSLog(@"%@", NSStringFromCGRect(titleLabelframe));
+        cell.commentLabel.frame = titleLabelframe;
+        
+        //cell.timeLabel.text = [comment.date substringToIndex:10];
+        cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
+    }
+    else {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50.0, 32.0, 180.0, 16)];
+        label.tag = 1001;
+        label.font = [UIFont systemFontOfSize:15.0];
+        label.text = @"暂时没有评论";
+        label.textColor = [UIColor colorWithRGBValue:0x474747];
+        label.textAlignment = NSTextAlignmentCenter;
+        [cell addSubview:label];
+        cell.replyBtn.hidden = YES;
+    }
 
     return cell;
 }
@@ -521,47 +540,53 @@ static NSString *shareStr;
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-    _curIndexPath=indexPath;
-    self.curComment = comment;
-    UIActionSheet *actionSheet = nil;
-    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-    NSString *mineID = [userInfo objectForKey:@"openid"];
-    NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
-    NSLog(@"openid:%@,length:%d",mineID, mineID.length);
-    if ([self.news.author.uid isEqualToString:mineID]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
-        actionSheet.tag=kTagCommentMineNews;
+    if (self.commentArr.count) {
+        VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+        _curIndexPath=indexPath;
+        self.curComment = comment;
+        UIActionSheet *actionSheet = nil;
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        NSString *mineID = [userInfo objectForKey:@"openid"];
+        NSLog(@"author:%@,length:%d", comment.author.uid, comment.author.uid.length);
+        NSLog(@"openid:%@,length:%d",mineID, mineID.length);
+        if ([self.news.author.uid isEqualToString:mineID]) {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+            actionSheet.tag=kTagCommentMineNews;
+        }
+        else if ([comment.author.uid isEqualToString:mineID]) {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
+            actionSheet.tag = kTagCommentMine;
+        }
+        else if([comment.author.uid isEqualToString:@"1"])
+        {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
+            actionSheet.tag = kTagCommentAnybody;
+        }
+        else{
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
+            actionSheet.tag = kTagCommentOtherUser;
+        }
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        actionSheet.delegate = self;
     }
-    else if ([comment.author.uid isEqualToString:mineID]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"查看个人主页",  @"删除评论", nil];
-        actionSheet.tag = kTagCommentMine;
-    }
-    else if([comment.author.uid isEqualToString:@"1"])
-    {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复", @"举报评论", nil];
-        actionSheet.tag = kTagCommentAnybody;
-    }
-    else{
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"回复",@"查看个人主页", @"举报评论", nil];
-        actionSheet.tag = kTagCommentOtherUser;
-    }
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    actionSheet.delegate = self;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat diff = 0;
-    VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-//    NSString *testString = @"沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了沃尔夫就撒旦法离开撒娇地方；啊家发了";
-    VNCommentTableViewCell *cell = loadXib(@"VNCommentTableViewCell");
-    NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
-    CGRect rect = [comment.content boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
-//    NSLog(@"%@", NSStringFromCGRect(rect));
-    if (CGRectGetHeight(rect) > 15) {
-        diff = CGRectGetHeight(rect)-15;
+    if (self.commentArr.count) {
+        CGFloat diff = 0;
+        VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+        VNCommentTableViewCell *cell = loadXib(@"VNCommentTableViewCell");
+        NSDictionary *attribute = @{NSFontAttributeName:cell.commentLabel.font};
+        CGRect rect = [comment.content boundingRectWithSize:CGSizeMake(CGRectGetWidth(cell.commentLabel.bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
+        //    NSLog(@"%@", NSStringFromCGRect(rect));
+        if (CGRectGetHeight(rect) > 15) {
+            diff = CGRectGetHeight(rect)-15;
+        }
+        return 60.0+diff;
     }
-    return 60.0+diff;
+    else {
+        return 80;
+    }
 }
 
 #pragma mark - UIScrollViewDelegate

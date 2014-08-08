@@ -93,10 +93,12 @@ static NSString *shareStr;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (!self.videoTableView.hidden) {
-        for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
-            if (cell.isPlaying) {
-                [cell startOrPausePlaying:NO];
+    if (self.userVideoArr.count) {
+        if (!self.videoTableView.hidden) {
+            for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
+                if (cell.isPlaying) {
+                    [cell startOrPausePlaying:NO];
+                }
             }
         }
     }
@@ -179,9 +181,11 @@ static NSString *shareStr;
     __weak typeof(self) weakSelf = self;
     
     videoHeaderView.tabHandler = ^(NSUInteger index){
-        for (VNProfileVideoTableViewCell *cell in [weakSelf.videoTableView visibleCells]) {
-            if (cell.isPlaying) {
-                [cell startOrPausePlaying:NO];
+        if (self.userVideoArr.count) {
+            for (VNProfileVideoTableViewCell *cell in [weakSelf.videoTableView visibleCells]) {
+                if (cell.isPlaying) {
+                    [cell startOrPausePlaying:NO];
+                }
             }
         }
         
@@ -522,204 +526,244 @@ static NSString *shareStr;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.videoTableView) {
-        return self.userVideoArr.count;
+        return self.userVideoArr.count ? self.userVideoArr.count : 1;
     }
     if (tableView == self.followTableView) {
-        return self.followArr.count;
+        return self.followArr.count ? self.followArr.count : 1;
     }
     if (tableView == self.fansTableView) {
-        return self.fansArr.count;
+        return self.fansArr.count ? self.fansArr.count : 1;
     }
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.videoTableView) {
-        VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileVideoTableViewCellIdentifier"];
-        VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
-        cell.news = news;
-        //if ([self.favouriteNewsArr containsObject:[NSNumber numberWithInt:news.nid]])
-        for (NSDictionary *dic in self.favouriteNewsArr) {
+        if (self.userVideoArr.count) {
+            VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileVideoTableViewCellIdentifier"];
+            VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
+            cell.news = news;
+            //if ([self.favouriteNewsArr containsObject:[NSNumber numberWithInt:news.nid]])
+            for (NSDictionary *dic in self.favouriteNewsArr) {
                 if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
                     cell.isFavouriteNews=YES;
                     //[self.favouriteBtn setSelected:YES];
                     break;
                 }
-        }
-        //}
-        [cell reload];
-        if (indexPath.row == 0 && firstLoading && isAutoPlayOption) {
-            [cell startOrPausePlaying:YES];
-            firstLoading = NO;
-        }
-        cell.commentHandler = ^(){
-            VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
-            newsDetailViewController.news = news;
-            newsDetailViewController.indexPath=indexPath;
-            newsDetailViewController.hidesBottomBarWhenPushed = YES;
-            newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
-            [self.navigationController pushViewController:newsDetailViewController animated:YES];
-        };
-        
-        __weak typeof(self) weakSelf = self;
-        __weak typeof(cell) weakCell = cell;
-
-        cell.moreHandler = ^{
-            [VNHTTPRequestManager isNewsDeleted:weakCell.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
-             {
-                 //isNewsDeleted=YES;
-                 if (error) {
-                     NSLog(@"%@", error.localizedDescription);
-                 }
-                 else if (isNewsDeleted) {
-                     [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                     [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
-
-                 }
-                 else
-                 {
-                     UIActionSheet *actionSheet = nil;
-                     actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
-                     weakSelf.shareNews = news;
-                     [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
-                 }
-             }];
+            }
+            //}
+            [cell reload];
+            if (indexPath.row == 0 && firstLoading && isAutoPlayOption) {
+                [cell startOrPausePlaying:YES];
+                firstLoading = NO;
+            }
+            cell.commentHandler = ^(){
+                VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+                newsDetailViewController.news = news;
+                newsDetailViewController.indexPath=indexPath;
+                newsDetailViewController.hidesBottomBarWhenPushed = YES;
+                newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+                [self.navigationController pushViewController:newsDetailViewController animated:YES];
+            };
             
-           /* UIActionSheet *actionSheet = nil;
-            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
-            weakSelf.shareNews = news;
-            [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
-        };
-        
-        cell.likeHandler = ^(){
-            if (!self.mineUid || !self.mineUser_token) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
-                [alert show];
-                return;
-            }
-            if (!weakCell.isFavouriteNews) {
-            [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
-                //isNewsDeleted=YES;
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+            __weak typeof(self) weakSelf = self;
+            __weak typeof(cell) weakCell = cell;
+            
+            cell.moreHandler = ^{
+                [VNHTTPRequestManager isNewsDeleted:weakCell.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
+                 {
+                     //isNewsDeleted=YES;
+                     if (error) {
+                         NSLog(@"%@", error.localizedDescription);
+                     }
+                     else if (isNewsDeleted) {
+                         [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                         
+                     }
+                     else
+                     {
+                         UIActionSheet *actionSheet = nil;
+                         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                         weakSelf.shareNews = news;
+                         [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
+                     }
+                 }];
+                
+                /* UIActionSheet *actionSheet = nil;
+                 actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                 weakSelf.shareNews = news;
+                 [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
+            };
+            
+            cell.likeHandler = ^(){
+                if (!self.mineUid || !self.mineUser_token) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                    [alert show];
+                    return;
                 }
-                else if (isNewsDeleted) {
-                    //删除相应的cell
-                    [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                    [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                if (!weakCell.isFavouriteNews) {
+                    [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
+                        //isNewsDeleted=YES;
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else if (isNewsDeleted) {
+                            //删除相应的cell
+                            [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                        }
+                        else if (succeed) {
+                            weakCell.isFavouriteNews=YES;
+                            if (like_count>10000) {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                            }
+                            else
+                            {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                            }
+                            
+                            //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
+                        }
+                        else {
+                            [VNUtility showHUDText:@"已点赞!" forView:self.view];
+                        }
+                    }];
                 }
-                else if (succeed) {
-                    weakCell.isFavouriteNews=YES;
-                    if (like_count>10000) {
-                        weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                    }
-                    else
-                    {
-                        weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                    }
-
-                    //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
+                else
+                {
+                    [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
+                        //isNewsDeleted=YES;
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else if (isNewsDeleted) {
+                            //删除相应的cell
+                            [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
+                            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                        }
+                        else if (succeed) {
+                            weakCell.isFavouriteNews=NO;
+                            if (like_count>10000) {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                            }
+                            else
+                            {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                            }
+                            
+                            //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
+                        }
+                        else {
+                            [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
+                        }
+                    }];
                 }
-                else {
-                    [VNUtility showHUDText:@"已点赞!" forView:self.view];
+            };
+            return cell;
+        }
+        else {
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor clearColor];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
+            label.font = [UIFont systemFontOfSize:15.0];
+            label.text = @"TA还没有发表过视频哦～";
+            label.textColor = [UIColor colorWithRGBValue:0x474747];
+            label.textAlignment = NSTextAlignmentCenter;
+            [cell addSubview:label];
+            return cell;
+        }
+    }
+    if (tableView == self.followTableView) {
+        if (self.followArr.count) {
+            VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileFollowTableViewCellIdentifier"];
+            VNUser *user = [self.followArr objectAtIndex:indexPath.row];
+            cell.user = user;
+            [cell reload];
+            __weak typeof(cell) weakCell = cell;
+            cell.followHandler = ^(){
+                if (!self.mineUid || !self.mineUser_token) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                    [alert show];
+                    return;
                 }
-            }];
-            }
-            else
-            {
-                [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
-                    //isNewsDeleted=YES;
+                
+                [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
-                    else if (isNewsDeleted) {
-                        //删除相应的cell
-                        [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                        [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
-                    }
                     else if (succeed) {
-                        weakCell.isFavouriteNews=NO;
-                        if (like_count>10000) {
-                            weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                        }
-                        else
-                        {
-                            weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                        }
-                        
-                        //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
+                        //[VNUtility showHUDText:@"关注成功!" forView:self.view];
+                        weakCell.followBtn.hidden = YES;
+                        weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     }
                     else {
-                        [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
+                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
                     }
                 }];
-            }
-        };
-        
-        return cell;
-    }
-    if (tableView == self.followTableView) {
-        VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileFollowTableViewCellIdentifier"];
-        VNUser *user = [self.followArr objectAtIndex:indexPath.row];
-        cell.user = user;
-        [cell reload];
-        __weak typeof(cell) weakCell = cell;
-        cell.followHandler = ^(){
-            if (!self.mineUid || !self.mineUser_token) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
-                [alert show];
-                return;
-            }
-            
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    //[VNUtility showHUDText:@"关注成功!" forView:self.view];
-                    weakCell.followBtn.hidden = YES;
-                    weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }
-                else {
-                    [VNUtility showHUDText:@"关注失败!" forView:self.view];
-                }
-            }];
-        };
-        return cell;
+            };
+            return cell;
+        }
+        else {
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor clearColor];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
+            label.font = [UIFont systemFontOfSize:15.0];
+            label.text = @"TA还没有关注的人～";
+            label.textColor = [UIColor colorWithRGBValue:0x474747];
+            label.textAlignment = NSTextAlignmentCenter;
+            [cell addSubview:label];
+            return cell;
+        }
     }
     if (tableView == self.fansTableView) {
-        VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileFansTableViewCellIdentifier"];
-        VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
-        cell.user = user;
-        [cell reload];
-        __weak typeof(cell) weakCell = cell;
-        cell.followHandler = ^(){
-            if (!self.mineUid || !self.mineUser_token) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
-                [alert show];
-                return;
-            }
-            
-            [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+        if (self.fansArr.count) {
+            VNProfileFansTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileFansTableViewCellIdentifier"];
+            VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
+            cell.user = user;
+            [cell reload];
+            __weak typeof(cell) weakCell = cell;
+            cell.followHandler = ^(){
+                if (!self.mineUid || !self.mineUser_token) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
+                    [alert show];
+                    return;
                 }
-                else if (succeed) {
-                    //[VNUtility showHUDText:@"关注成功!" forView:self.view];
-                    weakCell.followBtn.hidden = YES;
-                    weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }
-                else {
-                    [VNUtility showHUDText:@"关注失败!" forView:self.view];
-                }
-            }];
-        };
-        return cell;
+                
+                [VNHTTPRequestManager followIdol:user.uid follower:self.mineUid userToken:self.mineUser_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        //[VNUtility showHUDText:@"关注成功!" forView:self.view];
+                        weakCell.followBtn.hidden = YES;
+                        weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    }
+                    else {
+                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                    }
+                }];
+            };
+            return cell;
+        }
+        else {
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor clearColor];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
+            label.font = [UIFont systemFontOfSize:15.0];
+            label.text = @"TA还有没有粉丝哦～";
+            label.textColor = [UIColor colorWithRGBValue:0x474747];
+            label.textAlignment = NSTextAlignmentCenter;
+            [cell addSubview:label];
+            return cell;
+        }
     }
-    
     return nil;
 }
 
@@ -727,49 +771,74 @@ static NSString *shareStr;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.videoTableView) {
-        VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
-        VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
-        newsDetailViewController.news = news;
-        newsDetailViewController.indexPath=indexPath;
-        newsDetailViewController.hidesBottomBarWhenPushed = YES;
-        newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
-        [self.navigationController pushViewController:newsDetailViewController animated:YES];
+        if (self.userVideoArr.count) {
+            VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+            VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
+            newsDetailViewController.news = news;
+            newsDetailViewController.indexPath=indexPath;
+            newsDetailViewController.hidesBottomBarWhenPushed = YES;
+            newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+            [self.navigationController pushViewController:newsDetailViewController animated:YES];
+        }
     }
     else if (tableView == self.followTableView) {
-        VNUser *user = [self.followArr objectAtIndex:indexPath.row];
-        if ([self.mineUid isEqualToString:user.uid]) {
-            VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
-            mineProfileViewController.isPush = YES;
-            [self.navigationController pushViewController:mineProfileViewController animated:YES];
+        if (self.followArr.count) {
+            VNUser *user = [self.followArr objectAtIndex:indexPath.row];
+            if ([self.mineUid isEqualToString:user.uid]) {
+                VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+                mineProfileViewController.isPush = YES;
+                [self.navigationController pushViewController:mineProfileViewController animated:YES];
+            }
+            else {
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
+            }
+
         }
-        else {
-            VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
-            profileViewController.uid = user.uid;
-            [self.navigationController pushViewController:profileViewController animated:YES];
-        }
-    }
+     }
     else if (tableView == self.fansTableView) {
-        VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
-        if ([self.mineUid isEqualToString:user.uid]) {
-            VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
-            mineProfileViewController.isPush = YES;
-            [self.navigationController pushViewController:mineProfileViewController animated:YES];
-        }
-        else {
-            VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
-            profileViewController.uid = user.uid;
-            [self.navigationController pushViewController:profileViewController animated:YES];
+        if (self.fansArr.count) {
+            VNUser *user = [self.fansArr objectAtIndex:indexPath.row];
+            if ([self.mineUid isEqualToString:user.uid]) {
+                VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
+                mineProfileViewController.isPush = YES;
+                [self.navigationController pushViewController:mineProfileViewController animated:YES];
+            }
+            else {
+                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                profileViewController.uid = user.uid;
+                [self.navigationController pushViewController:profileViewController animated:YES];
+            }
         }
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.videoTableView) {
-        VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
-        return [self cellHeightFor:news];
+        if (self.userVideoArr.count) {
+            VNNews *news = [self.userVideoArr objectAtIndex:indexPath.row];
+            return [self cellHeightFor:news];
+        }
+        else {
+            return 310;
+        }
     }
-    if (tableView == self.followTableView || tableView == self.fansTableView) {
-        return 50.0;
+    if (tableView == self.followTableView) {
+        if (self.followArr.count) {
+            return 50.0;
+        }
+        else {
+            return 310;
+        }
+    }
+    if (tableView == self.fansTableView) {
+        if (self.fansArr.count) {
+            return 50.0;
+        }
+        else {
+            return 310;
+        }
     }
     return 0;
 }
@@ -926,41 +995,43 @@ static NSString *shareStr;
     userScrolling = NO;
     initialScrollOffset = CGPointMake(0, 0);
     
-    UITableView *tableView = (UITableView *)scrollView;
-    if (tableView == self.videoTableView) {
-        for (NSUInteger i=0; i<self.userVideoArr.count; i++) {
-            NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
-            VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
-            if (cell.isPlaying) {
-                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
-                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
-                if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
-                    [cell startOrPausePlaying:NO];
+    if (self.userVideoArr.count) {
+        UITableView *tableView = (UITableView *)scrollView;
+        if (tableView == self.videoTableView) {
+            for (NSUInteger i=0; i<self.userVideoArr.count; i++) {
+                NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+                VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
+                if (cell.isPlaying) {
+                    CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
+                    CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                    NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
+                    if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
+                        [cell startOrPausePlaying:NO];
+                    }
                 }
             }
         }
-    }
-    
-    if (isAutoPlayOption) {
-        UITableView *tableView = (UITableView *)scrollView;
-        if (tableView == self.videoTableView) {
-            NSArray *visibleCells=[tableView visibleCells];
-            CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
-            VNProfileVideoTableViewCell *curCell = nil;
-            for (VNProfileVideoTableViewCell *cell in visibleCells) {
-                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
-                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                NSLog(@"%f", self.view.window.center.y);
-                CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
-                if (gap < minGap) {
-                    NSLog(@"%f, %f", minGap, gap);
-                    minGap = gap;
-                    curCell = cell;
+        
+        if (isAutoPlayOption) {
+            UITableView *tableView = (UITableView *)scrollView;
+            if (tableView == self.videoTableView) {
+                NSArray *visibleCells=[tableView visibleCells];
+                CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
+                VNProfileVideoTableViewCell *curCell = nil;
+                for (VNProfileVideoTableViewCell *cell in visibleCells) {
+                    CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
+                    CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                    NSLog(@"%f", self.view.window.center.y);
+                    CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
+                    if (gap < minGap) {
+                        NSLog(@"%f, %f", minGap, gap);
+                        minGap = gap;
+                        curCell = cell;
+                    }
                 }
-            }
-            if (curCell && !curCell.isPlaying) {
-                [curCell startOrPausePlaying:YES];
+                if (curCell && !curCell.isPlaying) {
+                    [curCell startOrPausePlaying:YES];
+                }
             }
         }
     }
