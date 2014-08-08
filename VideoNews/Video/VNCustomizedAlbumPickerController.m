@@ -41,6 +41,14 @@
                 
             }
         }
+        
+        fileDir = [VNUtility getNSCachePath:@"VideoFiles/Temp"];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:fileDir isDirectory:&_isDir]){
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:YES attributes:nil error:nil]) {
+                
+            }
+        }
+        
     }
     return self;
 }

@@ -242,7 +242,7 @@
         }
         
         NSString *videoFilePath = [NSString stringWithFormat:@"%@/%lf.mp4",filePath,timeInterval];
-        NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.png",filePath,timeInterval];
+        NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.jpg",filePath,timeInterval];
         NSString *coverTimePointFilePath = [NSString stringWithFormat:@"%@/%lf",filePath,timeInterval];
         
         NSError *err;
@@ -250,7 +250,7 @@
         NSString *coverTimeString = [NSString stringWithFormat:@"%f",self.coverTime];
         [coverTimeString writeToFile:coverTimePointFilePath atomically:YES encoding:NSUTF8StringEncoding error:&err];
         
-        NSData *data = UIImagePNGRepresentation(self.coverImg);
+        NSData *data = UIImageJPEGRepresentation(self.coverImg, 1);
         [data writeToFile:coverFilePath atomically:YES];
 
         [[NSFileManager defaultManager] copyItemAtPath:self.videoPath toPath:videoFilePath error:&err];

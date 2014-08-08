@@ -162,7 +162,7 @@
     
     NSString *timeIntervalStr = [self.dataSourceArr objectAtIndex:indexPath.row];
     NSString *filePath = [VNUtility getNSCachePath:[NSString stringWithFormat:@"VideoFiles/Draft/%@",timeIntervalStr]];
-    NSString *coverPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png",timeIntervalStr]];
+    NSString *coverPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg",timeIntervalStr]];
     
     UIImage *img = [UIImage imageWithContentsOfFile:coverPath];
     

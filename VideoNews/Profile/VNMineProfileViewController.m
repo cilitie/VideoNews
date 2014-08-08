@@ -1671,7 +1671,7 @@ static NSString *shareStr;
     }
     
     NSString *videoFilePath = [NSString stringWithFormat:@"%@/%lf.mp4",filePath,timeInterval];
-    NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.png",filePath,timeInterval];
+    NSString *coverFilePath = [NSString stringWithFormat:@"%@/%lf.jpg",filePath,timeInterval];
     NSString *coverTimePointFilePath = [NSString stringWithFormat:@"%@/%lf",filePath,timeInterval];
     
     NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
