@@ -58,12 +58,13 @@
 */
 
 - (IBAction)wechatLogin:(id)sender {
+    [VNUtility showHUDText:@"暂未支持，敬请期待!" forView:self.view];
     //构造SendAuthReq结构体
-    SendAuthReq *req =[[SendAuthReq alloc] init];
-    req.scope = @"snsapi_userinfo" ;
-    req.state = @"wechat_VideoNews";
-    //第三方向微信终端发送一个SendAuthReq消息结构
-    [WXApi sendReq:req];
+//    SendAuthReq *req =[[SendAuthReq alloc] init];
+//    req.scope = @"snsapi_userinfo" ;
+//    req.state = @"wechat_VideoNews";
+//    //第三方向微信终端发送一个SendAuthReq消息结构
+//    [WXApi sendReq:req];
 }
 
 - (IBAction)weiboLogin:(id)sender {
