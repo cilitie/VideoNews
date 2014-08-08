@@ -1074,6 +1074,7 @@ static NSString *shareStr;
             
             [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
             UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
+            NSLog(@"%@", snsPlatform);
             snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
         }
     }

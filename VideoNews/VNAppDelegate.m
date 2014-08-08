@@ -11,7 +11,6 @@
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
 #import "UMSocialQQHandler.h"
-#import "UMSocialSinaHandler.h"
 #import "VNTabBarViewController.h"
 #import "VNLoginViewController.h"
 #import <objc/runtime.h>
@@ -23,10 +22,10 @@
     [MobClick startWithAppkey:UmengAppkey reportPolicy:(ReportPolicy) REALTIME channelId:nil];
     [UMSocialData setAppKey:UmengAppkey];
     
-    [UMSocialSinaHandler openSSOWithRedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
+    [UMSocialConfig setSupportSinaSSO:YES appRedirectUrl:@"http://sns.whalecloud.com/sina2/callback"];
     [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
     [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
-    [UMSocialQQHandler setSupportWebView:YES];
+    [UMSocialQQHandler setSupportQzoneSSO:YES];
     //注册通知
     [UIResponder registerRemote];
     
@@ -72,7 +71,7 @@
     
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -105,14 +104,14 @@
     
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return  [UMSocialSnsService handleOpenURL:url];
 }
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    return  [UMSocialSnsService handleOpenURL:url];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
