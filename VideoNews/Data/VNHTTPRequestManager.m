@@ -270,7 +270,7 @@ static int pagesize = 10;
 
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, VNComment *comment ,int comment_count,NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
-    NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
+    NSString *URLStr = [VNHost stringByAppendingString:@"comment2.php"];
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     //zmy add
     NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
