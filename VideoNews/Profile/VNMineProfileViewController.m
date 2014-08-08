@@ -1638,8 +1638,8 @@ static NSString *shareStr;
         
     }else if ([key hasSuffix:@"jpg"]) {
         [VNUtility showHUDText:@"上传成功" forView:self.view];
-        NSLog(@"%@",ret);
-        NSLog(@"%@",key);
+        //NSLog(@"%@",ret);
+        //NSLog(@"%@",key);
     }
 }
 
