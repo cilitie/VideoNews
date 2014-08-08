@@ -444,6 +444,7 @@ static NSString *shareStr;
                 
             }];
         }];
+        [self.favouriteTableView triggerPullToRefresh];
         
         //我的关注
         self.followTableView.tableHeaderView = followHeaderView;
