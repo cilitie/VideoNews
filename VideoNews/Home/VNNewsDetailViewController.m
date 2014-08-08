@@ -496,10 +496,10 @@ static NSString *shareStr;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
-    VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (self.commentArr.count) {
-        VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+        static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
+        VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+            VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
         if ([cell viewWithTag:1001]) {
             UILabel *label = (UILabel *)[cell viewWithTag:1001];
             [label removeFromSuperview];
@@ -522,19 +522,20 @@ static NSString *shareStr;
         
         //cell.timeLabel.text = [comment.date substringToIndex:10];
         cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
+        return cell;
     }
     else {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50.0, 32.0, 180.0, 16)];
-        label.tag = 1001;
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor clearColor];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 70.0, 300, 20)];
         label.font = [UIFont systemFontOfSize:15.0];
         label.text = @"暂时没有评论";
         label.textColor = [UIColor colorWithRGBValue:0x474747];
         label.textAlignment = NSTextAlignmentCenter;
         [cell addSubview:label];
-        cell.replyBtn.hidden = YES;
+        return cell;
     }
-
-    return cell;
 }
 
 #pragma mark - UITableView Delegate methods
@@ -585,7 +586,7 @@ static NSString *shareStr;
         return 60.0+diff;
     }
     else {
-        return 80;
+        return 160;
     }
 }
 
