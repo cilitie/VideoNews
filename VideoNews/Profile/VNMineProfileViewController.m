@@ -1590,36 +1590,23 @@ static NSString *shareStr;
 
             NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
             
-            NSMutableArray *shareArray = [NSMutableArray arrayWithCapacity:1];
-            
             if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
-                [shareArray addObject:UMShareToSina];
-            }
-            if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
-                [shareArray addObject:UMShareToWechatTimeline];
-            }
-            
-            NSLog(@"arrya :%@",shareArray);
-
-//            [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToWechatTimeline] content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
-//                if (response.responseCode == UMSResponseCodeSuccess) {
-//                    NSLog(@"分享成功了");
-//                } else if(response.responseCode != UMSResponseCodeCancel) {
-//                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
-//                    [alertView show];
-//                }
-//            }];
-            
-            if (shareArray.count > 0) {
-                [[UMSocialDataService defaultDataService] postSNSWithTypes:shareArray content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+                [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToSina] content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
                     if (response.responseCode == UMSResponseCodeSuccess) {
-                        NSLog(@"分享成功了");
+                        NSLog(@"新浪微博分享成功了");
                     } else if(response.responseCode != UMSResponseCodeCancel) {
-                        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+                        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
                         [alertView show];
                     }
                 }];
             }
+            if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
+                [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImageData socialUIDelegate:self];
+                UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
+                NSLog(@"%@", snsPlatform);
+                snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+            }
+            
         });
         
         
