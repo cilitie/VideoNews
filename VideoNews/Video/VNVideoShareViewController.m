@@ -307,7 +307,9 @@
     VNTabBarViewController *tabbarCtl = (VNTabBarViewController *)appDelegate.window.rootViewController;
     tabbarCtl.selectedIndex = 4;
     
-    NSDictionary *userInfoDic = @{@"title":titleText,@"tags":tagsText,@"coverTime":[NSNumber numberWithFloat:self.coverTime],@"videoPath":self.videoPath,@"isSinaOn":[NSNumber numberWithBool:self.shareSina],@"isWeChatOn":[NSNumber numberWithBool:self.shareWeixin],@"isFromDraft":[NSNumber numberWithBool:self.fromDraft],@"coverImg":self.coverImg};
+    NSData *imgData = UIImageJPEGRepresentation(self.coverImg, 1);
+    
+    NSDictionary *userInfoDic = @{@"title":titleText,@"tags":tagsText,@"coverTime":[NSNumber numberWithFloat:self.coverTime],@"videoPath":self.videoPath,@"isSinaOn":[NSNumber numberWithBool:self.shareSina],@"isWeChatOn":[NSNumber numberWithBool:self.shareWeixin],@"isFromDraft":[NSNumber numberWithBool:self.fromDraft],@"coverImg":imgData};
     
     __weak VNVideoShareViewController *weakSelf = self;
     

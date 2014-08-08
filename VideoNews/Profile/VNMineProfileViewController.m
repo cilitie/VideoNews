@@ -680,8 +680,7 @@ static NSString *shareStr;
 - (void)uploadCoverImage:(NSString *)timestamp
 {
     //image data
-    UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
-    NSData *imageData = UIImagePNGRepresentation(coverImage);
+    NSData *imageData = [self.uploadVideoInfo valueForKey:@"coverImg"];
     
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     
@@ -1588,8 +1587,8 @@ static NSString *shareStr;
             //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
             NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，不看你后悔一辈子！：“%@”",urlString];
             NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
-            UIImage *coverImage = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
-            NSData *shareImageData = UIImagePNGRepresentation(coverImage);
+
+            NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
             
             NSMutableArray *shareArray = [NSMutableArray arrayWithCapacity:1];
             
@@ -1612,7 +1611,6 @@ static NSString *shareStr;
 //            }];
             
             if (shareArray.count > 0) {
-                
                 [[UMSocialDataService defaultDataService] postSNSWithTypes:shareArray content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
                     if (response.responseCode == UMSResponseCodeSuccess) {
                         NSLog(@"分享成功了");
@@ -1678,13 +1676,12 @@ static NSString *shareStr;
     
     NSString *videoPath = [self.uploadVideoInfo valueForKey:@"videoPath"];
     NSString *coverTimeString = [NSString stringWithFormat:@"%@",[self.uploadVideoInfo valueForKey:@"coverTime"]];
-    UIImage *coverImage = [self.uploadVideoInfo valueForKey:@"coverImg"];
+    NSData *data = [self.uploadVideoInfo valueForKey:@"coverImg"];
 
     NSError *err;
     
     [coverTimeString writeToFile:coverTimePointFilePath atomically:YES encoding:NSUTF8StringEncoding error:&err];
     
-    NSData *data = UIImageJPEGRepresentation(coverImage, 1);
     [data writeToFile:coverFilePath atomically:YES];
     
     [[NSFileManager defaultManager] copyItemAtPath:videoPath toPath:videoFilePath error:&err];
