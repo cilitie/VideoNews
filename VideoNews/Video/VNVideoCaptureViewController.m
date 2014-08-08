@@ -150,7 +150,9 @@ static NSString *videoFilePath;
 {
     
     _captureSession = [[AVCaptureSession alloc] init];
-    [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+    if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetMedium]) {
+        [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+    }
 
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     [videoDevice lockForConfiguration:nil];
@@ -161,21 +163,34 @@ static NSString *videoFilePath;
     
     self.movieOutput = [[AVCaptureMovieFileOutput alloc] init];
     
-    [self.captureSession addInput:self.videoInput];
-    [self.captureSession addInput:self.audioInput];
-    [self.captureSession addOutput:self.movieOutput];
-    
-    AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-    CGFloat y;
-    if (screenH == 568) {
-        y = -6;
+    if (!_videoInput) {
+        
+        __weak VNVideoCaptureViewController *weakSelf = self;
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"程序没有权限访问您的摄像头，请在隐私设置中开启。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+            
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        });
+        
     }else {
-        y = 0;
+        [self.captureSession addInput:self.videoInput];
+        [self.captureSession addInput:self.audioInput];
+        [self.captureSession addOutput:self.movieOutput];
+        
+        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
+        CGFloat y;
+        if (screenH == 568) {
+            y = -6;
+        }else {
+            y = 0;
+        }
+        previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
+        [self.view.layer addSublayer:previewLayer];
+        
+        [self.view addSubview:self.overlayView];
     }
-    previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
-    [self.view.layer addSublayer:previewLayer];
-    
-    [self.view addSubview:self.overlayView];
 
 }
 

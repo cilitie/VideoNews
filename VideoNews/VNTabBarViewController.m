@@ -210,25 +210,21 @@
 - (void)cameraBtnDidPressed
 {
     [MobClick event:@"video_record" label:@"camera"];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        
-        VNVideoCaptureViewController *captureCtl = [[VNVideoCaptureViewController alloc] init];
-        UINavigationController *videoNav = [[UINavigationController alloc] initWithRootViewController:captureCtl];
-        videoNav.navigationBarHidden = YES;
-        [self presentViewController:videoNav animated:YES completion:nil];
-        
-    }else {
-        
-        //if camera is not avaliable, use album instead.
-        [self albumBtnDidPressed];
-    }
+    
+    VNVideoCaptureViewController *captureCtl = [[VNVideoCaptureViewController alloc] init];
+    UINavigationController *videoNav = [[UINavigationController alloc] initWithRootViewController:captureCtl];
+    videoNav.navigationBarHidden = YES;
+    [self presentViewController:videoNav animated:YES completion:nil];
+    
 }
 
 - (void)albumBtnDidPressed
 {
     [MobClick event:@"video_record" label:@"album"];
-    VNCustomizedAlbumPickerController *picker = [[VNCustomizedAlbumPickerController alloc] init];
-    [self presentViewController:picker animated:YES completion:nil];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        VNCustomizedAlbumPickerController *picker = [[VNCustomizedAlbumPickerController alloc] init];
+        [self presentViewController:picker animated:YES completion:nil];
+    }
 }
 
 - (void)cancelBtnClicked
