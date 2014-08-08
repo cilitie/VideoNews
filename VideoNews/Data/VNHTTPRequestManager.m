@@ -277,14 +277,10 @@ static int pagesize = 10;
 
     if (!uid) {
         uid = @"1";
-    }
-    //zmy modify
-    NSLog(@"%@",[self token]);
-    NSLog(@"%@",[self timestamp]);
-    NSLog(@"%@",user_token);
-    if (user_token==nil) {
         user_token=@"";
     }
+    //zmy modify
+    
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
