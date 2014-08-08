@@ -528,7 +528,7 @@ static NSString *shareStr;
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor clearColor];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 70.0, 300, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 140.0, 300, 20)];
         label.font = [UIFont systemFontOfSize:15.0];
         label.text = @"暂时没有评论";
         label.textColor = [UIColor colorWithRGBValue:0x474747];
@@ -586,7 +586,7 @@ static NSString *shareStr;
         return 60.0+diff;
     }
     else {
-        return 160;
+        return 300;
     }
 }
 

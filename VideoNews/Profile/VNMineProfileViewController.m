@@ -137,7 +137,7 @@ static NSString *shareStr;
             }
         }
     }
-    if (self.favouriteNewsArr.count) {
+    if (self.favVideoArr.count) {
         if (!self.favouriteTableView.hidden) {
             for (VNProfileVideoTableViewCell *cell in [self.favouriteTableView visibleCells]) {
                 if (cell.isPlaying) {
@@ -250,7 +250,7 @@ static NSString *shareStr;
                     }
                 }
             }
-            if (self.favouriteNewsArr.count) {
+            if (self.favVideoArr.count) {
                 for (VNProfileVideoTableViewCell *cell in [weakSelf.favouriteTableView visibleCells]) {
                     if (cell.isPlaying) {
                         [cell startOrPausePlaying:NO];
@@ -333,7 +333,6 @@ static NSString *shareStr;
                         NSLog(@"%@", error.localizedDescription);
                     }
                     if (favouriteNewsArr.count) {
-                        NSLog(@"%@", favouriteNewsArr);
                         [self.favouriteNewsArr removeAllObjects];
                         [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
                         NSLog(@"%@", favouriteNewsArr);
@@ -346,6 +345,7 @@ static NSString *shareStr;
                         else {
                             [weakSelf.mineVideoArr removeAllObjects];
                             [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
+                            NSLog(@"%d", weakSelf.mineVideoArr.count);
                             [weakSelf.videoTableView reloadData];
                         }
                         firstLoading = YES;
@@ -1259,57 +1259,55 @@ static NSString *shareStr;
     userScrolling = NO;
     initialScrollOffset = CGPointMake(0, 0);
     
-    if (self.mineVideoArr.count || self.favouriteNewsArr.count) {
-        UITableView *tableView = (UITableView *)scrollView;
-        if (tableView == self.videoTableView) {
-            for (NSUInteger i=0; i<self.mineVideoArr.count; i++) {
-                NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
-                VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
-                if (cell.isPlaying) {
-                    CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
-                    CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                    NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
-                    if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
-                        [cell startOrPausePlaying:NO];
-                    }
+    UITableView *tableView = (UITableView *)scrollView;
+    if (tableView == self.videoTableView && self.mineVideoArr.count) {
+        for (NSUInteger i=0; i<self.mineVideoArr.count; i++) {
+            NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+            VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
+            if (cell.isPlaying) {
+                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
+                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
+                if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
+                    [cell startOrPausePlaying:NO];
                 }
             }
         }
-        else if (tableView == self.favouriteTableView) {
-            for (NSUInteger i=0; i<self.favVideoArr.count; i++) {
-                NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
-                VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
-                if (cell.isPlaying) {
-                    CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
-                    CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                    NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
-                    if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
-                        [cell startOrPausePlaying:NO];
-                    }
+    }
+    else if (tableView == self.favouriteTableView && self.favVideoArr.count) {
+        for (NSUInteger i=0; i<self.favVideoArr.count; i++) {
+            NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+            VNProfileVideoTableViewCell *cell = (VNProfileVideoTableViewCell *)[tableView cellForRowAtIndexPath:index];
+            if (cell.isPlaying) {
+                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
+                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
+                if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
+                    [cell startOrPausePlaying:NO];
                 }
             }
         }
+    }
         
-        if (isAutoPlayOption) {
-            UITableView *tableView = (UITableView *)scrollView;
-            if (tableView == self.videoTableView || tableView == self.favouriteTableView) {
-                NSArray *visibleCells=[tableView visibleCells];
-                CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
-                VNProfileVideoTableViewCell *curCell = nil;
-                for (VNProfileVideoTableViewCell *cell in visibleCells) {
-                    CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
-                    CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                    NSLog(@"%f", self.view.window.center.y);
-                    CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
-                    if (gap < minGap) {
-                        NSLog(@"%f, %f", minGap, gap);
-                        minGap = gap;
-                        curCell = cell;
-                    }
+    if (isAutoPlayOption) {
+        UITableView *tableView = (UITableView *)scrollView;
+        if ((tableView == self.videoTableView && self.mineVideoArr.count)|| (tableView == self.favouriteTableView && self.favVideoArr.count)) {
+            NSArray *visibleCells=[tableView visibleCells];
+            CGFloat minGap = CGRectGetHeight(self.view.window.bounds);
+            VNProfileVideoTableViewCell *curCell = nil;
+            for (VNProfileVideoTableViewCell *cell in visibleCells) {
+                CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
+                CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
+                NSLog(@"%f", self.view.window.center.y);
+                CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
+                if (gap < minGap) {
+                    NSLog(@"%f, %f", minGap, gap);
+                    minGap = gap;
+                    curCell = cell;
                 }
-                if (curCell && !curCell.isPlaying) {
-                    [curCell startOrPausePlaying:YES];
-                }
+            }
+            if (curCell && !curCell.isPlaying) {
+                [curCell startOrPausePlaying:YES];
             }
         }
     }
