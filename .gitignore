@@ -12,3 +12,5 @@ VideoNews.xcworkspace/
 Podfile.lock
 
 VideoNews/Video/Audios/
+
+VideoNews/Home/VNCommentTableViewCell.xib
