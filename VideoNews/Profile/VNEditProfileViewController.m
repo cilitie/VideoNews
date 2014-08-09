@@ -10,6 +10,7 @@
 #import "VNEditProfileTableViewCell.h"
 #import "VNEditContentViewController.h"
 #import "VNUploadManager.h"
+#import <AVFoundation/AVFoundation.h>
 
 typedef NS_ENUM(NSUInteger, EditPickerType) {
     EditPickerTypeGender,
@@ -194,7 +195,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                  delegate:self
                                                         cancelButtonTitle:@"取消"
-                                                   destructiveButtonTitle:(nil)
+                                                   destructiveButtonTitle:nil
                                                         otherButtonTitles:@"拍照", @"从手机相册选择", nil];
         [actionSheet showInView:self.view];
     }
@@ -269,13 +270,18 @@ static EditPickerType pickerType = EditPickerTypeGender;
             picker.delegate = self;
             picker.allowsEditing = YES;
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                picker.videoQuality = UIImagePickerControllerQualityTypeLow;
-                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-                [self presentViewController:picker
-                                   animated:YES
-                                 completion:nil];
-                
-            }else{
+                if ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusDenied) {
+                    [VNUtility showHUDText:@"您未允许使用摄像头" forView:self.view];
+                }
+                else {
+                    picker.videoQuality = UIImagePickerControllerQualityTypeLow;
+                    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                    [self presentViewController:picker
+                                       animated:YES
+                                     completion:nil];
+                }
+            }
+            else{
                 NSLog(@"模拟器无法打开相机");
             }
         }
