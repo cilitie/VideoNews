@@ -74,16 +74,15 @@
         if (screenH == 568) {
             y = 52;
         }
-        _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(230, y, 90, 90)];
-        [_submitBtn setImage:[UIImage imageNamed:@"112-112@2x"] forState:UIControlStateNormal];
-        [_submitBtn setImage:[UIImage imageNamed:@"112-112@2x"] forState:UIControlStateSelected];
+        _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(237, y, 76, 76)];
+        [_submitBtn setImage:[UIImage imageNamed:@"112-112_yesNOACTIVE@2x"] forState:UIControlStateNormal];
+        [_submitBtn setImage:[UIImage imageNamed:@"112-112_yesACTIVE@2x"] forState:UIControlStateSelected];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         _submitBtn.backgroundColor = [UIColor clearColor];
         [_submitBtn addTarget:self action:@selector(doOpenPhotoAlbumOrProcessSubmit:) forControlEvents:UIControlEventTouchUpInside];
         _submitBtn.showsTouchWhenHighlighted = YES;
-        _submitBtn.hidden = YES;
-        
+        _submitBtn.selected = NO;
     }
     return _submitBtn;
 }
@@ -266,7 +265,7 @@
 //        }
 //        self.currSubmitBtnStatus = st;
 //    }
-    self.submitBtn.hidden = !enabled;
+    self.submitBtn.selected = enabled;
 }
 
 #pragma mark - UserInteractionMethods
@@ -416,10 +415,13 @@
         //open photo album (long long ago, it's needed)
 //    }else if (){
     //submit the whole video.
-    if ([self shouldPerforDelegateSelector:@selector(doSubmitWholeVideo)]) {
-        
-        [delegate doSubmitWholeVideo];
+    if (sender.selected) {
+        if ([self shouldPerforDelegateSelector:@selector(doSubmitWholeVideo)]) {
+            
+            [delegate doSubmitWholeVideo];
+        }
     }
+    
 //}
 }
 
