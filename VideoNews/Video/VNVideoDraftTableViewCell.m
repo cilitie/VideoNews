@@ -55,6 +55,9 @@
         [shareBtn addTarget:self action:@selector(doShare) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:shareBtn];
         
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 69, 320, 1)];
+        lineView.backgroundColor = [UIColor lightGrayColor];
+        [self.contentView addSubview:lineView];
     }
     return self;
 }

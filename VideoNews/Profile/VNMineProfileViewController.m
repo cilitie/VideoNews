@@ -658,6 +658,9 @@ static NSString *shareStr;
 - (void)uploadVideoFile:(NSNotification *)not
 {
     
+    if (self.navigationController.viewControllers.count > 1) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
     self.uploadVideoInfo = not.userInfo;
     
     VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
