@@ -26,6 +26,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userSignOut:)  name:VNSignOutNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userLogin:)  name:VNLoginNotification object:nil];
     [self.tabBar setBarTintColor:[UIColor whiteColor]];
     [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x3f3f3f]]];
     self.delegate = self;
@@ -99,12 +100,28 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self name:VNSignOutNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:VNLoginNotification object:nil];
 }
 
 -(void)userSignOut:(NSNotification *)notification
 {
     //VNTabBarViewController *tabbarCtl=(VNTabBarViewController *)self.tabBarController;
     //tabbarCtl.selectedIndex=0;
+    self.selectedIndex=0;
+}
+-(void)userLogin:(NSNotification *)notification
+{
+    //UIViewController *vc;
+    /*if (self.navigationController.viewControllers.count > 1) {
+     [self.navigationController popToRootViewControllerAnimated:YES];
+     }*/
+    for (UIViewController *vc in self.viewControllers) {
+        //if (vc.navigationController.viewControllers.count>0)
+        //{
+            [(UINavigationController *)vc popToRootViewControllerAnimated:YES];
+        //}
+    }
+    
     self.selectedIndex=0;
 }
 

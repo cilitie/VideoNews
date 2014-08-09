@@ -1318,7 +1318,7 @@ static NSString *shareStr;
         }
         else {
             [weakSelf.commentArrNotify addObjectsFromArray:comment];
-            NSLog(@"%@",weakSelf.commentArrNotify);
+            //NSLog(@"%@",weakSelf.commentArrNotify);
             weakSelf.curComment= [weakSelf.commentArrNotify objectAtIndex:0];
             if (weakSelf.curComment==nil) {
                 [VNUtility showHUDText:@"该评论已被删除！" forView:weakSelf.view];
@@ -1328,6 +1328,7 @@ static NSString *shareStr;
                 [self.inputTextView setText:[NSString stringWithFormat:@"回复@%@:", self.sender_name]];
                 //[self.inputTextField becomeFirstResponder];
             }
+            [weakSelf.commentArrNotify removeAllObjects];
             //NSLog(@"%@",_curComment);
            // [self.commentTableView reloadData];
         }

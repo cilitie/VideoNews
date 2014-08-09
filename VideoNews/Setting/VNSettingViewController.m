@@ -186,6 +186,9 @@
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         loginViewController.controllerType=SourceVCTypeMineProfile;
         [self.navigationController popViewControllerAnimated:YES];
+        /*if (self.navigationController.viewControllers.count > 1) {
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }*/
         [self presentViewController:loginViewController animated:YES completion:nil];
         
     }
