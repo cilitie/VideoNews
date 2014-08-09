@@ -351,7 +351,7 @@ static NSString *shareStr;
                     if (favouriteNewsArr.count) {
                         [self.favouriteNewsArr removeAllObjects];
                         [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
-                        NSLog(@"%@", favouriteNewsArr);
+                        NSLog(@"%d", favouriteNewsArr.count);
                     }
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                     [VNHTTPRequestManager videoListForUser:self.uid type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
@@ -781,20 +781,20 @@ static NSString *shareStr;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.videoTableView) {
-        //return self.mineVideoArr.count ? self.mineVideoArr.count : 1;
-        return self.mineVideoArr.count;
+        return self.mineVideoArr.count ? self.mineVideoArr.count : 1;
+//        return self.mineVideoArr.count;
     }
     if (tableView == self.favouriteTableView) {
-        //return self.favVideoArr.count ? self.favVideoArr.count : 1;
-        return  self.favVideoArr.count;
+        return self.favVideoArr.count ? self.favVideoArr.count : 1;
+//        return  self.favVideoArr.count;
     }
     if (tableView == self.followTableView) {
-        //return self.followArr.count ? self.followArr.count : 1;
-        return self.followArr.count;
+        return self.followArr.count ? self.followArr.count : 1;
+//        return self.followArr.count;
     }
     if (tableView == self.fansTableView) {
-        //return self.fansArr.count ? self.fansArr.count : 1;
-        return self.fansArr.count;
+        return self.fansArr.count ? self.fansArr.count : 1;
+//        return self.fansArr.count;
     }
     return 0;
 }
