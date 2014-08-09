@@ -1117,11 +1117,15 @@ static NSString *shareStr;
                                 [self deleteCellAndPop:0];
                             }
                             else if (succeed) {
-                                
                                 self.inputTextView.text = @"";
-                                //[self.commentTableView triggerPullToRefresh];
                                 [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
-                                [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                if (weakSelf.curIndexPath.row == 0) {
+                                    [self.commentTableView reloadData];
+                                }
+                                else {
+                                    [self.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                }
+                                
                                 if (comment_count>10000) {
                                     weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                                 }

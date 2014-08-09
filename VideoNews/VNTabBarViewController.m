@@ -66,8 +66,10 @@
         }];
     }
     else {
-        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:VNIsWiFiAutoPlay];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:VNIsWiFiAutoPlay];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
         if (isUserLoginTimeout) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你登录的账号已过期~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
             [alert show];

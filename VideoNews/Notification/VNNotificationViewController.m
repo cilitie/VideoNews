@@ -240,79 +240,99 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
    // NSLog(@"array count:%d",self.messageArr.count);
-    return self.messageArr.count;
+    return self.messageArr.count ? self.messageArr.count : 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
-    if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
-        cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
-    }
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-    
-    if (cell) {
-        if ([message.type isEqualToString: @"user"]) {
-            VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
-            userCell.message = message;
-            __weak typeof(userCell) weakUserCell = userCell;
-            userCell.tapHandler = ^(){
-                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
-                VNUser *user = weakUserCell.message.sender;
-                profileViewController.uid = user.uid;
-                [self.navigationController pushViewController:profileViewController animated:YES];
-            };
-            [userCell reload];
+    if (self.messageArr.count) {
+        VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+        NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
+        if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
+            cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
         }
-        else if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
-            VNNotificationReplyTableViewCell *replyCell = (VNNotificationReplyTableViewCell *)cell;
-            __weak typeof(replyCell) weakReplyCell = replyCell;
-            replyCell.tapHandler = ^(){
-                VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
-                VNUser *user = weakReplyCell.message.sender;
-                profileViewController.uid = user.uid;
-                [self.navigationController pushViewController:profileViewController animated:YES];
-            };
-            replyCell.message = message;
-            [replyCell reload];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+        
+        if (cell) {
+            if ([message.type isEqualToString: @"user"]) {
+                VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
+                userCell.message = message;
+                __weak typeof(userCell) weakUserCell = userCell;
+                userCell.tapHandler = ^(){
+                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    VNUser *user = weakUserCell.message.sender;
+                    profileViewController.uid = user.uid;
+                    [self.navigationController pushViewController:profileViewController animated:YES];
+                };
+                [userCell reload];
+            }
+            else if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
+                VNNotificationReplyTableViewCell *replyCell = (VNNotificationReplyTableViewCell *)cell;
+                __weak typeof(replyCell) weakReplyCell = replyCell;
+                replyCell.tapHandler = ^(){
+                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    VNUser *user = weakReplyCell.message.sender;
+                    profileViewController.uid = user.uid;
+                    [self.navigationController pushViewController:profileViewController animated:YES];
+                };
+                replyCell.message = message;
+                [replyCell reload];
+            }
         }
-    }
         return cell;
+    }
+    else {
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor clearColor];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 218, 300, 20)];
+        label.font = [UIFont systemFontOfSize:15.0];
+        label.text = @"你尚无任何通知~";
+        label.textColor = [UIColor colorWithRGBValue:0x474747];
+        label.textAlignment = NSTextAlignmentCenter;
+        [cell addSubview:label];
+        return cell;
+    }
 }
 
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    _curMessage=message;
-    if ([message.type isEqualToString:@"user"]) {
-        NSLog(@"uid:%@",message.sender.uid);
-        VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
-        VNUser *user = message.sender;
-        profileViewController.uid = user.uid;
-        [self.navigationController pushViewController:profileViewController animated:YES];
-    }
-    else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"]) {
-        VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
-        newsDetailViewController.news = _curMessage.news;
-        newsDetailViewController.indexPath=indexPath;
-        newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
-        newsDetailViewController.sender_id=_curMessage.sender.uid;
-        newsDetailViewController.sender_name=_curMessage.sender.name;
-        newsDetailViewController.hidesBottomBarWhenPushed = YES;
-        newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
-        [self.navigationController pushViewController:newsDetailViewController animated:YES];
+    if (self.messageArr.count) {
+        VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+        _curMessage=message;
+        if ([message.type isEqualToString:@"user"]) {
+            NSLog(@"uid:%@",message.sender.uid);
+            VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+            VNUser *user = message.sender;
+            profileViewController.uid = user.uid;
+            [self.navigationController pushViewController:profileViewController animated:YES];
+        }
+        else if([message.type isEqualToString:@"comment"]||[message.type isEqualToString:@"news"]) {
+            VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
+            newsDetailViewController.news = _curMessage.news;
+            newsDetailViewController.indexPath=indexPath;
+            newsDetailViewController.pid=[NSNumber numberWithInt:_curMessage.reply_pid];
+            newsDetailViewController.sender_id=_curMessage.sender.uid;
+            newsDetailViewController.sender_name=_curMessage.sender.name;
+            newsDetailViewController.hidesBottomBarWhenPushed = YES;
+            newsDetailViewController.controllerType = SourceViewControllerTypeNotification;
+            [self.navigationController pushViewController:newsDetailViewController animated:YES];
+        }
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-    if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
-        return [self cellHeightFor:message];
+    if (self.messageArr.count) {
+        VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+        if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
+            return [self cellHeightFor:message];
+        }
+        else {
+            return 80;
+        }
     }
     else {
-        return 80;
+        return 456;
     }
 }
 

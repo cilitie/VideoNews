@@ -1522,7 +1522,12 @@ static NSString *shareStr;
                      {
                          //[self deleteCellAndPop:1];
                          [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
-                         [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         if (_shareNewsIndexPath.row == 0) {
+                             [self.videoTableView reloadData];
+                         }
+                         else {
+                             [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         }
                          for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                              headerView.videoCountLabel.text = [self bigNumberToString:news_count];
                              //[headerView reload];
