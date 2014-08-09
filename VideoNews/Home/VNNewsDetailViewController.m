@@ -487,17 +487,17 @@ static NSString *shareStr;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    /*if (self.commentArr.count) {
+    if (self.commentArr.count) {
         return self.commentArr.count;
     }
     else {
         return 1;
-    }*/
+    }
     return self.commentArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //if (self.commentArr.count) {
+    if (self.commentArr.count) {
         static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
         VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
@@ -520,8 +520,8 @@ static NSString *shareStr;
         //cell.timeLabel.text = [comment.date substringToIndex:10];
         cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
         return cell;
-    //}
-    /*else {
+    }
+    else {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor clearColor];
@@ -532,13 +532,13 @@ static NSString *shareStr;
         label.textAlignment = NSTextAlignmentCenter;
         [cell addSubview:label];
         return cell;
-    }*/
+    }
 }
 
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //if (self.commentArr.count) {
+    if (self.commentArr.count) {
         VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
         _curIndexPath=indexPath;
         self.curComment = comment;
@@ -566,7 +566,7 @@ static NSString *shareStr;
         }
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
         actionSheet.delegate = self;
-    //}
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
