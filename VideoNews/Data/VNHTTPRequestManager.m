@@ -270,7 +270,7 @@ static int pagesize = 10;
 
 + (void)commentNews:(int)nid content:(NSString *)content completion:(void(^)(BOOL succeed,BOOL isNewsDeleted, VNComment *comment ,int comment_count,NSError *error))completion {
     //http://zmysp.sinaapp.com/comment.php?uid=1&text=thisisatest&token=f961f003dd383bc39eb53c5b7e5fd046&nid=1&type=pub&timestamp=1404232200
-    NSString *URLStr = [VNHost stringByAppendingString:@"comment2.php"];
+    NSString *URLStr = [VNHost stringByAppendingString:@"comment.php"];
     NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     //zmy add
     NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
@@ -284,7 +284,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", operation);
+        //NSLog(@"%@", operation);
+        //NSLog(@"%@",responseObject);
         VNComment *comment = nil;
         BOOL commentSuccess = NO;
         BOOL isNewsDeleted=NO;
@@ -371,7 +372,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"type": @"del", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        NSLog(@"%@", responseObject);
+        //NSLog(@"%@", responseObject);
+        //NSLog(@"%@",operation);
         BOOL deleteSuccess = NO;
         BOOL isNewsDeleted =NO;
         int comment_count=0;

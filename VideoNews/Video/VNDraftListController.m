@@ -85,12 +85,20 @@
     __weak VNDraftListController *weakSelf = self;
     
     dispatch_after(0.3, dispatch_get_main_queue(), ^{
+        
         weakSelf.draftListTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, 320, self.view.frame.size.height - 64) style:UITableViewStylePlain];
         weakSelf.draftListTableView.delegate = self;
         weakSelf.draftListTableView.dataSource = self;
         weakSelf.draftListTableView.separatorInset = UIEdgeInsetsZero;
         weakSelf.draftListTableView.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
+        weakSelf.draftListTableView.separatorColor = [UIColor clearColor];
         [weakSelf.view addSubview:weakSelf.draftListTableView];
+        
+        if (_dataSourceArr.count == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"还没有草稿哦" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
     });
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDraftList:) name:@"RefreshDraftListNotification" object:nil];
