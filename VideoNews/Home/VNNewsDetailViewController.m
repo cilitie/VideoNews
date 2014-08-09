@@ -500,10 +500,6 @@ static NSString *shareStr;
         static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
         VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
-        if ([cell viewWithTag:1001]) {
-            UILabel *label = (UILabel *)[cell viewWithTag:1001];
-            [label removeFromSuperview];
-        }
         [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
