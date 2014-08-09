@@ -70,5 +70,17 @@
     
 }
 
++(NSString *)countFormatToDisplay:(int)number
+{
+    if (number>10000) {
+        NSString *str=[NSString stringWithFormat:@"%d万",number/10000];
+        return  str;
+    }
+    
+    NSString *str = [NSString stringWithFormat:@"%d", number];
+    return  str;   
+
+}
+
 
 @end

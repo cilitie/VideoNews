@@ -125,6 +125,7 @@ static NSString *shareStr;
     [_curTableView triggerPullToRefresh];
     
 }
+//zmy add
 -(void)reloadHeaderView
 {
     [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
@@ -141,7 +142,7 @@ static NSString *shareStr;
     }];
 
 }
-
+//
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (self.mineVideoArr.count) {
@@ -180,6 +181,9 @@ static NSString *shareStr;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeVideoCellForNewsDeleted:) name:VNMineProfileVideoCellDeleteNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFavouriteCellForNewsDeleted:) name:VNMineProfileFavouriteCellDeleteNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoFile:) name:VNMineProfileUploadVideoNotifiction object:nil];
+    //zmy add
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userReLogin:) name:VNLoginNotification object:nil];
+    //
 
     [self reload];
     
@@ -187,7 +191,15 @@ static NSString *shareStr;
     [self.fansTableView setTableFooterView:[[UIView alloc] init]];
     [self.view addSubview:self.progressView];
 }
-
+//zmy add
+-(void)userReLogin:(NSNotification *)notification
+{
+    [self reload];
+    //[self.followTableView setTableFooterView:[[UIView alloc] init]];
+    //[self.fansTableView setTableFooterView:[[UIView alloc] init]];
+    //[self.view addSubview:self.progressView];
+}
+//zmy add
 - (void)reload {
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
@@ -622,6 +634,7 @@ static NSString *shareStr;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileVideoCellDeleteNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:VNMineProfileUploadVideoNotifiction object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNLoginNotification object:nil];
 }
 
 /*

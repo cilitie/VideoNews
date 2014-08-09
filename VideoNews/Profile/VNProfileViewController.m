@@ -259,6 +259,9 @@ static NSString *shareStr;
                     [weakSelf.videoTableView reloadData];
                 }
                 firstLoading = YES;
+                //zmy add 刷新头
+                [weakSelf reloadHeaderView];
+                //
                 [weakSelf.videoTableView.pullToRefreshView stopAnimating];
             }];
         });
@@ -327,6 +330,9 @@ static NSString *shareStr;
                             }
                             [weakSelf.followTableView reloadData];
                         }
+                        //zmy add 刷新头
+                        [weakSelf reloadHeaderView];
+                        //
                         [weakSelf.followTableView.pullToRefreshView stopAnimating];
                     }];
                 }];
@@ -348,6 +354,9 @@ static NSString *shareStr;
                         }
                         [weakSelf.followTableView reloadData];
                     }
+                    //zmy add 刷新头
+                    [weakSelf reloadHeaderView];
+                    //
                     [weakSelf.followTableView.pullToRefreshView stopAnimating];
                 }];
             }
@@ -432,6 +441,9 @@ static NSString *shareStr;
                             }
                             [weakSelf.fansTableView reloadData];
                         }
+                        //zmy add 刷新头
+                        [weakSelf reloadHeaderView];
+                        //
                         [weakSelf.fansTableView.pullToRefreshView stopAnimating];
                     }];
                 }];
@@ -453,6 +465,9 @@ static NSString *shareStr;
                         }
                         [weakSelf.fansTableView reloadData];
                     }
+                    //zmy add 刷新头
+                    [weakSelf reloadHeaderView];
+                    //
                     [weakSelf.fansTableView.pullToRefreshView stopAnimating];
                 }];
             }
@@ -507,6 +522,24 @@ static NSString *shareStr;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileCellDeleteNotification object:nil];
 }
+
+//zmy add
+-(void)reloadHeaderView
+{
+    [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        if (userInfo) {
+            self.userInfo = userInfo;
+            for (VNUserProfileHeaderView *headerView in self.headerViewArr) {
+                headerView.userInfo = userInfo;
+                [headerView reload];
+            }
+        }
+    }];
+}
+//
 /*
 #pragma mark - Navigation
 
@@ -908,6 +941,9 @@ static NSString *shareStr;
                 //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                 [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                 [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
+                //zmy add 刷新头
+                [self reloadHeaderView];
+                //
             }
             else {
                 [VNUtility showHUDText:@"关注失败!" forView:self.view];
@@ -923,6 +959,9 @@ static NSString *shareStr;
                 //[VNUtility showHUDText:@"取消关注成功!" forView:self.view];
                 [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
                 [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                //zmy add 刷新头
+                [self reloadHeaderView];
+                //
             }
             else {
                 [VNUtility showHUDText:@"取消关注失败!" forView:self.view];

@@ -79,9 +79,14 @@
             self.descriptionLabel.text = @"ta没有任何介绍";
         }
         
-        [self.videoCountLabel setText:self.userInfo.video_count];
-        [self.followCountLabel setText:self.userInfo.idol_count];
-        [self.fansCountLabel setText:self.userInfo.fans_count];
+        //[self.videoCountLabel setText:self.userInfo.video_count];
+        //[self.followCountLabel setText:self.userInfo.idol_count];
+        //[self.fansCountLabel setText:self.userInfo.fans_count];
+        //zmy add
+        [self.videoCountLabel setText:[VNUtility countFormatToDisplay:[self.userInfo.video_count intValue]]];
+        [self.followCountLabel setText:[VNUtility countFormatToDisplay:[self.userInfo.idol_count intValue]]];
+        [self.fansCountLabel setText:[VNUtility countFormatToDisplay:[self.userInfo.fans_count intValue]]];
+        //
     }
 }
 

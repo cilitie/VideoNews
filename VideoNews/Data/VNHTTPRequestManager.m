@@ -147,9 +147,9 @@ static int pagesize = 10;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             //FIXME: Server Error, Fix Later
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            
-            if (responseStatus) {
-                isNewsDeleted=[[responseObject objectForKey:@"newsDeleted"] boolValue];
+            isNewsDeleted=[[responseObject objectForKey:@"newsDeleted"] boolValue];
+            if (responseStatus &&[responseObject[@"list"] isKindOfClass:[NSDictionary class]]) {
+                
                 NSArray *responseArr = responseObject[@"list"][@"comment"];
                 for (NSDictionary *dic in responseArr) {
                     comment = [[VNComment alloc] initWithDict:dic];
@@ -178,14 +178,17 @@ static int pagesize = 10;
     NSDictionary *param = @{@"pid": [NSNumber numberWithInt:cid], @"token": [self token], @"timestamp": [self timestamp]};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                NSLog(@"%@", responseObject);
+        //        NSLog(@"%@", responseObject);
+        //NSLog(@"%@", operation);
         VNComment *comment = nil;
         NSMutableArray *commentArr = [NSMutableArray array];
-        
+       // NSLog(@"%@", responseObject[@"comment"]);
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             //FIXME: Server Error, Fix Later
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            //BOOL commentBOOL = [[responseObject objectForKey:@"comment"] boolValue];
+            //若评论删除，服务器返回的comment字段为false,即为0
+            if (responseStatus && [responseObject[@"comment"] isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *responseDic = responseObject[@"comment"];
                 //for (NSDictionary *dic in responseArr) {
                     comment = [[VNComment alloc] initWithDict:responseDic];
@@ -294,7 +297,7 @@ static int pagesize = 10;
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             isNewsDeleted =[[responseObject objectForKey:@"newsDeleted"] boolValue];
             commentSuccess = [[responseObject objectForKey:@"success"] boolValue];
-            if (responseStatus &&commentSuccess) {
+            if (responseStatus &&commentSuccess &&[[responseObject objectForKey:@"comment"] isKindOfClass:[NSDictionary class]]) {
                 comment_count=[[responseObject objectForKey:@"comment_count"] intValue];
                 NSDictionary *commentDic = [responseObject objectForKey:@"comment"];
                 if (commentDic.count) {
@@ -344,7 +347,7 @@ static int pagesize = 10;
             isNewsDeleted= [[responseObject objectForKey:@"newsDeleted"] boolValue];
             isCommentDeleted=[[responseObject objectForKey:@"commentDeleted"] boolValue];
             replySuccess = [[responseObject objectForKey:@"success"] boolValue];
-            if (responseStatus && replySuccess) {
+            if (responseStatus && replySuccess &&[[responseObject objectForKey:@"comment"] isKindOfClass:[NSDictionary class]]) {
                 comment_count= [[responseObject objectForKey:@"comment_count"] intValue];
                 NSDictionary *commentDic = [responseObject objectForKey:@"comment"];
                 if (commentDic.count) {
@@ -472,7 +475,7 @@ static int pagesize = 10;
                 
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                     BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-                    if (responseStatus) {
+                    if (responseStatus &&[[responseObject objectForKey:@"list"]isKindOfClass:[NSDictionary class]]) {
                         NSArray *responseArr = responseObject[@"list"][@"classes"];
                         //            NSLog(@"%@", responseArr);
                         for (NSDictionary *categoryDic in responseArr) {
@@ -525,7 +528,7 @@ static int pagesize = 10;
                 NSMutableArray *newsArr = [NSMutableArray array];
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                     BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-                    if (responseStatus) {
+                    if (responseStatus&&[[responseObject objectForKey:@"list"]isKindOfClass:[NSDictionary class]]) {
                         for (NSDictionary *newsDic in responseObject[@"list"][@"news"]) {
                             news = [[VNNews alloc] initWithDict:newsDic];
                             
@@ -582,7 +585,7 @@ static int pagesize = 10;
         NSMutableArray *resultArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"list"]isKindOfClass:[NSDictionary class]]) {
                 for (NSDictionary *dic in responseObject[@"list"][@"search"]) {
                     if ([searchType isEqualToString:@"news"]) {
                         news = [[VNNews alloc] initWithDict:dic];
@@ -635,7 +638,7 @@ static int pagesize = 10;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             //FIXME: Server Error, Fix Later
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"list"]isKindOfClass:[NSArray class]]) {
                 NSArray *responseArr = responseObject[@"list"];
                 for (NSDictionary *dic in responseArr) {
                     message = [[VNMessage alloc] initWithDict:dic];
@@ -707,7 +710,7 @@ static int pagesize = 10;
         NSMutableArray *idolArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"list"]isKindOfClass:[NSArray class]]) {
                 NSArray *idolList = responseObject[@"list"];
                 if ([idolList count]) {
                     for (NSDictionary *dict in idolList) {
@@ -770,7 +773,7 @@ static int pagesize = 10;
         NSMutableArray *newsArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSArray class]]) {
                 for (NSDictionary *newsDic in [responseObject objectForKey:@"result"]) {
                     news = [[VNNews alloc] initWithDict:newsDic];
                     
@@ -818,7 +821,7 @@ static int pagesize = 10;
         NSString *moreTimestamp=nil;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSDictionary class]]) {
                 moreTimestamp=responseObject[@"result"][@"lastTimestamp"];
                 for (NSDictionary *newsDic in responseObject[@"result"][@"list"]) {
                     news = [[VNNews alloc] initWithDict:newsDic];
@@ -867,7 +870,7 @@ static int pagesize = 10;
         
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"userInfo"]isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *userInfoDict = [responseObject objectForKey:@"userInfo"];
                 userInfo = [[VNUser alloc] initWithDict:userInfoDict];
             }
@@ -895,7 +898,7 @@ static int pagesize = 10;
         NSString *lastTimeStamp = nil;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [responseObject[@"status"] boolValue];
-            if (responseStatus) {
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSDictionary class]]) {
                 NSArray *resultArr = responseObject[@"result"][@"list"];
                 lastTimeStamp = responseObject[@"result"][@"lastTimestamp"];
                 if (resultArr.count) {

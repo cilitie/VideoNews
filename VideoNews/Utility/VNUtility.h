@@ -14,5 +14,6 @@
 + (NSString *)strFromTimeStampSince1970:(NSTimeInterval)timeInterval;
 + (NSString *)getNSCachePath:(NSString *)filenameorpath;
 + (NSString *)timeFormatToDisplay:(NSTimeInterval)timeInterval;
++ (NSString *)countFormatToDisplay:(int)number;
 
 @end
