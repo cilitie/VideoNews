@@ -125,6 +125,22 @@ static NSString *shareStr;
     [_curTableView triggerPullToRefresh];
     
 }
+-(void)reloadHeaderView
+{
+    [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        if (userInfo) {
+            self.mineInfo = userInfo;
+            for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                headerView.userInfo = userInfo;
+                [headerView reload];
+            }
+        }
+    }];
+
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -349,6 +365,9 @@ static NSString *shareStr;
                             [weakSelf.videoTableView reloadData];
                         }
                         firstLoading = YES;
+                        //zmy add 刷新头
+                        [weakSelf reloadHeaderView];
+                        //
                         [weakSelf.videoTableView.pullToRefreshView stopAnimating];
                     }];
                 }];
@@ -411,6 +430,9 @@ static NSString *shareStr;
 
                     }
                     firstLoading = YES;
+                    //zmy add 刷新头
+                    [self reloadHeaderView];
+                    //
                     [weakSelf.favouriteTableView.pullToRefreshView stopAnimating];
                 }];
             });
@@ -469,6 +491,9 @@ static NSString *shareStr;
                         }
                         [weakSelf.followTableView reloadData];
                     }
+                    //zmy add 刷新头
+                    [self reloadHeaderView];
+                    //
                     [weakSelf.followTableView.pullToRefreshView stopAnimating];
                 }];
             });
@@ -540,6 +565,9 @@ static NSString *shareStr;
                             }
                             [weakSelf.fansTableView reloadData];
                         }
+                        //zmy add 刷新头
+                        [self reloadHeaderView];
+                        //
                         [weakSelf.fansTableView.pullToRefreshView stopAnimating];
                     }];
                 }];
@@ -750,16 +778,20 @@ static NSString *shareStr;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.videoTableView) {
-        return self.mineVideoArr.count ? self.mineVideoArr.count : 1;
+        //return self.mineVideoArr.count ? self.mineVideoArr.count : 1;
+        return self.mineVideoArr.count;
     }
     if (tableView == self.favouriteTableView) {
-        return self.favVideoArr.count ? self.favVideoArr.count : 1;
+        //return self.favVideoArr.count ? self.favVideoArr.count : 1;
+        return  self.favVideoArr.count;
     }
     if (tableView == self.followTableView) {
-        return self.followArr.count ? self.followArr.count : 1;
+        //return self.followArr.count ? self.followArr.count : 1;
+        return self.followArr.count;
     }
     if (tableView == self.fansTableView) {
-        return self.fansArr.count ? self.fansArr.count : 1;
+        //return self.fansArr.count ? self.fansArr.count : 1;
+        return self.fansArr.count;
     }
     return 0;
 }
@@ -922,6 +954,7 @@ static NSString *shareStr;
                      else if (isNewsDeleted) {
                          [weakSelf.favVideoArr removeObjectAtIndex:indexPath.row];
                          [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         [tableView reloadData];
                          [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                          
                      }
@@ -1430,12 +1463,17 @@ static NSString *shareStr;
                         {
                             [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
                             [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            [self.favouriteTableView reloadData];
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                         }
                         else if(succeed)
                         {
+                            NSLog(@"%d",self.favVideoArr.count);
+                            NSLog(@"%d",_shareNewsIndexPath.row);
                             [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                            NSLog(@"%d",self.favVideoArr.count);
                             [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            [self.favouriteTableView reloadData];
                             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                 headerView.favouriteCountLabel.text = [self bigNumberToString:user_like_count];
                                 //[headerView reload];
@@ -1521,8 +1559,13 @@ static NSString *shareStr;
                      else if(succeed)
                      {
                          //[self deleteCellAndPop:1];
+                         NSLog(@"%d",self.mineVideoArr.count);
                          [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                         NSLog(@"%d",self.mineVideoArr.count);
+                         NSLog(@"%d",_shareNewsIndexPath.row);
+                         NSLog(@"%d",[self.videoTableView numberOfRowsInSection:0]);
                          [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         [self.videoTableView reloadData];
                          for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                              headerView.videoCountLabel.text = [self bigNumberToString:news_count];
                              //[headerView reload];
@@ -1572,7 +1615,7 @@ static NSString *shareStr;
         NSArray *conpons=[[key stringByDeletingPathExtension] componentsSeparatedByString:@"-"];
         NSString *timestamp=[conpons objectAtIndex:2];
         [self uploadCoverImage:timestamp];
-
+/*
         __weak VNMineProfileViewController *weakSelf = self;
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1622,11 +1665,62 @@ static NSString *shareStr;
                 [self clearTempVideos];
             }
         });
+ */
         
     }else if ([key hasSuffix:@"jpg"]) {
         [VNUtility showHUDText:@"上传成功" forView:self.view];
         //NSLog(@"%@",ret);
         //NSLog(@"%@",key);
+        __weak VNMineProfileViewController *weakSelf = self;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            // NSString *titleString = [self.uploadVideoInfo valueForKey:@"title"];
+            
+            // NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
+            
+            NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
+            
+            //NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
+            //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
+            NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，不看你后悔一辈子！：“%@”",urlString];
+            NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
+            
+            NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
+            
+            if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
+                [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToSina] content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
+                    if (response.responseCode == UMSResponseCodeSuccess) {
+                        NSLog(@"新浪微博分享成功了");
+                    } else if(response.responseCode != UMSResponseCodeCancel) {
+                        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享失败" message:response.message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                }];
+            }
+            if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
+                [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImageData socialUIDelegate:self];
+                UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
+                NSLog(@"%@", snsPlatform);
+                snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+            }
+            
+        });
+        
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            BOOL fromDraft = [[weakSelf.uploadVideoInfo valueForKey:@"isFromDraft"] boolValue];
+            
+            if (fromDraft) {
+                //clear draft video
+                [self clearDraftVideo];
+            }else {
+                //clear clips and temp video.
+                [self clearTempVideos];
+            }
+        });
+
     }
 }
 

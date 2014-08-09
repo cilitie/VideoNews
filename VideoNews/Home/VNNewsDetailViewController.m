@@ -487,16 +487,17 @@ static NSString *shareStr;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.commentArr.count) {
+    /*if (self.commentArr.count) {
         return self.commentArr.count;
     }
     else {
         return 1;
-    }
+    }*/
+    return self.commentArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.commentArr.count) {
+    //if (self.commentArr.count) {
         static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
         VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
@@ -519,8 +520,8 @@ static NSString *shareStr;
         //cell.timeLabel.text = [comment.date substringToIndex:10];
         cell.timeLabel.text = [VNUtility timeFormatToDisplay:[[comment.insert_time substringToIndex:10] floatValue]];
         return cell;
-    }
-    else {
+    //}
+    /*else {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor clearColor];
@@ -531,13 +532,13 @@ static NSString *shareStr;
         label.textAlignment = NSTextAlignmentCenter;
         [cell addSubview:label];
         return cell;
-    }
+    }*/
 }
 
 #pragma mark - UITableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.commentArr.count) {
+    //if (self.commentArr.count) {
         VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
         _curIndexPath=indexPath;
         self.curComment = comment;
@@ -565,7 +566,7 @@ static NSString *shareStr;
         }
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
         actionSheet.delegate = self;
-    }
+    //}
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -778,6 +779,7 @@ static NSString *shareStr;
                         //NSLog(@"%@",_curIndexPath);
                         [weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
                         [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                        [weakSelf.commentTableView reloadData];
                         weakSelf.inputTextView.text=@"";
                         [weakSelf.inputTextView resignFirstResponder];
                         [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
@@ -1122,6 +1124,7 @@ static NSString *shareStr;
                                 //[self.commentTableView triggerPullToRefresh];
                                 [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
                                 [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                [weakSelf.commentTableView reloadData];
                                 if (comment_count>10000) {
                                     weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                                 }
@@ -1133,10 +1136,10 @@ static NSString *shareStr;
                                 //weakSelf.inputTextView.text=@"";
                                 //[weakSelf.inputTextView resignFirstResponder];
                                 //[VNUtility showHUDText:@"删除评论成功!" forView:self.view];
-                            }
-                            else {
+                        }
+                        else {
                                 [VNUtility showHUDText:@"删除评论失败!" forView:self.view];
-                            }
+                        }
                         }];
                     }
                 }
