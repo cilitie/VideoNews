@@ -906,8 +906,7 @@ static NSString *shareStr;
     else {
         [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
     }
-    //[_videoTableView deleteCellAtIndexPath:notification.object];
-    [_videoTableView reloadData];
+    //[_videoTableView reloadData];
 }
 
 - (CGFloat)cellHeightFor:(VNNews *)news {

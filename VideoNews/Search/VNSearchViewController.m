@@ -46,7 +46,7 @@ static int selectedItemIndex;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.categoryCollectionView.alwaysBounceVertical = YES;
     self.searchField = [[VNSearchField alloc] init];
     self.searchField.delegate = self;
     self.searchField.frame = CGRectMake(10, 20+(CGRectGetHeight(self.navBar.bounds)-20-30)/2, CGRectGetWidth(self.navBar.bounds)-10*2, 30);
@@ -71,7 +71,7 @@ static int selectedItemIndex;
         });
     }];
     
-    [self.categoryCollectionView addInfiniteScrollingWithActionHandler:^{
+    /*[self.categoryCollectionView addInfiniteScrollingWithActionHandler:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             //NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
@@ -87,7 +87,7 @@ static int selectedItemIndex;
                 
             }];;
         });
-    }];
+    }];*/
 
     [self.categoryCollectionView triggerPullToRefresh];
 }
