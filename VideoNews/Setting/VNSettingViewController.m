@@ -11,8 +11,9 @@
 #import "UMFeedback.h"
 #import "VNLoginViewController.h"
 #import "VNDraftListController.h"
+#import "UMSocial.h"
 
-@interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate,UIAlertViewDelegate>
+@interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UMSocialUIDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *settingTableView;
 
@@ -133,8 +134,8 @@
             }
                 break;
             case 2: {
-                NSString *appStoreURLStr = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@", AppID];
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appStoreURLStr]];
+                UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", nil];
+                [actionSheet showInView:self.view];
             }
                 break;
             case 3: {
@@ -193,5 +194,77 @@
         
     }
 }
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
+    NSString *shareURL = @"https://itunes.apple.com/cn/app/xiao-xiao-huo-ban-sago-mini/id874425722?mt=8";
+    NSString *snsName = nil;
+    switch (buttonIndex) {
+            //微信朋友圈
+        case 0: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:3];
+            [UMSocialData defaultData].extConfig.wechatTimelineData.url = shareURL;
+        }
+            break;
+            //微信好友
+        case 1: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:2];
+            [UMSocialData defaultData].extConfig.wechatSessionData.url = shareURL;
+        }
+            break;
+            //新浪微博
+        case 2: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:0];
+        }
+            break;
+            //QQ空间
+        case 3: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:5];
+            [UMSocialData defaultData].extConfig.qzoneData.url = shareURL;
+        }
+            break;
+            //QQ好友
+        case 4: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:6];
+            [UMSocialData defaultData].extConfig.qqData.url = shareURL;
+        }
+            break;
+            //腾讯微博
+        case 5: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:1];
+        }
+            break;
+            //人人网
+        case 6: {
+            snsName = [[UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray objectAtIndex:7];
+        }
+            break;
+            //取消或复制
+        case 7: {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = shareURL;
+            [VNUtility showHUDText:@"已复制应用链接" forView:self.view];
+        }
+            break;
+            //取消
+        case 8: {
+            return ;
+        }
+            break;
+    }
+    //设置分享内容，和回调对象
+    if (buttonIndex < 7) {
+        //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  self.shareNews.author.name,self.shareNews.title,self.shareNews.url];
+        NSString *shareText = [NSString stringWithFormat:@"快点击%@下载“时尚拍”，最炫酷的视频，超多福利你懂的！", shareURL];
+        UIImage *shareImage = [UIImage imageNamed:@"Icon"];
+        
+        [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
+        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:snsName];
+        snsPlatform.snsClickHandler(self,[UMSocialControllerService defaultControllerService],YES);
+    }
+}
+
 
 @end

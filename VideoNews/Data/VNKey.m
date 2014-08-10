@@ -46,4 +46,4 @@ NSString *const QQAppKey = @"ftKWwKmysaYIQGVd";
 //NSString *const QQAppID = @"1101719889";
 //NSString *const QQAppKey = @"xScM0nFWCPJqVlaD";
 //FIXME: 替换上线后的AppID
-NSString *const AppID = @"888245642";
+NSString *const AppID = @"907182257";

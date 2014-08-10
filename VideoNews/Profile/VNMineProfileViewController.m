@@ -652,9 +652,12 @@ static NSString *shareStr;
     //NSLog(@"%d",[notification.object integerValue]);
     NSIndexPath *index=notification.object;
     [_mineVideoArr removeObjectAtIndex:index.row];
-    [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
-    //[_videoTableView deleteCellAtIndexPath:notification.object];
-    [_videoTableView reloadData];
+    if (index.row == 0) {
+        [_videoTableView reloadData];
+    }
+    else {
+        [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    }
 }
 
 - (void)removeFavouriteCellForNewsDeleted:(NSNotification *)notification {
@@ -663,9 +666,12 @@ static NSString *shareStr;
     NSIndexPath *index=notification.object;
     //NSLog(@"%d",index.row);
     [_favVideoArr removeObjectAtIndex:index.row];
-    [_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
-    //[_videoTableView deleteCellAtIndexPath:notification.object];
-    [_favouriteTableView reloadData];
+    if (index.row == 0) {
+        [_favouriteTableView reloadData];
+    }
+    else {
+        [_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    }
 }
 
 - (void)uploadVideoFile:(NSNotification *)not
@@ -969,8 +975,12 @@ static NSString *shareStr;
                      }
                      else if (isNewsDeleted) {
                          [weakSelf.favVideoArr removeObjectAtIndex:indexPath.row];
-                         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                         [tableView reloadData];
+                         if (indexPath.row == 0) {
+                             [tableView reloadData];
+                         }
+                         else {
+                             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         }
                          [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                          
                      }
@@ -1478,8 +1488,12 @@ static NSString *shareStr;
                         else if (isNewsDeleted)
                         {
                             [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
-                            [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                            [self.favouriteTableView reloadData];
+                            if (_shareNewsIndexPath.row == 0) {
+                                [self.favouriteTableView reloadData];
+                            }
+                            else {
+                                [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            }
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                         }
                         else if(succeed)
@@ -1488,8 +1502,12 @@ static NSString *shareStr;
                             NSLog(@"%d",_shareNewsIndexPath.row);
                             [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
                             NSLog(@"%d",self.favVideoArr.count);
-                            [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                            [self.favouriteTableView reloadData];
+                            if (_shareNewsIndexPath.row == 0) {
+                                [self.favouriteTableView reloadData];
+                            }
+                            else {
+                                [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            }
                             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                 headerView.favouriteCountLabel.text = [self bigNumberToString:user_like_count];
                                 //[headerView reload];
