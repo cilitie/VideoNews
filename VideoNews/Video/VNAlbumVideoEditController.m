@@ -312,9 +312,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             {
                 CGFloat diffX = weakSelf.videoScrollView.contentOffset.x * clipVideoTrack.naturalSize.width / weakSelf.videoScrollView.contentSize.width;
                 CGFloat diffY = weakSelf.videoScrollView.contentOffset.y * clipVideoTrack.naturalSize.height / weakSelf.videoScrollView.contentSize.height;
-                
+ 
                 CGAffineTransform t1 = CGAffineTransformMakeTranslation(-diffX, -diffY);
                 finalTransform = t1;
+            }
+                break;
+            case VNVideoOrientationLeftWeird:
+            {
+                
+                CGFloat diffY = weakSelf.videoScrollView.contentOffset.y * clipVideoTrack.naturalSize.width / weakSelf.videoScrollView.contentSize.height;
+                
+                CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height , -diffY);
+                finalTransform = CGAffineTransformRotate(t1, M_PI_2);
             }
                 break;
             case VNVideoOrientationRight:

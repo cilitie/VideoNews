@@ -419,11 +419,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         if (self.isVolumePositive) {
             AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
-            AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                                                 preferredTrackID:kCMPersistentTrackID_Invalid];
-            [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                                 ofTrack:[[audioAssetUser tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
-                                                  atTime:kCMTimeZero error:nil];
+            
+            NSArray *audioArr = [audioAssetUser tracksWithMediaType:AVMediaTypeAudio];
+            if (audioArr && audioArr.count > 0) {
+                AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                                     preferredTrackID:kCMPersistentTrackID_Invalid];
+                [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                                     ofTrack:[audioArr objectAtIndex:0]
+                                                      atTime:kCMTimeZero error:nil];
+            }
         }
 
         

@@ -10,6 +10,7 @@
 
 typedef NS_ENUM(NSInteger, VNVideoOrientation) {
     VNVideoOrientationLeft = 0,
+    VNVideoOrientationLeftWeird,
     VNVideoOrientationRight,
     VNVideoOrientationUpsideDown,
     VNVideoOrientationPortrait

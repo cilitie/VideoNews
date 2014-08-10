@@ -70,9 +70,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    
-    NSLog(@"info....:%@",info);
-    
+        
     if ([mediaType isEqualToString:@"public.movie"] && picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary){
         
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
@@ -121,11 +119,16 @@
             AVMutableComposition* mixComposition = [AVMutableComposition composition];
             
             AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:videoURL options:nil];
-            AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+            
+
+            NSArray *audioArr = [audioAssetUser tracksWithMediaType:AVMediaTypeAudio];
+            if (audioArr && audioArr.count > 0) {
+                AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
                                                                                                      preferredTrackID:kCMPersistentTrackID_Invalid];
-            [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
                                                      ofTrack:[[audioAssetUser tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
                                                       atTime:kCMTimeZero error:nil];
+            }
             
             
             AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
@@ -135,11 +138,9 @@
                                             atTime:kCMTimeZero error:nil];
             
             CGAffineTransform rotationTransform;
-            NSLog(@" size...:%@",NSStringFromCGSize(size));
-
 
             VNVideoOrientation ori;
-            
+
             if (size.width == txf.tx && size.height == txf.ty){
                 //right
                 rotationTransform = CGAffineTransformMakeRotation(M_PI);
@@ -147,6 +148,10 @@
             }else if (txf.tx == 0 && txf.ty == 0){
                 //left
                 ori = VNVideoOrientationLeft;
+                if (size.width < size.height) {
+                    rotationTransform = CGAffineTransformMakeRotation(M_PI_2);
+                    ori = VNVideoOrientationLeftWeird;
+                }
             }else if (txf.tx == 0 && txf.ty == size.height){
                 //upside down
                 rotationTransform = CGAffineTransformMakeRotation(-M_PI_2);
@@ -201,7 +206,7 @@
                     default:
                         NSLog(@"NONE");
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            
+
                             VNAlbumVideoEditController *editCtl = [[VNAlbumVideoEditController alloc] initWithVideoPath:filePath andSize:size andScale:timeScale andOrientation:ori];
                             [weakSelf pushViewController:editCtl animated:YES];
                         });
