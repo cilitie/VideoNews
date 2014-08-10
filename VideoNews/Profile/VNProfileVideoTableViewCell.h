@@ -15,6 +15,7 @@ typedef void(^ClickEventHandler)();
 @property (strong, nonatomic) VNNews *news;
 @property (assign, nonatomic) BOOL isPlaying;
 @property (weak, nonatomic) IBOutlet UILabel *favouriteLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *likeImg;
 @property (assign, nonatomic) BOOL isFavouriteNews;
 @property (copy, nonatomic) ClickEventHandler likeHandler;
 @property (copy, nonatomic) ClickEventHandler moreHandler;
@@ -22,5 +23,6 @@ typedef void(^ClickEventHandler)();
 
 - (void)reload;
 - (void)startOrPausePlaying:(BOOL)isPlay;
+- (void)likeStatus:(BOOL)liked;
 
 @end

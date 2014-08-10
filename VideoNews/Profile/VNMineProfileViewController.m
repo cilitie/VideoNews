@@ -29,6 +29,8 @@
     BOOL isTabBarHidden;
     
     BOOL isAutoPlayOption;
+    BOOL mineVideofirstLoading;
+    BOOL favVideofirstLoading;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *videoTableView;
@@ -65,7 +67,6 @@
 
 @end
 
-static BOOL firstLoading = YES;
 static NSString *shareStr;
 #define KVideoTag 101
 #define KLikeTag 102
@@ -98,7 +99,8 @@ static NSString *shareStr;
         _user_token = nil;
         _isPush = NO;
         isTabBarHidden = NO;
-        
+        mineVideofirstLoading = YES;
+        favVideofirstLoading = NO;
         isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
     }
     return self;
@@ -123,7 +125,6 @@ static NSString *shareStr;
         }
     }
     [_curTableView triggerPullToRefresh];
-    
 }
 //zmy add
 -(void)reloadHeaderView
@@ -292,7 +293,6 @@ static NSString *shareStr;
             
             switch (index) {
                 case 0: {
-                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = NO;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
@@ -302,7 +302,6 @@ static NSString *shareStr;
                 }
                     break;
                 case 1: {
-                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = NO;
                     weakSelf.followTableView.hidden = YES;
@@ -312,7 +311,6 @@ static NSString *shareStr;
                 }
                     break;
                 case 2: {
-                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = NO;
@@ -322,7 +320,6 @@ static NSString *shareStr;
                 }
                     break;
                 case 3: {
-                    firstLoading = YES;
                     weakSelf.videoTableView.hidden = YES;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
@@ -354,6 +351,7 @@ static NSString *shareStr;
         [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
         
         [self.videoTableView addPullToRefreshWithActionHandler:^{
+            [self reloadAutoPlayStatus];
             // FIXME: Hard code
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [VNHTTPRequestManager favouriteNewsListFor:self.uid userToken:_user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
@@ -376,7 +374,7 @@ static NSString *shareStr;
                             NSLog(@"%d", weakSelf.mineVideoArr.count);
                             [weakSelf.videoTableView reloadData];
                         }
-                        firstLoading = YES;
+                        mineVideofirstLoading = YES;
                         //zmy add 刷新头
                         [weakSelf reloadHeaderView];
                         //
@@ -400,6 +398,7 @@ static NSString *shareStr;
         }];
         
         [self.videoTableView addInfiniteScrollingWithActionHandler:^{
+            [self reloadAutoPlayStatus];
             NSString *moreTimeStamp = nil;
             if (weakSelf.mineVideoArr.count) {
                 VNNews *lastNews = [weakSelf.mineVideoArr lastObject];
@@ -428,6 +427,7 @@ static NSString *shareStr;
         
         [self.favouriteTableView addPullToRefreshWithActionHandler:^{
             // FIXME: Hard code
+            [self reloadAutoPlayStatus];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                 [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSString *moreTimestamp,NSError *error) {
@@ -441,7 +441,7 @@ static NSString *shareStr;
                         weakSelf.favVideoPageTime=moreTimestamp;
 
                     }
-                    firstLoading = YES;
+                    favVideofirstLoading = YES;
                     //zmy add 刷新头
                     [self reloadHeaderView];
                     //
@@ -451,6 +451,7 @@ static NSString *shareStr;
         }];
         
         [self.favouriteTableView addInfiniteScrollingWithActionHandler:^{
+            [self reloadAutoPlayStatus];
             //NSString *moreTimeStamp = nil;
             if (!weakSelf.favVideoArr.count) {
                 //VNNews *lastNews = [weakSelf.favVideoArr lastObject];
@@ -478,7 +479,6 @@ static NSString *shareStr;
                 
             }];
         }];
-        [self.favouriteTableView triggerPullToRefresh];
         
         //我的关注
         self.followTableView.tableHeaderView = followHeaderView;
@@ -825,17 +825,19 @@ static NSString *shareStr;
             VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
             cell.news = news;
             cell.isFavouriteNews=NO;
+            [cell likeStatus:NO];
             for (NSDictionary *dic in self.favouriteNewsArr) {
                 if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
                     cell.isFavouriteNews=YES;
+                    [cell likeStatus:YES];
                     //[self.favouriteBtn setSelected:YES];
                     break;
                 }
             }
             [cell reload];
-            if (indexPath.row == 0 && firstLoading && isAutoPlayOption) {
+            if (indexPath.row == 0 && mineVideofirstLoading && isAutoPlayOption) {
                 [cell startOrPausePlaying:YES];
-                firstLoading = NO;
+                mineVideofirstLoading = NO;
             }
             cell.commentHandler = ^(){
                 VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
@@ -877,6 +879,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
+                            [weakCell likeStatus:YES];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -910,6 +913,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
+                            [weakCell likeStatus:NO];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -951,9 +955,9 @@ static NSString *shareStr;
             VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
             cell.news = news;
             [cell reload];
-            if (indexPath.row == 0 && firstLoading) {
+            if (indexPath.row == 0 && favVideofirstLoading && isAutoPlayOption) {
                 [cell startOrPausePlaying:YES];
-                firstLoading = NO;
+                favVideofirstLoading = NO;
             }
             cell.commentHandler = ^(){
                 VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
@@ -1247,6 +1251,13 @@ static NSString *shareStr;
     [UIView commitAnimations];
 }
 
+- (void)reloadAutoPlayStatus {
+    BOOL isAutoPlayOptionNew = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
+    if (isAutoPlayOption != isAutoPlayOptionNew) {
+        isAutoPlayOption = isAutoPlayOptionNew;
+    }
+}
+
 #pragma mark - Scrollview Delegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -1364,7 +1375,7 @@ static NSString *shareStr;
                     curCell = cell;
                 }
             }
-            if (curCell && !curCell.isPlaying) {
+            if (curCell) {
                 [curCell startOrPausePlaying:YES];
             }
         }

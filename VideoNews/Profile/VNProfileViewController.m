@@ -24,7 +24,7 @@
     CGPoint previousScrollOffset;
     BOOL isToBottom;
     BOOL isTabBarHidden;
-    
+    BOOL firstLoading;
     BOOL isAutoPlayOption;
 }
 
@@ -56,7 +56,6 @@
 
 @end
 
-static BOOL firstLoading = YES;
 static NSString *shareStr;
 
 @implementation VNProfileViewController
@@ -74,6 +73,7 @@ static NSString *shareStr;
         _fansLastPageTime = nil;
         _shareNews = nil;
         isTabBarHidden = NO;
+        firstLoading = YES;
         isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
         _headerViewArr = [NSArray array];
     }
@@ -195,7 +195,6 @@ static NSString *shareStr;
         
         switch (index) {
             case 0: {
-                firstLoading = YES;
                 weakSelf.videoTableView.hidden = NO;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = YES;
@@ -203,7 +202,6 @@ static NSString *shareStr;
             }
                 break;
             case 1: {
-                firstLoading = YES;
                 weakSelf.videoTableView.hidden = YES;
                 weakSelf.followTableView.hidden = NO;
                 weakSelf.fansTableView.hidden = YES;
@@ -211,7 +209,6 @@ static NSString *shareStr;
             }
                 break;
             case 2: {
-                firstLoading = YES;
                 weakSelf.videoTableView.hidden = YES;
                 weakSelf.followTableView.hidden = YES;
                 weakSelf.fansTableView.hidden = NO;
@@ -246,6 +243,7 @@ static NSString *shareStr;
     [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNUserProfileVideoTableViewCellIdentifier"];
     
     [self.videoTableView addPullToRefreshWithActionHandler:^{
+        [self reloadAutoPlayStatus];
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
@@ -254,11 +252,11 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
+                    firstLoading = YES;
                     [weakSelf.userVideoArr removeAllObjects];
                     [weakSelf.userVideoArr addObjectsFromArray:videoArr];
                     [weakSelf.videoTableView reloadData];
                 }
-                firstLoading = YES;
                 //zmy add 刷新头
                 [weakSelf reloadHeaderView];
                 //
@@ -268,6 +266,7 @@ static NSString *shareStr;
     }];
     
     [self.videoTableView addInfiniteScrollingWithActionHandler:^{
+        [self reloadAutoPlayStatus];
         NSString *moreTimeStamp = nil;
         if (weakSelf.userVideoArr.count) {
             VNNews *lastNews = [weakSelf.userVideoArr lastObject];
@@ -580,6 +579,7 @@ static NSString *shareStr;
             for (NSDictionary *dic in self.favouriteNewsArr) {
                 if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
                     cell.isFavouriteNews=YES;
+                    [cell likeStatus:YES];
                     //[self.favouriteBtn setSelected:YES];
                     break;
                 }
@@ -611,7 +611,12 @@ static NSString *shareStr;
                      }
                      else if (isNewsDeleted) {
                          [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         if (indexPath.row == 0) {
+                             [tableView reloadData];
+                         }
+                         else {
+                             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                         }
                          [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                          
                      }
@@ -645,11 +650,17 @@ static NSString *shareStr;
                         else if (isNewsDeleted) {
                             //删除相应的cell
                             [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            if (indexPath.row == 0) {
+                                [tableView reloadData];
+                            }
+                            else {
+                                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            }
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
+                            [weakCell likeStatus:YES];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -675,11 +686,17 @@ static NSString *shareStr;
                         else if (isNewsDeleted) {
                             //删除相应的cell
                             [weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
-                            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            if (indexPath.row == 0) {
+                                [tableView reloadData];
+                            }
+                            else {
+                                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                            }
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
+                            [weakCell likeStatus:NO];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -883,7 +900,12 @@ static NSString *shareStr;
     //NSLog(@"%d",[notification.object integerValue]);
     NSIndexPath *index=notification.object;
     [_userVideoArr removeObjectAtIndex:index.row];
-    [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    if (index.row == 0) {
+        [_videoTableView reloadData];
+    }
+    else {
+        [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    }
     //[_videoTableView deleteCellAtIndexPath:notification.object];
     [_videoTableView reloadData];
 }
@@ -972,6 +994,13 @@ static NSString *shareStr;
 
 - (IBAction)pop:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)reloadAutoPlayStatus {
+    BOOL isAutoPlayOptionNew = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
+    if (isAutoPlayOption != isAutoPlayOptionNew) {
+        isAutoPlayOption = isAutoPlayOptionNew;
+    }
 }
 
 #pragma mark - Scrollview Delegate
@@ -1068,7 +1097,7 @@ static NSString *shareStr;
                         curCell = cell;
                     }
                 }
-                if (curCell && !curCell.isPlaying) {
+                if (curCell) {
                     [curCell startOrPausePlaying:YES];
                 }
             }

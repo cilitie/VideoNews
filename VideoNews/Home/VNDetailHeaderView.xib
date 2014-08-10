@@ -208,6 +208,7 @@
                 <outlet property="commentBtn" destination="Vgc-AB-Bg0" id="JlX-N7-Xrh"/>
                 <outlet property="commentLabel" destination="8Pt-Bn-TPB" id="sre-iF-4CY"/>
                 <outlet property="likeBtn" destination="zwv-rJ-Kow" id="gl1-E4-ZeE"/>
+                <outlet property="likeImg" destination="7HF-wr-yfD" id="ofS-Dh-LE8"/>
                 <outlet property="likeNumLabel" destination="roz-93-sxF" id="flz-jT-1BL"/>
                 <outlet property="moreBtn" destination="xka-91-HeY" id="x0I-zn-tQt"/>
                 <outlet property="nameLabel" destination="sc1-do-2DV" id="uaF-Kd-Idt"/>

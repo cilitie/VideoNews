@@ -54,24 +54,14 @@ static int selectedItemIndex;
     [self.navBar addSubview:self.searchField];
     
     __weak typeof(self) weakSelf = self;
-    [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
-        if (error) {
-            NSLog(@"%@", [error localizedDescription]);
-        }
-        else {
-            [weakSelf.categoryArr addObjectsFromArray:categoryArr];
-            [self.categoryCollectionView reloadData];
-        }
-    }];
     [self.categoryCollectionView addPullToRefreshWithActionHandler:^{
-        // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
                 if (error) {
                     NSLog(@"%@", [error localizedDescription]);
                 }
                 else {
+                    [weakSelf.categoryArr removeAllObjects];
                     [weakSelf.categoryArr addObjectsFromArray:categoryArr];
                     [self.categoryCollectionView reloadData];
                 }
@@ -80,9 +70,26 @@ static int selectedItemIndex;
             }];;
         });
     }];
-    //[self.categoryCollectionView triggerPullToRefresh];
+    
+    [self.categoryCollectionView addInfiniteScrollingWithActionHandler:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+            [VNHTTPRequestManager categoryList:^(NSArray *categoryArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", [error localizedDescription]);
+                }
+                else {
+                    [weakSelf.categoryArr removeAllObjects];
+                    [weakSelf.categoryArr addObjectsFromArray:categoryArr];
+                    [self.categoryCollectionView reloadData];
+                }
+                [weakSelf.categoryCollectionView.pullToRefreshView stopAnimating];
+                
+            }];;
+        });
+    }];
 
-
+    [self.categoryCollectionView triggerPullToRefresh];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -158,4 +158,14 @@
         self.commentHandler();
     }
 }
+
+- (void)likeStatus:(BOOL)liked {
+    if (liked) {
+        [self.likeImg setImage:[UIImage imageNamed:@"30-30heart_a"]];
+    }
+    else {
+        [self.likeImg setImage:[UIImage imageNamed:@"30-30heart"]];
+    }
+}
+
 @end

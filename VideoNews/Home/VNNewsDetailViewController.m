@@ -152,6 +152,7 @@ static NSString *shareStr;
                 }
                 else if (succeed) {
                     [weakSelf.headerView.likeBtn setSelected:NO];
+                    [weakSelf.headerView likeStatus:NO];
                     [weakSelf.favouriteBtn setSelected:NO];
                     weakSelf.curLikeCount -= 1;
                     weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
@@ -173,6 +174,7 @@ static NSString *shareStr;
                 }
                 else if (succeed) {
                     [weakSelf.headerView.likeBtn setSelected:YES];
+                    [weakSelf.headerView likeStatus:YES];
                     [weakSelf.favouriteBtn setSelected:YES];
                     weakSelf.curLikeCount += 1;
                     weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
@@ -305,6 +307,7 @@ static NSString *shareStr;
                         if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
                             [self.favouriteBtn setSelected:YES];
                             [self.headerView.likeBtn setSelected:YES];
+                            [weakSelf.headerView likeStatus:YES];
                             break;
                         }
                     }
@@ -651,6 +654,7 @@ static NSString *shareStr;
                 [button setSelected:NO];
                 self.curLikeCount -= 1;
                 [self.headerView.likeBtn setSelected:NO];
+                [self.headerView likeStatus:NO];
                 self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
                 //[VNUtility showHUDText:@"已取消!" forView:self.view];
 
@@ -674,6 +678,7 @@ static NSString *shareStr;
             else if (succeed) {
                 [button setSelected:YES];
                 [self.headerView.likeBtn setSelected:YES];
+                [self.headerView likeStatus:YES];
                 self.curLikeCount += 1;
                 self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
                 //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
