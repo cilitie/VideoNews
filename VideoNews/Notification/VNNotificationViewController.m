@@ -342,14 +342,21 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-        [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
+        if (self.messageArr.count) {
+            VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
+            [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+            }];
+            [self.messageArr removeObjectAtIndex:indexPath.row];
+            if (indexPath.row == 0) {
+                [self.messageTableView reloadData];
             }
-        }];
-        [self.messageArr removeObjectAtIndex:indexPath.row];
-        [self.messageTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            else {
+                [self.messageTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+            }
+        }
     }
 }
 
@@ -360,9 +367,12 @@
     NSIndexPath *index=notification.object;
     //NSLog(@"%d",index.row);
     [_messageArr removeObjectAtIndex:index.row];
-    //[_messageTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
-    [self.messageTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:index] withRowAnimation:UITableViewRowAnimationFade];
-    [_messageTableView reloadData];
+    if (index.row == 0) {
+        [self.messageTableView reloadData];
+    }
+    else {
+        [self.messageTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+    }
 }
 
 - (CGFloat)cellHeightFor:(VNMessage *)message {

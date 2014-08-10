@@ -143,6 +143,7 @@
                 <outlet property="bgView" destination="JP5-ak-fhY" id="uSp-Ba-dYH"/>
                 <outlet property="commentNumLabel" destination="c5a-kO-g4f" id="RlW-V3-nhp"/>
                 <outlet property="favouriteLabel" destination="5A9-7x-wIm" id="mKU-Wm-6WP"/>
+                <outlet property="likeImg" destination="Gn2-Er-N2F" id="3ww-YK-8Rm"/>
                 <outlet property="timeLabel" destination="MMy-AN-joi" id="c5g-ON-yty"/>
                 <outlet property="titleLabel" destination="jcB-ZF-0Ee" id="cGx-7G-8SP"/>
                 <outlet property="titleLabelHeightLC" destination="EUS-A5-Iuo" id="jXe-7e-EgN"/>
