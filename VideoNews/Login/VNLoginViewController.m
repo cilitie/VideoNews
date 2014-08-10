@@ -96,6 +96,10 @@
                         [VNUtility showHUDText:@"登录成功!" forView:self.view];
                         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
                         [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+                        if (![[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay]) {
+                            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:VNIsWiFiAutoPlay];
+                            //[[NSUserDefaults standardUserDefaults] synchronize];
+                        }
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         [[NSNotificationCenter defaultCenter]postNotificationName:VNLoginNotification object:nil];
                         [self dismissViewControllerAnimated:YES completion:nil];
@@ -142,6 +146,10 @@
                         [VNUtility showHUDText:@"登录成功!" forView:self.view];
                         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
                         [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+                        if (![[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay]) {
+                            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:VNIsWiFiAutoPlay];
+                            //[[NSUserDefaults standardUserDefaults] synchronize];
+                        }
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         [[NSNotificationCenter defaultCenter]postNotificationName:VNLoginNotification object:nil];
                         [self dismissViewControllerAnimated:YES completion:nil];
