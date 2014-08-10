@@ -1426,10 +1426,10 @@ static NSString *shareStr;
                 if (self.shareNews.url) {
                     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                     pasteboard.string = self.shareNews.url;
-                    [VNUtility showHUDText:@"已复制该文章链接" forView:self.view];
+                    [VNUtility showHUDText:@"已复制该视频链接" forView:self.view];
                 }
                 else {
-                    [VNUtility showHUDText:@"暂无该文章链接" forView:self.view];
+                    [VNUtility showHUDText:@"暂无该视频链接" forView:self.view];
                 }
             }
                 break;
@@ -1458,7 +1458,7 @@ static NSString *shareStr;
                                     [VNUtility showHUDText:@"举报成功!" forView:self.view];
                                 }
                                 else {
-                                    [VNUtility showHUDText:@"您已举报该文章" forView:self.view];
+                                    [VNUtility showHUDText:@"您已举报该视频" forView:self.view];
                                 }
                             }];
                         }
