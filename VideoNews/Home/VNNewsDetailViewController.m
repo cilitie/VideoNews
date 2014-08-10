@@ -157,7 +157,7 @@ static NSString *shareStr;
                     weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
                 }
                 else {
-                    [VNUtility showHUDText:@"取消点赞失败!" forView:weakSelf.view];
+                    [VNUtility showHUDText:@"取消点赞失败或视频已删除!" forView:weakSelf.view];
                 }
             }];
         }
@@ -179,7 +179,7 @@ static NSString *shareStr;
                     //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                 }
                 else {
-                    [VNUtility showHUDText:@"已点赞!" forView:weakSelf.view];
+                    [VNUtility showHUDText:@"已点赞或视频已删除!" forView:weakSelf.view];
                 }
             }];
         }
@@ -656,7 +656,7 @@ static NSString *shareStr;
 
             }
             else {
-                [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
+                [VNUtility showHUDText:@"取消点赞失败或视频已删除!" forView:self.view];
             }
         }];
     }
@@ -679,7 +679,7 @@ static NSString *shareStr;
                 //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
             }
             else {
-                [VNUtility showHUDText:@"已点赞!" forView:self.view];
+                [VNUtility showHUDText:@"已点赞或视频已删除!" forView:self.view];
             }
         }];
     }
@@ -1140,7 +1140,7 @@ static NSString *shareStr;
                                 //[VNUtility showHUDText:@"删除评论成功!" forView:self.view];
                         }
                         else {
-                                [VNUtility showHUDText:@"删除评论失败!" forView:self.view];
+                                [VNUtility showHUDText:@"删除失败或该评论已删除!" forView:self.view];
                         }
                         }];
                     }
