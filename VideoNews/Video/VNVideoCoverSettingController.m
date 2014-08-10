@@ -143,12 +143,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         btnY = 400;
         lblY = 435;
         
-        UILabel *descLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 505, 300, 30)];
+        UILabel *descLbl = [[UILabel alloc] initWithFrame:CGRectMake(80, 505, 300, 30)];
         descLbl.backgroundColor = [UIColor clearColor];
         descLbl.text = @"滑动可选择封面";
         descLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:10];
         descLbl.textColor = [UIColor colorWithRGBValue:0x606366];
-        descLbl.textAlignment = NSTextAlignmentRight;
+        //descLbl.textAlignment = NSTextAlignmentRight;
+        descLbl.textAlignment = NSTextAlignmentCenter;
         [self.view addSubview:descLbl];
     }else {
         framesY = 450;
