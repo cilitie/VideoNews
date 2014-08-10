@@ -51,6 +51,7 @@
 @property (strong, nonatomic) NSString *favVideoPageTime;
 @property (strong, nonatomic) NSMutableArray *favouriteNewsArr;
 @property (strong, nonatomic) UIAlertView *deleteAlert;
+@property (strong ,nonatomic) UIActionSheet *likeActionSheet;
 @property (strong, nonatomic) UITableView *curTableView;
 
 
@@ -70,6 +71,7 @@
 static NSString *shareStr;
 #define KVideoTag 101
 #define KLikeTag 102
+#define KDeleteFromLikes 200
 
 @implementation VNMineProfileViewController
 
@@ -991,8 +993,8 @@ static NSString *shareStr;
                      else
                      {
                          UIActionSheet *actionSheet = nil;
-                         actionSheet.tag=KLikeTag;
                          actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", @"取消喜欢",nil];
+                         actionSheet.tag=KLikeTag;
                          weakSelf.shareNews = news;
                          weakSelf.shareNewsIndexPath=indexPath;
                          [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
@@ -1389,7 +1391,7 @@ static NSString *shareStr;
         NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
         NSString *shareURL = self.shareNews.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
-            shareURL = [[NSString alloc]initWithFormat:@"http://zmysp.sinaapp.com/web/view.php?id=%d&start=1",self.shareNews.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d",self.shareNews.nid];
         }
         NSString *snsName = nil;
         switch (buttonIndex) {
@@ -1451,7 +1453,13 @@ static NSString *shareStr;
                     //TODO: 删除帖子
                     [actionSheet dismissWithClickedButtonIndex:10 animated:YES];
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定要永久删除视频？" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+                    //zmy add
+                   // NSLog(@"%d",actionSheet.tag);
+                    if (actionSheet.tag==KLikeTag) {
+                        alert.tag=KDeleteFromLikes;
+                    }
                     _deleteAlert=alert;
+                    //
                     [alert show];
 
                 }
@@ -1612,10 +1620,21 @@ static NSString *shareStr;
                          else {
                              [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                          }
-                         for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                         if (alertView.tag==KDeleteFromLikes) {
+                             [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                             if (_shareNewsIndexPath.row == 0) {
+                                 [self.favouriteTableView reloadData];
+                             }
+                             else {
+                                 [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                             }
+                         }
+                         [self reloadHeaderView];
+                         /*for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                              headerView.videoCountLabel.text = [self bigNumberToString:news_count];
                              //[headerView reload];
-                         }
+                             
+                         }*/
                          [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                      }
                      else

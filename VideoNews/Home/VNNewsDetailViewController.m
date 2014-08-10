@@ -691,14 +691,7 @@ static NSString *shareStr;
 }
 -(void)deleteCellAndPop:(int)tag
 {
-    if (tag==0) {
-        [VNUtility showHUDText:@"视频已被删除!" forView:self.view];
-    }
-    else
-    {
-        [VNUtility showHUDText:@"视频删除成功!" forView:self.view];
-    }
-    [self.navigationController popViewControllerAnimated:YES];
+    
     switch (_controllerType) {
         case SourceViewControllerTypeHome:
             //NSLog(@"%d",_indexPath.row);
@@ -723,6 +716,14 @@ static NSString *shareStr;
         default:
             break;
     }
+    if (tag==0) {
+        [VNUtility showHUDText:@"视频已被删除!" forView:self.view];
+    }
+    else
+    {
+        [VNUtility showHUDText:@"视频删除成功!" forView:self.view];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 
