@@ -763,6 +763,12 @@ static NSString *shareStr;
             return;
         }
         else {
+            //先将键盘收起
+             /*self.inputTextView.text=@"";
+             self.inputBarHeightLC.constant = 44.0;
+             self.inputTextViewHeightLC.constant = 30.0;
+             [self.inputTextView resignFirstResponder];*/
+
             if ([self.inputTextView.text hasPrefix:@"回复"] && self.curComment!=nil && self.curComment.author!=nil) {
                 //NSLog(@"%@",self.curComment);
                 __weak typeof(self) weakSelf = self;
@@ -781,6 +787,8 @@ static NSString *shareStr;
                         [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                         [weakSelf.commentTableView reloadData];
                         weakSelf.inputTextView.text=@"";
+                        self.inputBarHeightLC.constant = 44.0;
+                        self.inputTextViewHeightLC.constant = 30.0;
                         [weakSelf.inputTextView resignFirstResponder];
                         [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
                     }

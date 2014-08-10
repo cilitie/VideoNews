@@ -199,7 +199,8 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
-    NSString *shareURL = @"https://itunes.apple.com/cn/app/xiao-xiao-huo-ban-sago-mini/id874425722?mt=8";
+    //NSString *shareURL = @"https://itunes.apple.com/cn/app/xiao-xiao-huo-ban-sago-mini/id874425722?mt=8";
+    NSString *shareURL=@"https://itunes.apple.com/us/app/fashionmaker/id907182257?l=zh&ls=1&mt=8 ";
     NSString *snsName = nil;
     switch (buttonIndex) {
             //微信朋友圈
@@ -257,7 +258,7 @@
     //设置分享内容，和回调对象
     if (buttonIndex < 7) {
         //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  self.shareNews.author.name,self.shareNews.title,self.shareNews.url];
-        NSString *shareText = [NSString stringWithFormat:@"快点击%@下载“时尚拍”，最炫酷的视频，超多福利你懂的！", shareURL];
+        NSString *shareText = [NSString stringWithFormat:@"点击下载“时尚拍”，记录你的生活，分享你的穿搭 %@", shareURL];
         UIImage *shareImage = [UIImage imageNamed:@"Icon"];
         
         [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImage socialUIDelegate:self];
