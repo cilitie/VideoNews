@@ -866,7 +866,7 @@ static NSString *shareStr;
             };
             
             __weak typeof(self) weakSelf = self;
-            __weak typeof(cell) weakCell = cell;
+//            __weak typeof(cell) weakCell = cell;
             
             cell.moreHandler = ^{
                 UIActionSheet *actionSheet = nil;
@@ -876,6 +876,7 @@ static NSString *shareStr;
                 actionSheet.tag=KVideoTag;
                 [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
             };
+            /*
             cell.likeHandler = ^(){
                 if (!self.uid || !self.user_token) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
@@ -954,6 +955,7 @@ static NSString *shareStr;
                     }];
                 }
             };
+             */
             return cell;
         }
         else {

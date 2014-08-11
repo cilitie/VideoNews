@@ -635,6 +635,7 @@ static NSString *shareStr;
                  [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
             };
             
+            /*
             cell.likeHandler = ^(){
                 if (!self.mineUid || !self.mineUser_token) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
@@ -713,6 +714,7 @@ static NSString *shareStr;
                     }];
                 }
             };
+             */
             return cell;
         }
         else {
