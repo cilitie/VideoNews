@@ -898,13 +898,13 @@ static NSString *shareStr;
                             weakCell.isFavouriteNews=YES;
 //                            [weakCell likeStatus:YES];
                             [self.favouriteNewsArr addObject:news];
-                            if (like_count>10000) {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                            }
-                            else
-                            {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                            }
+//                            if (like_count>10000) {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+//                            }
+//                            else
+//                            {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+//                            }
                             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                 headerView.favouriteCountLabel.text = [self bigNumberToString: user_like_count];
                                 //[headerView reload];
@@ -934,13 +934,13 @@ static NSString *shareStr;
                             weakCell.isFavouriteNews=NO;
 //                            [weakCell likeStatus:NO];
                             [self.favouriteNewsArr removeObject:news];
-                            if (like_count>10000) {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                            }
-                            else
-                            {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                            }
+//                            if (like_count>10000) {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+//                            }
+//                            else
+//                            {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+//                            }
                             
                             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                 headerView.favouriteCountLabel.text = [self bigNumberToString: user_like_count];

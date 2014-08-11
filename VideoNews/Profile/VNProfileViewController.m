@@ -661,13 +661,13 @@ static NSString *shareStr;
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
 //                            [weakCell likeStatus:YES];
-                            if (like_count>10000) {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                            }
-                            else
-                            {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                            }
+//                            if (like_count>10000) {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+//                            }
+//                            else
+//                            {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+//                            }
                             
                             //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                         }
@@ -697,13 +697,13 @@ static NSString *shareStr;
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
 //                            [weakCell likeStatus:NO];
-                            if (like_count>10000) {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-                            }
-                            else
-                            {
-                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-                            }
+//                            if (like_count>10000) {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+//                            }
+//                            else
+//                            {
+//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+//                            }
                             
                             //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
                         }
