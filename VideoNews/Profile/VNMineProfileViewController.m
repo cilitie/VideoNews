@@ -866,7 +866,7 @@ static NSString *shareStr;
             };
             
             __weak typeof(self) weakSelf = self;
-            __weak typeof(cell) weakCell = cell;
+//            __weak typeof(cell) weakCell = cell;
             
             cell.moreHandler = ^{
                 UIActionSheet *actionSheet = nil;
