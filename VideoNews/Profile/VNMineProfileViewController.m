@@ -1702,7 +1702,7 @@ static NSString *shareStr;
         NSArray *conpons=[[key stringByDeletingPathExtension] componentsSeparatedByString:@"-"];
         NSString *timestamp=[conpons objectAtIndex:2];
         [self uploadCoverImage:timestamp];
-        NSLog(@"%@",ret);
+       // NSLog(@"%@",ret);
         if (ret && [ret isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[ret objectForKey:@"status"] boolValue];
             if (responseStatus) {

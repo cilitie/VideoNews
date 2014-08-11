@@ -993,7 +993,7 @@ static NSString *shareStr;
         //NSLog(@"%@", self.news.url);
         NSString *shareURL = self.news.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
-            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d&start=1",self.news.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d",self.news.nid];
             //NSLog(@"url:%@",shareURL);
         }
         NSString *snsName = nil;
