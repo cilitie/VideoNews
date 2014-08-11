@@ -282,8 +282,10 @@ static NSString *shareStr;
                 NSLog(@"%@", error.localizedDescription);
             }
             else {
-                [weakSelf.userVideoArr addObjectsFromArray:videoArr];
-                [weakSelf.videoTableView reloadData];
+                if (videoArr.count) {
+                    [weakSelf.userVideoArr addObjectsFromArray:videoArr];
+                    [weakSelf.videoTableView reloadData];
+                }
             }
             [weakSelf.videoTableView.infiniteScrollingView stopAnimating];
         }];

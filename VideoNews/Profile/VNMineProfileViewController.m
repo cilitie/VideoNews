@@ -433,8 +433,10 @@ static NSString *shareStr;
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
-                    [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
-                    [weakSelf.videoTableView reloadData];
+                    if (videoArr.count) {
+                        [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
+                        [weakSelf.videoTableView reloadData];
+                    }
                 }
                 [weakSelf.videoTableView.infiniteScrollingView stopAnimating];
             }];
@@ -469,6 +471,7 @@ static NSString *shareStr;
             });
         }];
         
+        
         [self.favouriteTableView addInfiniteScrollingWithActionHandler:^{
             [self reloadAutoPlayStatus];
             //NSString *moreTimeStamp = nil;
@@ -476,26 +479,25 @@ static NSString *shareStr;
                 //VNNews *lastNews = [weakSelf.favVideoArr lastObject];
                 //moreTimeStamp = lastNews.timestamp;
                 weakSelf.favVideoPageTime = [VNHTTPRequestManager timestamp];
-
             }
-            /*else {
-                moreTimeStamp = [VNHTTPRequestManager timestamp];
-            }*/
-            
+//            else {
+//                moreTimeStamp = [VNHTTPRequestManager timestamp];
+//            }
             
             [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:weakSelf.favVideoPageTime completion:^(NSArray *videoArr,NSString * moreTimestamp, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else {
-                    [weakSelf.favVideoArr addObjectsFromArray:videoArr];
-                    [weakSelf.favouriteTableView reloadData];
-                    if (moreTimestamp!=nil) {
+                    if (videoArr.count) {
+                        [weakSelf.favVideoArr addObjectsFromArray:videoArr];
+                        [weakSelf.favouriteTableView reloadData];
+                    }
+                    if (moreTimestamp) {
                         weakSelf.favVideoPageTime=moreTimestamp;
                     }
                 }
                 [weakSelf.favouriteTableView.infiniteScrollingView stopAnimating];
-                
             }];
         }];
         
