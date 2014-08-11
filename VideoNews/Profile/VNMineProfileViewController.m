@@ -886,6 +886,7 @@ static NSString *shareStr;
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
                             [weakCell likeStatus:YES];
+                            [self.favouriteNewsArr addObject:news];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -916,10 +917,12 @@ static NSString *shareStr;
                             //[weakSelf.userVideoArr removeObjectAtIndex:indexPath.row];
                             // [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
+                            [self.favouriteNewsArr removeObject:news];
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
                             [weakCell likeStatus:NO];
+                            [self.favouriteNewsArr removeObject:news];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
