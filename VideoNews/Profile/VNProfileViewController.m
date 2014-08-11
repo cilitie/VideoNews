@@ -228,6 +228,7 @@ static NSString *shareStr;
             case 12: {
                 if (self.userInfo) {
                     VNProfileDetailViewController *profileDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileDetailViewController"];
+                    NSLog(@"%@",self.userInfo);
                     profileDetailViewController.user = self.userInfo;
                     [self.navigationController pushViewController:profileDetailViewController animated:YES];
                 }
@@ -623,7 +624,8 @@ static NSString *shareStr;
                      else
                      {
                          UIActionSheet *actionSheet = nil;
-                         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                         //actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
+                         actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接",@"举报", nil];
                          weakSelf.shareNews = news;
                          [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
                      }
@@ -634,7 +636,7 @@ static NSString *shareStr;
                  weakSelf.shareNews = news;
                  [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
             };
-            
+            /*
             cell.likeHandler = ^(){
                 if (!self.mineUid || !self.mineUser_token) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
@@ -660,14 +662,14 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
-//                            [weakCell likeStatus:YES];
-//                            if (like_count>10000) {
-//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-//                            }
-//                            else
-//                            {
-//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-//                            }
+  //                          [weakCell likeStatus:YES];
+                            if (like_count>10000) {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                            }
+                            else
+                            {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                            }
                             
                             //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                         }
@@ -697,13 +699,13 @@ static NSString *shareStr;
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
 //                            [weakCell likeStatus:NO];
-//                            if (like_count>10000) {
-//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
-//                            }
-//                            else
-//                            {
-//                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
-//                            }
+                            if (like_count>10000) {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
+                            }
+                            else
+                            {
+                                weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d",like_count];
+                            }
                             
                             //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
                         }
@@ -713,6 +715,7 @@ static NSString *shareStr;
                     }];
                 }
             };
+             */
             return cell;
         }
         else {

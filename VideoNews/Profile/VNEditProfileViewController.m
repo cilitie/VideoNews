@@ -271,7 +271,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
             picker.allowsEditing = YES;
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
                 if ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusDenied) {
-                    [VNUtility showHUDText:@"您未允许使用摄像头" forView:self.view];
+                    [VNUtility showHUDText:@"程序没有权限访问您的摄像头，请在隐私设置中开启。" forView:self.view];
                 }
                 else {
                     picker.videoQuality = UIImagePickerControllerQualityTypeLow;

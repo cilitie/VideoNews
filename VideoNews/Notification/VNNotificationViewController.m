@@ -72,7 +72,7 @@
 
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
-    
+  //zmy add
     VNAuthUser *authUser = nil;
     NSString *user_token = @"";
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:isLogin] boolValue]) {
@@ -81,14 +81,11 @@
             authUser = [[VNAuthUser alloc] initWithDict:userInfo];
         }
         user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-        //NSLog(@"uid:%@",authUser.openid);
     }
     else {
-        //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
-        //[alert show];
         return;
     }
-    //userToken:(NSString *)user_token
+    //
     __weak typeof(self) weakSelf = self;
 //    _openUid=authUser.openid;
 //    _user_token=user_token;
@@ -106,6 +103,14 @@
     [self.messageTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //zmy add
+            VNAuthUser *authUser = nil;
+            NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+            if (userInfo.count) {
+                authUser = [[VNAuthUser alloc] initWithDict:userInfo];
+            }
+           NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            //
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
                 if (error) {
