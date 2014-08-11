@@ -53,6 +53,7 @@
 @property (strong, nonatomic) UIAlertView *deleteAlert;
 @property (strong ,nonatomic) UIActionSheet *likeActionSheet;
 @property (strong, nonatomic) UITableView *curTableView;
+@property (strong, nonatomic) NSString *urlStrToShare;
 
 
 @property (strong, nonatomic) NSString *uid;
@@ -1687,6 +1688,16 @@ static NSString *shareStr;
         NSArray *conpons=[[key stringByDeletingPathExtension] componentsSeparatedByString:@"-"];
         NSString *timestamp=[conpons objectAtIndex:2];
         [self uploadCoverImage:timestamp];
+        NSLog(@"%@",ret);
+        if (ret && [ret isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[ret objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                NSDictionary *news=[ret objectForKey:@"news"];
+                if ([news isKindOfClass:[NSDictionary class]]) {
+                    _urlStrToShare=news[@"url"];
+                }
+            }
+        }
 /*
         __weak VNMineProfileViewController *weakSelf = self;
         
@@ -1751,11 +1762,11 @@ static NSString *shareStr;
             
             // NSString *nickNameString = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] valueForKey:@"nickname"];
             
-            NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
+            //NSString *urlString = [NSString stringWithFormat:@"http://fashion-video.qiniudn.com/%@",key];
             
             //NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
             //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
-            NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，欢迎围观~：“%@”",urlString];
+            NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，欢迎围观~：“%@”",_urlStrToShare];
             NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
             
             NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];

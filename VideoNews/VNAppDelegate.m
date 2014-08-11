@@ -23,8 +23,8 @@
     [UMSocialData setAppKey:UmengAppkey];
     
     [UMSocialConfig setSupportSinaSSO:YES appRedirectUrl:@"http://sns.whalecloud.com/sina2/callback"];
-    [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.baidu.com"];
-    [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.baidu.com"];
+    [UMSocialWechatHandler setWXAppId:WXAppkey url:@"http://www.shishangpai.com.cn"];
+    [UMSocialQQHandler setQQWithAppId:QQAppID appKey:QQAppKey url:@"http://www.shishangpai.com.cn"];
     [UMSocialQQHandler setSupportQzoneSSO:YES];
     //注册通知
     [UIResponder registerRemote];
