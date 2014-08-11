@@ -187,7 +187,12 @@ static NSString *shareStr;
     //zmy add
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userReLogin:) name:VNLoginNotification object:nil];
     //
-
+    VNMineProfileHeaderView *videoHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *favHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
+    VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
+    self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
+    
     [self reload];
     
     [self.followTableView setTableFooterView:[[UIView alloc] init]];
@@ -221,12 +226,11 @@ static NSString *shareStr;
                 [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
             }
         }];*/
-
-        VNMineProfileHeaderView *videoHeaderView = loadXib(@"VNMineProfileHeaderView");
-        VNMineProfileHeaderView *favHeaderView = loadXib(@"VNMineProfileHeaderView");
-        VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
-        VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
-        self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
+        VNMineProfileHeaderView *videoHeaderView = self.headerViewArr[0];
+        VNMineProfileHeaderView *favHeaderView = self.headerViewArr[1];
+        VNMineProfileHeaderView *followHeaderView = self.headerViewArr[2];
+        VNMineProfileHeaderView *fansHeaderView = self.headerViewArr[3];
+        
         if ([VNHTTPRequestManager isReachable]) {
             [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
                 if (error) {
@@ -1377,7 +1381,7 @@ static NSString *shareStr;
                     curCell = cell;
                 }
             }
-            if (curCell) {
+            if (curCell && !curCell.isPlaying) {
                 [curCell startOrPausePlaying:YES];
             }
         }
