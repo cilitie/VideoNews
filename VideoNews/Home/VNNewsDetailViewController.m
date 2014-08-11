@@ -34,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIView *inputBar;
 @property (weak, nonatomic) IBOutlet UIButton *favouriteBtn;
 @property (weak, nonatomic) IBOutlet UILabel *noCommentLabel;
+@property (weak, nonatomic) IBOutlet UIButton *commentBtn;
 @property (strong, nonatomic) NSMutableArray *commentArr;
 @property (strong, nonatomic) NSMutableArray *commentArrNotify;
 @property (strong,nonatomic)VNComment *curComment;
@@ -504,6 +505,9 @@ static NSString *shareStr;
         static NSString *cellIdentifier = @"VNCommentTableViewCellIdentifier";
         VNCommentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
             VNComment *comment = [self.commentArr objectAtIndex:indexPath.row];
+        [cell.thumbnail setImage:[UIImage imageNamed:@"150-150User"] forState:UIControlStateNormal];
+        [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
+        
         [cell.thumbnail setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:comment.author.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [cell.thumbnail.layer setCornerRadius:CGRectGetHeight([cell.thumbnail bounds]) / 2];
         cell.thumbnail.layer.masksToBounds = YES;
@@ -755,6 +759,7 @@ static NSString *shareStr;
 }
 
 - (IBAction)sendComment:(id)sender {
+    self.commentBtn.enabled = NO;
     NSString *str = self.inputTextView.text;
     NSMutableString *commentStr = [[NSMutableString alloc] init];
     [commentStr setString:str];
@@ -762,11 +767,13 @@ static NSString *shareStr;
     //NSLog(@"%@", commentStr);
     if (commentStr.length == 0) {
         [VNUtility showHUDText:@"发送内容为空!" forView:self.view];
+        self.commentBtn.enabled = YES;
         return;
     }
     else {
         if (!self.thresholdLabel.hidden) {
             [VNUtility showHUDText:@"发送内容字数超过140!" forView:self.view];
+            self.commentBtn.enabled = YES;
             return;
         }
         else {
@@ -829,6 +836,7 @@ static NSString *shareStr;
                     else {
                         [VNUtility showHUDText:@"回复失败!" forView:self.view];
                     }
+                    self.commentBtn.enabled = YES;
                 }];
             }
             else {
@@ -863,6 +871,7 @@ static NSString *shareStr;
                     else {
                         [VNUtility showHUDText:@"评论失败!" forView:self.view];
                     }
+                    self.commentBtn.enabled = YES;
                 }];
             }
         }

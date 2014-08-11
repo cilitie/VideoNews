@@ -29,23 +29,26 @@
 
 @implementation VNProfileVideoTableViewCell
 
-- (void)awakeFromNib
-{
-    self.bgView.layer.cornerRadius = 5.0;
-    self.bgView.layer.masksToBounds = YES;
-    self.moviePlayer = [[MPMoviePlayerController alloc] init];
-    self.moviePlayer.controlStyle = MPMovieControlStyleNone;
-    self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-    [self.moviePlayer.view setFrame:self.videoImgView.frame];
-    self.moviePlayer.shouldAutoplay = NO;
-    [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-    [self.bgView addSubview:self.moviePlayer.view];
-    
-    self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.playBtn.frame = CGRectMake(0, 0, 300.0, 300.0);
-    self.playBtn.center = self.videoImgView.center;
-    [self.bgView addSubview:self.playBtn];
+- (void)awakeFromNib {
+    if (!self.moviePlayer) {
+        self.bgView.layer.cornerRadius = 5.0;
+        self.bgView.layer.masksToBounds = YES;
+        self.moviePlayer = [[MPMoviePlayerController alloc] init];
+        self.moviePlayer.controlStyle = MPMovieControlStyleNone;
+        self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+        [self.moviePlayer.view setFrame:self.videoImgView.frame];
+        self.moviePlayer.shouldAutoplay = NO;
+        [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+        [self.bgView addSubview:self.moviePlayer.view];
+        
+        self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.playBtn.frame = CGRectMake(0, 0, 300.0, 300.0);
+        self.playBtn.center = self.videoImgView.center;
+        [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
+        self.isPlaying = NO;
+        [self.bgView addSubview:self.playBtn];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -94,7 +97,7 @@
 
 - (void)reload {
     if (self.news) {
-        
+        [self.videoImgView setImage:[UIImage imageNamed:@"600-600pic"]];
         [self.videoImgView setImageWithURL:[NSURL URLWithString:self.news.imgMdeia.url] placeholderImage:[UIImage imageNamed:@"600-600pic"]];
         
         NSLog(@"%@", self.news.title);
@@ -112,7 +115,6 @@
         //视频URL
         NSLog(@"%@", self.news.videoMedia.url);
         NSURL *url = [NSURL URLWithString:self.news.videoMedia.url];
-//        NSURL *url = [NSURL URLWithString:@"http://cloud.video.taobao.com//play/u/320975160/p/1/e/2/t/1/12378629.M3u8"];
         self.moviePlayer.contentURL = url;
     }
 }

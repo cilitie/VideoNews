@@ -52,8 +52,6 @@
 @property (strong, nonatomic) NSMutableArray *favouriteNewsArr;
 @property (strong, nonatomic) UIAlertView *deleteAlert;
 @property (strong ,nonatomic) UIActionSheet *likeActionSheet;
-@property (strong, nonatomic) UITableView *curTableView;
-
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
@@ -126,7 +124,23 @@ static NSString *shareStr;
             }];
         }
     }
-    [_curTableView triggerPullToRefresh];
+    
+    if (!self.videoTableView.hidden) {
+        [self.videoTableView scrollsToTop];
+        [self.videoTableView triggerPullToRefresh];
+    }
+    if (!self.favouriteTableView.hidden) {
+        [self.favouriteTableView scrollsToTop];
+        [self.favouriteTableView triggerPullToRefresh];
+    }
+    if (!self.followTableView.hidden) {
+        [self.followTableView scrollsToTop];
+        [self.followTableView triggerPullToRefresh];
+    }
+    if (!self.fansTableView.hidden) {
+        [self.fansTableView scrollsToTop];
+        [self.fansTableView triggerPullToRefresh];
+    }
 }
 //zmy add
 -(void)reloadHeaderView
@@ -192,8 +206,12 @@ static NSString *shareStr;
     VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
     VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
     self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
-    
     [self reload];
+    
+    self.videoTableView.tableHeaderView = videoHeaderView;
+    self.favouriteTableView.tableHeaderView = favHeaderView;
+    self.followTableView.tableHeaderView = followHeaderView;
+    self.fansTableView.tableHeaderView = fansHeaderView;
     
     [self.followTableView setTableFooterView:[[UIView alloc] init]];
     [self.fansTableView setTableFooterView:[[UIView alloc] init]];
@@ -303,7 +321,6 @@ static NSString *shareStr;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
                     weakSelf.fansTableView.hidden = YES;
-                    weakSelf.curTableView=weakSelf.videoTableView;
                     [weakSelf.videoTableView triggerPullToRefresh];
                 }
                     break;
@@ -312,7 +329,6 @@ static NSString *shareStr;
                     weakSelf.favouriteTableView.hidden = NO;
                     weakSelf.followTableView.hidden = YES;
                     weakSelf.fansTableView.hidden = YES;
-                    weakSelf.curTableView=weakSelf.favouriteTableView;
                     [weakSelf.favouriteTableView triggerPullToRefresh];
                 }
                     break;
@@ -321,7 +337,6 @@ static NSString *shareStr;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = NO;
                     weakSelf.fansTableView.hidden = YES;
-                    weakSelf.curTableView=weakSelf.followTableView;
                     [weakSelf.followTableView triggerPullToRefresh];
                 }
                     break;
@@ -330,7 +345,6 @@ static NSString *shareStr;
                     weakSelf.favouriteTableView.hidden = YES;
                     weakSelf.followTableView.hidden = YES;
                     weakSelf.fansTableView.hidden = NO;
-                    weakSelf.curTableView=weakSelf.fansTableView;
                     [weakSelf.fansTableView triggerPullToRefresh];
                 }
                     break;
@@ -353,7 +367,6 @@ static NSString *shareStr;
         fansHeaderView.tabHandler = videoHeaderView.tabHandler;
         
         //我的视频
-        self.videoTableView.tableHeaderView = videoHeaderView;
         [self.videoTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileVideoTableViewCellIdentifier"];
         
         [self.videoTableView addPullToRefreshWithActionHandler:^{
@@ -428,7 +441,6 @@ static NSString *shareStr;
         [self.videoTableView triggerPullToRefresh];
         
         //我的收藏
-        self.favouriteTableView.tableHeaderView = favHeaderView;
         [self.favouriteTableView registerNib:[UINib nibWithNibName:@"VNProfileVideoTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFavTableViewCellIdentifier"];
         
         [self.favouriteTableView addPullToRefreshWithActionHandler:^{
@@ -487,7 +499,6 @@ static NSString *shareStr;
         }];
         
         //我的关注
-        self.followTableView.tableHeaderView = followHeaderView;
         [self.followTableView registerNib:[UINib nibWithNibName:@"VNProfileFansTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFollowTableViewCellIdentifier"];
         
         [self.followTableView addPullToRefreshWithActionHandler:^{
@@ -546,7 +557,6 @@ static NSString *shareStr;
         }];
         
         //我的粉丝
-        self.fansTableView.tableHeaderView = fansHeaderView;
         [self.fansTableView registerNib:[UINib nibWithNibName:@"VNProfileFansTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNProfileFansTableViewCellIdentifier"];
         
         [self.fansTableView addPullToRefreshWithActionHandler:^{
@@ -831,11 +841,11 @@ static NSString *shareStr;
             VNNews *news = [self.mineVideoArr objectAtIndex:indexPath.row];
             cell.news = news;
             cell.isFavouriteNews=NO;
-            [cell likeStatus:NO];
+//            [cell likeStatus:NO];
             for (NSDictionary *dic in self.favouriteNewsArr) {
                 if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
                     cell.isFavouriteNews=YES;
-                    [cell likeStatus:YES];
+//                    [cell likeStatus:YES];
                     //[self.favouriteBtn setSelected:YES];
                     break;
                 }
@@ -885,7 +895,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
-                            [weakCell likeStatus:YES];
+//                            [weakCell likeStatus:YES];
                             [self.favouriteNewsArr addObject:news];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
@@ -921,7 +931,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
-                            [weakCell likeStatus:NO];
+//                            [weakCell likeStatus:NO];
                             [self.favouriteNewsArr removeObject:news];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];

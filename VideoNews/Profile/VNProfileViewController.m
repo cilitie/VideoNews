@@ -579,7 +579,7 @@ static NSString *shareStr;
             for (NSDictionary *dic in self.favouriteNewsArr) {
                 if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]]) {
                     cell.isFavouriteNews=YES;
-                    [cell likeStatus:YES];
+//                    [cell likeStatus:YES];
                     //[self.favouriteBtn setSelected:YES];
                     break;
                 }
@@ -660,7 +660,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=YES;
-                            [weakCell likeStatus:YES];
+//                            [weakCell likeStatus:YES];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
@@ -696,7 +696,7 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             weakCell.isFavouriteNews=NO;
-                            [weakCell likeStatus:NO];
+//                            [weakCell likeStatus:NO];
                             if (like_count>10000) {
                                 weakCell.favouriteLabel.text=[NSString stringWithFormat:@"%d万",like_count/10000];
                             }
