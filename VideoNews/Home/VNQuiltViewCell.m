@@ -43,8 +43,11 @@ static CGFloat totleWidth = 145.0;
         _newsImageView = [[UIImageView alloc]initWithFrame:CGRectZero];
         UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
         [_newsImageView addGestureRecognizer:tapGestureRecognizer];
+        
         //[tapGestureRecognizer release];
         [_newsImageView setUserInteractionEnabled:YES];
+        [_titleLabel addGestureRecognizer:tapGestureRecognizer];
+        [_titleLabel setUserInteractionEnabled:YES];
         
         _thumbnailImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30.0, 30.0)];
         _thumbnailImageView.contentMode=UIViewContentModeScaleAspectFill;
