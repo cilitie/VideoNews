@@ -61,8 +61,10 @@
     
     //local audio files path array
     NSArray *arr = [[NSBundle mainBundle] pathsForResourcesOfType:@"" inDirectory:@"Audios"];
+    //NSLog(@"%@",arr);
     _audioPathsArr = [NSMutableArray arrayWithCapacity:1];
     [_audioPathsArr addObjectsFromArray:arr];
+   // NSLog(@"%@",_audioPathsArr);
     
     //tableview display audio list.
     UITableView *audioListTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, 320, self.view.frame.size.height - 64 - 40) style:UITableViewStyleGrouped];
