@@ -15,6 +15,7 @@
 #import "VNTabBarViewController.h"
 #import "UMSocial.h"
 #import "WXApi.h"
+#import "VNVideoCoverSettingViewController.h"
 
 @interface VNVideoShareViewController () <UIGestureRecognizerDelegate>
 
@@ -27,6 +28,8 @@
 
 @property (nonatomic, assign) BOOL shareSina;
 @property (nonatomic, assign) BOOL shareWeixin;
+
+@property (nonatomic, strong) UIButton *videoCoverImgBtn;
 
 @end
 
@@ -129,10 +132,21 @@
 
     [self.view addSubview:topView];
     
-    UIImageView *videoCoverView = [[UIImageView alloc] initWithFrame:CGRectMake(120, 85, 80, 80)];
-    videoCoverView.backgroundColor = [UIColor clearColor];
-    videoCoverView.image = self.coverImg;
-    [self.view addSubview:videoCoverView];
+    //coverView
+    _videoCoverImgBtn = [[UIButton alloc] initWithFrame:CGRectMake(120, 85, 80, 80)];
+    _videoCoverImgBtn.backgroundColor = [UIColor clearColor];
+    [_videoCoverImgBtn setImage:self.coverImg forState:UIControlStateNormal];
+    [_videoCoverImgBtn addTarget:self action:@selector(doSetCover) forControlEvents:UIControlEventTouchUpInside];
+    UILabel *descLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, 80, 20)];
+    descLbl.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
+    descLbl.textColor = [UIColor whiteColor];
+    descLbl.text = @"设置封面";
+    descLbl.textAlignment = NSTextAlignmentCenter;
+    descLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:13];
+    [_videoCoverImgBtn addSubview:descLbl];
+    
+    [self.view addSubview:_videoCoverImgBtn];
+    
     
     [self.view addSubview:self.titleTF];
     [self.view addSubview:self.tagsTF];
@@ -204,6 +218,9 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CoverDidChanged:) name:@"VNVideoCoverDidChangedNotification" object:nil];
+    
+    self.coverTime = 0;
 }
 
 - (void)didReceiveMemoryWarning
@@ -214,6 +231,7 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VNVideoCoverDidChangedNotification" object:nil];
     NSLog(@"dealloc ..... :%s",__FUNCTION__);
 }
 
@@ -274,6 +292,23 @@
 
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
+}
+
+- (void)doSetCover
+{
+    VNVideoCoverSettingViewController *coverSettingCtl = [[VNVideoCoverSettingViewController alloc] init];
+    coverSettingCtl.videoPath = self.videoPath;
+    [self presentViewController:coverSettingCtl animated:YES completion:nil];
+}
+
+- (void)CoverDidChanged:(NSNotification *)not
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    UIImage *coverImage = [not.userInfo objectForKey:@"coverImg"];
+    CGFloat time = [[not.userInfo objectForKey:@"coverTime"] floatValue];
+    [self.videoCoverImgBtn setImage:coverImage forState:UIControlStateNormal];
+    self.coverImg = coverImage;
+    self.coverTime = time;
 }
 
 - (void)handleSwitch:(UISwitch *)sw

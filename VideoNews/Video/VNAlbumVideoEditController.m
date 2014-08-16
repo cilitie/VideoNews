@@ -11,7 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "VNVideoFramesView.h"
 #import "VNProgressViewForAlbum.h"
-#import "VNVideoCoverSettingController.h"
+#import "VNVideoCustomizationController.h"
 #import <MBProgressHUD.h>
 
 @interface VNAlbumVideoEditController ()
@@ -415,7 +415,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void) pushToCoverSettingCtl
 {
     NSString *combinedPath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
-    VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+    VNVideoCustomizationController *coverSettingCtl = [[VNVideoCustomizationController alloc] init];
     coverSettingCtl.videoPath = combinedPath;
     [self.navigationController pushViewController:coverSettingCtl animated:YES];
 }

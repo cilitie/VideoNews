@@ -14,7 +14,7 @@
 #import "VNHTTPRequestManager.h"
 #import <AFNetworking.h>
 
-#import "VNVideoCoverSettingController.h"
+#import "VNVideoCustomizationController.h"
 
 @interface VNVideoCaptureViewController () <AVCaptureFileOutputRecordingDelegate,VNCameraOverlayViewDelegate,UIAlertViewDelegate>
 
@@ -136,7 +136,7 @@ static NSString *videoFilePath;
             __weak VNVideoCaptureViewController *weakSelf = self;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+                VNVideoCustomizationController *coverSettingCtl = [[VNVideoCustomizationController alloc] init];
                 coverSettingCtl.videoPath = cropFilePath;
                 [weakSelf.navigationController pushViewController:coverSettingCtl animated:NO];
             });
@@ -655,7 +655,7 @@ static NSString *videoFilePath;
 - (void) pushToCoverSettingCtl
 {
     NSString *cropPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Temp/%@Cropped.mp4",TEMP_VIDEO_NAME_PREFIX]];
-    VNVideoCoverSettingController *coverSettingCtl = [[VNVideoCoverSettingController alloc] init];
+    VNVideoCustomizationController *coverSettingCtl = [[VNVideoCustomizationController alloc] init];
     coverSettingCtl.videoPath = cropPath;
     [self.navigationController pushViewController:coverSettingCtl animated:YES];
 }

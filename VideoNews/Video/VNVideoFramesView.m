@@ -32,7 +32,8 @@
         panGesture.delegate = self;
         [self addGestureRecognizer:panGesture];
         
-        _showImgView = [[UIImageView alloc] initWithFrame:CGRectMake(-3, -3, 26, 36)];
+        float height = frame.size.height;
+        _showImgView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, -1, height + 3, height + 3)];
         _showImgView.backgroundColor = [UIColor clearColor];
         _showImgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
         _showImgView.layer.borderWidth = 1.5;
@@ -54,20 +55,19 @@
  */
 - (void)generateImagesOfVideo
 {
+    float h = self.frame.size.height;
+    
     AVAsset *myAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
     AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:myAsset];
     imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
     imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-    imageGenerator.maximumSize = CGSizeMake(60, 60);
+    imageGenerator.maximumSize = CGSizeMake(h, h);
     imageGenerator.appliesPreferredTrackTransform = YES;
-    
-    int picWidth = 21;
-    int picHeight = 30;
     
     CGFloat durationSeconds = CMTimeGetSeconds([myAsset duration]);
     self.duration = durationSeconds;
     
-    int picsCnt = ceil(320 / picWidth) + 1;
+    int picsCnt = ceil(320 / h) + 1;
     
     NSMutableArray *allTimes = [[NSMutableArray alloc] init];
     
@@ -78,7 +78,7 @@
     //generate frames.
     for (int i=0, ii = 0; i< picsCnt; i++){
         
-        time4Pic = i * picWidth;
+        time4Pic = i * h;
         
         CMTime timeFrame = CMTimeMakeWithSeconds(durationSeconds * time4Pic / 320, myAsset.duration.timescale);
         
@@ -91,9 +91,9 @@
         UIImageView *tmp = [[UIImageView alloc] initWithImage:videoScreen];
         
         CGRect currentFrame = tmp.frame;
-        currentFrame.origin.x = ii * picWidth;
-        currentFrame.size.width = picWidth;
-        currentFrame.size.height = picHeight;
+        currentFrame.origin.x = ii * h;
+        currentFrame.size.width = h;
+        currentFrame.size.height = h;
 
         tmp.frame = currentFrame;
         
