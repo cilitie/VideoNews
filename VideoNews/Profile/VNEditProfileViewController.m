@@ -316,16 +316,19 @@ static EditPickerType pickerType = EditPickerTypeGender;
             NSString *uid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
             uploadManager.delegate=self;
-            [uploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else if (succeed) {
-                    //[VNUtility showHUDText:@"头像更新成功！" forView:self.view];
-                    //return ;
-                }
-                //[VNUtility showHUDText:@"头像更新失败！" forView:self.view];
-            }];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [uploadManager uploadImage:imageData Uid:uid completion:^(bool succeed, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (succeed) {
+                        //[VNUtility showHUDText:@"头像更新成功！" forView:self.view];
+                        //return ;
+                    }
+                    //[VNUtility showHUDText:@"头像更新失败！" forView:self.view];
+                }];
+            });
+            
         }
     }
 }

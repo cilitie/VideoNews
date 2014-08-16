@@ -778,13 +778,9 @@ static NSString *shareStr;
         }
         else {
             //先将键盘收起
-             /*self.inputTextView.text=@"";
-             self.inputBarHeightLC.constant = 44.0;
-             self.inputTextViewHeightLC.constant = 30.0;
-             [self.inputTextView resignFirstResponder];*/
 
             if ([self.inputTextView.text hasPrefix:@"回复"] && self.curComment!=nil && self.curComment.author!=nil) {
-                //NSLog(@"%@",self.curComment);
+                /*
                 __weak typeof(self) weakSelf = self;
                 [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, int comment_count,NSError *error) {
                     //isCommentDeleted=YES;
@@ -796,10 +792,6 @@ static NSString *shareStr;
                     }
                     else if (isCommentDeleted)
                     {
-                        //NSLog(@"%@",_curIndexPath);
-                        /*[weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
-                        [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                        [weakSelf.commentTableView reloadData];*/
                         [weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
                         if (_curIndexPath.row == 0) {
                             [weakSelf.commentTableView reloadData];
@@ -838,8 +830,70 @@ static NSString *shareStr;
                     }
                     self.commentBtn.enabled = YES;
                 }];
+                 */
+                 __weak typeof(self) weakSelf = self;
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, int comment_count,NSError *error) {
+                        //isCommentDeleted=YES;
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else if (isNewsDeleted) {
+                            dispatch_async(dispatch_get_main_queue(),^{
+                                [self deleteCellAndPop:0];
+                            });
+                            
+                        }
+                        else if (isCommentDeleted)
+                        {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
+                                if (_curIndexPath.row == 0) {
+                                    [weakSelf.commentTableView reloadData];
+                                }
+                                else {
+                                    [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                }
+                                
+                                weakSelf.inputTextView.text=@"";
+                                self.inputBarHeightLC.constant = 44.0;
+                                self.inputTextViewHeightLC.constant = 30.0;
+                                [weakSelf.inputTextView resignFirstResponder];
+                                [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
+                            
+                            });
+                            
+                        }
+                        else if (succeed) {
+                            //[VNUtility showHUDText:@"回复成功!" forView:self.view];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                self.inputTextView.text = @"";
+                                self.inputBarHeightLC.constant = 44.0;
+                                self.inputTextViewHeightLC.constant = 30.0;
+                                [self.inputTextView resignFirstResponder];
+                                if (comment) {
+                                    [self.commentArr insertObject:comment atIndex:0];
+                                    [self.commentTableView reloadData];
+                                }
+                                if (comment_count>10000) {
+                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                }
+                                else
+                                {
+                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                }
+                            });
+                            
+                        }
+                        else {
+                            [VNUtility showHUDText:@"回复失败!" forView:self.view];
+                        }
+                        self.commentBtn.enabled = YES;
+                    }];
+                });
             }
             else {
+                /*
                 [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
                     //isNewsDeleted=YES;
                     if (error) {
@@ -873,6 +927,45 @@ static NSString *shareStr;
                     }
                     self.commentBtn.enabled = YES;
                 }];
+                 */
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
+                        //isNewsDeleted=YES;
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else if (isNewsDeleted)
+                        {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self deleteCellAndPop:0];
+                            });
+                        }
+                        else if (succeed) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                self.inputTextView.text = @"";
+                                self.inputBarHeightLC.constant = 44.0;
+                                self.inputTextViewHeightLC.constant = 30.0;
+                                [self.inputTextView resignFirstResponder];
+                                if (comment) {
+                                    [self.commentArr insertObject:comment atIndex:0];
+                                    [self.commentTableView reloadData];
+                                }
+                                if (comment_count>10000) {
+                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                }
+                                else
+                                {
+                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                }
+                            });
+                        }
+                        else {
+                            [VNUtility showHUDText:@"评论失败!" forView:self.view];
+                        }
+                        self.commentBtn.enabled = YES;
+                    }];
+
+                });
             }
         }
     }
@@ -913,7 +1006,8 @@ static NSString *shareStr;
 
 - (IBAction)switchEmoji:(id)sender {
     if (isDefaultKeyboard) {
-        [self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
+        //[self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60emoji"] forState:UIControlStateNormal];
         if (!self.emojiKeyboardView) {
             self.emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 216) dataSource:self isStandard:NO];
             self.emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -923,7 +1017,8 @@ static NSString *shareStr;
         [self.inputTextView becomeFirstResponder];
     }
     else {
-        [self.keyboardToggleBtn setTitle:@"表情" forState:UIControlStateNormal];
+        //[self.keyboardToggleBtn setTitle:@"表情" forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60emoji"] forState:UIControlStateNormal];
         [self.inputTextView  setInputView:nil];
         [self.inputTextView  becomeFirstResponder];
     }
