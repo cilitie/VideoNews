@@ -288,7 +288,8 @@
 {
     runSynchronouslyOnVideoProcessingQueue(^{
         displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
         [displayLink setPaused:YES];
 
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];

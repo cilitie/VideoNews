@@ -38,6 +38,7 @@
 @property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
 @property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
 @property (nonatomic, assign) VNVideoFilterType filterType;
+@property (nonatomic, strong) GPUImageView *filterVideoView;
 
 @property (nonatomic, assign) BOOL isFilterOn;                      //是否有滤镜效果
 
@@ -78,9 +79,19 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     if (!_movieFile) {
         _movieFile = [[GPUImageMovie alloc] initWithPlayerItem:self.videoPlayerItem];
         _movieFile.runBenchmark = YES;
-        _movieFile.playAtActualSpeed = YES;
+        _movieFile.playAtActualSpeed = NO;
     }
     return _movieFile;
+}
+
+- (GPUImageView *)filterVideoView
+{
+    if (!_filterVideoView) {
+        _filterVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        _filterVideoView.backgroundColor = [UIColor clearColor];
+        _filterVideoView.hidden = YES;
+    }
+    return _filterVideoView;
 }
 
 #pragma mark - ViewLifeCycle
@@ -128,6 +139,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     //add video play view.
     [self.view addSubview:self.videoPlayView];
+    
+    [self.view addSubview:self.filterVideoView];
     
     self.isVolumePositive = YES;
     self.audioPath = nil;
@@ -190,6 +203,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     soundLbl.text = @"原声关闭";
     [self.view addSubview:soundLbl];
     
+    NSURL *videoUrl = [NSURL fileURLWithPath:self.videoPath];
+    AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+    _videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:_videoPlayerItem];
+
     [self playVideoWithSound:YES];
     
     [self.view addSubview:_hud];
@@ -334,11 +356,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //observe for player stop, replay.
 - (void)playerItemDidReachEnd:(AVPlayerItem *)playerItem
 {
-    [_videoPlayer seekToTime:kCMTimeZero];
-    [_videoPlayer play];
+    __weak typeof(self) weakSelf = self;
     [_audioPlayer stop];
-    _audioPlayer.currentTime = 0;
-    [_audioPlayer play];
+    [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
+        weakSelf.audioPlayer.currentTime = 0;
+        [weakSelf.audioPlayer play];
+        [weakSelf.videoPlayer play];
+    }];
 }
 
 //play a video.
@@ -347,16 +371,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     __weak VNVideoCustomizationController *weakSelf = self;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        NSURL *videoUrl = [NSURL fileURLWithPath:weakSelf.videoPath];
-        AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
-        
-        weakSelf.videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
-
-        [[NSNotificationCenter defaultCenter] addObserver:weakSelf
-                                                 selector:@selector(playerItemDidReachEnd:)
-                                                     name:AVPlayerItemDidPlayToEndTimeNotification
-                                                   object:_videoPlayerItem];
         
         weakSelf.videoPlayer = [AVPlayer playerWithPlayerItem:_videoPlayerItem];
         [weakSelf.videoPlayer addObserver:weakSelf forKeyPath:@"status" options:0 context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
@@ -389,7 +403,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
 
     if (self.isVolumePositive && !self.audioPath && !self.isFilterOn) {
-        
+        //self audio on && audio file off && no filter
         UIImage *zeroCover = [self getCoverImageOfTimeZero];
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:zeroCover];
         shareViewCtl.fromDraft = NO;
@@ -400,101 +414,110 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         [self.hud show:YES];
         
-        NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            }
-        });
-        
         AVURLAsset* videoAsset;
         if (!self.isFilterOn) {
             videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+            
+            [self combineVideoAndAudioTracks:videoAsset];
+
         }else {
             //filtered video file path
             NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
             videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
+            
+            
         }
-        
-        AVMutableComposition* mixComposition = [AVMutableComposition composition];
-        
-        if (self.isVolumePositive) {
-            AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
-            
-            NSArray *audioArr = [audioAssetUser tracksWithMediaType:AVMediaTypeAudio];
-            if (audioArr && audioArr.count > 0) {
-                AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                                                     preferredTrackID:kCMPersistentTrackID_Invalid];
-                [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                                     ofTrack:[audioArr objectAtIndex:0]
-                                                      atTime:kCMTimeZero error:nil];
-            }
-        }
-
-        
-        if (self.audioPath) {
-            
-            AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
-            
-            AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                                                preferredTrackID:kCMPersistentTrackID_Invalid];
-            
-            [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                                ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
-                                                 atTime:kCMTimeZero error:nil];
-        }
-        
-    
-        AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
-                                                                                       preferredTrackID:kCMPersistentTrackID_Invalid];
-        [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
-                                       ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
-                                        atTime:kCMTimeZero error:nil];
-        
-        AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
-                                                                              presetName:AVAssetExportPresetHighestQuality];
-        
-        NSURL *exportUrl = [NSURL fileURLWithPath:filePath];
-        
-        _assetExport.outputFileType = AVFileTypeMPEG4;
-        _assetExport.outputURL = exportUrl;
-        _assetExport.shouldOptimizeForNetworkUse = YES;
-        
-        __weak VNVideoCustomizationController *weakSelf = self;
-        
-        [_assetExport exportAsynchronouslyWithCompletionHandler:^{
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                [weakSelf.hud hide:YES];
-                
-                switch ([_assetExport status]) {
-                    case AVAssetExportSessionStatusFailed:
-                    {
-                        NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
-                    }
-                        break;
-                    case AVAssetExportSessionStatusCancelled:
-                    {
-                        NSLog(@"111111Export canceled");
-                    }
-                        break;
-                    default:
-                    {
-                        
-                        UIImage *zeroCover = [weakSelf getCoverImageOfTimeZero];
-                        VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:filePath andCoverImage:zeroCover];
-                        shareViewCtl.fromDraft = NO;
-                        shareViewCtl.coverTime = self.coverTime;
-                        [weakSelf.navigationController pushViewController:shareViewCtl animated:YES];
-                        
-                    }
-                        break;
-                }
-            });
-        }];
     }
+}
+
+- (void)combineVideoAndAudioTracks:(AVURLAsset *)videoAsset
+{
+    
+    NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        }
+    });
+    
+    AVMutableComposition* mixComposition = [AVMutableComposition composition];
+    
+    if (self.isVolumePositive) {
+        AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+        
+        NSArray *audioArr = [audioAssetUser tracksWithMediaType:AVMediaTypeAudio];
+        if (audioArr && audioArr.count > 0) {
+            AVMutableCompositionTrack *compositionCommentaryTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                                 preferredTrackID:kCMPersistentTrackID_Invalid];
+            [compositionCommentaryTrack2 insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                                 ofTrack:[audioArr objectAtIndex:0]
+                                                  atTime:kCMTimeZero error:nil];
+        }
+    }
+    
+    
+    if (self.audioPath) {
+        
+        AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
+        
+        AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                            preferredTrackID:kCMPersistentTrackID_Invalid];
+        
+        [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                            ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0]
+                                             atTime:kCMTimeZero error:nil];
+    }
+    
+    
+    AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                                   preferredTrackID:kCMPersistentTrackID_Invalid];
+    [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+                                   ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0]
+                                    atTime:kCMTimeZero error:nil];
+    
+    AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
+                                                                          presetName:AVAssetExportPresetHighestQuality];
+    
+    NSURL *exportUrl = [NSURL fileURLWithPath:filePath];
+    
+    _assetExport.outputFileType = AVFileTypeMPEG4;
+    _assetExport.outputURL = exportUrl;
+    _assetExport.shouldOptimizeForNetworkUse = YES;
+    
+    __weak VNVideoCustomizationController *weakSelf = self;
+    
+    [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [weakSelf.hud hide:YES];
+            
+            switch ([_assetExport status]) {
+                case AVAssetExportSessionStatusFailed:
+                {
+                    NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
+                }
+                    break;
+                case AVAssetExportSessionStatusCancelled:
+                {
+                    NSLog(@"111111Export canceled");
+                }
+                    break;
+                default:
+                {
+                    
+                    UIImage *zeroCover = [weakSelf getCoverImageOfTimeZero];
+                    VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:filePath andCoverImage:zeroCover];
+                    shareViewCtl.fromDraft = NO;
+                    shareViewCtl.coverTime = self.coverTime;
+                    [weakSelf.navigationController pushViewController:shareViewCtl animated:YES];
+                    
+                }
+                    break;
+            }
+        });
+    }];
 }
 
 #pragma mark - VNAudioListDelegate
@@ -547,6 +570,28 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     return [UIImage imageNamed:@"camera"];
 }
 
+- (NSString *)titleForComponentAtIndex:(NSInteger)index
+{
+    VNVideoFilterType filterT = [[self.filterTypeArr objectAtIndex:index] integerValue];
+
+    NSString *title;
+    switch (filterT) {
+        case VNVideoFilterTypeNone:                   title = @"无";              break;
+        case VNVideoFilterTypeSepiaTone:              title = @"sepia tone";      break;
+        case VNVideoFilterTypeToneCureve:             title = @"tone curve";      break;
+        case VNVideoFilterTypeSoftElegance:           title = @"soft elegance";   break;
+        case VNVideoFilterTypeGrayscale:              title = @"grayscale";       break;
+        case VNVideoFilterTypeTiltShift:              title = @"tilt shift";      break;
+        case VNVideoFilterTypeVignette:               title = @"vignette";        break;
+        case VNVideoFilterTypeGaussianSelectiveBlur:  title = @"gaussian";        break;
+        case VNVideoFilterTypeSaturation:             title = @"saturation";      break;
+        case VNVideoFilterTypeMissEtikate:            title = @"miss etikate";    break;
+        default:
+            break;
+    }
+    return title;
+}
+
 - (void)didSelectComponentAtIndex:(NSInteger)index
 {
     
@@ -557,41 +602,53 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)setupFilter
 {
+    if (self.filterType == VNVideoFilterTypeNone) {
+        self.isFilterOn = NO;
+    }else {
+        self.isFilterOn = YES;
+    }
+    if (_filter) {
+        
+        [self.movieWriter cancelRecording];
+        [self.movieFile endProcessing];
+        
+        [self.movieFile removeTarget:_filter];
+
+        [_filter removeTarget:self.filterVideoView];
+        [_filter removeTarget:self.movieWriter];
+        
+        _filter = nil;
+        _movieWriter = nil;
+    }
     switch (self.filterType) {
         case VNVideoFilterTypeNone:
         {
-            self.isFilterOn = NO;
         }
             break;
         case VNVideoFilterTypeSepiaTone:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageSepiaFilter alloc] init];
             [(GPUImageSepiaFilter *)_filter setIntensity:0.8];  //强度
         }
             break;
         case VNVideoFilterTypeToneCureve:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageToneCurveFilter alloc] init];
             [(GPUImageToneCurveFilter *)_filter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
         }
             break;
         case VNVideoFilterTypeSoftElegance:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageSoftEleganceFilter alloc] init];
         }
             break;
         case VNVideoFilterTypeGrayscale:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageGrayscaleFilter alloc] init];
         }
             break;
         case VNVideoFilterTypeTiltShift:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageTiltShiftFilter alloc] init];
             [(GPUImageTiltShiftFilter *)_filter setTopFocusLevel:0.3];
             [(GPUImageTiltShiftFilter *)_filter setBottomFocusLevel:0.5];
@@ -599,28 +656,24 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             break;
         case VNVideoFilterTypeVignette:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageVignetteFilter alloc] init];
             [(GPUImageVignetteFilter *)_filter setVignetteEnd:0.5];
         }
             break;
         case VNVideoFilterTypeGaussianSelectiveBlur:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
             [(GPUImageGaussianSelectiveBlurFilter*)_filter setExcludeCircleRadius:40.0/320.0];
         }
             break;
         case VNVideoFilterTypeSaturation:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageSaturationFilter alloc] init];
             [(GPUImageSaturationFilter *)_filter setSaturation:2];
         }
             break;
         case VNVideoFilterTypeMissEtikate:
         {
-            self.isFilterOn = YES;
             _filter = [[GPUImageMissEtikateFilter alloc] init];
         }
             break;
@@ -630,24 +683,20 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     if (self.isFilterOn) {
         [self.movieFile addTarget:_filter];
-        GPUImageView *filterview = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
-        filterview.backgroundColor = [UIColor clearColor];
-        [self.view addSubview:filterview];
-        [_filter addTarget:filterview];
+        
+        self.filterVideoView.hidden = NO;
+        [_filter addTarget:self.filterVideoView];
         
         // In addition to displaying to the screen, write out a processed version of the movie to disk
-        NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.mp4"];
-        unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
-        NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+        // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+        NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
+        unlink([filterFilePath UTF8String]);
+        NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
         
         _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
-        [_filter addTarget:_movieWriter];
+        [_filter addTarget:self.movieWriter];
         
         // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
-        AudioChannelLayout channelLayout;
-        memset(&channelLayout, 0, sizeof(AudioChannelLayout));
-        channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
-        
         _movieWriter.shouldPassthroughAudio = YES;
         _movieFile.audioEncodingTarget = _movieWriter;
         [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
@@ -667,6 +716,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                 NSLog(@"write comp");
             });
         }];
+    }else {
+        self.filterVideoView.hidden = YES;
     }
 }
 

@@ -23,7 +23,9 @@
     NSInteger numberOfComponents = [self.dataSource numberOfComponentsInFilterList];
     for (int i = 0; i < numberOfComponents; i++) {
         UIImage *img = [self.dataSource imageForComponentAtIndex:i];
+        NSString *title = [self.dataSource titleForComponentAtIndex:i];
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 100, 10, 80, 80)];
+        [btn setTitle:title forState:UIControlStateNormal];
         [btn setImage:img forState:UIControlStateNormal];
         btn.tag = 9000+i;
         [btn addTarget:self action:@selector(didSelectIndex:) forControlEvents:UIControlEventTouchUpInside];

@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, VNVideoFilterType) {
 @required
 - (NSInteger) numberOfComponentsInFilterList;
 - (UIImage *) imageForComponentAtIndex:(NSInteger)index;
-
+- (NSString *) titleForComponentAtIndex: (NSInteger)index;
 @end
 
 @protocol VNVideoFilterListScrollViewDelegate
