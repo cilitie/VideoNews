@@ -1328,8 +1328,24 @@ static NSString *shareStr;
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
                     });
                     //zmy add 刷新头
-                    //[self reloadHeaderView];
+                    [self reloadHeaderView];
+                    //fix me 比较trike的作法
+                    [VNHTTPRequestManager userInfoForUser:self.mineUid completion:^(VNUser *userInfo, NSError *error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        if (userInfo) {
+                            userInfo.isMineIdol=YES;
+                            [weakSelf.fansArr insertObject:userInfo atIndex:0];
+                            [weakSelf.fansTableView reloadData];
+                        }
+                    }];
+
+                    //让程序延迟0.5秒,因为时间太短，刷新粉丝列表时无法将最新添加的粉丝返回
+                    /*
+                    [NSThread sleepForTimeInterval:1];
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    NSLog(@"%@",refreshTimeStamp);
                     [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1353,9 +1369,13 @@ static NSString *shareStr;
                             }
                             [weakSelf.fansTableView reloadData];
                         }
+                        //zmy add 刷新头
                         [weakSelf reloadHeaderView];
+                        //
+                        
                     }];
-                    //
+*/
+                //
                 }
                 else {
                     [VNUtility showHUDText:@"关注失败!" forView:self.view];
@@ -1363,7 +1383,7 @@ static NSString *shareStr;
             }];
 
         });
-            }
+    }
     else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager followIdol:self.uid follower:self.mineUid userToken:self.mineUser_token operation:@"remove" completion:^(BOOL succeed,int fans_count, int idol_count,NSError *error) {

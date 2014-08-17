@@ -31,6 +31,8 @@
 		269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */; };
 		269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */; };
 		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
+		269EF32019A06825009C1528 /* VNNotificationNewUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269EF31E19A06825009C1528 /* VNNotificationNewUserTableViewCell.m */; };
+		269EF32119A06825009C1528 /* VNNotificationNewUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269EF31F19A06825009C1528 /* VNNotificationNewUserTableViewCell.xib */; };
 		26A584C41987411500C34461 /* QiniuBlkputRet.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584AC1987411500C34461 /* QiniuBlkputRet.m */; };
 		26A584C51987411500C34461 /* QiniuConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584AE1987411500C34461 /* QiniuConfig.m */; };
 		26A584C61987411500C34461 /* QiniuHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A584B01987411500C34461 /* QiniuHttpClient.m */; };
@@ -193,6 +195,9 @@
 		269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationUserTableViewCell.xib; sourceTree = "<group>"; };
 		269B0825197DF96400CF4ADC /* OSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
 		269B0826197DF96400CF4ADC /* OSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
+		269EF31D19A06825009C1528 /* VNNotificationNewUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationNewUserTableViewCell.h; sourceTree = "<group>"; };
+		269EF31E19A06825009C1528 /* VNNotificationNewUserTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationNewUserTableViewCell.m; sourceTree = "<group>"; };
+		269EF31F19A06825009C1528 /* VNNotificationNewUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationNewUserTableViewCell.xib; sourceTree = "<group>"; };
 		26A584AB1987411500C34461 /* QiniuBlkputRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuBlkputRet.h; sourceTree = "<group>"; };
 		26A584AC1987411500C34461 /* QiniuBlkputRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuBlkputRet.m; sourceTree = "<group>"; };
 		26A584AD1987411500C34461 /* QiniuConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuConfig.h; sourceTree = "<group>"; };
@@ -470,6 +475,9 @@
 				269755CB19712580005DEDEE /* VNNotificationUserTableViewCell.h */,
 				269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */,
 				269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */,
+				269EF31D19A06825009C1528 /* VNNotificationNewUserTableViewCell.h */,
+				269EF31E19A06825009C1528 /* VNNotificationNewUserTableViewCell.m */,
+				269EF31F19A06825009C1528 /* VNNotificationNewUserTableViewCell.xib */,
 			);
 			path = Notification;
 			sourceTree = "<group>";
@@ -973,6 +981,7 @@
 				D64296D819654C5C004E218C /* VNSearchResultTableViewCell.xib in Resources */,
 				D633119C1994B377005E5758 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				D63311921994B377005E5758 /* UMSCommentInputController.xib in Resources */,
+				269EF32119A06825009C1528 /* VNNotificationNewUserTableViewCell.xib in Resources */,
 				D6676FA0197F589800F484FE /* VNUserProfileHeaderView.xib in Resources */,
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D63311961994B377005E5758 /* UMSLoginViewController.xib in Resources */,
@@ -1078,6 +1087,7 @@
 				D6676F5C196BC84800F484FE /* ZXRemoteNotification.m in Sources */,
 				D6FED799195C08D000AD10E0 /* VNNews.m in Sources */,
 				D6676F89197806CE00F484FE /* VNProfileViewController.m in Sources */,
+				269EF32019A06825009C1528 /* VNNotificationNewUserTableViewCell.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
 				D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */,
 				D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */,
