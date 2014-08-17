@@ -8,6 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, VNVideoFilterType) {
+    VNVideoFilterTypeNone = 0,
+    VNVideoFilterTypeSepiaTone,
+    VNVideoFilterTypeToneCureve,
+    VNVideoFilterTypeSoftElegance,
+    VNVideoFilterTypeGrayscale,
+    VNVideoFilterTypeTiltShift,
+    VNVideoFilterTypeVignette,
+    VNVideoFilterTypeGaussianSelectiveBlur,
+    VNVideoFilterTypeSaturation,
+    VNVideoFilterTypeMissEtikate
+};
+
 @protocol VNVideoFilterListScrollViewDataSource
 
 @required

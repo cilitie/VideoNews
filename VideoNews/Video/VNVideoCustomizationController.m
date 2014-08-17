@@ -32,6 +32,15 @@
 
 @property (nonatomic, strong) MBProgressHUD *hud;                   //提示
 
+//filter related
+@property (nonatomic, strong) NSArray *filterTypeArr;               //filter type supported.
+@property (nonatomic, strong) GPUImageMovie *movieFile;
+@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
+@property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
+@property (nonatomic, assign) VNVideoFilterType filterType;
+
+@property (nonatomic, assign) BOOL isFilterOn;                      //是否有滤镜效果
+
 @end
 
 @implementation VNVideoCustomizationController
@@ -62,6 +71,16 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         _hud.labelText = @"生成视频...";
     }
     return _hud;
+}
+
+- (GPUImageMovie *)movieFile
+{
+    if (!_movieFile) {
+        _movieFile = [[GPUImageMovie alloc] initWithPlayerItem:self.videoPlayerItem];
+        _movieFile.runBenchmark = YES;
+        _movieFile.playAtActualSpeed = YES;
+    }
+    return _movieFile;
 }
 
 #pragma mark - ViewLifeCycle
@@ -112,6 +131,19 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     self.isVolumePositive = YES;
     self.audioPath = nil;
+    self.isFilterOn = NO;
+    
+    self.filterTypeArr = @[[NSNumber numberWithInteger:VNVideoFilterTypeNone],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeSepiaTone],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeToneCureve],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeSoftElegance],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeGrayscale],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeTiltShift],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeVignette],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeGaussianSelectiveBlur],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeSaturation],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeMissEtikate]];
+    
     //generate images of video
     
     CGFloat framesY,framesH, btnY, lblY;
@@ -356,7 +388,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)doSubmit
 {
 
-    if (self.isVolumePositive && !self.audioPath) {
+    if (self.isVolumePositive && !self.audioPath && !self.isFilterOn) {
         
         UIImage *zeroCover = [self getCoverImageOfTimeZero];
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:zeroCover];
@@ -376,7 +408,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             }
         });
         
-        AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+        AVURLAsset* videoAsset;
+        if (!self.isFilterOn) {
+            videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+        }else {
+            //filtered video file path
+            NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
+            videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
+        }
         
         AVMutableComposition* mixComposition = [AVMutableComposition composition];
         
@@ -500,7 +539,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (NSInteger)numberOfComponentsInFilterList
 {
-    return 10;
+    return [self.filterTypeArr count];
 }
 
 - (UIImage *)imageForComponentAtIndex:(NSInteger)index
@@ -510,7 +549,125 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)didSelectComponentAtIndex:(NSInteger)index
 {
-    NSLog(@"index");
+    
+    self.filterType = [[self.filterTypeArr objectAtIndex:index] integerValue];
+    
+    [self setupFilter];
+}
+
+- (void)setupFilter
+{
+    switch (self.filterType) {
+        case VNVideoFilterTypeNone:
+        {
+            self.isFilterOn = NO;
+        }
+            break;
+        case VNVideoFilterTypeSepiaTone:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageSepiaFilter alloc] init];
+            [(GPUImageSepiaFilter *)_filter setIntensity:0.8];  //强度
+        }
+            break;
+        case VNVideoFilterTypeToneCureve:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageToneCurveFilter alloc] init];
+            [(GPUImageToneCurveFilter *)_filter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
+        }
+            break;
+        case VNVideoFilterTypeSoftElegance:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageSoftEleganceFilter alloc] init];
+        }
+            break;
+        case VNVideoFilterTypeGrayscale:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageGrayscaleFilter alloc] init];
+        }
+            break;
+        case VNVideoFilterTypeTiltShift:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageTiltShiftFilter alloc] init];
+            [(GPUImageTiltShiftFilter *)_filter setTopFocusLevel:0.3];
+            [(GPUImageTiltShiftFilter *)_filter setBottomFocusLevel:0.5];
+        }
+            break;
+        case VNVideoFilterTypeVignette:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageVignetteFilter alloc] init];
+            [(GPUImageVignetteFilter *)_filter setVignetteEnd:0.5];
+        }
+            break;
+        case VNVideoFilterTypeGaussianSelectiveBlur:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
+            [(GPUImageGaussianSelectiveBlurFilter*)_filter setExcludeCircleRadius:40.0/320.0];
+        }
+            break;
+        case VNVideoFilterTypeSaturation:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageSaturationFilter alloc] init];
+            [(GPUImageSaturationFilter *)_filter setSaturation:2];
+        }
+            break;
+        case VNVideoFilterTypeMissEtikate:
+        {
+            self.isFilterOn = YES;
+            _filter = [[GPUImageMissEtikateFilter alloc] init];
+        }
+            break;
+        default:
+            break;
+    }
+    
+    if (self.isFilterOn) {
+        [self.movieFile addTarget:_filter];
+        GPUImageView *filterview = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        filterview.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:filterview];
+        [_filter addTarget:filterview];
+        
+        // In addition to displaying to the screen, write out a processed version of the movie to disk
+        NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.mp4"];
+        unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+        NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+        
+        _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
+        [_filter addTarget:_movieWriter];
+        
+        // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
+        AudioChannelLayout channelLayout;
+        memset(&channelLayout, 0, sizeof(AudioChannelLayout));
+        channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+        
+        _movieWriter.shouldPassthroughAudio = YES;
+        _movieFile.audioEncodingTarget = _movieWriter;
+        [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
+        
+        [_movieWriter startRecording];
+        [_movieFile startProcessing];
+        
+        //    [self performSelector:@selector(changeFilter) withObject:nil afterDelay:5.0];
+        //
+        __weak VNVideoCustomizationController *weakSelf = self;
+        
+        [_movieWriter setCompletionBlock:^{
+            [weakSelf.filter removeTarget:weakSelf.movieWriter];
+            [weakSelf.movieWriter finishRecording];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"write comp");
+            });
+        }];
+    }
 }
 
 @end
