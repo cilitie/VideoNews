@@ -9,7 +9,9 @@
 #import "VNNotificationNewUserTableViewCell.h"
 #import "UIButton+AFNetworking.h"
 @interface VNNotificationNewUserTableViewCell()
+
 - (IBAction)tapThumbnail:(id)sender;
+
 @end
 
 @implementation VNNotificationNewUserTableViewCell
@@ -29,7 +31,8 @@
 - (void)reload {
     if (self.message) {
         [self.thumbnailButton setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:self.message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
-        //[self.thumbnailButton setImageWithURL:[NSURL URLWithString:self.message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
+        //NSLog(@"%@",_message.sender.avatar);
+        //[self.thumbnail setImageWithURL:[NSURL URLWithString:self.message.sender.avatar] placeholderImage:[UIImage imageNamed:@"150-150User"]];
         [self.thumbnailButton.layer setCornerRadius:CGRectGetHeight([self.thumbnailButton bounds]) / 2];
         self.thumbnailButton.layer.masksToBounds = YES;
         NSString *text=[NSString stringWithFormat:@"%@于%@关注了你",self.message.sender.name,[VNUtility timeFormatToDisplay:[self.message.time doubleValue]]];

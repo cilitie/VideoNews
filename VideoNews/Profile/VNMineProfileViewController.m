@@ -56,8 +56,11 @@
 
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *user_token;
-@property (strong, nonatomic) VNNews *shareNews;
-@property (strong, nonatomic) NSIndexPath *shareNewsIndexPath;
+@property (strong, nonatomic) VNNews *shareNews;//分享的news
+@property (strong, nonatomic) NSIndexPath *shareNewsIndexPath;//分享的news对应的位置
+@property (strong, nonatomic) VNNews *selectedNews;//选中的news
+@property (strong, nonatomic) NSIndexPath *selectedNewsIndexPath;//选中的news对应的位置
+
 @property (strong, nonatomic) NSArray *headerViewArr;
 
 @property (nonatomic, strong) NSDictionary *uploadVideoInfo;    //上传video信息
@@ -96,6 +99,8 @@ static NSString *shareStr;
         _fansLastPageTime = nil;
         _shareNews = nil;
         _shareNewsIndexPath=nil;
+        _selectedNews=nil;
+        _selectedNewsIndexPath=nil;
         _uid = nil;
         _user_token = nil;
         _isPush = NO;
@@ -132,6 +137,7 @@ static NSString *shareStr;
     if (!self.videoTableView.hidden) {
         //[self.videoTableView scrollsToTop];
         //[self.videoTableView triggerPullToRefresh];
+        /*
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [VNHTTPRequestManager favouriteNewsListFor:self.uid userToken:_user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
                 if (error) {
@@ -161,11 +167,44 @@ static NSString *shareStr;
                 }];
             }];
         });
+         */
+        if (self.selectedNews!=nil) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [VNHTTPRequestManager favouriteNewsListFor:self.uid userToken:_user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (favouriteNewsArr.count) {
+                        [self.favouriteNewsArr removeAllObjects];
+                        [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
+                        // NSLog(@"%d", favouriteNewsArr.count);
+                    }
+                [VNHTTPRequestManager getOneNews:self.selectedNews.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            //修改数据源
+                            [weakSelf.mineVideoArr insertObject:news atIndex:_selectedNewsIndexPath.row];
+                            [weakSelf.mineVideoArr removeObjectAtIndex:_selectedNewsIndexPath.row+1];
+                            [self.videoTableView reloadData];
+                            self.selectedNews=nil;
+                            self.selectedNewsIndexPath=nil;
+                        });
+                    }
+                }];
+                }];
+            });
+            
+        }
 
     }
     if (!self.favouriteTableView.hidden) {
 //        [self.favouriteTableView scrollsToTop];
 //        [self.favouriteTableView triggerPullToRefresh];
+        /*
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSString *moreTimestamp,NSError *error) {
@@ -185,7 +224,52 @@ static NSString *shareStr;
                 //
                 
             }];
-        });
+        });*/
+        if (self.selectedNews!=nil) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [VNHTTPRequestManager favouriteNewsListFor:self.uid userToken:_user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else if (favouriteNewsArr.count) {
+                        [self.favouriteNewsArr removeAllObjects];
+                        [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
+                        // NSLog(@"%d", favouriteNewsArr.count);
+                    }
+                    if ([self.favouriteNewsArr containsObject:self.selectedNews]) {
+                        [VNHTTPRequestManager getOneNews:self.selectedNews.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+                            if (error) {
+                                NSLog(@"%@", error.localizedDescription);
+                            }
+                            else
+                            {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    //修改数据源
+                                    [weakSelf.favVideoArr insertObject:news atIndex:_selectedNewsIndexPath.row];
+                                    [weakSelf.favVideoArr removeObjectAtIndex:_selectedNewsIndexPath.row+1];
+                                    [self.favouriteTableView reloadData];
+                                    self.selectedNews=nil;
+                                    self.selectedNewsIndexPath=nil;
+                                });
+                            }
+                        }];
+                    }
+                    else
+                    {
+                        [_favVideoArr removeObjectAtIndex:_selectedNewsIndexPath.row];
+                        if (_selectedNewsIndexPath.row == 0) {
+                            [_favouriteTableView reloadData];
+                        }
+                        else {
+                            [_favouriteTableView deleteRowsAtIndexPaths:@[_selectedNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                        }
+                    }
+
+                }];
+            });
+            
+        }
+
     }
     if (!self.followTableView.hidden) {
 //        [self.followTableView scrollsToTop];
@@ -1354,7 +1438,7 @@ static NSString *shareStr;
                 }
             }
             [cell reload];
-            if (indexPath.row == 0 && mineVideofirstLoading && isAutoPlayOption) {
+            if (indexPath.row == 0 && mineVideofirstLoading && isAutoPlayOption && [VNHTTPRequestManager isReachableViaWiFi]) {
                 [cell startOrPausePlaying:YES];
                 mineVideofirstLoading = NO;
             }
@@ -1364,11 +1448,13 @@ static NSString *shareStr;
                 newsDetailViewController.indexPath=indexPath;
                 newsDetailViewController.hidesBottomBarWhenPushed = YES;
                 newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+                self.selectedNews=news;
+                self.selectedNewsIndexPath=indexPath;
                 [self.navigationController pushViewController:newsDetailViewController animated:YES];
             };
             
             __weak typeof(self) weakSelf = self;
-//            __weak typeof(cell) weakCell = cell;
+            __weak typeof(cell) weakCell = cell;
             
             cell.moreHandler = ^{
                 UIActionSheet *actionSheet = nil;
@@ -1378,7 +1464,7 @@ static NSString *shareStr;
                 actionSheet.tag=KVideoTag;
                 [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
             };
-            /*
+            
             cell.likeHandler = ^(){
                 if (!self.uid || !self.user_token) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
@@ -1386,6 +1472,8 @@ static NSString *shareStr;
                     return;
                 }
                 if (!weakCell.isFavouriteNews) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        //fix me news可以随着点赞操作返回 zmy
                     [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.uid user_token:self.user_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
                         //isNewsDeleted=YES;
                         if (error) {
@@ -1398,7 +1486,28 @@ static NSString *shareStr;
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                         }
                         else if (succeed) {
-                            weakCell.isFavouriteNews=YES;
+                            [VNHTTPRequestManager getOneNews:news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+                                if (error) {
+                                    NSLog(@"%@", error.localizedDescription);
+                                }
+                                else
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        //修改数据源
+                                        [self.favouriteNewsArr addObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
+                                        int index=[weakSelf.mineVideoArr indexOfObject:weakCell.news];
+                                        [weakSelf.mineVideoArr insertObject:news atIndex:index];
+                                        [weakSelf.mineVideoArr removeObjectAtIndex:index+1];
+                                        weakCell.isFavouriteNews=YES;
+                                        weakCell.news=news;
+                                        //[weakCell likeStatus:YES];
+                                        [weakCell reload];
+                                        [weakSelf reloadHeaderView];
+                                    });
+                                    
+                                }
+                            }];
+                           /* weakCell.isFavouriteNews=YES;
 //                            [weakCell likeStatus:YES];
                             [self.favouriteNewsArr addObject:news];
                             if (like_count>10000) {
@@ -1412,15 +1521,18 @@ static NSString *shareStr;
                                 headerView.favouriteCountLabel.text = [self bigNumberToString: user_like_count];
                                 //[headerView reload];
                             }
+                            */
                             //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                         }
                         else {
                             [VNUtility showHUDText:@"已点赞!" forView:self.view];
                         }
                     }];
+                    });
                 }
                 else
                 {
+                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.uid user_token:self.user_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
                         //isNewsDeleted=YES;
                         if (error) {
@@ -1434,7 +1546,31 @@ static NSString *shareStr;
                             [self.favouriteNewsArr removeObject:news];
                         }
                         else if (succeed) {
-                            weakCell.isFavouriteNews=NO;
+                            [VNHTTPRequestManager getOneNews:news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+                                if (error) {
+                                    NSLog(@"%@", error.localizedDescription);
+                                }
+                                else
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        //修改数据源
+                                        //[self.favouriteNewsArr removeObject:news];
+                                        [self.favouriteNewsArr removeObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
+                                        int index=[weakSelf.mineVideoArr indexOfObject:weakCell.news];
+                                        [weakSelf.mineVideoArr insertObject:news atIndex:index];
+                                        [weakSelf.mineVideoArr removeObjectAtIndex:index+1];
+                                        weakCell.isFavouriteNews=NO;
+                                        weakCell.news=news;
+                                        //[weakCell likeStatus:NO];
+                                        [weakCell reload];
+                                        [weakSelf reloadHeaderView];
+                                        
+                                    });
+                                    
+                                }
+                            }];
+
+                            /*weakCell.isFavouriteNews=NO;
 //                            [weakCell likeStatus:NO];
                             [self.favouriteNewsArr removeObject:news];
                             if (like_count>10000) {
@@ -1448,16 +1584,17 @@ static NSString *shareStr;
                             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                 headerView.favouriteCountLabel.text = [self bigNumberToString: user_like_count];
                                 //[headerView reload];
-                            }
+                            }*/
                             //[VNUtility showHUDText:@"取消点赞成功!" forView:self.view];
                         }
                         else {
                             [VNUtility showHUDText:@"取消点赞失败!" forView:self.view];
                         }
                     }];
+                     });
                 }
             };
-             */
+            
             return cell;
         }
         else {
@@ -1479,7 +1616,7 @@ static NSString *shareStr;
             VNNews *news = [self.favVideoArr objectAtIndex:indexPath.row];
             cell.news = news;
             [cell reload];
-            if (indexPath.row == 0 && favVideofirstLoading && isAutoPlayOption) {
+            if (indexPath.row == 0 && favVideofirstLoading && isAutoPlayOption &&[VNHTTPRequestManager isReachableViaWiFi]) {
                 [cell startOrPausePlaying:YES];
                 favVideofirstLoading = NO;
             }
@@ -1489,6 +1626,8 @@ static NSString *shareStr;
                 newsDetailViewController.indexPath=indexPath;
                 newsDetailViewController.hidesBottomBarWhenPushed = YES;
                 newsDetailViewController.controllerType = SourceViewControllerTypeProfile;
+                self.selectedNews=news;
+                self.selectedNewsIndexPath=indexPath;
                 [self.navigationController pushViewController:newsDetailViewController animated:YES];
             };
             
@@ -1592,16 +1731,18 @@ static NSString *shareStr;
                             //[VNUtility showHUDText:@"关注成功!" forView:self.view];
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 weakCell.followBtn.hidden = YES;
-                                for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                                /*for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                     headerView.fansCountLabel.text = [self bigNumberToString: fans_count];
                                     //[headerView reload];
-                                }
+                                }*/
                                 //[self addIdolOrFans:YES];
+                                [self reloadHeaderView];
                                 weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                             });
                         }
                         else {
-                            [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                            weakCell.followBtn.hidden=YES;
+                            //[VNUtility showHUDText:@"关注失败!" forView:self.view];
                         }
                     }];
                 });
@@ -1636,18 +1777,18 @@ static NSString *shareStr;
                         }
                         else if (succeed) {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                // [VNUtility showHUDText:@"关注成功!" forView:self.view];
                                 weakCell.followBtn.hidden = YES;
-                                for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                                /*for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                     headerView.followCountLabel.text = [self bigNumberToString: idol_count];
-                                    //[headerView reload];
-                                }
+                                }*/
+                                [self reloadHeaderView];
                                 //[self addIdolOrFans:NO];
                                 weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                             });
                         }
                         else {
-                            [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                            weakCell.followBtn.hidden=YES;
+                           // [VNUtility showHUDText:@"关注失败!" forView:self.view];
                         }
                     }];
 
@@ -1695,6 +1836,8 @@ static NSString *shareStr;
             newsDetailViewController.indexPath=indexPath;
             newsDetailViewController.hidesBottomBarWhenPushed = YES;
             newsDetailViewController.controllerType = SourceViewControllerTypeMineProfileVideo;
+            self.selectedNews=news;
+            self.selectedNewsIndexPath=indexPath;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
         }
     }
@@ -1706,6 +1849,8 @@ static NSString *shareStr;
             newsDetailViewController.indexPath=indexPath;
             newsDetailViewController.hidesBottomBarWhenPushed = YES;
             newsDetailViewController.controllerType = SourceViewControllerTypeMineProfileFavourite;
+            self.selectedNews=news;
+            self.selectedNewsIndexPath=indexPath;
             [self.navigationController pushViewController:newsDetailViewController animated:YES];
         }
     }
@@ -1788,7 +1933,7 @@ static NSString *shareStr;
     NSDictionary *attribute = @{NSFontAttributeName:[UIFont systemFontOfSize:17.0]};
     CGRect rect = [news.title boundingRectWithSize:CGSizeMake(280.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];
     cellHeight += CGRectGetHeight(rect);
-    NSLog(@"%f", cellHeight);
+    //NSLog(@"%f", cellHeight);
     return cellHeight;
 }
 
@@ -1923,8 +2068,8 @@ static NSString *shareStr;
             }
         }
     }
-        
-    if (isAutoPlayOption) {
+    /*关闭WiFi下自动播放
+    if (isAutoPlayOption && [VNHTTPRequestManager isReachableViaWiFi]) {
         UITableView *tableView = (UITableView *)scrollView;
         if ((tableView == self.videoTableView && self.mineVideoArr.count)|| (tableView == self.favouriteTableView && self.favVideoArr.count)) {
             NSArray *visibleCells=[tableView visibleCells];
@@ -1946,6 +2091,7 @@ static NSString *shareStr;
             }
         }
     }
+    */
 }
 
 #pragma mark - UIActionSheetDelegate
@@ -2081,24 +2227,22 @@ static NSString *shareStr;
                                    else {
                                        [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                    }
+                                   [self reloadHeaderView];
                                    [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                                }
                                else if(succeed)
                                {
-                                  // NSLog(@"%d",self.favVideoArr.count);
-                                   //NSLog(@"%d",_shareNewsIndexPath.row);
                                    [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
-                                  // NSLog(@"%d",self.favVideoArr.count);
                                    if (_shareNewsIndexPath.row == 0) {
                                        [self.favouriteTableView reloadData];
                                    }
                                    else {
                                        [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                    }
-                                   for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                                  /* for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                        headerView.favouriteCountLabel.text = [self bigNumberToString:user_like_count];
-                                       //[headerView reload];
-                                   }
+                                   }*/
+                                   [self reloadHeaderView];
                                }
                                else
                                {

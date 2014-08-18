@@ -32,7 +32,7 @@
                         <color key="textColor" red="0.37647062540054321" green="0.38823533058166504" blue="0.40000003576278687" alpha="1" colorSpace="deviceRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="25-25Female" translatesAutoresizingMaskIntoConstraints="NO" id="vqp-Pg-t6t">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="25-25Female" translatesAutoresizingMaskIntoConstraints="NO" id="vqp-Pg-t6t">
                         <rect key="frame" x="67" y="19" width="12" height="12"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>

@@ -8,8 +8,8 @@
 
 #import "VNNotificationViewController.h"
 #import "VNNotificationReplyTableViewCell.h"
-//#import "VNNotificationUserTableViewCell.h"
-#import "VNNotificationNewUserTableViewCell.h"
+#import "VNNotificationUserTableViewCell.h"
+//#import "VNNotificationNewUserTableViewCell.h"
 #import "VNNewsDetailViewController.h"
 #import "SVPullToRefresh.h"
 #import "VNProfileViewController.h"
@@ -73,7 +73,7 @@
 
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     //[self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
-    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationNewUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationNewUserTableViewCellIdentifier"];
+    [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
 
   //zmy add
     VNAuthUser *authUser = nil;
@@ -285,7 +285,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.messageArr.count) {
         VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-        NSString *cellIdentifier = @"VNNotificationNewUserTableViewCellIdentifier";
+        NSString *cellIdentifier = @"VNNotificationUserTableViewCellIdentifier";
         if ([message.type isEqualToString:@"comment"] || [message.type isEqualToString:@"news"]) {
             cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
         }
@@ -293,8 +293,8 @@
         
         if (cell) {
             if ([message.type isEqualToString: @"user"]) {
-               // VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
-                VNNotificationNewUserTableViewCell *userCell=(VNNotificationNewUserTableViewCell *)cell;
+                VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
+                //VNNotificationNewUserTableViewCell *userCell=(VNNotificationNewUserTableViewCell *)cell;
                 userCell.message = message;
                 __weak typeof(userCell) weakUserCell = userCell;
                 userCell.tapHandler = ^(){
@@ -368,7 +368,7 @@
             return [self cellHeightFor:message];
         }
         else {
-            return 60;
+            return 80;
         }
     }
     else {

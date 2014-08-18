@@ -452,6 +452,51 @@ static int pagesize = 10;
     }];
 }
 
++ (void)getOneNews:(int)nid completion:(void(^)(BOOL succeed,VNNews *news,NSError *error))completion
+{
+    //http://182.92.103.134:8080/engine/oneNews.php?nid=247&timestamp=1407603214&token=56de79adc4ffeea2fa3ae916965fd59e
+    NSString *URLStr = [VNHost stringByAppendingString:@"oneNews.php"];
+    NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"token": [self token], @"timestamp": [self timestamp]};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //        NSLog(@"%@", responseObject);
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        BOOL responseStatus=NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus&&[[responseObject objectForKey:@"news"]isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *newsDic= [responseObject objectForKey:@"news"];
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        if ([media.type rangeOfString:@"image"].location != NSNotFound) {
+                            news.imgMdeia = media;
+                        }
+                        else {
+                            news.videoMedia = media;
+                        }
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                }
+        }
+        if (completion) {
+            completion(responseStatus,news, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO,nil, error);
+        }
+    }];
+}
+
 #pragma mark - Search
 
 + (void)categoryList:(void(^)(NSArray *categoryArr, NSError *error))completion {
@@ -1054,14 +1099,14 @@ static int pagesize = 10;
 + (BOOL)isReachable;
 {
     if (!reach) {
-        reach = [Reachability reachabilityWithHostname:@"www.chianso.com"];
+        reach = [Reachability reachabilityWithHostname:@"www.shishangpai.com.cn"];
     }
     return reach.isReachable;
 }
 
 + (BOOL)isReachableViaWiFi {
     if (!reach) {
-        reach = [Reachability reachabilityWithHostname:@"www.chianso.com"];
+        reach = [Reachability reachabilityWithHostname:@"www.shishangpai.com.cn"];
     }
     return reach.isReachableViaWiFi;
 }

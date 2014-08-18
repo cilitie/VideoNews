@@ -1465,6 +1465,7 @@ static NSString *shareStr;
 #pragma mark - UIKeyboardNotification
 
 - (void)keyboardWillShow:(NSNotification *)notification {
+    [self.commentBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     
     isKeyboardShowing = YES;
     
@@ -1510,6 +1511,7 @@ static NSString *shareStr;
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+    [self.commentBtn setHitTestEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
     NSDictionary *userInfo = [notification userInfo];
     
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];

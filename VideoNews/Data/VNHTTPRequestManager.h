@@ -44,6 +44,8 @@
 + (void)report:(NSString *)objectID type:(NSString *)type userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed, NSError *error))completion;
 //收藏相关
 + (void)favouriteNewsListFor:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *favouriteNewsArr, NSError *error))completion;
+//补丁相关
++ (void)getOneNews:(int)nid completion:(void(^)(BOOL succeed,VNNews *news,NSError *error))completion;
 
 #pragma mark - Search
 

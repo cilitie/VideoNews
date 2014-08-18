@@ -200,7 +200,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
     //NSString *shareURL = @"https://itunes.apple.com/cn/app/xiao-xiao-huo-ban-sago-mini/id874425722?mt=8";
-    NSString *shareURL=@"https://itunes.apple.com/us/app/fashionmaker/id907182257?l=zh&ls=1&mt=8 ";
+    NSString *shareURL=@"https://itunes.apple.com/us/app/fashionmaker/id907182257?l=zh&ls=1&mt=8";
     NSString *snsName = nil;
     switch (buttonIndex) {
             //微信朋友圈

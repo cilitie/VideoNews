@@ -111,7 +111,13 @@
 
         self.commentNumLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
         self.favouriteLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
-        
+        if (self.isFavouriteNews) {
+            [self.likeImg setImage:[UIImage imageNamed:@"30-30heart_a"]];
+        }
+        else
+        {
+             [self.likeImg setImage:[UIImage imageNamed:@"30-30heart"]];
+        }
         //视频URL
         NSLog(@"%@", self.news.videoMedia.url);
         NSURL *url = [NSURL URLWithString:self.news.videoMedia.url];
