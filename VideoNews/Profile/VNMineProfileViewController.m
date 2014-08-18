@@ -1438,10 +1438,12 @@ static NSString *shareStr;
                 }
             }
             [cell reload];
+            /*改为不自动播放
             if (indexPath.row == 0 && mineVideofirstLoading && isAutoPlayOption && [VNHTTPRequestManager isReachableViaWiFi]) {
-                [cell startOrPausePlaying:YES];
+                //[cell startOrPausePlaying:YES];
                 mineVideofirstLoading = NO;
             }
+             */
             cell.commentHandler = ^(){
                 VNNewsDetailViewController *newsDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNNewsDetailViewController"];
                 newsDetailViewController.news = news;
