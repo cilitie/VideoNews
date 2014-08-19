@@ -1769,7 +1769,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="时尚拍水印@2x" translatesAutoresizingMaskIntoConstraints="NO" id="Bxl-b0-g6d">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="时尚拍定稿-big" translatesAutoresizingMaskIntoConstraints="NO" id="Bxl-b0-g6d">
                                 <rect key="frame" x="45" y="109" width="240" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -1847,7 +1847,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="logo" width="80" height="29"/>
         <image name="share" width="20" height="20"/>
         <image name="share_a" width="20" height="20"/>
-        <image name="时尚拍水印@2x" width="149" height="53"/>
+        <image name="时尚拍定稿-big" width="277" height="103"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
