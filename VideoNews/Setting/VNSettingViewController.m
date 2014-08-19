@@ -12,6 +12,7 @@
 #import "VNLoginViewController.h"
 #import "VNDraftListController.h"
 #import "UMSocial.h"
+#import "VNAboutViewController.h"
 
 @interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UMSocialUIDelegate>
 
@@ -66,7 +67,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 2) {
-        return 4;
+        return 5;
     }
     else {
         return 1;
@@ -100,6 +101,10 @@
                 break;
             case 3: {
                 cell.titleLabel.text = @"清除缓存";
+            }
+                break;
+            case 4:{
+                cell.titleLabel.text = @"关于我们";
             }
                 break;
         }
@@ -154,6 +159,12 @@
                 }];
             }
                 break;
+            case 4:{
+                VNAboutViewController *aboutVC=[self.storyboard instantiateViewControllerWithIdentifier:@"VNAboutViewController"];
+                [self.navigationController pushViewController:aboutVC animated:YES];
+            }
+                break;
+                
         }
     }
     else if (indexPath.section == 3) {
