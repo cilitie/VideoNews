@@ -68,7 +68,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 {
-    return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeQuickTimeMovie outputSettings:nil];
+    return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeMPEG4 outputSettings:nil];
 }
 
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;

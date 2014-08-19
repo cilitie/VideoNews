@@ -565,7 +565,9 @@
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-                [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
+                if(currentSampleTime.value != 0){
+                    [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
+                }
             }
 
             CVPixelBufferUnlockBaseAddress(movieFrame, 0);
@@ -652,7 +654,7 @@
     if (_runBenchmark)
     {
         CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+//        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
     }
 }
 

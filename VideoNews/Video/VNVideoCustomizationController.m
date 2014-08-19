@@ -79,7 +79,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     if (!_movieFile) {
         _movieFile = [[GPUImageMovie alloc] initWithPlayerItem:self.videoPlayerItem];
         _movieFile.runBenchmark = YES;
-        _movieFile.playAtActualSpeed = NO;
+        _movieFile.playAtActualSpeed = YES;
     }
     return _movieFile;
 }
@@ -213,9 +213,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                                                object:_videoPlayerItem];
 
     [self playVideoWithSound:YES];
-    
-    [self.view addSubview:_hud];
-    
+        
     VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, 468, 320, 100)];
     filterListView.dataSource = self;
     filterListView.delegate = self;
@@ -223,9 +221,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [filterListView loadData];
     });
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(resumeAVPlayer) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    [self.view insertSubview:_hud atIndex:100];
+
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)resumeAVPlayer
 {
     if (self.videoPlayer) {
         [self.videoPlayer play];
@@ -235,8 +238,22 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    __weak typeof(self) weakSelf = self;
+    if (_audioPlayer) [_audioPlayer stop];
+    [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
+        
+        weakSelf.audioPlayer.currentTime = 0;
+        if (weakSelf.audioPlayer) [weakSelf.audioPlayer play];
+        [weakSelf.videoPlayer play];
+        [self setupFilter];
+    }];
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self clearFilter];
     if (self.videoPlayer) {
         [self.videoPlayer pause];
     }
@@ -254,6 +271,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)dealloc
 {
     [self.videoPlayer removeObserver:self forKeyPath:@"status"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+
     NSLog(@"dealloc......:%s",__FUNCTION__);
 }
 
@@ -272,6 +291,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)doPopBack
 {
+    [self clearFilter];
     [self clearTempVideo];
     
     [self.navigationController popViewControllerAnimated:YES];
@@ -356,13 +376,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //observe for player stop, replay.
 - (void)playerItemDidReachEnd:(AVPlayerItem *)playerItem
 {
-    __weak typeof(self) weakSelf = self;
-    [_audioPlayer stop];
-    [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
-        weakSelf.audioPlayer.currentTime = 0;
-        [weakSelf.audioPlayer play];
-        [weakSelf.videoPlayer play];
-    }];
+        __weak typeof(self) weakSelf = self;
+        [_audioPlayer stop];
+        [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
+            weakSelf.audioPlayer.currentTime = 0;
+            [weakSelf.audioPlayer play];
+            [weakSelf.videoPlayer play];
+            
+            [self setupFilter];
+        }];
 }
 
 //play a video.
@@ -377,9 +399,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     });
 }
 
-- (UIImage *)getCoverImageOfTimeZero
+- (UIImage *)getCoverImageOfTimeZeroWithVideoFilePath:(NSString *)filePath
 {
-    AVAsset *myAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+
+    AVAsset *myAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:filePath] options:nil];
     AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:myAsset];
     imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
     imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
@@ -402,9 +425,22 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)doSubmit
 {
 
+    NSLog(@"dosubmit.....................1");
+    __weak typeof(self) weakSelf = self;
+    if (_audioPlayer) [_audioPlayer stop];
+    [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
+        NSLog(@"dosubmit.....................2");
+
+        weakSelf.audioPlayer.currentTime = 0;
+        if (weakSelf.audioPlayer) [weakSelf.audioPlayer pause];
+        [weakSelf.videoPlayer pause];
+    }];
+
+    NSLog(@"dosubmit.....................3");
+
     if (self.isVolumePositive && !self.audioPath && !self.isFilterOn) {
         //self audio on && audio file off && no filter
-        UIImage *zeroCover = [self getCoverImageOfTimeZero];
+        UIImage *zeroCover = [self getCoverImageOfTimeZeroWithVideoFilePath:self.videoPath];
         VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:self.videoPath andCoverImage:zeroCover];
         shareViewCtl.fromDraft = NO;
         shareViewCtl.coverTime = self.coverTime;
@@ -412,27 +448,90 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
     }else {
         
+        NSLog(@"dosubmit.....................4");
+
         [self.hud show:YES];
         
-        AVURLAsset* videoAsset;
         if (!self.isFilterOn) {
-            videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
+            AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
             
             [self combineVideoAndAudioTracks:videoAsset];
 
         }else {
             //filtered video file path
+            NSLog(@"dosubmit.....................before clearfilter");
+
+            [self clearFilter];
+            
+            _movieFile = nil;
+            _filter = nil;
+            _movieWriter = nil;
+            
+            _movieFile = [[GPUImageMovie alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath]];
+            _movieFile.runBenchmark = YES;
+            _movieFile.playAtActualSpeed = NO;
+            
+            NSLog(@"dosubmit.....................before setting filter");
+
+            [self setFilterBasedOnType];
+            
+            [_movieFile addTarget:_filter];
+            
+            GPUImageView *tempFilterVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+            [tempFilterVideoView setBackgroundColorRed:0 green:0 blue:0 alpha:0];
+            tempFilterVideoView.hidden = YES;
+            [self.view addSubview:tempFilterVideoView];
+            [_filter addTarget:tempFilterVideoView];
+            
+            // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
             NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
-            videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
+            unlink([filterFilePath UTF8String]);
+            NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
             
+            _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
+            [_filter addTarget:self.movieWriter];
             
+            // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
+            
+//            _movieWriter.shouldPassthroughAudio = YES;
+//            _movieFile.audioEncodingTarget = _movieWriter;
+            [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
+            
+            [_movieWriter startRecording];
+            [_movieFile startProcessing];
+            
+            __weak VNVideoCustomizationController *weakSelf = self;
+            
+            AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
+            NSLog(@"dosubmit..................... already processing");
+
+            [_movieWriter setCompletionBlock:^{
+                [weakSelf.filter removeTarget:weakSelf.movieWriter];
+                [weakSelf.movieWriter finishRecording];
+                NSLog(@"dosubmit.....................in completion block");
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [tempFilterVideoView removeFromSuperview];
+                    NSLog(@"write comp");
+                    [weakSelf combineVideoAndAudioTracks:videoAsset];
+                    weakSelf.movieFile = nil;
+                    [weakSelf clearFilter];
+                });
+            }];
+            
+            [_movieWriter setFailureBlock:^(NSError *err) {
+                [tempFilterVideoView removeFromSuperview];
+                weakSelf.movieFile = nil;
+                NSLog(@"fail.......");
+            }];
         }
     }
 }
 
 - (void)combineVideoAndAudioTracks:(AVURLAsset *)videoAsset
 {
-    
+    NSLog(@"dosubmit.....................in combine");
+
     NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -443,6 +542,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
+    NSLog(@"dosubmit.....................before volumn");
+
     if (self.isVolumePositive) {
         AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
         
@@ -456,7 +557,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
     }
     
-    
+    NSLog(@"dosubmit.....................before audio");
+
     if (self.audioPath) {
         
         AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.audioPath] options:nil];
@@ -469,7 +571,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                                              atTime:kCMTimeZero error:nil];
     }
     
-    
+    NSLog(@"dosubmit.....................before video");
+
     AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
                                                                                    preferredTrackID:kCMPersistentTrackID_Invalid];
     [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
@@ -478,7 +581,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
                                                                           presetName:AVAssetExportPresetHighestQuality];
-    
+    NSLog(@"dosubmit.....................begin  export");
+
     NSURL *exportUrl = [NSURL fileURLWithPath:filePath];
     
     _assetExport.outputFileType = AVFileTypeMPEG4;
@@ -506,8 +610,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                     break;
                 default:
                 {
-                    
-                    UIImage *zeroCover = [weakSelf getCoverImageOfTimeZero];
+
+                    UIImage *zeroCover = [weakSelf getCoverImageOfTimeZeroWithVideoFilePath:filePath];
                     VNVideoShareViewController *shareViewCtl = [[VNVideoShareViewController alloc] initWithVideoPath:filePath andCoverImage:zeroCover];
                     shareViewCtl.fromDraft = NO;
                     shareViewCtl.coverTime = self.coverTime;
@@ -527,23 +631,29 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     self.audioPath = filePath;
     
     //replay video.
-    [_videoPlayer seekToTime:kCMTimeZero];
-    [_videoPlayer play];
     
-    if (!filePath) {
-        [_audioPlayer stop];
-        _audioPlayer = nil;
-    }else {
-        NSError *error;
-        NSURL *audioFileUrl = [NSURL fileURLWithPath:self.audioPath];
-        _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileUrl error:&error];
+    __weak typeof(self) weakSelf = self;
+    [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
+        [weakSelf.videoPlayer pause];
         
-        if (!audioFileUrl || error) {
-            NSLog(@"音频读取出错了。。。");
+        [_videoPlayer play];
+        
+        if (!filePath) {
+            [weakSelf.audioPlayer stop];
+            weakSelf.audioPlayer = nil;
         }else {
-            [_audioPlayer play];
+            NSError *error;
+            NSURL *audioFileUrl = [NSURL fileURLWithPath:weakSelf.audioPath];
+            weakSelf.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileUrl error:&error];
+            
+            if (!audioFileUrl || error) {
+                NSLog(@"音频读取出错了。。。");
+            }else {
+                [weakSelf.audioPlayer play];
+            }
         }
-    }
+        
+    }];
 }
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
@@ -602,24 +712,88 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)setupFilter
 {
+    NSLog(@"in setup filter..............1");
     if (self.filterType == VNVideoFilterTypeNone) {
         self.isFilterOn = NO;
     }else {
         self.isFilterOn = YES;
     }
     if (_filter) {
-        
-        [self.movieWriter cancelRecording];
-        [self.movieFile endProcessing];
-        
-        [self.movieFile removeTarget:_filter];
+        NSLog(@"in setup filter..............clearFilter");
 
-        [_filter removeTarget:self.filterVideoView];
-        [_filter removeTarget:self.movieWriter];
-        
-        _filter = nil;
-        _movieWriter = nil;
+        [self clearFilter];
     }
+    
+    NSLog(@"in setup filter..............set filter");
+
+    [self setFilterBasedOnType];
+    
+    if (self.isFilterOn) {
+        
+        self.filterVideoView.hidden = NO;
+
+        [self.movieFile addTarget:_filter];
+        
+        [_filter addTarget:self.filterVideoView];
+        
+        // In addition to displaying to the screen, write out a processed version of the movie to disk
+        // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+        NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
+        unlink([filterFilePath UTF8String]);
+        NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
+        
+        _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
+        [_filter addTarget:self.movieWriter];
+        
+        // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
+//        _movieWriter.shouldPassthroughAudio = YES;
+//        _movieFile.audioEncodingTarget = _movieWriter;
+        [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
+        NSLog(@"in setup filter..............2");
+
+        [_movieWriter startRecording];
+        [_movieFile startProcessing];
+        NSLog(@"in setup filter..............3");
+
+        __weak VNVideoCustomizationController *weakSelf = self;
+        
+        [_movieWriter setCompletionBlock:^{
+            [weakSelf.filter removeTarget:weakSelf.movieWriter];
+            [weakSelf.movieWriter finishRecording];
+            NSLog(@"in setup filter..............in completion block");
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"write comp");
+//                UISaveVideoAtPathToSavedPhotosAlbum(filterFilePath, weakSelf, nil, nil);
+            });
+        }];
+        
+        [_movieWriter setFailureBlock:^(NSError *err){
+            NSLog(@"failed.....");
+        }];
+        
+    }else {
+        self.filterVideoView.hidden = YES;
+    }
+}
+
+- (void)clearFilter
+{
+    if (_movieWriter) {
+        [self.movieWriter cancelRecording];
+    }
+    [self.movieFile removeTarget:_filter];
+    [self.movieFile endProcessing];
+    self.movieFile.audioEncodingTarget = nil;
+
+    [_filter removeAllTargets];
+    
+    _filter = nil;
+    _movieWriter = nil;
+}
+
+- (void)setFilterBasedOnType
+{
     switch (self.filterType) {
         case VNVideoFilterTypeNone:
         {
@@ -680,45 +854,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         default:
             break;
     }
-    
-    if (self.isFilterOn) {
-        [self.movieFile addTarget:_filter];
-        
-        self.filterVideoView.hidden = NO;
-        [_filter addTarget:self.filterVideoView];
-        
-        // In addition to displaying to the screen, write out a processed version of the movie to disk
-        // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
-        NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
-        unlink([filterFilePath UTF8String]);
-        NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
-        
-        _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
-        [_filter addTarget:self.movieWriter];
-        
-        // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
-        _movieWriter.shouldPassthroughAudio = YES;
-        _movieFile.audioEncodingTarget = _movieWriter;
-        [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
-        
-        [_movieWriter startRecording];
-        [_movieFile startProcessing];
-        
-        //    [self performSelector:@selector(changeFilter) withObject:nil afterDelay:5.0];
-        //
-        __weak VNVideoCustomizationController *weakSelf = self;
-        
-        [_movieWriter setCompletionBlock:^{
-            [weakSelf.filter removeTarget:weakSelf.movieWriter];
-            [weakSelf.movieWriter finishRecording];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"write comp");
-            });
-        }];
-    }else {
-        self.filterVideoView.hidden = YES;
-    }
+
 }
 
 @end

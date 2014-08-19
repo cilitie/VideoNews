@@ -259,6 +259,14 @@
         
         fileName = [[audioPath lastPathComponent] stringByDeletingPathExtension];
     }
+    
+    if (indexPath.section == self.selectedIndexPath.section && indexPath.row == self.selectedIndexPath.row) {
+        UILabel *lastTitleLbl = (UILabel *)[cell.contentView viewWithTag:9001];
+        lastTitleLbl.textColor = SelectedStatusColor;
+    }else {
+        UILabel *lastTitleLbl = (UILabel *)[cell.contentView viewWithTag:9001];
+        lastTitleLbl.textColor = CommonStatusColor;
+    }
    
     UILabel *titleLbl = (UILabel *)[cell.contentView viewWithTag:9001];
     
@@ -285,9 +293,11 @@
         }
     }else {
         NSError *error;
-        NSURL *audioFileUrl = [NSURL fileURLWithPath:[_audioPathsArr objectAtIndex:indexPath.row]];
+        NSString *path = [_audioPathsArr objectAtIndex:indexPath.row];
+        NSURL *audioFileUrl = [NSURL fileURLWithPath:path];
+
         _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileUrl error:&error];
-        
+//        _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileUrl fileTypeHint:AVFileTypeMPEGLayer3 error:&error];
         if (!audioFileUrl || error) {
             NSLog(@"音频读取出错了。。。");
         }else {
