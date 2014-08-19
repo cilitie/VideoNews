@@ -85,7 +85,8 @@ static int pagesize = 10;
         }
         else {
             [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        //NSLog(@"%@", responseObject);
+                //NSLog(@"%@", responseObject);
+               //NSLog(@"%@", operation);
                 VNNews *news = nil;
                 VNMedia *media = nil;
                 NSMutableArray *newsArr = [NSMutableArray array];
@@ -239,6 +240,52 @@ static int pagesize = 10;
         }
     }];
 }
+
++ (void)profileFavouriteNews:(int)nid operation:(NSString *)operation userID:(NSString *)uid user_token:(NSString *)user_token completion:(void(^)(BOOL succeed,BOOL isNewsDeleted,VNNews *news,int user_like_count,NSError *error))completion {
+    //http://zmysp.sinaapp.com/op.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=add&id=1&user_token=f1517c15fd0da75cc1889e9537392a9c
+    NSString *URLStr = [VNHost stringByAppendingString:@"opForProfile.php"];
+    NSDictionary *param = @{@"id": [NSNumber numberWithInt:nid], @"uid": uid, @"cmd": operation, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@",operation);
+        NSLog(@"%@", responseObject);
+        BOOL operationSuccess = NO;
+        BOOL isNewsDeleted=NO;
+        VNNews * news=nil;
+        VNMedia *media = nil;
+        int user_like_count=0;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                operationSuccess = [[responseObject objectForKey:@"success"] boolValue];
+                isNewsDeleted = [[responseObject objectForKey:@"newsDeleted"] boolValue];
+                if ([responseObject[@"news"] isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary * newsDic=[responseObject objectForKey:@"news"];
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                }
+                user_like_count=[[responseObject objectForKey:@"user_like_count"] intValue];
+            }
+        }
+        if (completion) {
+            completion(operationSuccess,isNewsDeleted,news,user_like_count ,nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO,NO,nil,0,error);
+        }
+    }];
+}
+
 
 + (void)deleteNews:(int)nid userID:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(BOOL succeed,int news_count,NSError *error))completion{
     //http://182.92.103.134:8080/engine/deleteNews.php?token=f961f003dd383bc39eb53c5b7e5fd046&timestamp=1404232200&nid=1&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c

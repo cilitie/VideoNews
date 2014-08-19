@@ -76,6 +76,7 @@
 		269755C919710E75005DEDEE /* VNNotificationReplyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755C719710E75005DEDEE /* VNNotificationReplyTableViewCell.m */; };
 		269755CE19712580005DEDEE /* VNNotificationUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */; };
 		269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */; };
+		26981A8619A34CCE00D6EB80 /* VNAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26981A8519A34CCE00D6EB80 /* VNAboutViewController.m */; };
 		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
 		269EF32019A06825009C1528 /* VNNotificationNewUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269EF31E19A06825009C1528 /* VNNotificationNewUserTableViewCell.m */; };
 		269EF32119A06825009C1528 /* VNNotificationNewUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269EF31F19A06825009C1528 /* VNNotificationNewUserTableViewCell.xib */; };
@@ -324,6 +325,8 @@
 		269755CB19712580005DEDEE /* VNNotificationUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationUserTableViewCell.h; sourceTree = "<group>"; };
 		269755CC19712580005DEDEE /* VNNotificationUserTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNNotificationUserTableViewCell.m; sourceTree = "<group>"; };
 		269755CD19712580005DEDEE /* VNNotificationUserTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNNotificationUserTableViewCell.xib; sourceTree = "<group>"; };
+		26981A8419A34CCE00D6EB80 /* VNAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNAboutViewController.h; sourceTree = "<group>"; };
+		26981A8519A34CCE00D6EB80 /* VNAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAboutViewController.m; sourceTree = "<group>"; };
 		269B0825197DF96400CF4ADC /* OSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
 		269B0826197DF96400CF4ADC /* OSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
 		269EF31D19A06825009C1528 /* VNNotificationNewUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationNewUserTableViewCell.h; sourceTree = "<group>"; };
@@ -927,6 +930,8 @@
 				D68CB50419862E0B00236517 /* VNSettingViewController.m */,
 				D68CB5061986305200236517 /* VNSettingTableViewCell.h */,
 				D68CB5071986305200236517 /* VNSettingTableViewCell.m */,
+				26981A8419A34CCE00D6EB80 /* VNAboutViewController.h */,
+				26981A8519A34CCE00D6EB80 /* VNAboutViewController.m */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -1338,6 +1343,7 @@
 				142FB03219A055EC00F8ECCF /* GPUImageVignetteFilter.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
 				142FB01819A055EC00F8ECCF /* GPUImageContext.m in Sources */,
+				26981A8619A34CCE00D6EB80 /* VNAboutViewController.m in Sources */,
 				142FB02119A055EC00F8ECCF /* GPUImageMovie.m in Sources */,
 				D6676F7C197523A900F484FE /* AGEmojiPageView.m in Sources */,
 				D6676F56196B7E0000F484FE /* VNAuthUser.m in Sources */,

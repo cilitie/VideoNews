@@ -1713,11 +1713,31 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     <navigationItem key="navigationItem" id="6ef-5k-xN2"/>
                     <connections>
                         <outlet property="settingTableView" destination="I4R-31-bBp" id="zld-CO-SsQ"/>
+                        <segue destination="a7n-UL-9tM" kind="push" id="kiZ-Dr-7ip"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sqf-YD-xoa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2546" y="1686"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="j06-4e-jiJ">
+            <objects>
+                <viewController id="a7n-UL-9tM" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qeh-6n-8T3"/>
+                        <viewControllerLayoutGuide type="bottom" id="F5G-M3-j1v"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WIX-SH-ybR">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Mqc-Ui-UfM"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iC7-2c-Mn6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3005" y="1682"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="nIU-sX-kaf">
