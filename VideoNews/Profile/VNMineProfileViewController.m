@@ -229,7 +229,7 @@ static NSString *shareStr;
                         [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
                         // NSLog(@"%d", favouriteNewsArr.count);
                     }*/
-                    if ([self.favouriteNewsArr containsObject:self.selectedNews]) {
+                if ([self.favouriteNewsArr containsObject:@{@"nid":[NSString stringWithFormat:@"%d",self.selectedNews.nid]}]) {
                         [VNHTTPRequestManager getOneNews:self.selectedNews.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
                             if (error) {
                                 NSLog(@"%@", error.localizedDescription);
