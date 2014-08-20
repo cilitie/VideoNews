@@ -224,7 +224,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(resumeAVPlayer) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-    [self.view insertSubview:_hud atIndex:100];
+    [self.view addSubview:self.hud];
 
 }
 
@@ -424,19 +424,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)doSubmit
 {
-
-    NSLog(@"dosubmit.....................1");
     __weak typeof(self) weakSelf = self;
     if (_audioPlayer) [_audioPlayer stop];
     [_videoPlayer seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^ (BOOL finish){
-        NSLog(@"dosubmit.....................2");
 
         weakSelf.audioPlayer.currentTime = 0;
         if (weakSelf.audioPlayer) [weakSelf.audioPlayer pause];
         [weakSelf.videoPlayer pause];
     }];
-
-    NSLog(@"dosubmit.....................3");
 
     if (self.isVolumePositive && !self.audioPath && !self.isFilterOn) {
         //self audio on && audio file off && no filter
@@ -448,8 +443,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
     }else {
         
-        NSLog(@"dosubmit.....................4");
-
         [self.hud show:YES];
         
         if (!self.isFilterOn) {
@@ -459,7 +452,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
         }else {
             //filtered video file path
-            NSLog(@"dosubmit.....................before clearfilter");
 
             [self clearFilter];
             
@@ -471,7 +463,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             _movieFile.runBenchmark = YES;
             _movieFile.playAtActualSpeed = NO;
             
-            NSLog(@"dosubmit.....................before setting filter");
 
             [self setFilterBasedOnType];
             
@@ -503,16 +494,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             __weak VNVideoCustomizationController *weakSelf = self;
             
             AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
-            NSLog(@"dosubmit..................... already processing");
 
             [_movieWriter setCompletionBlock:^{
                 [weakSelf.filter removeTarget:weakSelf.movieWriter];
                 [weakSelf.movieWriter finishRecording];
-                NSLog(@"dosubmit.....................in completion block");
 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tempFilterVideoView removeFromSuperview];
-                    NSLog(@"write comp");
                     [weakSelf combineVideoAndAudioTracks:videoAsset];
                     weakSelf.movieFile = nil;
                     [weakSelf clearFilter];
@@ -522,7 +510,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [_movieWriter setFailureBlock:^(NSError *err) {
                 [tempFilterVideoView removeFromSuperview];
                 weakSelf.movieFile = nil;
-                NSLog(@"fail.......");
             }];
         }
     }
@@ -530,7 +517,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)combineVideoAndAudioTracks:(AVURLAsset *)videoAsset
 {
-    NSLog(@"dosubmit.....................in combine");
 
     NSString *filePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_share.mp4"];
     
@@ -542,8 +528,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
-    NSLog(@"dosubmit.....................before volumn");
-
     if (self.isVolumePositive) {
         AVURLAsset* audioAssetUser = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:self.videoPath] options:nil];
         
@@ -557,7 +541,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
     }
     
-    NSLog(@"dosubmit.....................before audio");
 
     if (self.audioPath) {
         
@@ -571,7 +554,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                                              atTime:kCMTimeZero error:nil];
     }
     
-    NSLog(@"dosubmit.....................before video");
 
     AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
                                                                                    preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -581,7 +563,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition
                                                                           presetName:AVAssetExportPresetHighestQuality];
-    NSLog(@"dosubmit.....................begin  export");
 
     NSURL *exportUrl = [NSURL fileURLWithPath:filePath];
     
@@ -600,12 +581,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             switch ([_assetExport status]) {
                 case AVAssetExportSessionStatusFailed:
                 {
-                    NSLog(@"111111Export failed: %@", [[_assetExport error] localizedDescription]);
+                    NSLog(@"Export failed: %@", [[_assetExport error] localizedDescription]);
                 }
                     break;
                 case AVAssetExportSessionStatusCancelled:
                 {
-                    NSLog(@"111111Export canceled");
+                    NSLog(@"Export canceled");
                 }
                     break;
                 default:
@@ -712,20 +693,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)setupFilter
 {
-    NSLog(@"in setup filter..............1");
     if (self.filterType == VNVideoFilterTypeNone) {
         self.isFilterOn = NO;
     }else {
         self.isFilterOn = YES;
     }
     if (_filter) {
-        NSLog(@"in setup filter..............clearFilter");
 
         [self clearFilter];
+        
+        _filter = nil;
     }
     
-    NSLog(@"in setup filter..............set filter");
-
     [self setFilterBasedOnType];
     
     if (self.isFilterOn) {
@@ -742,6 +721,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         unlink([filterFilePath UTF8String]);
         NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
         
+        _movieWriter = nil;
         _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
         [_filter addTarget:self.movieWriter];
         
@@ -749,27 +729,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //        _movieWriter.shouldPassthroughAudio = YES;
 //        _movieFile.audioEncodingTarget = _movieWriter;
         [_movieFile enableSynchronizedEncodingUsingMovieWriter:_movieWriter];
-        NSLog(@"in setup filter..............2");
 
         [_movieWriter startRecording];
         [_movieFile startProcessing];
-        NSLog(@"in setup filter..............3");
 
         __weak VNVideoCustomizationController *weakSelf = self;
         
         [_movieWriter setCompletionBlock:^{
             [weakSelf.filter removeTarget:weakSelf.movieWriter];
             [weakSelf.movieWriter finishRecording];
-            NSLog(@"in setup filter..............in completion block");
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"write comp");
-//                UISaveVideoAtPathToSavedPhotosAlbum(filterFilePath, weakSelf, nil, nil);
-            });
         }];
         
         [_movieWriter setFailureBlock:^(NSError *err){
-            NSLog(@"failed.....");
         }];
         
     }else {
@@ -779,17 +750,17 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)clearFilter
 {
-    if (_movieWriter) {
-        [self.movieWriter cancelRecording];
-    }
+//    if (_movieWriter) {
+//        [self.movieWriter cancelRecording];
+//    }
     [self.movieFile removeTarget:_filter];
-    [self.movieFile endProcessing];
-    self.movieFile.audioEncodingTarget = nil;
-
-    [_filter removeAllTargets];
-    
-    _filter = nil;
-    _movieWriter = nil;
+//    [self.movieFile endProcessing];
+//    self.movieFile.audioEncodingTarget = nil;
+//
+//    [_filter removeAllTargets];
+//    
+//    _filter = nil;
+//    _movieWriter = nil;
 }
 
 - (void)setFilterBasedOnType
