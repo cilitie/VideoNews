@@ -58,7 +58,9 @@
         else {
             self.genderImg.hidden = YES;
         }
-        
+        if (self.user.constellation) {
+            self.constellationLabel.text=self.user.constellation;
+        }
         if (self.user.location) {
             self.locationLabel.text = self.user.location;
         }

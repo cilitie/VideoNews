@@ -64,6 +64,15 @@
         else {
             self.genderImgView.hidden = YES;
         }
+        //NSLog(@"%@",self.userInfo.constellation);
+        if (self.userInfo.constellation) {
+            self.constellationLabel.hidden=NO;
+            self.constellationLabel.text=self.userInfo.constellation;
+        }
+        else
+        {
+            self.constellationLabel.hidden=YES;
+        }
         
         if (self.userInfo.location) {
             self.locationLabel.text = self.userInfo.location;

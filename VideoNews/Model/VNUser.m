@@ -78,6 +78,14 @@ static NSString *kBirthday = @"birthday";
     return makeSureNotNull([self.basicDict objectForKey:kMain_uid]);
 }
 
+- (NSString *)constellation {
+    return makeSureNotNull([self.basicDict objectForKey:kConstellation]);
+}
+
+- (NSString *)birthday {
+    return makeSureNotNull([self.basicDict objectForKey:kBirthday]);
+}
+
 - (BOOL)isMineIdol {
     return [makeSureNotNull([self.basicDict objectForKey:kIsMineIdol]) boolValue];
 }
