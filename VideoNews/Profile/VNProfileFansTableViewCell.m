@@ -40,7 +40,7 @@
         [self.thumbnailImgView.layer setCornerRadius:CGRectGetHeight([self.thumbnailImgView bounds]) / 2];
         self.thumbnailImgView.layer.masksToBounds = YES;
         
-        NSLog(@"%@", self.user.name);
+        //NSLog(@"%@", self.user.name);
         self.nameLabel.text = self.user.name;
         NSDictionary *attribute = @{NSFontAttributeName: self.nameLabel.font};
         CGRect rect = [self.user.name boundingRectWithSize:CGSizeMake(150.0, CGRectGetHeight(self.nameLabel.frame)) options:NSStringDrawingUsesLineFragmentOrigin attributes:attribute context:nil];

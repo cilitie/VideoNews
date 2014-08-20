@@ -176,6 +176,62 @@ static NSString *shareStr;
     }
     if (!self.followTableView.hidden) {
         if (self.mineUid && self.mineUser_token) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+            ^{
+                //刷新关注列表，并且改变可见cell的状态
+                [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    if (idolArr.count) {
+                        [self.idolListArr removeAllObjects];
+                        [self.idolListArr addObjectsFromArray:idolArr];
+                    }
+                    else if(idolArr.count==0){
+                        [self.idolListArr removeAllObjects];
+                    }
+                    //修改数据源
+                    for (VNUser *user in self.followArr) {
+                        if ([user.uid isEqualToString:_mineUid]||[self.idolListArr containsObject:user.uid]) {
+                            user.isMineIdol=YES;
+                        }
+                        else
+                        {
+                            user.isMineIdol=NO;
+                        }
+                    }
+                    [self.followTableView reloadData];
+                    /*
+                    for(VNProfileFansTableViewCell *cell in self.followTableView.visibleCells)
+                    {
+                        if ([cell.user.uid isEqualToString:self.mineUid]||[self.idolListArr containsObject:cell.user.uid]) {
+                            cell.user.isMineIdol=YES;
+                            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                            cell.followBtn.hidden = YES;
+                        }
+                        else
+                        {
+                            cell.user.isMineIdol=NO;
+                            cell.accessoryType = UITableViewCellAccessoryNone;
+                            cell.followBtn.hidden = NO;
+                        }
+                    }
+                     */
+                    if ([self.idolListArr containsObject:self.uid]) {
+                        [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
+                    }
+                    else
+                    {
+                        [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
+                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                    }
+                    
+                }];
+            });
+        }
+        /*
+        if (self.mineUid && self.mineUser_token) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
                     if (error) {
@@ -184,6 +240,9 @@ static NSString *shareStr;
                     if (idolArr.count) {
                         [self.idolListArr removeAllObjects];
                         [self.idolListArr addObjectsFromArray:idolArr];
+                    }
+                    else if(idolArr.count==0){
+                        [self.idolListArr removeAllObjects];
                     }
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                     [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
@@ -241,8 +300,94 @@ static NSString *shareStr;
                 }];
             });
         }
+         */
     }
     if (!self.fansTableView.hidden) {
+        if (self.mineUid && self.mineUser_token) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
+                //刷新关注列表，并且改变可见cell的状态
+                [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    if (idolArr.count) {
+                        [self.idolListArr removeAllObjects];
+                        [self.idolListArr addObjectsFromArray:idolArr];
+                    }
+                    else if(idolArr.count==0){
+                        [self.idolListArr removeAllObjects];
+                    }
+                    //修改数据源
+                    for (VNUser *user in self.fansArr) {
+                        if ([user.uid isEqualToString:self.mineUid]||[self.idolListArr containsObject:user.uid]) {
+                            user.isMineIdol=YES;
+                        }
+                        else
+                        {
+                            user.isMineIdol=NO;
+                        }
+                    }
+                    [self.fansTableView reloadData];
+                    /*
+
+                    for(VNProfileFansTableViewCell *cell in self.fansTableView.visibleCells)
+                    {
+                        if ([cell.user.uid isEqualToString:self.mineUid]||[self.idolListArr containsObject:cell.user.uid]) {
+                            cell.user.isMineIdol=YES;
+                            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                            cell.followBtn.hidden = YES;
+                        }
+                        else
+                        {
+                            cell.user.isMineIdol=NO;
+                            cell.accessoryType = UITableViewCellAccessoryNone;
+                            cell.followBtn.hidden = NO;
+                        }
+                    }*/
+                    if ([self.idolListArr containsObject:self.uid]) {
+                        [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
+                        int flag=0;
+                        for (VNUser *user in self.fansArr)
+                        {
+                            if ([user.uid isEqualToString:self.mineUid]) {
+                                flag=1;
+                                break ;
+                            }
+                        }
+                        if (flag==0) {//手动加入一个cell
+                            [VNHTTPRequestManager userInfoForUser:self.mineUid completion:^(VNUser *userInfo, NSError *error) {
+                                if (error) {
+                                    NSLog(@"%@", error.localizedDescription);
+                                }
+                                if (userInfo) {
+                                    userInfo.isMineIdol=YES;
+                                    if(![weakSelf.fansArr containsObject:userInfo])
+                                    {
+                                        [weakSelf.fansArr insertObject:userInfo atIndex:0];
+                                        [weakSelf.fansTableView reloadData];
+                                    }
+                                }
+                            }];
+                        }
+                    }
+                    else
+                    {
+                        [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
+                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                        for (VNUser *user in self.fansArr)
+                        {
+                            if ([user.uid isEqualToString:self.mineUid]) {
+                                [self.fansArr removeObject:user];
+                                [self.fansTableView reloadData];
+                                break;
+                            }
+                        }
+                    }
+                }];
+            });
+        }
+        /*
         if (self.mineUid && self.mineUser_token) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
@@ -253,6 +398,10 @@ static NSString *shareStr;
                         [self.idolListArr removeAllObjects];
                         [self.idolListArr addObjectsFromArray:idolArr];
                     }
+                    else if(idolArr.count==0){
+                        [self.idolListArr removeAllObjects];
+                    }
+                    
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                     [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
@@ -309,6 +458,7 @@ static NSString *shareStr;
                 }];
             });
         }
+         */
     }
 
 }
@@ -1258,7 +1408,7 @@ static NSString *shareStr;
                                     }
                                     else
                                     {*/
-                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                        //dispatch_async(dispatch_get_main_queue(), ^{
                                             //修改数据源
                                             [self.favouriteNewsArr addObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
                                             int index=[weakSelf.userVideoArr indexOfObject:weakCell.news];
@@ -1269,7 +1419,7 @@ static NSString *shareStr;
                                             //[weakCell likeStatus:YES];
                                             [weakCell reload];
                                             
-                                        });
+                                      //  });
                                         
                                 //    }
                                // }];
@@ -1320,7 +1470,7 @@ static NSString *shareStr;
                                 }
                                 else
                                 {*/
-                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                  //  dispatch_async(dispatch_get_main_queue(), ^{
                                         //修改数据源
                                         //[self.favouriteNewsArr removeObject:news];
                                         [self.favouriteNewsArr removeObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
@@ -1332,7 +1482,7 @@ static NSString *shareStr;
                                         //[weakCell likeStatus:NO];
                                         [weakCell reload];
                                         
-                                    });
+                                 //   });
                                     
                             //    }
                            // }];
@@ -1391,13 +1541,18 @@ static NSString *shareStr;
                     }
                     else if (succeed) {
                         //[VNUtility showHUDText:@"关注成功!" forView:self.view];
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                        //dispatch_async(dispatch_get_main_queue(), ^{
                             weakCell.followBtn.hidden = YES;
                             weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                        });
+                        //post notification
+                        NSDictionary *dic=@{@"operate":@"follow",@"user":weakCell.user};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
+                        //});
                     }
                     else {
-                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                        weakCell.followBtn.hidden = YES;
+                        weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                        [VNUtility showHUDText:@"已关注!" forView:self.view];
                     }
                 }];
                 });
@@ -1437,13 +1592,17 @@ static NSString *shareStr;
                     }
                     else if (succeed) {
                         //[VNUtility showHUDText:@"关注成功!" forView:self.view];
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                        //dispatch_async(dispatch_get_main_queue(), ^{
                             weakCell.followBtn.hidden = YES;
                             weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                        });
+                        NSDictionary *dic=@{@"operate":@"follow",@"user":weakCell.user};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
+                       // });
                     }
                     else {
-                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                        weakCell.followBtn.hidden = YES;
+                        weakCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                        [VNUtility showHUDText:@"已关注!" forView:self.view];
                     }
                 }];
                 });
@@ -1635,9 +1794,13 @@ static NSString *shareStr;
                         [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
                     });
+                    //post notification
+                    NSDictionary *dic=@{@"operate":@"follow",@"user":_userInfo};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
+                    
                     //zmy add 刷新头
                     [self reloadHeaderView];
-                    //fix me 比较trike的作法
+                    //fix me 比较trike的作法，直接插入cell
                     [VNHTTPRequestManager userInfoForUser:self.mineUid completion:^(VNUser *userInfo, NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1686,7 +1849,9 @@ static NSString *shareStr;
                 //
                 }
                 else {
-                    [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                    [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                    [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
+                    [VNUtility showHUDText:@"已关注!" forView:self.view];
                 }
             }];
 
@@ -1706,6 +1871,8 @@ static NSString *shareStr;
                 });
                 //zmy add 刷新头
                 [self reloadHeaderView];
+                NSDictionary *dic=@{@"operate":@"unfollow",@"user":_userInfo};
+                [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
                // NSIndexPath *indexPath=nil;
                 /*for (int i=0;i<weakSelf.fansArr.count;i++) {
                     if ([weakSelf.fansArr[i] isEqualToString:_mineUid]) {
@@ -1729,7 +1896,9 @@ static NSString *shareStr;
                 //
             }
             else {
-                [VNUtility showHUDText:@"取消关注失败!" forView:self.view];
+                [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
+                [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                [VNUtility showHUDText:@"已取消!" forView:self.view];
             }
         }];
         });

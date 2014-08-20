@@ -23,6 +23,7 @@ NSString *const VNNotificationCellDeleteNotification=@"KVNNotificationCellDelete
 NSString *const VNMineProfileFavouriteCellDeleteNotification=@"KVNMineProfileFavouriteCellDeleteNotification";
 //从个人主页、他人个人主页的视频列表跳转详情页，并且有点赞操作时得通知
 NSString *const VNProfileVideoLikeHandlerNotification=@"KVNProfileVideoLikeHandlerNotification";
+NSString *const VNProfileFollowHandlerNotification=@"KVNProfileFollowHandlerNotification";
 NSString *const VNSignOutNotification=@"KVNSignOutNotification";
 NSString *const VNLoginNotification=@"KVNLoginNotification";
 

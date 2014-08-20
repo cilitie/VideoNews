@@ -213,9 +213,14 @@
                         }
                         weakCell.fansCountLabel.text=fansCountStr;
                         weakCell.isMineIdol = YES;
+                        //post notification
+                        NSDictionary *dic=@{@"operate":@"follow",@"user":weakCell.user};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
                     }
                     else {
-                        [VNUtility showHUDText:@"关注失败!" forView:self.view];
+                        [weakCell.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                        [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xcacaca] forState:UIControlStateNormal];
+                        [VNUtility showHUDText:@"已关注!" forView:self.view];
                     }
                 }];
             }
@@ -257,9 +262,14 @@
                         }
                         weakCell.fansCountLabel.text=fansCountStr;
                         weakCell.isMineIdol = NO;
+                        //post notification
+                        NSDictionary *dic=@{@"operate":@"unfollow",@"user":weakCell.user};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileFollowHandlerNotification object:dic];
                     }
                     else {
-                        [VNUtility showHUDText:@"取消关注失败!" forView:self.view];
+                        [weakCell.followBtn setTitle:@"关  注" forState:UIControlStateNormal];
+                        [weakCell.followBtn setTitleColor:[UIColor colorWithRGBValue:0xce2426] forState:UIControlStateNormal];
+                        [VNUtility showHUDText:@"已取消!" forView:self.view];
                     }
                 }];
             }
