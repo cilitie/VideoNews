@@ -105,6 +105,15 @@ static NSString *shareStr;
     self.headerView.nameLabel.text = self.news.author.name;
     self.headerView.newsImageView.layer.masksToBounds=YES;
     [self.headerView.newsImageView.layer setCornerRadius:5];
+    self.headerView.newsImageView.backgroundColor=[UIColor whiteColor];
+    //UIImageView *fobidden=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"fobidden"]];
+    
+    
+    self.headerView.buyLabel.layer.masksToBounds=YES;
+    [self.headerView.buyLabel.layer setCornerRadius:5];
+    self.headerView.buyLabel.layer.borderWidth=1;
+    self.headerView.buyLabel.layer.borderColor=[[UIColor grayColor]CGColor];
+    //[[UIColor colorWithRed:225 green:225 blue:225 alpha:0]CGColor];
 
     
     __weak typeof(self) weakSelf = self;
@@ -1061,7 +1070,7 @@ static NSString *shareStr;
 - (IBAction)switchEmoji:(id)sender {
     if (isDefaultKeyboard) {
         //[self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
-        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60emoji"] forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60keyboard"] forState:UIControlStateNormal];
         if (!self.emojiKeyboardView) {
             self.emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 216) dataSource:self isStandard:NO];
             self.emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;

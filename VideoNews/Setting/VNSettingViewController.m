@@ -13,6 +13,7 @@
 #import "VNDraftListController.h"
 #import "UMSocial.h"
 #import "VNAboutViewController.h"
+#import "VNCheckOutTableViewCell.h"
 
 @interface VNSettingViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UMSocialUIDelegate>
 
@@ -67,7 +68,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 2) {
-        return 5;
+        return 6;
     }
     else {
         return 1;
@@ -105,6 +106,10 @@
                 break;
             case 4:{
                 cell.titleLabel.text = @"关于我们";
+            }
+                break;
+            case 5:{
+                cell.titleLabel.text = @"收银台";
             }
                 break;
         }
@@ -162,6 +167,11 @@
             case 4:{
                 VNAboutViewController *aboutVC=[self.storyboard instantiateViewControllerWithIdentifier:@"VNAboutViewController"];
                 [self.navigationController pushViewController:aboutVC animated:YES];
+            }
+                break;
+            case 5:{
+                VNCheckOutTableViewCell *checkoutVC=[self.storyboard instantiateViewControllerWithIdentifier:@"VNCheckOutViewController"];
+                [self.navigationController pushViewController:checkoutVC animated:YES];
             }
                 break;
                 

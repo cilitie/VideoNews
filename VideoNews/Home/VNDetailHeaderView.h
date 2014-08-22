@@ -23,6 +23,7 @@ typedef void(^ClickEventHandler)();
 @property (weak, nonatomic) IBOutlet UIButton *commentBtn;
 @property (weak, nonatomic) IBOutlet UIButton *likeBtn;
 @property (weak, nonatomic) IBOutlet UIImageView *likeImg;
+@property (weak, nonatomic) IBOutlet UILabel *buyLabel;
 
 @property (copy, nonatomic) ClickEventHandler commentHandler;
 @property (copy, nonatomic) ClickEventHandler likeHandler;
