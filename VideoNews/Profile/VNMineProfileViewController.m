@@ -114,24 +114,26 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (self.headerViewArr.count) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if ([VNHTTPRequestManager isReachable]) {
-                [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
-                    if (error) {
-                        NSLog(@"%@", error.localizedDescription);
-                    }
-                    if (userInfo) {
-                        self.mineInfo = userInfo;
-                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
-                            headerView.userInfo = userInfo;
-                            [headerView reload];
-                        }
-                    }
-                }];
-            }
-        });
-    }
+    
+//    if (self.headerViewArr.count) {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            if ([VNHTTPRequestManager isReachable]) {
+//                [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+//                    if (error) {
+//                        NSLog(@"%@", error.localizedDescription);
+//                    }
+//                    if (userInfo) {
+//                        self.mineInfo = userInfo;
+//                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+//                            NSLog(@"%@", NSStringFromCGRect(headerView.frame));
+//                            headerView.userInfo = userInfo;
+//                            [headerView reload];
+//                        }
+//                    }
+//                }];
+//            }
+//        });
+//    }
     __weak typeof(self) weakSelf = self;
 
     if (!self.videoTableView.hidden) {
@@ -387,6 +389,7 @@ static NSString *shareStr;
         if (userInfo) {
             self.mineInfo = userInfo;
             for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                NSLog(@"%@", NSStringFromCGRect(headerView.frame));
                 headerView.userInfo = userInfo;
                 [headerView reload];
             }
@@ -443,16 +446,19 @@ static NSString *shareStr;
     VNMineProfileHeaderView *followHeaderView = loadXib(@"VNMineProfileHeaderView");
     VNMineProfileHeaderView *fansHeaderView = loadXib(@"VNMineProfileHeaderView");
     self.headerViewArr = @[videoHeaderView, favHeaderView, followHeaderView, fansHeaderView];
-    [self reload];
     
     self.videoTableView.tableHeaderView = videoHeaderView;
     self.favouriteTableView.tableHeaderView = favHeaderView;
     self.followTableView.tableHeaderView = followHeaderView;
     self.fansTableView.tableHeaderView = fansHeaderView;
+    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
     
     [self.followTableView setTableFooterView:[[UIView alloc] init]];
     [self.fansTableView setTableFooterView:[[UIView alloc] init]];
     [self.view addSubview:self.progressView];
+    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
+    
+    [self reload];
 }
 //zmy add
 -(void)userReLogin:(NSNotification *)notification
@@ -485,6 +491,14 @@ static NSString *shareStr;
         VNMineProfileHeaderView *favHeaderView = self.headerViewArr[1];
         VNMineProfileHeaderView *followHeaderView = self.headerViewArr[2];
         VNMineProfileHeaderView *fansHeaderView = self.headerViewArr[3];
+        if (CGRectGetHeight(videoHeaderView.frame) != 145.0) {
+            CGRect frame = videoHeaderView.frame;
+            frame.size.height = 145.0;
+            videoHeaderView.frame = frame;
+            favHeaderView.frame = frame;
+            followHeaderView.frame = frame;
+            fansHeaderView.frame = frame;
+        }
         //zmy modify tableview ui 刷新是否需要放主线程里？
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([VNHTTPRequestManager isReachable]) {
@@ -494,6 +508,7 @@ static NSString *shareStr;
                     }
                     if (userInfo) {
                         self.mineInfo = userInfo;
+                        NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
                         videoHeaderView.userInfo = userInfo;
                         [videoHeaderView reload];
                         
@@ -513,6 +528,7 @@ static NSString *shareStr;
                 VNUser *user = [[VNUser alloc] initWithDict:userInfo];
                 self.mineInfo = user;
                 videoHeaderView.userInfo = user;
+                NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
                 [videoHeaderView reload];
                 
                 favHeaderView.userInfo = user;
@@ -1515,6 +1531,20 @@ static NSString *shareStr;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //for ipad 诡异
+    VNMineProfileHeaderView *videoHeaderView = self.headerViewArr[0];
+    if (CGRectGetHeight(videoHeaderView.frame) != 145.0) {
+        CGRect frame = videoHeaderView.frame;
+        frame.size.height = 145.0;
+        videoHeaderView.frame = frame;
+        VNMineProfileHeaderView *favHeaderView = self.headerViewArr[1];
+        VNMineProfileHeaderView *followHeaderView = self.headerViewArr[2];
+        VNMineProfileHeaderView *fansHeaderView = self.headerViewArr[3];
+        favHeaderView.frame = frame;
+        followHeaderView.frame = frame;
+        fansHeaderView.frame = frame;
+    }
+    
     if (tableView == self.videoTableView) {
         if (self.mineVideoArr.count) {
             VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNProfileVideoTableViewCellIdentifier"];

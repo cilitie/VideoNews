@@ -133,6 +133,7 @@
                     <constraints>
                         <constraint firstItem="Ad9-13-fqG" firstAttribute="top" secondItem="rc6-po-2XL" secondAttribute="top" constant="27" id="AcT-W8-GhC"/>
                         <constraint firstItem="Lqr-hg-kuy" firstAttribute="leading" secondItem="5Tp-R8-p7J" secondAttribute="trailing" constant="1" id="J84-sd-aUT"/>
+                        <constraint firstAttribute="height" constant="145" id="OZa-T8-BEm"/>
                         <constraint firstItem="5Tp-R8-p7J" firstAttribute="top" secondItem="rc6-po-2XL" secondAttribute="top" constant="27" id="QfB-pu-23L"/>
                         <constraint firstItem="NXx-Zb-dU2" firstAttribute="top" secondItem="rc6-po-2XL" secondAttribute="top" constant="10" id="RDt-YF-nK7"/>
                         <constraint firstItem="Lqr-hg-kuy" firstAttribute="top" secondItem="rc6-po-2XL" secondAttribute="top" constant="35" id="eqJ-ts-bNm"/>
@@ -147,10 +148,9 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="rc6-po-2XL" secondAttribute="bottom" id="BpI-Hl-v1M"/>
-                <constraint firstItem="rc6-po-2XL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="EO2-0u-qQx"/>
-                <constraint firstAttribute="trailing" secondItem="rc6-po-2XL" secondAttribute="trailing" id="ODH-yn-JVh"/>
-                <constraint firstItem="rc6-po-2XL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Q2r-QW-rEx"/>
+                <constraint firstItem="rc6-po-2XL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="0dM-XD-kbI"/>
+                <constraint firstItem="rc6-po-2XL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="99l-uS-dRe"/>
+                <constraint firstAttribute="trailing" secondItem="rc6-po-2XL" secondAttribute="trailing" id="VpV-hb-tOw"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

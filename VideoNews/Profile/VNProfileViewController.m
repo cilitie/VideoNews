@@ -1296,6 +1296,18 @@ static NSString *shareStr;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //for ipad 诡异
+    VNUserProfileHeaderView *videoHeaderView = self.headerViewArr[0];
+    if (CGRectGetHeight(videoHeaderView.frame) != 145.0) {
+        CGRect frame = videoHeaderView.frame;
+        frame.size.height = 145.0;
+        videoHeaderView.frame = frame;
+        VNUserProfileHeaderView *favHeaderView = self.headerViewArr[1];
+        VNUserProfileHeaderView *fansHeaderView = self.headerViewArr[2];
+        favHeaderView.frame = frame;
+        fansHeaderView.frame = frame;
+    }
+    
     if (tableView == self.videoTableView) {
         if (self.userVideoArr.count) {
             VNProfileVideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"VNUserProfileVideoTableViewCellIdentifier"];

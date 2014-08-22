@@ -10,7 +10,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="145"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k0d-I1-sL8" userLabel="header View">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k0d-I1-sL8" userLabel="header View">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="145"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
@@ -120,14 +120,23 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     <gestureRecognizers/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="145" id="Az4-gm-9aG"/>
+                    </constraints>
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="d89-Er-g9I" appends="YES" id="fA6-Zz-cPl"/>
                     </connections>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="k0d-I1-sL8" secondAttribute="trailing" id="Rty-4Q-v55"/>
+                <constraint firstItem="k0d-I1-sL8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cbX-KK-raz"/>
+                <constraint firstItem="k0d-I1-sL8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="hTi-65-Tzh"/>
+            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="bgView" destination="k0d-I1-sL8" id="McF-mL-bIt"/>
                 <outlet property="fansCountLabel" destination="X9e-Xl-xen" id="N8M-aP-a1o"/>
                 <outlet property="fansNameLabel" destination="BFk-fY-haQ" id="yKC-Xj-r8M"/>
                 <outlet property="favouriteCountLabel" destination="JOd-hQ-94v" id="GLQ-mA-R3e"/>

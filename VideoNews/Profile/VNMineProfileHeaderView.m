@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *likeNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *followNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fansNameLabel;
+@property (weak, nonatomic) IBOutlet UIView *bgView;
 
 - (IBAction)edit:(id)sender;
 - (IBAction)tap:(UITapGestureRecognizer *)sender;
@@ -23,13 +24,8 @@
 
 @implementation VNMineProfileHeaderView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (void)awakeFromNib {
+    NSLog(@"%@", NSStringFromCGRect(self.frame));
 }
 
 - (void)reload {
@@ -42,6 +38,7 @@
         [self.favouriteCountLabel setText:self.userInfo.like_count];
         [self.followCountLabel setText:self.userInfo.idol_count];
         [self.fansCountLabel setText:self.userInfo.fans_count];
+         NSLog(@"%@", NSStringFromCGRect(self.frame));
     }
 }
 
@@ -53,20 +50,24 @@
 
 - (IBAction)tap:(UITapGestureRecognizer *)sender {
     CGPoint point = [sender locationInView:self];
+    NSLog(@"%@", NSStringFromCGRect(self.frame));
+    NSLog(@"%@", NSStringFromCGRect(self.bgView.frame));
+    CGFloat startX = CGRectGetMinX(self.bgView.frame);
+    CGFloat startY = CGRectGetMinY(self.bgView.frame);
     NSUInteger index = 0;
-    if (CGRectContainsPoint(CGRectMake(0, 94, 80, 50), point)) {
+    if (CGRectContainsPoint(CGRectMake(startX, startY+94, 80, 50), point)) {
         index = 0;
     }
-    else if (CGRectContainsPoint(CGRectMake(80, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(startX+80, startY+94, 80, 50), point)) {
         index = 1;
     }
-    else if (CGRectContainsPoint(CGRectMake(80*2, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(startX+80*2, startY+94, 80, 50), point)) {
         index = 2;
     }
-    else if (CGRectContainsPoint(CGRectMake(80*3, 94, 80, 50), point)) {
+    else if (CGRectContainsPoint(CGRectMake(startX+80*3, startY+94, 80, 50), point)) {
         index = 3;
     }
-    else if (CGRectContainsPoint(CGRectMake(10, 10, 75, 75), point)) {
+    else if (CGRectContainsPoint(CGRectMake(startX+10, startY+10, 75, 75), point)) {
         index = 11;
     }
     else {
