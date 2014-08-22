@@ -136,7 +136,6 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="bgView" destination="k0d-I1-sL8" id="McF-mL-bIt"/>
                 <outlet property="fansCountLabel" destination="X9e-Xl-xen" id="N8M-aP-a1o"/>
                 <outlet property="fansNameLabel" destination="BFk-fY-haQ" id="yKC-Xj-r8M"/>
                 <outlet property="favouriteCountLabel" destination="JOd-hQ-94v" id="GLQ-mA-R3e"/>
