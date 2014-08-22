@@ -115,25 +115,25 @@ static NSString *shareStr;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-//    if (self.headerViewArr.count) {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//            if ([VNHTTPRequestManager isReachable]) {
-//                [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
-//                    if (error) {
-//                        NSLog(@"%@", error.localizedDescription);
-//                    }
-//                    if (userInfo) {
-//                        self.mineInfo = userInfo;
-//                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
-//                            NSLog(@"%@", NSStringFromCGRect(headerView.frame));
-//                            headerView.userInfo = userInfo;
-//                            [headerView reload];
-//                        }
-//                    }
-//                }];
-//            }
-//        });
-//    }
+    if (self.headerViewArr.count) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if ([VNHTTPRequestManager isReachable]) {
+                [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    if (userInfo) {
+                        self.mineInfo = userInfo;
+                        for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
+                            NSLog(@"%@", NSStringFromCGRect(headerView.frame));
+                            headerView.userInfo = userInfo;
+                            [headerView reload];
+                        }
+                    }
+                }];
+            }
+        });
+    }
     __weak typeof(self) weakSelf = self;
 
     if (!self.videoTableView.hidden) {

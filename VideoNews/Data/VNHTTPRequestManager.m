@@ -771,8 +771,8 @@ static int pagesize = 10;
     NSString *URLStr = [VNHost stringByAppendingString:@"deleteMessage.php"];
     NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token, @"mid": mid};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", operation.request.URL);
-        NSLog(@"%@", responseObject);
+        //NSLog(@"%@", operation.request.URL);
+        //NSLog(@"%@", responseObject);
         BOOL delSuccess = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];

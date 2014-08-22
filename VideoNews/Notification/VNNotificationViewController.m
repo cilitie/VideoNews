@@ -377,13 +377,16 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (_messageArr.count==0) {
+        return NO;
+    }
     return YES;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         if (self.messageArr.count) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
             [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
                 if (error) {
@@ -397,7 +400,7 @@
             else {
                 [self.messageTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
             }
-            });
+          //  });
         }
     }
 }
