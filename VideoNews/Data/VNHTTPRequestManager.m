@@ -1118,8 +1118,9 @@ static int pagesize = 10;
 }
 
 + (NSString *)token {
-    NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
+   // NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     //NSLog(@"%@", originTokenStr);
+    NSString *originTokenStr = [[self timestamp] stringByAppendingString:@"#$@%!*zmy"];
     return [originTokenStr md5];
 }
 

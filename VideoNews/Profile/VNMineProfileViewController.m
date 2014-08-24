@@ -1586,6 +1586,10 @@ static NSString *shareStr;
                 actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [news.author.uid isEqualToString:weakSelf.uid] ? @"删除" : @"举报", nil];
                 weakSelf.shareNews = news;
                 weakSelf.shareNewsIndexPath=indexPath;
+               // NSLog(@"news title:%@",weakSelf.shareNews.title);
+               // NSLog(@"seleted:%d",weakSelf.shareNewsIndexPath.row);
+               // NSLog(@"title:%@",news.title);
+              //  NSLog(@"indexPath:%d",indexPath.row);
                 actionSheet.tag=KVideoTag;
                 [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
             };
@@ -2232,7 +2236,7 @@ static NSString *shareStr;
         NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
         NSString *shareURL = self.shareNews.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
-            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d",self.shareNews.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/ssp.php?id=%d",self.shareNews.nid];
         }
         NSString *snsName = nil;
         switch (buttonIndex) {
@@ -2457,28 +2461,32 @@ static NSString *shareStr;
                          else if(succeed)
                          {
                              //NSLog(@"%d",self.mineVideoArr.count);
-                             [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
-                             if (_shareNewsIndexPath.row == 0) {
-                                 [self.videoTableView reloadData];
-                             }
-                             else {
-                                 [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
-                             }
-                             if (alertView.tag==KDeleteFromLikes) {
-                                 [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                               //  NSLog(@"delete:%d",_shareNewsIndexPath.row);
+                               //  NSLog(@"delete news:%@",_shareNews.title);
+                                 [self.mineVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
                                  if (_shareNewsIndexPath.row == 0) {
-                                     [self.favouriteTableView reloadData];
+                                     [self.videoTableView reloadData];
                                  }
                                  else {
-                                     [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                     [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                  }
-                             }
+                                 if (alertView.tag==KDeleteFromLikes) {
+                                     [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
+                                     if (_shareNewsIndexPath.row == 0) {
+                                         [self.favouriteTableView reloadData];
+                                     }
+                                     else {
+                                         [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                     }
+                                 }
+                                 [VNUtility showHUDText:@"视频删除成功!" forView:self.view];
+                             });
                              [self reloadHeaderView];
-                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
-                         }
+                        }
                          else
                          {
-                             [VNUtility showHUDText:@"删除视频失败" forView:self.view];
+                             [VNUtility showHUDText:@"该视频已被删除！" forView:self.view];
                          }
                      }];
                 });
