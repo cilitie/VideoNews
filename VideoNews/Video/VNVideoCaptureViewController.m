@@ -52,7 +52,7 @@ static NSString *videoFilePath;
     if (!_overlayView) {
         _overlayView = [[VNCameraOverlayView alloc] initWithFrame:self.view.frame];
         _overlayView.delegate = self;
-//        [_overlayView setProgressViewBlinking:YES];
+        //        [_overlayView setProgressViewBlinking:YES];
     }
     return _overlayView;
 }
@@ -86,7 +86,7 @@ static NSString *videoFilePath;
     if (self) {
         
         self.view.backgroundColor = [UIColor blackColor];
-
+        
         videoFilePath = [VNUtility getNSCachePath:@"VideoFiles"];
         
         _videoTimePointArr = [NSMutableArray arrayWithCapacity:1];
@@ -153,7 +153,7 @@ static NSString *videoFilePath;
     if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetMedium]) {
         [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     }
-
+    
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     [videoDevice lockForConfiguration:nil];
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
@@ -191,7 +191,7 @@ static NSString *videoFilePath;
         
         [self.view addSubview:self.overlayView];
     }
-
+    
 }
 
 - (void)initDir
@@ -214,7 +214,7 @@ static NSString *videoFilePath;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
- 
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearVideoClips) name:@"ClearVideoClipsNotification" object:nil];
 }
 
@@ -238,7 +238,7 @@ static NSString *videoFilePath;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
+    
 }
 
 - (void)dealloc
@@ -254,12 +254,12 @@ static NSString *videoFilePath;
     [_videoPathArr removeAllObjects];
     self.videoPieceCount = 0;
     self.videoTotalDuration = 0;
-
+    
     [_overlayView setProgressTimeArr:_videoTimePointArr];
     [_overlayView updateProgressViewToPercentage:0];
     [_overlayView setTrashBtnEnabled:NO];
     [self.overlayView setAlbumAndSubmitBtnStatus:NO];
-
+    
 }
 
 - (void)refreshVideoDuration:(NSTimer *)timer
@@ -326,9 +326,9 @@ static NSString *videoFilePath;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[NSFileManager defaultManager] removeItemAtPath:combinedPath error:nil];
     });
-
+    
     __weak VNVideoCaptureViewController *weakSelf = self;
-
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
         NSURL *url = [NSURL fileURLWithPath:combinedPath];
@@ -358,7 +358,7 @@ static NSString *videoFilePath;
                 }
             });
         }];
-
+        
     });
 }
 
@@ -395,7 +395,7 @@ static NSString *videoFilePath;
         CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, 0 );
         
         //Use this code if you want the viewing square to be in the middle of the video
-//        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, -(clipVideoTrack.naturalSize.width - clipVideoTrack.naturalSize.height) /2 );
+        //        CGAffineTransform t1 = CGAffineTransformMakeTranslation(clipVideoTrack.naturalSize.height, -(clipVideoTrack.naturalSize.width - clipVideoTrack.naturalSize.height) /2 );
         
         //Make sure the square is portrait
         CGAffineTransform t2 = CGAffineTransformRotate(t1, M_PI_2);
@@ -418,7 +418,7 @@ static NSString *videoFilePath;
         
         //Export
         AVAssetExportSession *finalExporter = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality] ;
-
+        
         finalExporter.videoComposition = videoComposition;
         finalExporter.outputURL = exportUrl;
         finalExporter.outputFileType = AVFileTypeMPEG4;
@@ -500,7 +500,7 @@ static NSString *videoFilePath;
     for (NSString *dir in arr) {
         [fm removeItemAtPath:[filePath stringByAppendingPathComponent:dir] error:nil];
     }
-
+    
 }
 
 - (void)doChangeTorchStatusTo:(BOOL)isOn
@@ -513,7 +513,7 @@ static NSString *videoFilePath;
 }
 
 - (AVCaptureDevice *)backFacingCamera {
-
+    
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevice *captureDevice = nil;
     for (AVCaptureDevice *device in videoDevices)
@@ -524,7 +524,7 @@ static NSString *videoFilePath;
             break;
         }
     }
-
+    
     [captureDevice lockForConfiguration:nil];
     
     return captureDevice;
@@ -554,20 +554,20 @@ static NSString *videoFilePath;
 - (void)doChangeDeviceTo:(BOOL)isRear
 {
     [self.captureSession removeInput:self.videoInput];
-
+    
     if (isRear) {
-
+        
         self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self backFacingCamera] error:nil];
         [self.overlayView setTorchBtnHidden:NO];
     }else {
         
         
         self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self frontFacingCamera] error:nil];
-
+        
         [self.overlayView setTorchBtnHidden:YES];
     }
     [self.captureSession addInput:self.videoInput];
-
+    
 }
 
 /**
@@ -611,7 +611,7 @@ static NSString *videoFilePath;
  */
 - (void)doStartNewVideoRecord
 {
-//    [self.overlayView setProgressViewBlinking:NO];
+    //    [self.overlayView setProgressViewBlinking:NO];
     
     NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:currVideoPath]) {
@@ -627,7 +627,7 @@ static NSString *videoFilePath;
  */
 - (void)doEndCurVideo
 {
-//    [self.overlayView setProgressViewBlinking:YES];
+    //    [self.overlayView setProgressViewBlinking:YES];
     
     if ([_durationTimer isValid]) {
         [_durationTimer invalidate];
@@ -684,7 +684,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
       fromConnections:(NSArray *)connections
                 error:(NSError *)error
 {
-
+    
     BOOL recordedSuccessfully = YES;
     
     if ([error code] != noErr)

@@ -35,7 +35,8 @@
 //filter related
 @property (nonatomic, strong) NSArray *filterTypeArr;               //filter type supported.
 @property (nonatomic, strong) GPUImageMovie *movieFile;
-@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
+@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filterFirst;
+@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filterLast;
 @property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
 @property (nonatomic, assign) VNVideoFilterType filterType;
 @property (nonatomic, strong) GPUImageView *filterVideoView;
@@ -456,7 +457,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [self clearFilter];
             
             _movieFile = nil;
-            _filter = nil;
+            _filterFirst = nil;
+            _filterLast = nil;
             _movieWriter = nil;
             
             _movieFile = [[GPUImageMovie alloc] initWithURL:[NSURL fileURLWithPath:self.videoPath]];
@@ -466,13 +468,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
             [self setFilterBasedOnType];
             
-            [_movieFile addTarget:_filter];
+            [_movieFile addTarget:_filterFirst];
             
             GPUImageView *tempFilterVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
             [tempFilterVideoView setBackgroundColorRed:0 green:0 blue:0 alpha:0];
             tempFilterVideoView.hidden = YES;
             [self.view addSubview:tempFilterVideoView];
-            [_filter addTarget:tempFilterVideoView];
+            [_filterLast addTarget:tempFilterVideoView];
             
             // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
             NSString *filterFilePath = [[VNUtility getNSCachePath:@"VideoFiles/Temp"] stringByAppendingPathComponent:@"VN_Video_filter.mp4"];
@@ -480,7 +482,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             NSURL *movieURL = [NSURL fileURLWithPath:filterFilePath];
             
             _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
-            [_filter addTarget:self.movieWriter];
+            [_filterLast addTarget:self.movieWriter];
             
             // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
             
@@ -496,7 +498,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
 
             [_movieWriter setCompletionBlock:^{
-                [weakSelf.filter removeTarget:weakSelf.movieWriter];
+                [weakSelf.filterLast removeTarget:weakSelf.movieWriter];
                 [weakSelf.movieWriter finishRecording];
 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -698,11 +700,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     }else {
         self.isFilterOn = YES;
     }
-    if (_filter) {
+    if (_filterFirst || _filterLast) {
 
         [self clearFilter];
         
-        _filter = nil;
+        _filterFirst = nil;
+        _filterLast = nil;
     }
     
     [self setFilterBasedOnType];
@@ -711,9 +714,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         self.filterVideoView.hidden = NO;
 
-        [self.movieFile addTarget:_filter];
+        [self.movieFile addTarget:_filterFirst];
         
-        [_filter addTarget:self.filterVideoView];
+        [_filterLast addTarget:self.filterVideoView];
         
         // In addition to displaying to the screen, write out a processed version of the movie to disk
         // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
@@ -723,7 +726,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         
         _movieWriter = nil;
         _movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(360, 360)];
-        [_filter addTarget:self.movieWriter];
+        [_filterLast addTarget:self.movieWriter];
         
         // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
 //        _movieWriter.shouldPassthroughAudio = YES;
@@ -736,7 +739,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         __weak VNVideoCustomizationController *weakSelf = self;
         
         [_movieWriter setCompletionBlock:^{
-            [weakSelf.filter removeTarget:weakSelf.movieWriter];
+            [weakSelf.filterLast removeTarget:weakSelf.movieWriter];
             [weakSelf.movieWriter finishRecording];
         }];
         
@@ -753,7 +756,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //    if (_movieWriter) {
 //        [self.movieWriter cancelRecording];
 //    }
-    [self.movieFile removeTarget:_filter];
+    [self.movieFile removeTarget:_filterFirst];
 //    [self.movieFile endProcessing];
 //    self.movieFile.audioEncodingTarget = nil;
 //
@@ -772,54 +775,72 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             break;
         case VNVideoFilterTypeSepiaTone:
         {
-            _filter = [[GPUImageSepiaFilter alloc] init];
-            [(GPUImageSepiaFilter *)_filter setIntensity:0.8];  //强度
+            
+            _filterFirst = [[GPUImageSepiaFilter alloc] init];
+            [(GPUImageSepiaFilter *)_filterFirst setIntensity:0.8];  //强度
+            
+            GPUImageToneCurveFilter *tmpFilter = [[GPUImageToneCurveFilter alloc] init];
+            [tmpFilter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
+            
+            _filterLast = [[GPUImageTiltShiftFilter alloc] init];
+            [(GPUImageTiltShiftFilter *)_filterLast setTopFocusLevel:0.3];
+            [(GPUImageTiltShiftFilter *)_filterLast setBottomFocusLevel:0.5];
+            
+            [_filterFirst addTarget:tmpFilter];
+            [tmpFilter addTarget:_filterLast];
         }
             break;
         case VNVideoFilterTypeToneCureve:
         {
-            _filter = [[GPUImageToneCurveFilter alloc] init];
-            [(GPUImageToneCurveFilter *)_filter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
+            _filterFirst = [[GPUImageToneCurveFilter alloc] init];
+            [(GPUImageToneCurveFilter *)_filterFirst setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeSoftElegance:
         {
-            _filter = [[GPUImageSoftEleganceFilter alloc] init];
+            _filterFirst = [[GPUImageSoftEleganceFilter alloc] init];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeGrayscale:
         {
-            _filter = [[GPUImageGrayscaleFilter alloc] init];
+            _filterFirst = [[GPUImageGrayscaleFilter alloc] init];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeTiltShift:
         {
-            _filter = [[GPUImageTiltShiftFilter alloc] init];
-            [(GPUImageTiltShiftFilter *)_filter setTopFocusLevel:0.3];
-            [(GPUImageTiltShiftFilter *)_filter setBottomFocusLevel:0.5];
+            _filterFirst = [[GPUImageTiltShiftFilter alloc] init];
+            [(GPUImageTiltShiftFilter *)_filterFirst setTopFocusLevel:0.3];
+            [(GPUImageTiltShiftFilter *)_filterFirst setBottomFocusLevel:0.5];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeVignette:
         {
-            _filter = [[GPUImageVignetteFilter alloc] init];
-            [(GPUImageVignetteFilter *)_filter setVignetteEnd:0.5];
+            _filterFirst = [[GPUImageVignetteFilter alloc] init];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.5];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeGaussianSelectiveBlur:
         {
-            _filter = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
-            [(GPUImageGaussianSelectiveBlurFilter*)_filter setExcludeCircleRadius:40.0/320.0];
+            _filterFirst = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
+            [(GPUImageGaussianSelectiveBlurFilter*)_filterFirst setExcludeCircleRadius:40.0/320.0];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeSaturation:
         {
-            _filter = [[GPUImageSaturationFilter alloc] init];
-            [(GPUImageSaturationFilter *)_filter setSaturation:2];
+            _filterFirst = [[GPUImageSaturationFilter alloc] init];
+            [(GPUImageSaturationFilter *)_filterFirst setSaturation:2];
+            _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeMissEtikate:
         {
-            _filter = [[GPUImageMissEtikateFilter alloc] init];
+            _filterFirst = [[GPUImageMissEtikateFilter alloc] init];
         }
             break;
         default:

@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
 		14001291198E69AD00D4A057 /* VNUploadVideoProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */; };
+		141ECEAF19A72DDA00E42D86 /* RosyWriterVideoProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEAC19A72DDA00E42D86 /* RosyWriterVideoProcessor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		141ECEB019A72DDA00E42D86 /* RosyWriterPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEAE19A72DDA00E42D86 /* RosyWriterPreviewView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		141ECEB319A72FFD00E42D86 /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEB119A72FFD00E42D86 /* ShaderUtilities.c */; };
+		141ECEB619A738C600E42D86 /* passThrough.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 141ECEB419A738C600E42D86 /* passThrough.fsh */; };
+		141ECEB719A738C600E42D86 /* passThrough.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 141ECEB519A738C600E42D86 /* passThrough.vsh */; };
 		142FB01519A055EC00F8ECCF /* GLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 142FAFD619A055EC00F8ECCF /* GLProgram.m */; };
 		142FB01619A055EC00F8ECCF /* GPUImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 142FAFD919A055EC00F8ECCF /* GPUImageBuffer.m */; };
 		142FB01719A055EC00F8ECCF /* GPUImageColorMatrixFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 142FAFDB19A055EC00F8ECCF /* GPUImageColorMatrixFilter.m */; };
@@ -203,6 +208,14 @@
 /* Begin PBXFileReference section */
 		1400128F198E69AD00D4A057 /* VNUploadVideoProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadVideoProgressView.h; sourceTree = "<group>"; };
 		14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadVideoProgressView.m; sourceTree = "<group>"; };
+		141ECEAB19A72DDA00E42D86 /* RosyWriterVideoProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosyWriterVideoProcessor.h; sourceTree = "<group>"; };
+		141ECEAC19A72DDA00E42D86 /* RosyWriterVideoProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RosyWriterVideoProcessor.m; sourceTree = "<group>"; };
+		141ECEAD19A72DDA00E42D86 /* RosyWriterPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosyWriterPreviewView.h; sourceTree = "<group>"; };
+		141ECEAE19A72DDA00E42D86 /* RosyWriterPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RosyWriterPreviewView.m; sourceTree = "<group>"; };
+		141ECEB119A72FFD00E42D86 /* ShaderUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ShaderUtilities.c; sourceTree = "<group>"; };
+		141ECEB219A72FFD00E42D86 /* ShaderUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUtilities.h; sourceTree = "<group>"; };
+		141ECEB419A738C600E42D86 /* passThrough.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.fsh; sourceTree = "<group>"; };
+		141ECEB519A738C600E42D86 /* passThrough.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.vsh; sourceTree = "<group>"; };
 		142FAFD519A055EC00F8ECCF /* GLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
 		142FAFD619A055EC00F8ECCF /* GLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLProgram.m; sourceTree = "<group>"; };
 		142FAFD719A055EC00F8ECCF /* GPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImage.h; sourceTree = "<group>"; };
@@ -573,6 +586,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		141ECEB819A73F4E00E42D86 /* VideoRecordRelated */ = {
+			isa = PBXGroup;
+			children = (
+				141ECEB419A738C600E42D86 /* passThrough.fsh */,
+				141ECEB519A738C600E42D86 /* passThrough.vsh */,
+				141ECEB119A72FFD00E42D86 /* ShaderUtilities.c */,
+				141ECEB219A72FFD00E42D86 /* ShaderUtilities.h */,
+				141ECEAB19A72DDA00E42D86 /* RosyWriterVideoProcessor.h */,
+				141ECEAC19A72DDA00E42D86 /* RosyWriterVideoProcessor.m */,
+				141ECEAD19A72DDA00E42D86 /* RosyWriterPreviewView.h */,
+				141ECEAE19A72DDA00E42D86 /* RosyWriterPreviewView.m */,
+			);
+			name = VideoRecordRelated;
+			sourceTree = "<group>";
+		};
 		142FAFD419A055EC00F8ECCF /* GPUImage */ = {
 			isa = PBXGroup;
 			children = (
@@ -659,6 +687,7 @@
 		144BF52219848AF700A6C6B7 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				141ECEB819A73F4E00E42D86 /* VideoRecordRelated */,
 				2696CA5D199B60B9008EB90A /* Audios */,
 				144BF5261984F58000A6C6B7 /* UIImageView+LBBlurredImage.h */,
 				144BF5271984F58000A6C6B7 /* UIImageView+LBBlurredImage.m */,
@@ -1240,7 +1269,9 @@
 				D63311971994B377005E5758 /* UMSnsAccountViewController.xib in Resources */,
 				D6676F9B197CBADE00F484FE /* VNMineProfileHeaderView.xib in Resources */,
 				D6676F91197916D400F484FE /* VNProfileVideoTableViewCell.xib in Resources */,
+				141ECEB719A738C600E42D86 /* passThrough.vsh in Resources */,
 				D66F7A4719619FC800EA72BC /* VNDetailHeaderView.xib in Resources */,
+				141ECEB619A738C600E42D86 /* passThrough.fsh in Resources */,
 				D6676F96197916F600F484FE /* VNProfileFansTableViewCell.xib in Resources */,
 				142FB03419A055EC00F8ECCF /* lookup_soft_elegance_1.png in Resources */,
 				D6FED758195AC1C100AD10E0 /* InfoPlist.strings in Resources */,
@@ -1325,6 +1356,7 @@
 				144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */,
 				26A584C61987411500C34461 /* QiniuHttpClient.m in Sources */,
 				D6676F42196A3ADB00F484FE /* VNLoginViewController.m in Sources */,
+				141ECEB319A72FFD00E42D86 /* ShaderUtilities.c in Sources */,
 				142FB02719A055EC00F8ECCF /* GPUImageSaturationFilter.m in Sources */,
 				142FB02619A055EC00F8ECCF /* GPUImageRawDataOutput.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
@@ -1376,6 +1408,7 @@
 				D6FED75A195AC1C100AD10E0 /* main.m in Sources */,
 				26A584C51987411500C34461 /* QiniuConfig.m in Sources */,
 				142FB02219A055EC00F8ECCF /* GPUImageMovieWriter.m in Sources */,
+				141ECEB019A72DDA00E42D86 /* RosyWriterPreviewView.m in Sources */,
 				D6FED79C195C0A6D00AD10E0 /* VNUser.m in Sources */,
 				D68CB4FA19822C6300236517 /* VNEditProfileViewController.m in Sources */,
 				144BF5401984F58000A6C6B7 /* UIImageView+LBBlurredImage.m in Sources */,
@@ -1402,6 +1435,7 @@
 				26A584CA1987411500C34461 /* QiniuUtils.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */,
+				141ECEAF19A72DDA00E42D86 /* RosyWriterVideoProcessor.m in Sources */,
 				D6FED7B1195ED38D00AD10E0 /* VNCategory.m in Sources */,
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
