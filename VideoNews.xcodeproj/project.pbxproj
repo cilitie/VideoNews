@@ -75,6 +75,7 @@
 		14B0326419A04A3C00DE42EB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B0326319A04A3C00DE42EB /* CoreMedia.framework */; };
 		14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B8951F198A3F22006244D9 /* VNAudioListController.m */; };
 		14E2D2F9199F533500B6B56A /* VNVideoFilterListScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E2D2F8199F533500B6B56A /* VNVideoFilterListScrollView.m */; };
+		2695320919AB9D7B009BCCA0 /* GPLoadingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2695320819AB9D7B009BCCA0 /* GPLoadingButton.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
 		2696CA5E199B60B9008EB90A /* Audios in Resources */ = {isa = PBXBuildFile; fileRef = 2696CA5D199B60B9008EB90A /* Audios */; };
@@ -331,6 +332,8 @@
 		14B8951F198A3F22006244D9 /* VNAudioListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAudioListController.m; sourceTree = "<group>"; };
 		14E2D2F7199F533500B6B56A /* VNVideoFilterListScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoFilterListScrollView.h; sourceTree = "<group>"; };
 		14E2D2F8199F533500B6B56A /* VNVideoFilterListScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFilterListScrollView.m; sourceTree = "<group>"; };
+		2695320719AB9D7B009BCCA0 /* GPLoadingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPLoadingButton.h; sourceTree = "<group>"; };
+		2695320819AB9D7B009BCCA0 /* GPLoadingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPLoadingButton.m; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
 		26962047196E4AF600EA06B3 /* VNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMessage.m; sourceTree = "<group>"; };
 		2696204A196E75DF00EA06B3 /* VNNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationViewController.h; sourceTree = "<group>"; };
@@ -727,6 +730,15 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
+		2695320619AB9D7B009BCCA0 /* LoadingView */ = {
+			isa = PBXGroup;
+			children = (
+				2695320719AB9D7B009BCCA0 /* GPLoadingButton.h */,
+				2695320819AB9D7B009BCCA0 /* GPLoadingButton.m */,
+			);
+			path = LoadingView;
+			sourceTree = "<group>";
+		};
 		26962049196E75DF00EA06B3 /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -899,6 +911,7 @@
 		D6676F63196E81BB00F484FE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				2695320619AB9D7B009BCCA0 /* LoadingView */,
 				142FAFD419A055EC00F8ECCF /* GPUImage */,
 				D6995B37198F6BF000E1AA75 /* UIButton+HitTest.h */,
 				D6995B38198F6BF000E1AA75 /* UIButton+HitTest.m */,
@@ -1361,6 +1374,7 @@
 				142FB02619A055EC00F8ECCF /* GPUImageRawDataOutput.m in Sources */,
 				D6676F7B197523A900F484FE /* AGEmojiKeyBoardView.m in Sources */,
 				142FB02519A055EC00F8ECCF /* GPUImageRawDataInput.m in Sources */,
+				2695320919AB9D7B009BCCA0 /* GPLoadingButton.m in Sources */,
 				142FB02419A055EC00F8ECCF /* GPUImagePicture.m in Sources */,
 				D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */,
 				142FB01519A055EC00F8ECCF /* GLProgram.m in Sources */,

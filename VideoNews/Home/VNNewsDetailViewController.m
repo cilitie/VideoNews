@@ -19,6 +19,7 @@
 #import "AGEmojiKeyboardView.h"
 #import "VNProfileViewController.h"
 #import "VNMineProfileViewController.h"
+#import "GPLoadingButton.h"
 
 @interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNCommentTableViewCellDelegate, AGEmojiKeyboardViewDelegate, AGEmojiKeyboardViewDataSource> {
     BOOL isKeyboardShowing;
@@ -48,6 +49,7 @@
 @property (strong, nonatomic) AGEmojiKeyboardView *emojiKeyboardView;
 @property (strong, nonatomic)UIAlertView *deleteAlert;
 @property (assign, nonatomic) int curLikeCount;
+@property (strong ,nonatomic)GPLoadingButton *loadingAni;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputBarHeightLC;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputTextViewHeightLC;
@@ -114,6 +116,18 @@ static NSString *shareStr;
     self.headerView.buyLabel.layer.borderWidth=1;
     self.headerView.buyLabel.layer.borderColor=[[UIColor grayColor]CGColor];
     //[[UIColor colorWithRed:225 green:225 blue:225 alpha:0]CGColor];
+    if (!_loadingAni) {
+        _loadingAni = [[GPLoadingButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+        _loadingAni.center=_headerView.newsImageView.center;
+        _loadingAni.rotatorColor = [UIColor whiteColor];
+       // _loadingAni.rotatorColor = [UIColor colorWithRGBValue:0xCE2426];
+        //[_loadingAni startActivity];
+        [self.headerView addSubview:_loadingAni];
+        //_loadingAni = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 37, 37)];
+        // _loadingAni.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+        // [self.bgView addSubview:_loadingAni];
+        
+    }
 
     
     __weak typeof(self) weakSelf = self;
@@ -309,6 +323,8 @@ static NSString *shareStr;
     self.moviePlayer.view.layer.cornerRadius=5;
     [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
     [self.headerView addSubview:self.moviePlayer.view];
     
     self.playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -507,6 +523,8 @@ static NSString *shareStr;
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
     //销毁播放通知
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
 }
 
 /*
@@ -1040,6 +1058,7 @@ static NSString *shareStr;
     if (self.moviePlayer) {
         self.moviePlayer.view.hidden = NO;
         //[self.moviePlayer play];
+        [_loadingAni startActivity];
         [self playAndCount];
         [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
@@ -1065,8 +1084,39 @@ static NSString *shareStr;
     [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
     isPlaying = NO;
+    [_loadingAni stopActivity];
     NSLog(@"视频播放完成");
 }
+- (void) MoviePlayerLoadStateDidChange:(NSNotification*)notification
+{
+    //MPMoviePlayerController *player = notification.object;
+    // MPMovieLoadState loadState = player.loadState;
+    if(self.moviePlayer.loadState ==MPMovieLoadStateUnknown){
+        // [_loadingAni startAnimating];
+    }
+    if(self.moviePlayer.loadState == MPMovieLoadStatePlayable){
+        //第一次加载，或者前后拖动完成之后 /
+        [_loadingAni startActivity];
+        //self.videoImgView.hidden = YES;
+        // [_moviePlayer play];
+    }
+    if(self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK){
+        [_loadingAni startActivity];
+    }
+    if(self.moviePlayer.loadState == MPMovieLoadStateStalled){
+        //网络不好，开始缓冲了
+        [_loadingAni startActivity];
+    }
+}
+
+-(void)MoviePlayerPlaybackStateDidChange:(NSNotification *)notification
+{
+    if (self.moviePlayer.playbackState==MPMoviePlaybackStatePlaying) {
+        [_loadingAni stopActivity];
+       // self.videoImgView.hidden = YES;
+    }
+}
+
 
 - (IBAction)switchEmoji:(id)sender {
     if (isDefaultKeyboard) {
