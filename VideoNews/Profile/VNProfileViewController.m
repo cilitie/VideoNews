@@ -130,8 +130,11 @@ static NSString *shareStr;
                         [self.favouriteNewsArr removeAllObjects];
                     }
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    //int newsCount=weakSelf.userVideoArr.count;
-                    int pagesize=[weakSelf.userInfo.video_count intValue];
+                    int pagesize=weakSelf.userVideoArr.count;
+                    if (pagesize<10) {
+                        pagesize=10;
+                    }
+                    //int pagesize=[weakSelf.userInfo.video_count intValue];
                     [VNHTTPRequestManager videoListForUserWithPagesize:weakSelf.uid perPage:pagesize type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
                         if (error) {
                             //  NSLog(@"%@", error.localizedDescription);
@@ -151,8 +154,11 @@ static NSString *shareStr;
         {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    //int newsCount=weakSelf.userVideoArr.count;
-                    int pagesize=[weakSelf.userInfo.video_count intValue];
+                    int pagesize=weakSelf.userVideoArr.count;
+                if (pagesize<10) {
+                    pagesize=10;
+                }
+                    //int pagesize=[weakSelf.userInfo.video_count intValue];
                     [VNHTTPRequestManager videoListForUserWithPagesize:weakSelf.uid perPage:pagesize type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
                         if (error) {
                             //  NSLog(@"%@", error.localizedDescription);
@@ -233,7 +239,11 @@ static NSString *shareStr;
                         [self.idolListArr removeAllObjects];
                     }
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    int pagesize=[weakSelf.userInfo.idol_count intValue];
+                    //int pagesize=[weakSelf.userInfo.idol_count intValue];
+                    int pagesize=weakSelf.followArr.count;
+                    if (pagesize<10) {
+                        pagesize=10;
+                    }
                     [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -291,7 +301,11 @@ static NSString *shareStr;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
             ^{
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                int pagesize=[weakSelf.userInfo.idol_count intValue];
+                //int pagesize=[weakSelf.userInfo.idol_count intValue];
+                int pagesize=weakSelf.followArr.count;
+                if (pagesize<10) {
+                    pagesize=10;
+                }
                 [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -396,7 +410,11 @@ static NSString *shareStr;
                     }
                     //刷新数据源
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    int pagesize=[weakSelf.userInfo.fans_count intValue];
+                   // int pagesize=[weakSelf.userInfo.fans_count intValue];
+                    int pagesize=weakSelf.fansArr.count;
+                    if (pagesize<10) {
+                        pagesize=10;
+                    }
                     [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -488,7 +506,11 @@ static NSString *shareStr;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
                 //刷新数据源
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    int pagesize=[weakSelf.userInfo.fans_count intValue];
+                    //int pagesize=[weakSelf.userInfo.fans_count intValue];
+                int pagesize=weakSelf.fansArr.count;
+                if (pagesize<10) {
+                    pagesize=10;
+                }
                     [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1183,6 +1205,10 @@ static NSString *shareStr;
                         [self.idolListArr removeAllObjects];
                         [self.idolListArr addObjectsFromArray:idolArr];
                     }
+                    else if (idolArr.count==0)
+                    {
+                        [self.idolListArr removeAllObjects];
+                    }
                     NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                     [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                         if (error) {
@@ -1484,7 +1510,8 @@ static NSString *shareStr;
                                  [tableView reloadData];
                              }
                              else {
-                                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                // [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                 [tableView reloadData];
                              }
                              [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                              
@@ -1530,7 +1557,8 @@ static NSString *shareStr;
                                         [tableView reloadData];
                                     }
                                     else {
-                                        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                        [tableView reloadData];
                                     }
 
                                 });
@@ -1594,7 +1622,8 @@ static NSString *shareStr;
                                 [tableView reloadData];
                             }
                             else {
-                                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                               // [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                [tableView reloadData];
                             }
                             });
                             [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
@@ -1850,7 +1879,8 @@ static NSString *shareStr;
         [_videoTableView reloadData];
     }
     else {
-        [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+       // [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+        [_videoTableView reloadData];
     }
     //[_videoTableView reloadData];
 }

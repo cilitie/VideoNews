@@ -210,8 +210,11 @@ static NSString *shareStr;
                     [self.favouriteNewsArr removeAllObjects];
                 }
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                //int newsCount=weakSelf.mineVideoArr.count;
-                int newsCount=[weakSelf.mineInfo.video_count intValue];
+                int newsCount=weakSelf.mineVideoArr.count;
+                if (newsCount<10) {
+                    newsCount=10;
+                }
+                //int newsCount=[weakSelf.mineInfo.video_count intValue];
                 [VNHTTPRequestManager videoListForUserWithPagesize:self.uid perPage:newsCount type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
                     if (error) {
                         //  NSLog(@"%@", error.localizedDescription);
@@ -230,8 +233,11 @@ static NSString *shareStr;
     if (!self.favouriteTableView.hidden) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-            //int pagesize=weakSelf.favVideoArr.count;
-            int pagesize=[weakSelf.mineInfo.like_count intValue];
+            int pagesize=weakSelf.favVideoArr.count;
+            if (pagesize<10) {
+                pagesize=10;
+            }
+            //int pagesize=[weakSelf.mineInfo.like_count intValue];
             [VNHTTPRequestManager favVideoListForUser:self.uid userToken:self.user_token fromTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *videoArr, NSString *moreTimestamp,NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
@@ -336,8 +342,11 @@ static NSString *shareStr;
                     [self.idolListArr removeAllObjects];
                 }
                 NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                //int pagesize=weakSelf.fansArr.count;
-                int pagesize=[weakSelf.mineInfo.fans_count intValue];
+                int pagesize=weakSelf.fansArr.count;
+                if (pagesize<10) {
+                    pagesize=10;
+                }
+                //int pagesize=[weakSelf.mineInfo.fans_count intValue];
                 [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -392,7 +401,6 @@ static NSString *shareStr;
         });
          */
     }
- 
 }
 //zmy add
 -(void)reloadHeaderView
@@ -1285,7 +1293,8 @@ static NSString *shareStr;
         [_videoTableView reloadData];
     }
     else {
-        [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+       // [_videoTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+        [_videoTableView reloadData];
     }
 }
 //若用户在详情页对视频做了取消点赞操作，则也同样会发起这个通知
@@ -1303,7 +1312,8 @@ static NSString *shareStr;
         [_favouriteTableView reloadData];
     }
     else {
-        [_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+        //[_favouriteTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
+        [_favouriteTableView reloadData];
     }
 }
 //为了避免重复请求收藏列表，从个人主页 他人个人主页的Video列表跳转详情页时，如果用户对点赞有进行操作，则会发起该通知
@@ -1785,7 +1795,8 @@ static NSString *shareStr;
                                  [tableView reloadData];
                              }
                              else {
-                                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                 //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                 [tableView reloadData];
                              }
                              [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
                              
@@ -2347,8 +2358,6 @@ static NSString *shareStr;
             case 9:{
                 NSString *buttonTitle = [actionSheet buttonTitleAtIndex:9];
                 if ([buttonTitle isEqualToString:@"取消喜欢"]) {
-                    
-                
                    NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
                    NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                    if (mineUid && user_token) {
@@ -2365,7 +2374,8 @@ static NSString *shareStr;
                                        [self.favouriteTableView reloadData];
                                    }
                                    else {
-                                       [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                       //[self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                       [self.favouriteTableView reloadData];
                                    }
                                    [self reloadHeaderView];
                                    [VNUtility showHUDText:@"该视频已被删除!" forView:self.view];
@@ -2377,7 +2387,8 @@ static NSString *shareStr;
                                        [self.favouriteTableView reloadData];
                                    }
                                    else {
-                                       [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                      // [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                       [self.favouriteTableView reloadData];
                                    }
                                   /* for (VNMineProfileHeaderView *headerView in self.headerViewArr) {
                                        headerView.favouriteCountLabel.text = [self bigNumberToString:user_like_count];
@@ -2474,7 +2485,8 @@ static NSString *shareStr;
                                      [self.videoTableView reloadData];
                                  }
                                  else {
-                                     [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                    // [self.videoTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                     [self.videoTableView reloadData];
                                  }
                                  if (alertView.tag==KDeleteFromLikes) {
                                      [self.favVideoArr removeObjectAtIndex:_shareNewsIndexPath.row];
@@ -2482,7 +2494,7 @@ static NSString *shareStr;
                                          [self.favouriteTableView reloadData];
                                      }
                                      else {
-                                         [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                       //  [self.favouriteTableView deleteRowsAtIndexPaths:@[_shareNewsIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                          [self.favouriteTableView reloadData];
                                      }
                                  }
