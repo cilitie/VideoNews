@@ -172,12 +172,12 @@ static NSString *shareStr;
                         //取消点赞，发通知，需要在个人主页列表中将相应的cell删除
                         //[weakSelf deleteCellAndPop:3];
                         if (weakSelf.controllerType == SourceViewControllerTypeMineProfileFavourite) {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:weakSelf.indexPath];
+                           // [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:weakSelf.indexPath];
                         }
                         else if(weakSelf.controllerType==SourceViewControllerTypeMineProfileVideo||weakSelf.controllerType==SourceViewControllerTypeProfile)
                         {
-                            NSDictionary *dic=@{@"operate":@"remove",@"index":weakSelf.indexPath};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
+                            //NSDictionary *dic=@{@"operate":@"remove",@"index":weakSelf.indexPath};
+                            //[[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
                         }
                         
 
@@ -209,8 +209,8 @@ static NSString *shareStr;
                         });
                         if(weakSelf.controllerType==SourceViewControllerTypeMineProfileVideo||weakSelf.controllerType==SourceViewControllerTypeProfile)
                         {
-                            NSDictionary *dic=@{@"operate":@"add",@"index":weakSelf.indexPath};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
+                           // NSDictionary *dic=@{@"operate":@"add",@"index":weakSelf.indexPath};
+                           // [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
                         }
                         //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                     }
@@ -701,12 +701,12 @@ static NSString *shareStr;
                     });
                     //[VNUtility showHUDText:@"已取消!" forView:self.view];
                     if (self.controllerType == SourceViewControllerTypeMineProfileFavourite) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:self.indexPath];
+                        //[[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:self.indexPath];
                     }
                     else if(_controllerType==SourceViewControllerTypeMineProfileVideo||_controllerType==SourceViewControllerTypeProfile)
                     {
-                        NSDictionary *dic=@{@"operate":@"remove",@"index":self.indexPath};
-                        [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
+                      //  NSDictionary *dic=@{@"operate":@"remove",@"index":self.indexPath};
+                      //  [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
                     }
                 }
                 else {
@@ -737,8 +737,9 @@ static NSString *shareStr;
                     });
                     if(_controllerType==SourceViewControllerTypeMineProfileVideo||_controllerType==SourceViewControllerTypeProfile)
                     {
-                        NSDictionary *dic=@{@"operate":@"add",@"index":self.indexPath};
+                      /*  NSDictionary *dic=@{@"operate":@"add",@"index":self.indexPath};
                         [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
+                       */
                     }
                     
 

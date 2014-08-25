@@ -86,13 +86,13 @@ static NSString *shareStr;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (!self.mineUid || !self.mineUser_token) {
-        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-        if (userInfo && userInfo.count) {
-            self.mineUid = [userInfo objectForKey:@"openid"];
+        NSDictionary *userInfoDic = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        if (userInfoDic && userInfoDic.count) {
+            self.mineUid = [userInfoDic objectForKey:@"openid"];
             self.mineUser_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
         }
     }
-  //刷新网络
+    //刷新网络
     if (self.headerViewArr.count) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([VNHTTPRequestManager isReachable]) {
@@ -113,11 +113,10 @@ static NSString *shareStr;
     }
     __weak typeof(self) weakSelf = self;
     
-    if (!self.videoTableView.hidden) {
-        //如果是点击某个cell跳到详情页后再回来
-        if (_selectedNews!=nil) {
+    if (!self.videoTableView.hidden && weakSelf.userVideoArr.count!=0) {
+        if (_mineUid!=nil && _mineUser_token!=nil) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-               /* [VNHTTPRequestManager favouriteNewsListFor:self.mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                [VNHTTPRequestManager favouriteNewsListFor:_mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
                     }
@@ -126,11 +125,53 @@ static NSString *shareStr;
                         [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
                         // NSLog(@"%d", favouriteNewsArr.count);
                     }
-                    else if (favouriteNewsArr.count==0)
+                    else if(favouriteNewsArr.count==0)
                     {
                         [self.favouriteNewsArr removeAllObjects];
-                    }*/
-                //如果该news没有被删除
+                    }
+                    NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    //int newsCount=weakSelf.userVideoArr.count;
+                    int pagesize=[weakSelf.userInfo.video_count intValue];
+                    [VNHTTPRequestManager videoListForUserWithPagesize:weakSelf.uid perPage:pagesize type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+                        if (error) {
+                            //  NSLog(@"%@", error.localizedDescription);
+                        }
+                        else {
+                            [weakSelf.userVideoArr removeAllObjects];
+                            [weakSelf.userVideoArr addObjectsFromArray:videoArr];
+                            //NSLog(@"%d", weakSelf.mineVideoArr.count);
+                            [weakSelf.videoTableView reloadData];
+                        }
+                        //firstLoading = YES;
+                    }];
+                }];
+            });
+        }
+        else
+        {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    //int newsCount=weakSelf.userVideoArr.count;
+                    int pagesize=[weakSelf.userInfo.video_count intValue];
+                    [VNHTTPRequestManager videoListForUserWithPagesize:weakSelf.uid perPage:pagesize type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+                        if (error) {
+                            //  NSLog(@"%@", error.localizedDescription);
+                        }
+                        else {
+                            [weakSelf.userVideoArr removeAllObjects];
+                            [weakSelf.userVideoArr addObjectsFromArray:videoArr];
+                            //NSLog(@"%d", weakSelf.mineVideoArr.count);
+                            [weakSelf.videoTableView reloadData];
+                        }
+                        //firstLoading = YES;
+                    }];
+            });
+        }
+                /*
+        //如果是点击某个cell跳到详情页后再回来
+        if (_selectedNews!=nil) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    //如果该news没有被删除
                     if ([self.userVideoArr containsObject:_selectedNews]) {
                         [VNHTTPRequestManager getOneNews:self.selectedNews.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
                             if (error) {
@@ -173,6 +214,7 @@ static NSString *shareStr;
              }];
              });
         }
+         */
     }
     if (!self.followTableView.hidden) {
         if (self.mineUid && self.mineUser_token) {
@@ -190,17 +232,32 @@ static NSString *shareStr;
                     else if(idolArr.count==0){
                         [self.idolListArr removeAllObjects];
                     }
-                    //修改数据源
-                    for (VNUser *user in self.followArr) {
-                        if ([user.uid isEqualToString:_mineUid]||[self.idolListArr containsObject:user.uid]) {
-                            user.isMineIdol=YES;
+                    NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    int pagesize=[weakSelf.userInfo.idol_count intValue];
+                    [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
                         }
-                        else
-                        {
-                            user.isMineIdol=NO;
+                        else {
+                            for (VNUser *user in userArr) {
+                                if ([self.idolListArr containsObject:user.uid]) {
+                                    user.isMineIdol = YES;
+                                }
+                                else if ([self.mineUid isEqualToString:user.uid]) {
+                                    user.isMineIdol = YES;
+                                }
+                                else {
+                                    user.isMineIdol = NO;
+                                }
+                            }
+                            [weakSelf.followArr removeAllObjects];
+                            [weakSelf.followArr addObjectsFromArray:userArr];
+                            if (lastTimeStamp) {
+                                weakSelf.followLastPageTime = lastTimeStamp;
+                            }
+                            [weakSelf.followTableView reloadData];
                         }
-                    }
-                    [self.followTableView reloadData];
+                    }];
                     /*
                     for(VNProfileFansTableViewCell *cell in self.followTableView.visibleCells)
                     {
@@ -227,6 +284,26 @@ static NSString *shareStr;
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
                     }
                     
+                }];
+            });
+        }
+        else{
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+            ^{
+                NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                int pagesize=[weakSelf.userInfo.idol_count intValue];
+                [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        [weakSelf.followArr removeAllObjects];
+                        [weakSelf.followArr addObjectsFromArray:userArr];
+                        if (lastTimeStamp) {
+                            weakSelf.followLastPageTime = lastTimeStamp;
+                        }
+                        [weakSelf.followTableView reloadData];
+                    }
                 }];
             });
         }
@@ -305,7 +382,7 @@ static NSString *shareStr;
     if (!self.fansTableView.hidden) {
         if (self.mineUid && self.mineUser_token) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
-                //刷新关注列表，并且改变可见cell的状态
+                //刷新关注列表
                 [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.localizedDescription);
@@ -317,17 +394,34 @@ static NSString *shareStr;
                     else if(idolArr.count==0){
                         [self.idolListArr removeAllObjects];
                     }
-                    //修改数据源
-                    for (VNUser *user in self.fansArr) {
-                        if ([user.uid isEqualToString:self.mineUid]||[self.idolListArr containsObject:user.uid]) {
-                            user.isMineIdol=YES;
+                    //刷新数据源
+                    NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    int pagesize=[weakSelf.userInfo.fans_count intValue];
+                    [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
                         }
-                        else
-                        {
-                            user.isMineIdol=NO;
+                        else {
+                            for (VNUser *user in userArr) {
+                                if ([self.idolListArr containsObject:user.uid]) {
+                                    user.isMineIdol = YES;
+                                }
+                                else if ([self.mineUid isEqualToString:user.uid]) {
+                                    user.isMineIdol = YES;
+                                }
+                                else {
+                                    user.isMineIdol = NO;
+                                }
+                            }
+                            [weakSelf.fansArr removeAllObjects];
+                            [weakSelf.fansArr addObjectsFromArray:userArr];
+                            if (lastTimeStamp) {
+                                weakSelf.fansLastPageTime = lastTimeStamp;
+                            }
+                            [weakSelf.fansTableView reloadData];
                         }
-                    }
-                    [self.fansTableView reloadData];
+                        
+                    }];
                     /*
 
                     for(VNProfileFansTableViewCell *cell in self.fansTableView.visibleCells)
@@ -347,7 +441,7 @@ static NSString *shareStr;
                     if ([self.idolListArr containsObject:self.uid]) {
                         [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
-                        int flag=0;
+                        /*int flag=0;
                         for (VNUser *user in self.fansArr)
                         {
                             if ([user.uid isEqualToString:self.mineUid]) {
@@ -370,11 +464,13 @@ static NSString *shareStr;
                                 }
                             }];
                         }
+                         */
                     }
                     else
                     {
                         [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
                         [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                        /*
                         for (VNUser *user in self.fansArr)
                         {
                             if ([user.uid isEqualToString:self.mineUid]) {
@@ -383,8 +479,30 @@ static NSString *shareStr;
                                 break;
                             }
                         }
+                         */
                     }
                 }];
+            });
+        }
+        else{
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
+                //刷新数据源
+                NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
+                    int pagesize=[weakSelf.userInfo.fans_count intValue];
+                    [VNHTTPRequestManager userListForUser:self.uid type:@"fans" pageTime:refreshTimeStamp perPage:pagesize completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        else {
+                            [weakSelf.fansArr removeAllObjects];
+                            [weakSelf.fansArr addObjectsFromArray:userArr];
+                            if (lastTimeStamp) {
+                                weakSelf.fansLastPageTime = lastTimeStamp;
+                            }
+                            [weakSelf.fansTableView reloadData];
+                        }
+                        
+                    }];
             });
         }
         /*
@@ -485,8 +603,8 @@ static NSString *shareStr;
     // Do any additional setup after loading the view.
     [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(removelikeListForLikeHandler:) name:VNProfileVideoLikeHandlerNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
+    //[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(removelikeListForLikeHandler:) name:VNProfileVideoLikeHandlerNotification object:nil];
     
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
     if (userInfo && userInfo.count) {
@@ -502,41 +620,41 @@ static NSString *shareStr;
     
     if (self.mineUid && self.mineUser_token) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
-            }
-            if (idolArr.count) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([idolArr containsObject:self.uid]) {
-                        [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
-                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
-                    }
-                    else {
-                        [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
-                        [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
-                    }
-                });
-            }
-        }];
+            [VNHTTPRequestManager idolListForUser:self.mineUid userToken:self.mineUser_token completion:^(NSArray *idolArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (idolArr.count) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([idolArr containsObject:self.uid]) {
+                            [self.followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
+                            [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xa2a2a2]];
+                        }
+                        else {
+                            [self.followBtn setTitle:@"关注" forState:UIControlStateNormal];
+                            [self.followBtn setBackgroundColor:[UIColor colorWithRGBValue:0xce2426]];
+                        }
+                    });
+                }
+            }];
         });
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [VNHTTPRequestManager favouriteNewsListFor:_mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
-            }
-            if (favouriteNewsArr.count) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-//                NSLog(@"%@", favouriteNewsArr);
-                [self.favouriteNewsArr removeAllObjects];
-                [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
-                });
-            }
-            else if (favouriteNewsArr.count==0)
-            {
-                [self.favouriteNewsArr removeAllObjects];
-            }
-        }];
+            [VNHTTPRequestManager favouriteNewsListFor:_mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                if (favouriteNewsArr.count) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //                NSLog(@"%@", favouriteNewsArr);
+                        [self.favouriteNewsArr removeAllObjects];
+                        [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
+                    });
+                }
+                else if (favouriteNewsArr.count==0)
+                {
+                    [self.favouriteNewsArr removeAllObjects];
+                }
+            }];
         });
     }
     
@@ -545,25 +663,25 @@ static NSString *shareStr;
     VNUserProfileHeaderView *fansHeaderView = loadXib(@"VNUserProfileHeaderView");
     self.headerViewArr = @[videoHeaderView, followHeaderView, fansHeaderView];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        if (userInfo) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-            self.userInfo = userInfo;
-            //videoHeaderView
-            videoHeaderView.userInfo = userInfo;
-            [videoHeaderView reload];
-            
-            followHeaderView.userInfo = userInfo;
-            [followHeaderView reload];
-            
-            fansHeaderView.userInfo = userInfo;
-            [fansHeaderView reload];
-            });
-        }
-    }];
+        [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if (userInfo) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.userInfo = userInfo;
+                    //videoHeaderView
+                    videoHeaderView.userInfo = userInfo;
+                    [videoHeaderView reload];
+                    
+                    followHeaderView.userInfo = userInfo;
+                    [followHeaderView reload];
+                    
+                    fansHeaderView.userInfo = userInfo;
+                    [fansHeaderView reload];
+                });
+            }
+        }];
     });
     
     __weak typeof(self) weakSelf = self;
@@ -602,9 +720,7 @@ static NSString *shareStr;
                         //zmy add 刷新头
                         [weakSelf reloadHeaderView];
                         //
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [weakSelf.videoTableView.pullToRefreshView stopAnimating];
-                        });
+                        
                     }];
                     
                 });
@@ -664,9 +780,11 @@ static NSString *shareStr;
                                 NSLog(@"%@", error.localizedDescription);
                             }
                             else {
+                                /*
                                 for (VNUser *user in userArr) {
                                     user.isMineIdol = YES;
                                 }
+                                 */
                                 [weakSelf.followArr removeAllObjects];
                                 [weakSelf.followArr addObjectsFromArray:userArr];
                                 if (lastTimeStamp) {
@@ -680,7 +798,6 @@ static NSString *shareStr;
                         }];
                     });
                 }
-
             }
                 break;
             case 2: {
@@ -737,9 +854,11 @@ static NSString *shareStr;
                                 NSLog(@"%@", error.localizedDescription);
                             }
                             else {
+                                /*
                                 for (VNUser *user in userArr) {
                                     user.isMineIdol = YES;
                                 }
+                                 */
                                 [weakSelf.fansArr removeAllObjects];
                                 [weakSelf.fansArr addObjectsFromArray:userArr];
                                 if (lastTimeStamp) {
@@ -789,19 +908,19 @@ static NSString *shareStr;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager videoListForUser:self.uid type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else {
-                    firstLoading = YES;
-                    [weakSelf.userVideoArr removeAllObjects];
-                    [weakSelf.userVideoArr addObjectsFromArray:videoArr];
-                    [weakSelf.videoTableView reloadData];
-                }
-                //zmy add 刷新头
-                [weakSelf reloadHeaderView];
-                //
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        firstLoading = YES;
+                        [weakSelf.userVideoArr removeAllObjects];
+                        [weakSelf.userVideoArr addObjectsFromArray:videoArr];
+                        [weakSelf.videoTableView reloadData];
+                    }
+                    //zmy add 刷新头
+                    [weakSelf reloadHeaderView];
+                    //
                     [weakSelf.videoTableView.pullToRefreshView stopAnimating];
                 });
             }];
@@ -832,29 +951,29 @@ static NSString *shareStr;
     [self.videoTableView addInfiniteScrollingWithActionHandler:^{
         [self reloadAutoPlayStatus];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *moreTimeStamp = nil;
-        if (weakSelf.userVideoArr.count) {
-            VNNews *lastNews = [weakSelf.userVideoArr lastObject];
-            moreTimeStamp = lastNews.timestamp;
-        }
-        else {
-            moreTimeStamp = [VNHTTPRequestManager timestamp];
-        }
-        
-        [VNHTTPRequestManager videoListForUser:self.uid type:@"video" fromTime:moreTimeStamp completion:^(NSArray *videoArr, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error.localizedDescription);
+            NSString *moreTimeStamp = nil;
+            if (weakSelf.userVideoArr.count) {
+                VNNews *lastNews = [weakSelf.userVideoArr lastObject];
+                moreTimeStamp = lastNews.timestamp;
             }
             else {
-                if (videoArr.count) {
-                    [weakSelf.userVideoArr addObjectsFromArray:videoArr];
-                    [weakSelf.videoTableView reloadData];
-                }
+                moreTimeStamp = [VNHTTPRequestManager timestamp];
             }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.videoTableView.infiniteScrollingView stopAnimating];
-            });
-        }];
+            
+            [VNHTTPRequestManager videoListForUser:self.uid type:@"video" fromTime:moreTimeStamp completion:^(NSArray *videoArr, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                else {
+                    if (videoArr.count) {
+                        [weakSelf.userVideoArr addObjectsFromArray:videoArr];
+                        [weakSelf.videoTableView reloadData];
+                    }
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.videoTableView.infiniteScrollingView stopAnimating];
+                });
+            }];
         });
     }];
     [self.videoTableView triggerPullToRefresh];
@@ -918,9 +1037,11 @@ static NSString *shareStr;
                         NSLog(@"%@", error.localizedDescription);
                     }
                     else {
+                        /*
                         for (VNUser *user in userArr) {
                             user.isMineIdol = YES;
                         }
+                         */
                         [weakSelf.followArr removeAllObjects];
                         [weakSelf.followArr addObjectsFromArray:userArr];
                         if (lastTimeStamp) {
@@ -1016,7 +1137,6 @@ static NSString *shareStr;
         else {
             moreTimeStamp = [VNHTTPRequestManager timestamp];
         }
-        
         [VNHTTPRequestManager userListForUser:self.uid type:@"idols" pageTime:moreTimeStamp completion:^(NSArray *userArr, NSString *lastTimeStamp, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -1105,9 +1225,10 @@ static NSString *shareStr;
                         NSLog(@"%@", error.localizedDescription);
                     }
                     else {
+                        /*
                         for (VNUser *user in userArr) {
                             user.isMineIdol = YES;
-                        }
+                        }*/
                         [weakSelf.fansArr removeAllObjects];
                         [weakSelf.fansArr addObjectsFromArray:userArr];
                         if (lastTimeStamp) {
@@ -1244,8 +1365,8 @@ static NSString *shareStr;
 
 -(void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileCellDeleteNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileVideoLikeHandlerNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileCellDeleteNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileVideoLikeHandlerNotification object:nil];
 }
 
 //zmy add
@@ -1316,16 +1437,19 @@ static NSString *shareStr;
             cell.isFavouriteNews=NO;
             //if ([self.favouriteNewsArr containsObject:[NSNumber numberWithInt:news.nid]])
             //{
-            for (NSDictionary *dic in self.favouriteNewsArr) {
-               // NSLog(@"%@",dic[@"nid"]);
-                if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]])
-                {
-                    cell.isFavouriteNews=YES;
-                    //[cell likeStatus:YES];
-                    //[self.favouriteBtn setSelected:YES];
-                    //break;
+            if (self.favouriteNewsArr.count!=0) {
+                for (NSDictionary *dic in self.favouriteNewsArr) {
+                    // NSLog(@"%@",dic[@"nid"]);
+                    if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]])
+                    {
+                        cell.isFavouriteNews=YES;
+                        //[cell likeStatus:YES];
+                        //[self.favouriteBtn setSelected:YES];
+                        //break;
+                    }
                 }
             }
+            
             //}
             [cell reload];
             if (indexPath.row == 0 && firstLoading && isAutoPlayOption &&[VNHTTPRequestManager isReachableViaWiFi]) {

@@ -68,7 +68,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 2) {
-        return 6;
+        //return 6;
+        return 5;
     }
     else {
         return 1;
@@ -108,10 +109,12 @@
                 cell.titleLabel.text = @"关于我们";
             }
                 break;
+                /*
             case 5:{
                 cell.titleLabel.text = @"收银台";
             }
                 break;
+                 */
         }
     }
     else if (indexPath.section == 3) {
@@ -169,12 +172,13 @@
                 [self.navigationController pushViewController:aboutVC animated:YES];
             }
                 break;
+                /*
             case 5:{
                 VNCheckOutTableViewCell *checkoutVC=[self.storyboard instantiateViewControllerWithIdentifier:@"VNCheckOutViewController"];
                 [self.navigationController pushViewController:checkoutVC animated:YES];
             }
                 break;
-                
+              */
         }
     }
     else if (indexPath.section == 3) {

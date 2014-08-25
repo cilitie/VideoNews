@@ -475,6 +475,9 @@ static int pagesize = 10;
 #pragma mark - 收藏相关
 + (void)favouriteNewsListFor:(NSString *)uid userToken:(NSString *)user_token completion:(void(^)(NSArray *favouriteNewsArr, NSError *error))completion {
     //h ttp://zmysp.sinaapp.com/likesList.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c
+    if (user_token==nil ||uid==nil) {
+        return;
+    }
     NSString *URLStr = [VNHost stringByAppendingString:@"likesList.php"];
     NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -901,9 +904,108 @@ static int pagesize = 10;
     }];
 }
 
++ (void)videoListForUserWithPagesize:(NSString *)uid perPage:(int)pageSize type:(NSString *)type fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSError *error))completion {
+    //http://zmysp.sinaapp.com/getlistByUser.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=video&pagesize=10$pagetime=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
+    NSDictionary *param = @{@"uid": uid, @"cmd": type, @"token": [self token], @"pagesize": [NSNumber numberWithInt:pageSize], @"timestamp": [self timestamp], @"pagetime": lastTimeStamp};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //        NSLog(@"%@", responseObject);
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSArray class]]) {
+                for (NSDictionary *newsDic in [responseObject objectForKey:@"result"]) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        if ([media.type rangeOfString:@"image"].location != NSNotFound) {
+                            news.imgMdeia = media;
+                        }
+                        else {
+                            news.videoMedia = media;
+                        }
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        NSLog(@"%@", newsArr);
+        if (completion) {
+            completion(newsArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
 + (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp completion:(void(^)(NSArray *videoArr, NSString * moreTimestamp,NSError *error))completion {
     NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
     NSDictionary *param = @{@"uid": uid, @"user_token": user_token, @"cmd": @"likes", @"token": [self token], @"pagesize": [NSNumber numberWithInt:pagesize], @"timestamp": [self timestamp], @"pagetime": lastTimeStamp};
+    
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        NSString *moreTimestamp=nil;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSDictionary class]]) {
+                moreTimestamp=responseObject[@"result"][@"lastTimestamp"];
+                for (NSDictionary *newsDic in responseObject[@"result"][@"list"]) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    //FIXME: 待确认，timestamp是否这么获取
+                    //[news.basicDict setObject:responseObject[@"result"][@"lastTimestamp"] forKey:@"timestamp"];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        if ([media.type rangeOfString:@"image"].location != NSNotFound) {
+                            news.imgMdeia = media;
+                        }
+                        else {
+                            news.videoMedia = media;
+                        }
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        NSLog(@"%@", newsArr);
+        if (completion) {
+            completion(newsArr,moreTimestamp, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, nil,error);
+        }
+    }];
+}
+
++ (void)favVideoListForUser:(NSString *)uid userToken:(NSString *)user_token fromTime:(NSString *)lastTimeStamp perPage:(int)pageSize completion:(void(^)(NSArray *videoArr, NSString * moreTimestamp,NSError *error))completion {
+    NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
+    NSDictionary *param = @{@"uid": uid, @"user_token": user_token, @"cmd": @"likes", @"token": [self token], @"pagesize": [NSNumber numberWithInt:pageSize], @"timestamp": [self timestamp], @"pagetime": lastTimeStamp};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
@@ -965,6 +1067,7 @@ static int pagesize = 10;
             if (responseStatus&&[[responseObject objectForKey:@"userInfo"]isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *userInfoDict = [responseObject objectForKey:@"userInfo"];
                 userInfo = [[VNUser alloc] initWithDict:userInfoDict];
+                userInfo.isMineIdol=NO;
             }
         }
 
@@ -996,6 +1099,7 @@ static int pagesize = 10;
                 if (resultArr.count) {
                     for (NSDictionary *dict in resultArr) {
                         user = [[VNUser alloc] initWithDict:dict];
+                        user.isMineIdol=NO;
                         [userArr addObject:user];
                     }
                 }
@@ -1010,6 +1114,41 @@ static int pagesize = 10;
         }
     }];
 }
+
++ (void)userListForUser:(NSString *)uid type:(NSString *)type pageTime:(NSString *)pageTime perPage:(int)pageSize completion:(void(^)(NSArray *userArr, NSString *lastTimeStamp, NSError *error))completion {
+    //http://zmysp.sinaapp.com/getlistByUser.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=idols&pagesize=10$pagetime=1404232200
+    //http://zmysp.sinaapp.com/getlistByUser.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&cmd=fans&pagesize=10$pagetime=1404232200
+    NSString *URLStr = [VNHost stringByAppendingString:@"getlistByUser.php"];
+    NSDictionary *param = @{@"uid": uid, @"token": [self token], @"timestamp": [self timestamp], @"cmd": type, @"pagesize": [NSNumber numberWithInt:pageSize], @"pagetime": pageTime};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        NSMutableArray *userArr = [NSMutableArray array];
+        VNUser *user = nil;
+        NSString *lastTimeStamp = nil;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [responseObject[@"status"] boolValue];
+            if (responseStatus&&[[responseObject objectForKey:@"result"]isKindOfClass:[NSDictionary class]]) {
+                NSArray *resultArr = responseObject[@"result"][@"list"];
+                lastTimeStamp = responseObject[@"result"][@"lastTimestamp"];
+                if (resultArr.count) {
+                    for (NSDictionary *dict in resultArr) {
+                        user = [[VNUser alloc] initWithDict:dict];
+                        user.isMineIdol=NO;
+                        [userArr addObject:user];
+                    }
+                }
+            }
+        }
+        if (completion) {
+            completion(userArr, lastTimeStamp, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, nil, error);
+        }
+    }];
+}
+
 
 + (void)updateUserInfo:(NSDictionary *)userInfo completion:(void(^)(BOOL succeed, NSError *error))completion {
     //http://182.92.103.134:8080/engine/uploadUserInfo.php?timestamp=1404232200&token=f961f003dd383bc39eb53c5b7e5fd046&uid=1300000001&user_token=f1517c15fd0da75cc1889e9537392a9c&name=alen&location=beijing&sex=female&description=xxxxxx&constellation=baiyang&birthday=123434352345

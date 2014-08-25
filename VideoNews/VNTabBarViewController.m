@@ -107,6 +107,12 @@
 {
     //VNTabBarViewController *tabbarCtl=(VNTabBarViewController *)self.tabBarController;
     //tabbarCtl.selectedIndex=0;
+    for (UIViewController *vc in self.viewControllers) {
+        //if (vc.navigationController.viewControllers.count>0)
+        //{
+        [(UINavigationController *)vc popToRootViewControllerAnimated:YES];
+        //}
+    }
     self.selectedIndex=0;
 }
 -(void)userLogin:(NSNotification *)notification
