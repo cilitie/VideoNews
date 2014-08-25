@@ -491,14 +491,7 @@ static NSString *shareStr;
         VNMineProfileHeaderView *favHeaderView = self.headerViewArr[1];
         VNMineProfileHeaderView *followHeaderView = self.headerViewArr[2];
         VNMineProfileHeaderView *fansHeaderView = self.headerViewArr[3];
-        if (CGRectGetHeight(videoHeaderView.frame) != 145.0) {
-            CGRect frame = videoHeaderView.frame;
-            frame.size.height = 145.0;
-            videoHeaderView.frame = frame;
-            favHeaderView.frame = frame;
-            followHeaderView.frame = frame;
-            fansHeaderView.frame = frame;
-        }
+
         //zmy modify tableview ui 刷新是否需要放主线程里？
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([VNHTTPRequestManager isReachable]) {
