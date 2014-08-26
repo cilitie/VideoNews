@@ -215,7 +215,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
     [self playVideoWithSound:YES];
         
-    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, 468, 320, 100)];
+    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, 483, 320, 70)];
     filterListView.dataSource = self;
     filterListView.delegate = self;
     [self.view addSubview:filterListView];

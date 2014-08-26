@@ -62,6 +62,8 @@
 
 @property (readwrite) AVCaptureVideoOrientation videoOrientation;
 
+@property (nonatomic, strong)NSURL *movieURL;
+
 @end
 
 @implementation RosyWriterVideoProcessor
@@ -79,8 +81,6 @@
         referenceOrientation = UIDeviceOrientationPortrait;
         
         // The temporary path for the video before saving it to the photo album
-        movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"Movie.MOV"]];
-        [movieURL retain];
     }
     return self;
 }
@@ -88,7 +88,7 @@
 - (void)dealloc 
 {
     [previousSecondTimestamps release];
-    [movieURL release];
+    [_movieURL release];
 
 	[super dealloc];
 }
@@ -162,25 +162,25 @@
 
 #pragma mark Recording
 
-- (void)saveMovieToCameraRoll
-{
-	ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-	[library writeVideoAtPathToSavedPhotosAlbum:movieURL
-								completionBlock:^(NSURL *assetURL, NSError *error) {
-									if (error)
-										[self showError:error];
-									else
-										[self removeFile:movieURL];
-									
-									dispatch_async(movieWritingQueue, ^{
-										recordingWillBeStopped = NO;
-										self.recording = NO;
-										
-										[self.delegate recordingDidStop];
-									});
-								}];
-	[library release];
-}
+//- (void)saveMovieToCameraRoll
+//{
+//	ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//	[library writeVideoAtPathToSavedPhotosAlbum:self.movieURL
+//								completionBlock:^(NSURL *assetURL, NSError *error) {
+//									if (error)
+//										[self showError:error];
+//									else
+//										[self removeFile:self.movieURL];
+//									
+//									dispatch_async(movieWritingQueue, ^{
+//										recordingWillBeStopped = NO;
+//										self.recording = NO;
+//										
+//										[self.delegate recordingDidStop];
+//									});
+//								}];
+//	[library release];
+//}
 
 - (void) writeSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(NSString *)mediaType
 {
@@ -295,6 +295,11 @@
     return YES;
 }
 
+- (void)setProcessorMovieUrl:(NSURL *)url
+{
+    _movieURL = [url retain];
+}
+
 - (void) startRecording
 {
 	dispatch_async(movieWritingQueue, ^{
@@ -308,11 +313,11 @@
 		[self.delegate recordingWillStart];
 
 		// Remove the file if one with the same name already exists
-		[self removeFile:movieURL];
+		[self removeFile:self.movieURL];
 			
 		// Create an asset writer
 		NSError *error;
-		assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:(NSString *)kUTTypeQuickTimeMovie error:&error];
+		assetWriter = [[AVAssetWriter alloc] initWithURL:self.movieURL fileType:(NSString *)kUTTypeQuickTimeMovie error:&error];
 		if (error)
 			[self showError:error];
 	});	
@@ -339,7 +344,12 @@
 			readyToRecordVideo = NO;
 			readyToRecordAudio = NO;
 			
-			[self saveMovieToCameraRoll];
+//			[self saveMovieToCameraRoll];
+            recordingWillBeStopped = NO;
+            self.recording = NO;
+            
+            [self.delegate recordingDidStop];
+
 		}
 		else {
 			[self showError:[assetWriter error]];
@@ -484,7 +494,9 @@
 	 * Create capture session
 	 */
     captureSession = [[AVCaptureSession alloc] init];
-    
+    if ([captureSession canSetSessionPreset:AVCaptureSessionPresetMedium]) {
+        [captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+    }
     /*
 	 * Create audio connection
 	 */

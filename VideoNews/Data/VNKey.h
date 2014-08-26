@@ -26,6 +26,8 @@ extern NSString *const VNLoginNotification;
 extern NSString *const VNMineProfileUploadVideoNotifiction;
 extern NSString *const VNProfileVideoLikeHandlerNotification;
 extern NSString *const VNProfileFollowHandlerNotification;
+extern NSString *const VNVideoCaptureViewDismissNotification;
+extern NSString *const VNVideoClearClipsNotification;
 
 //NSUserDefault
 extern NSString *const VNLoginUser;

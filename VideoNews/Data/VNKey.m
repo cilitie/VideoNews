@@ -27,7 +27,9 @@ NSString *const VNProfileFollowHandlerNotification=@"KVNProfileFollowHandlerNoti
 NSString *const VNSignOutNotification=@"KVNSignOutNotification";
 NSString *const VNLoginNotification=@"KVNLoginNotification";
 
-NSString *const VNMineProfileUploadVideoNotifiction = @"VNMineProfileUploadVideoNotifiction";
+NSString *const VNMineProfileUploadVideoNotifiction = @"kVNMineProfileUploadVideoNotifiction";
+NSString *const VNVideoCaptureViewDismissNotification = @"kVNVideoCaptureViewDismissNotification";
+NSString *const VNVideoClearClipsNotification = @"kVNVideoClearClipsNotification";
 
 //NSUserDefault
 NSString *const VNLoginUser = @"kVNLoginUser";

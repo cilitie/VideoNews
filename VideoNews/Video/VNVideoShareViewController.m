@@ -288,7 +288,7 @@
         
         [self clearTempVideos];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearVideoClipsNotification" object:nil userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNVideoClearClipsNotification object:nil userInfo:nil];
 
         [self.navigationController popToRootViewControllerAnimated:YES];
     }

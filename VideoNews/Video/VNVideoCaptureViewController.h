@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import "RosyWriterPreviewView.h"
-//#import "RosyWriterVideoProcessor.h"
+#import "RosyWriterPreviewView.h"
+#import "RosyWriterVideoProcessor.h"
 
-@interface VNVideoCaptureViewController : UIViewController
-//<RosyWriterVideoProcessorDelegate>
+@interface VNVideoCaptureViewController : UIViewController <RosyWriterVideoProcessorDelegate>
 
 - (id)initWithVideoClips;
 

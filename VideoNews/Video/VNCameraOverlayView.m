@@ -124,10 +124,17 @@
         pinchGesture.delegate = self;
         [self addGestureRecognizer:pinchGesture];
         
-        UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-        pressGesture.delegate = self;
-        pressGesture.cancelsTouchesInView = NO;
-        [self addGestureRecognizer:pressGesture];
+        //long long ago.. use gesture.
+//        UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+//        pressGesture.delegate = self;
+//        pressGesture.cancelsTouchesInView = NO;
+//        [self addGestureRecognizer:pressGesture];
+        
+        UIButton *takeVideoBtnOnScreen = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, 320, 320)];
+        takeVideoBtnOnScreen.backgroundColor = [UIColor clearColor];
+        [takeVideoBtnOnScreen addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
+        [takeVideoBtnOnScreen addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:takeVideoBtnOnScreen];
     }
     return self;
 }
@@ -140,27 +147,27 @@
 - (void)doPinch
 {}
 
-//handle long press gesture...
-- (void)handlePress:(UILongPressGestureRecognizer *)ges
-{
-    if ([ges locationInView:self].y > 64 && [ges locationInView:self].y < 384) {
-        if (ges.state == UIGestureRecognizerStateBegan) {
-            [self doStartVideoRecord:nil];
-        }else if (ges.state == UIGestureRecognizerStateEnded) {
-            [self doEndVideoRecord:nil];
-        }
-    }
-}
+//handle long press gesture... if use gesture to interact with user, use it
+//- (void)handlePress:(UILongPressGestureRecognizer *)ges
+//{
+//    if ([ges locationInView:self].y > 64 && [ges locationInView:self].y < 384) {
+//        if (ges.state == UIGestureRecognizerStateBegan) {
+//            [self doStartVideoRecord:nil];
+//        }else if (ges.state == UIGestureRecognizerStateEnded) {
+//            [self doEndVideoRecord:nil];
+//        }
+//    }
+//}
 
-//handle long press gesture...
-- (void)handleBtnPress:(UILongPressGestureRecognizer *)ges
-{
-    if (ges.state == UIGestureRecognizerStateBegan) {
-        [self doStartVideoRecord:nil];
-    }else if (ges.state == UIGestureRecognizerStateEnded) {
-        [self doEndVideoRecord:nil];
-    }
-}
+//handle long press gesture... not in use now.
+//- (void)handleBtnPress:(UILongPressGestureRecognizer *)ges
+//{
+//    if (ges.state == UIGestureRecognizerStateBegan) {
+//        [self doStartVideoRecord:nil];
+//    }else if (ges.state == UIGestureRecognizerStateEnded) {
+//        [self doEndVideoRecord:nil];
+//    }
+//}
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -222,15 +229,16 @@
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
     [takeVideoBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateSelected];
     takeVideoBtn.backgroundColor = [UIColor clearColor];
-//    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
-//    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
+    [takeVideoBtn addTarget:self action:@selector(doStartVideoRecord:) forControlEvents:UIControlEventTouchDown];
+    [takeVideoBtn addTarget:self action:@selector(doEndVideoRecord:) forControlEvents:UIControlEventTouchUpInside];
     takeVideoBtn.showsTouchWhenHighlighted = YES;
     takeVideoBtn.selected = NO;
     
-    UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleBtnPress:)];
-    pressGesture.delegate = self;
-    pressGesture.cancelsTouchesInView = NO;
-    [takeVideoBtn addGestureRecognizer:pressGesture];
+    //not in use now.
+//    UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleBtnPress:)];
+//    pressGesture.delegate = self;
+//    pressGesture.cancelsTouchesInView = NO;
+//    [takeVideoBtn addGestureRecognizer:pressGesture];
     
     [bottomBaseView addSubview:takeVideoBtn];
     

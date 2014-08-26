@@ -16,13 +16,11 @@
 
 #import "VNVideoCustomizationController.h"
 
-@interface VNVideoCaptureViewController () <AVCaptureFileOutputRecordingDelegate,VNCameraOverlayViewDelegate,UIAlertViewDelegate>
+@interface VNVideoCaptureViewController () <VNCameraOverlayViewDelegate,UIAlertViewDelegate>
 
-
-@property (nonatomic, strong) AVCaptureSession *captureSession;
-@property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
-@property (nonatomic, strong) AVCaptureDeviceInput *audioInput;
-@property (nonatomic, strong) AVCaptureMovieFileOutput *movieOutput;
+@property (nonatomic, strong) RosyWriterVideoProcessor *videoProcessor;
+@property (nonatomic, strong) RosyWriterPreviewView *oglView;
+@property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundRecordingID;
 
 @property (nonatomic, strong) VNCameraOverlayView *overlayView;
 
@@ -149,49 +147,13 @@ static NSString *videoFilePath;
 - (void) initCaptureSession
 {
     
-    _captureSession = [[AVCaptureSession alloc] init];
-    if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetMedium]) {
-        [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
-    }
+    _videoProcessor = [[RosyWriterVideoProcessor alloc] init];
+	_videoProcessor.delegate = self;
     
-    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    [videoDevice lockForConfiguration:nil];
-    AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    [_videoProcessor setReferenceOrientation:AVCaptureVideoOrientationPortrait];
+    [_videoProcessor setupAndStartCaptureSession];
     
-    _videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:nil];
-    _audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
-    
-    self.movieOutput = [[AVCaptureMovieFileOutput alloc] init];
-    
-    if (!_videoInput) {
-        
-        __weak VNVideoCaptureViewController *weakSelf = self;
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"程序没有权限访问您的摄像头，请在隐私设置中开启。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-            [alert show];
-            
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-        });
-        
-    }else {
-        [self.captureSession addInput:self.videoInput];
-        [self.captureSession addInput:self.audioInput];
-        [self.captureSession addOutput:self.movieOutput];
-        
-        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-        CGFloat y;
-        if (screenH == 568) {
-            y = -6;
-        }else {
-            y = 0;
-        }
-        previewLayer.frame = CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height);
-        [self.view.layer addSublayer:previewLayer];
-        
-        [self.view addSubview:self.overlayView];
-    }
-    
+    [self.view addSubview:self.overlayView];
 }
 
 - (void)initDir
@@ -215,30 +177,39 @@ static NSString *videoFilePath;
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearVideoClips) name:@"ClearVideoClipsNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearVideoClips) name:VNVideoClearClipsNotification object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     
-    __weak VNVideoCaptureViewController *weakSelf = self;
+    [self performSelector:@selector(generateOglView) withObject:nil afterDelay:0.1];
+}
+
+- (void)generateOglView
+{
+    _oglView = [[RosyWriterPreviewView alloc] initWithFrame:CGRectZero];
+
+    _oglView.transform = [_videoProcessor transformFromCurrentVideoOrientationToOrientation:AVCaptureVideoOrientationPortrait];
+    [self.view insertSubview:_oglView belowSubview:self.overlayView];
+    CGRect bounds = CGRectZero;
+    bounds.size = [self.view convertRect:self.view.bounds toView:_oglView].size;
+    _oglView.frame = CGRectMake(0, 64, 320, 427);
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf.captureSession startRunning];
-    });
+    [self.videoProcessor resumeCaptureSession];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.captureSession stopRunning];
+    
+    [self.videoProcessor pauseCaptureSession];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    
 }
 
 - (void)dealloc
@@ -265,7 +236,7 @@ static NSString *videoFilePath;
 - (void)refreshVideoDuration:(NSTimer *)timer
 {
     self.videoTotalDuration += 0.1;
-    
+
     CGFloat percent = self.videoTotalDuration / 30.0 ;
     [_overlayView updateProgressViewToPercentage:percent];
     
@@ -458,13 +429,11 @@ static NSString *videoFilePath;
             if (buttonIndex == 0) {
                 //do nothing...
             } else {
+                [[NSNotificationCenter defaultCenter] removeObserver:self name:VNVideoClearClipsNotification object:nil];
                 [self clearTempVideos];
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearVideoClipsNotification" object:nil];
-                
-                __weak typeof(self) weakSelf = self;
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [weakSelf dismissViewControllerAnimated:YES completion:nil];
-                });
+                [self.videoProcessor stopAndTearDownCaptureSession];
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:VNVideoCaptureViewDismissNotification object:nil];
             }
         };
         objc_setAssociatedObject(alert, @"ClearVideosAlert",
@@ -472,8 +441,9 @@ static NSString *videoFilePath;
         
         [alert show];
     }else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ClearVideoClipsNotification" object:nil];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:VNVideoClearClipsNotification object:nil];
+        [_videoProcessor stopAndTearDownCaptureSession];
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNVideoCaptureViewDismissNotification object:nil];
     }
 }
 
@@ -505,11 +475,13 @@ static NSString *videoFilePath;
 
 - (void)doChangeTorchStatusTo:(BOOL)isOn
 {
-    if (isOn) {
-        [self.videoInput.device setTorchMode:AVCaptureTorchModeOn];
-    }else {
-        [self.videoInput.device setTorchMode:AVCaptureTorchModeOff];
-    }
+    //    if (isOn) {
+    //        [self.videoInput.device setTorchMode:AVCaptureTorchModeOn];
+    //    }else {
+    //        [self.videoInput.device setTorchMode:AVCaptureTorchModeOff];
+    //    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"罢工了先" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
 }
 
 - (AVCaptureDevice *)backFacingCamera {
@@ -553,20 +525,22 @@ static NSString *videoFilePath;
  */
 - (void)doChangeDeviceTo:(BOOL)isRear
 {
-    [self.captureSession removeInput:self.videoInput];
-    
-    if (isRear) {
-        
-        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self backFacingCamera] error:nil];
-        [self.overlayView setTorchBtnHidden:NO];
-    }else {
-        
-        
-        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self frontFacingCamera] error:nil];
-        
-        [self.overlayView setTorchBtnHidden:YES];
-    }
-    [self.captureSession addInput:self.videoInput];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"罢工了先" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    //    [self.captureSession removeInput:self.videoInput];
+    //
+    //    if (isRear) {
+    //
+    //        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self backFacingCamera] error:nil];
+    //        [self.overlayView setTorchBtnHidden:NO];
+    //    }else {
+    //
+    //
+    //        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self frontFacingCamera] error:nil];
+    //
+    //        [self.overlayView setTorchBtnHidden:YES];
+    //    }
+    //    [self.captureSession addInput:self.videoInput];
     
 }
 
@@ -614,12 +588,13 @@ static NSString *videoFilePath;
     //    [self.overlayView setProgressViewBlinking:NO];
     
     NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:currVideoPath]) {
-        
-        [[NSFileManager defaultManager] removeItemAtPath:currVideoPath error:nil];
-    }
     
-    [self.movieOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:currVideoPath] recordingDelegate:self];
+    if (![_videoProcessor isRecording]) {
+        [_videoProcessor setProcessorMovieUrl:[NSURL fileURLWithPath:currVideoPath]];
+        [_videoProcessor startRecording];
+    }
+    _durationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(refreshVideoDuration:) userInfo:nil repeats:YES];
+    [_durationTimer fire];
 }
 
 /**
@@ -634,8 +609,25 @@ static NSString *videoFilePath;
         _durationTimer = nil;
     }
     
-    if ([self.movieOutput isRecording]) {
-        [self.movieOutput stopRecording];
+    if ([_videoProcessor isRecording]) {
+        [_videoProcessor stopRecording];
+    }
+    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+    [self.videoPathArr addObject:currVideoPath];
+    
+    self.videoPieceCount++;
+    if (self.videoPieceCount > 0)
+        [self.overlayView setTrashBtnEnabled:YES];
+    
+    [self.videoTimePointArr addObject:[NSNumber numberWithFloat:self.videoTotalDuration]];
+    
+    [self.overlayView setProgressTimeArr:self.videoTimePointArr];
+    
+    //get current video file duration.
+    //video duration array stores video files' duration data, for process bar
+    
+    if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
+        [self doSubmitWholeVideo];
     }
 }
 
@@ -674,57 +666,45 @@ static NSString *videoFilePath;
     clearVideoBlock(buttonIndex);
     
     objc_removeAssociatedObjects(alertView);
-    
 }
 
-#pragma mark - AVCaptureFileOutputRecordingDelegate
+#pragma mark RosyWriterVideoProcessorDelegate
 
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
-didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
-      fromConnections:(NSArray *)connections
-                error:(NSError *)error
+- (void)recordingWillStart
 {
-    
-    BOOL recordedSuccessfully = YES;
-    
-    if ([error code] != noErr)
-    {
-        // A problem occurred: Find out if the recording was successful.
-        id value = [[error userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey];
-        if (value)
-            recordedSuccessfully = [value boolValue];
-        // Logging the problem anyway:
-        NSLog(@"A problem occurred while recording: %@", error);
-    }
-    if (recordedSuccessfully) {
+	dispatch_async(dispatch_get_main_queue(), ^{
         
-        //record videos' path & save current video to temp directory for later use.
-        NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
-        [self.videoPathArr addObject:currVideoPath];
-        
-        self.videoPieceCount++;
-        if (self.videoPieceCount > 0)
-            [self.overlayView setTrashBtnEnabled:YES];
-        
-        [self.videoTimePointArr addObject:[NSNumber numberWithFloat:self.videoTotalDuration]];
-        
-        [self.overlayView setProgressTimeArr:self.videoTimePointArr];
-        
-        //get current video file duration.
-        //video duration array stores video files' duration data, for process bar
-        
-        if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
-            [self doSubmitWholeVideo];
-        }
-    }
+		// Make sure we have time to finish saving the movie if the app is backgrounded during recording
+		if ([[UIDevice currentDevice] isMultitaskingSupported])
+			_backgroundRecordingID = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{}];
+	});
 }
 
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
+- (void)recordingDidStart
 {
-    _durationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(refreshVideoDuration:) userInfo:nil repeats:YES];
-    
-    [_durationTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-    
+}
+
+- (void)recordingWillStop
+{
+}
+
+- (void)recordingDidStop
+{
+	dispatch_async(dispatch_get_main_queue(), ^{
+
+		if ([[UIDevice currentDevice] isMultitaskingSupported]) {
+			[[UIApplication sharedApplication] endBackgroundTask:_backgroundRecordingID];
+			_backgroundRecordingID = UIBackgroundTaskInvalid;
+		}
+	});
+}
+
+- (void)pixelBufferReadyForDisplay:(CVPixelBufferRef)pixelBuffer
+{
+	// Don't make OpenGLES calls while in the background.
+
+	if ( [UIApplication sharedApplication].applicationState != UIApplicationStateBackground )
+		[_oglView displayPixelBuffer:pixelBuffer];
 }
 
 @end

@@ -14,6 +14,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.showsHorizontalScrollIndicator = NO;
     }
     return self;
 }
@@ -22,16 +23,20 @@
 {
     NSInteger numberOfComponents = [self.dataSource numberOfComponentsInFilterList];
     for (int i = 0; i < numberOfComponents; i++) {
-        UIImage *img = [self.dataSource imageForComponentAtIndex:i];
+//        UIImage *img = [self.dataSource imageForComponentAtIndex:i];
         NSString *title = [self.dataSource titleForComponentAtIndex:i];
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 100, 10, 80, 80)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 70 + 10, 10, 60, 60)];
         [btn setTitle:title forState:UIControlStateNormal];
-        [btn setImage:img forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont systemFontOfSize:8];
+        btn.backgroundColor = [UIColor colorWithRGBValue:0xCE2426];
+        btn.layer.cornerRadius = 30;
+//        [btn setImage:img forState:UIControlStateNormal];
         btn.tag = 9000+i;
         [btn addTarget:self action:@selector(didSelectIndex:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:btn];
     }
-    self.contentSize = CGSizeMake(100 * numberOfComponents, 100);
+    self.contentSize = CGSizeMake(70 * numberOfComponents, 70);
 }
 
 - (void)didSelectIndex:(UIButton *)sender

@@ -27,6 +27,8 @@
     // Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userSignOut:)  name:VNSignOutNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userLogin:)  name:VNLoginNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissVideoCaptureView) name:VNVideoCaptureViewDismissNotification object:nil];
+
     [self.tabBar setBarTintColor:[UIColor whiteColor]];
     [self.tabBar setSelectionIndicatorImage:[self createImageWithColor:[UIColor colorWithRGBValue:0x3f3f3f]]];
     self.delegate = self;
@@ -101,6 +103,7 @@
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self name:VNSignOutNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:VNLoginNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNVideoCaptureViewDismissNotification object:nil];
 }
 
 -(void)userSignOut:(NSNotification *)notification
@@ -206,6 +209,11 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"亲~~你还没有登录哦~~" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"登录", nil];
         [alert show];
     }
+}
+
+- (void)dismissVideoCaptureView
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)presentVideoCaptureView

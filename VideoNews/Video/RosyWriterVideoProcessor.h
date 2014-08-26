@@ -64,7 +64,6 @@
 	AVCaptureConnection *videoConnection;
 	CMBufferQueueRef previewBufferQueue;
 	
-	NSURL *movieURL;
 	AVAssetWriter *assetWriter;
 	AVAssetWriterInput *assetWriterAudioIn;
 	AVAssetWriterInput *assetWriterVideoIn;
@@ -87,10 +86,11 @@
 @property (readonly) Float64 videoFrameRate;
 @property (readonly) CMVideoDimensions videoDimensions;
 @property (readonly) CMVideoCodecType videoType;
-
 @property (readwrite) AVCaptureVideoOrientation referenceOrientation;
 
 - (CGAffineTransform)transformFromCurrentVideoOrientationToOrientation:(AVCaptureVideoOrientation)orientation;
+
+- (void) setProcessorMovieUrl:(NSURL *)url;
 
 - (void) showError:(NSError*)error;
 
