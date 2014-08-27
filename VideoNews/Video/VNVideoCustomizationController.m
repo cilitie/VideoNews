@@ -841,6 +841,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeMissEtikate:
         {
             _filterFirst = [[GPUImageMissEtikateFilter alloc] init];
+            _filterLast = _filterFirst;
         }
             break;
         default:
