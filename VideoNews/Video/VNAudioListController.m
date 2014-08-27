@@ -72,6 +72,7 @@
     audioListTableView.separatorInset = UIEdgeInsetsZero;
     audioListTableView.dataSource = self;
     audioListTableView.delegate = self;
+    audioListTableView.showsVerticalScrollIndicator=NO;
     [self.view addSubview:audioListTableView];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 40, 320, 40)];

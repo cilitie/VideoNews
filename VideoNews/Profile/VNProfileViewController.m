@@ -114,6 +114,7 @@ static NSString *shareStr;
     __weak typeof(self) weakSelf = self;
     
     if (!self.videoTableView.hidden && weakSelf.userVideoArr.count!=0) {
+        firstLoading = NO;
         if (_mineUid!=nil && _mineUser_token!=nil) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [VNHTTPRequestManager favouriteNewsListFor:_mineUid userToken:_mineUser_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
@@ -145,7 +146,6 @@ static NSString *shareStr;
                             //NSLog(@"%d", weakSelf.mineVideoArr.count);
                             [weakSelf.videoTableView reloadData];
                         }
-                        //firstLoading = YES;
                     }];
                 }];
             });
@@ -169,7 +169,6 @@ static NSString *shareStr;
                             //NSLog(@"%d", weakSelf.mineVideoArr.count);
                             [weakSelf.videoTableView reloadData];
                         }
-                        //firstLoading = YES;
                     }];
             });
         }
@@ -625,6 +624,10 @@ static NSString *shareStr;
     // Do any additional setup after loading the view.
     [self.popBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
     
+    _videoTableView.showsVerticalScrollIndicator=NO;
+    _followTableView.showsVerticalScrollIndicator=NO;
+    _fansTableView.showsVerticalScrollIndicator=NO;
+    
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNProfileCellDeleteNotification object:nil];
     //[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(removelikeListForLikeHandler:) name:VNProfileVideoLikeHandlerNotification object:nil];
     
@@ -684,6 +687,7 @@ static NSString *shareStr;
     VNUserProfileHeaderView *followHeaderView = loadXib(@"VNUserProfileHeaderView");
     VNUserProfileHeaderView *fansHeaderView = loadXib(@"VNUserProfileHeaderView");
     self.headerViewArr = @[videoHeaderView, followHeaderView, fansHeaderView];
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager userInfoForUser:self.uid completion:^(VNUser *userInfo, NSError *error) {
             if (error) {
@@ -1393,6 +1397,7 @@ static NSString *shareStr;
 {
     //[[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileCellDeleteNotification object:nil];
     //[[NSNotificationCenter defaultCenter] removeObserver:self name:VNProfileVideoLikeHandlerNotification object:nil];
+    
 }
 
 //zmy add
@@ -1469,6 +1474,7 @@ static NSString *shareStr;
                     if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", news.nid]])
                     {
                         cell.isFavouriteNews=YES;
+                        break;
                         //[cell likeStatus:YES];
                         //[self.favouriteBtn setSelected:YES];
                         //break;
@@ -1543,8 +1549,8 @@ static NSString *shareStr;
                 if (!weakCell.isFavouriteNews) {
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         //fix me news可以随着点赞操作返回 zmy
-                       // [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
-                        [VNHTTPRequestManager profileFavouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,VNNews *news,int user_like_count,NSError *error){
+                        [VNHTTPRequestManager favouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count,int user_like_count, NSError *error) {
+                       // [VNHTTPRequestManager profileFavouriteNews:news.nid operation:@"add" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,VNNews *news,int user_like_count,NSError *error){
                             //isNewsDeleted=YES;
                             if (error) {
                                 NSLog(@"%@", error.localizedDescription);
@@ -1566,23 +1572,20 @@ static NSString *shareStr;
                             }
                             else if (succeed) {
                                 //修改数据源
-                                /*[VNHTTPRequestManager getOneNews:news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
-                                    if (error) {
-                                        NSLog(@"%@", error.localizedDescription);
-                                    }
-                                    else
-                                    {*/
                                         //dispatch_async(dispatch_get_main_queue(), ^{
                                             //修改数据源
                                             [self.favouriteNewsArr addObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
-                                            int index=[weakSelf.userVideoArr indexOfObject:weakCell.news];
-                                            [weakSelf.userVideoArr insertObject:news atIndex:index];
-                                            [weakSelf.userVideoArr removeObjectAtIndex:index+1];
+                                weakCell.news.like_count=like_count;
+                                            //int index=[weakSelf.userVideoArr indexOfObject:weakCell.news];
+                                           // [weakSelf.userVideoArr insertObject:news atIndex:index];
+                                           // [weakSelf.userVideoArr removeObjectAtIndex:index+1];
                                             weakCell.isFavouriteNews=YES;
-                                            weakCell.news=news;
+                                          //  weakCell.news=news;
                                             //[weakCell likeStatus:YES];
-                                            [weakCell reload];
-                                            
+                                           // [weakCell reload];
+                            [weakCell.likeImg setImage:[UIImage imageNamed:@"30-30heart_a"]];
+                            weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", like_count];
+
                                       //  });
                                         
                                 //    }
@@ -1608,8 +1611,8 @@ static NSString *shareStr;
                 else
                 {
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    //[VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
-                        [VNHTTPRequestManager profileFavouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,VNNews *news,int user_like_count,NSError *error){
+                    [VNHTTPRequestManager favouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,int  like_count, int user_like_count,NSError *error) {
+                       // [VNHTTPRequestManager profileFavouriteNews:news.nid operation:@"remove" userID:self.mineUid user_token:self.mineUser_token completion:^(BOOL succeed,BOOL isNewsDeleted,VNNews *news,int user_like_count,NSError *error){
                         //isNewsDeleted=YES;
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1639,14 +1642,16 @@ static NSString *shareStr;
                                         //修改数据源
                                         //[self.favouriteNewsArr removeObject:news];
                                         [self.favouriteNewsArr removeObject:@{@"nid":[NSString stringWithFormat:@"%d",news.nid]}];
-                                        int index=[weakSelf.userVideoArr indexOfObject:weakCell.news];
-                                        [weakSelf.userVideoArr insertObject:news atIndex:index];
-                                        [weakSelf.userVideoArr removeObjectAtIndex:index+1];
-                                        weakCell.isFavouriteNews=NO;
-                                        weakCell.news=news;
+                                       // int index=[weakSelf.userVideoArr indexOfObject:weakCell.news];
+                                      //  [weakSelf.userVideoArr insertObject:news atIndex:index];
+                                      //  [weakSelf.userVideoArr removeObjectAtIndex:index+1];
+                            weakCell.news.like_count=like_count;
+                            weakCell.isFavouriteNews=NO;
+                                      //  weakCell.news=news;
                                         //[weakCell likeStatus:NO];
-                                        [weakCell reload];
-                                        
+                                        //[weakCell reload];
+                            weakCell.favouriteLabel.text = [NSString stringWithFormat:@"%d", like_count];
+                            [weakCell.likeImg setImage:[UIImage imageNamed:@"30-30heart"]];
                                  //   });
                                     
                             //    }
@@ -2103,7 +2108,6 @@ static NSString *shareStr;
         [self showTabBar];
         return;
     }
-    
     //contentOffset
     CGFloat contentOffset = scrollView.contentOffset.y - initialScrollOffset.y;
     
@@ -2151,8 +2155,8 @@ static NSString *shareStr;
                 if (cell.isPlaying) {
                     CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:index];
                     CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                    NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
-                    if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)) {
+                  //  NSLog(@"%@", NSStringFromCGRect(cellFrameInWindow));
+                    if (CGRectGetMaxY(cellFrameInWindow) < 210 || CGRectGetMinY(cellFrameInWindow) > CGRectGetHeight(self.view.window.frame)-210) {
                         [cell startOrPausePlaying:NO];
                     }
                 }
@@ -2168,10 +2172,10 @@ static NSString *shareStr;
                 for (VNProfileVideoTableViewCell *cell in visibleCells) {
                     CGRect cellFrameInTableView = [tableView rectForRowAtIndexPath:[tableView indexPathForCell:cell]];
                     CGRect cellFrameInWindow = [tableView convertRect:cellFrameInTableView toView:[UIApplication sharedApplication].keyWindow];
-                    NSLog(@"%f", self.view.window.center.y);
+                    //NSLog(@"%f", self.view.window.center.y);
                     CGFloat gap = fabs(CGRectGetMidY(cellFrameInWindow)-self.view.window.center.y);
                     if (gap < minGap) {
-                        NSLog(@"%f, %f", minGap, gap);
+                       // NSLog(@"%f, %f", minGap, gap);
                         minGap = gap;
                         curCell = cell;
                     }

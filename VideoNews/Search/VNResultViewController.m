@@ -83,6 +83,7 @@
     newsQuiltView = [[TMQuiltView alloc] initWithFrame:frame];
 	newsQuiltView.delegate = self;
 	newsQuiltView.dataSource = self;
+    newsQuiltView.showsVerticalScrollIndicator=NO;
     
     __weak typeof(newsQuiltView) weakQuiltView = newsQuiltView;
     __weak typeof(self) weakSelf = self;

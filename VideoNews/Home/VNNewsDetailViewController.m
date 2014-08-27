@@ -94,6 +94,7 @@ static NSString *shareStr;
     // Do any additional setup after loading the view.
     
     self.commentTableView.backgroundColor=[UIColor clearColor];
+    self.commentTableView.showsVerticalScrollIndicator=NO;
     self.inputTextView.layer.cornerRadius = 5;
     self.inputTextView.layer.masksToBounds = YES;
     self.inputTextView.layer.borderWidth = 1.0;
@@ -1096,12 +1097,12 @@ static NSString *shareStr;
     }
     if(self.moviePlayer.loadState == MPMovieLoadStatePlayable){
         //第一次加载，或者前后拖动完成之后 /
-        [_loadingAni startActivity];
+        [_loadingAni stopActivity];
         //self.videoImgView.hidden = YES;
         // [_moviePlayer play];
     }
     if(self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK){
-        [_loadingAni startActivity];
+        [_loadingAni stopActivity];
     }
     if(self.moviePlayer.loadState == MPMovieLoadStateStalled){
         //网络不好，开始缓冲了
@@ -1113,8 +1114,20 @@ static NSString *shareStr;
 {
     if (self.moviePlayer.playbackState==MPMoviePlaybackStatePlaying) {
         [_loadingAni stopActivity];
-       // self.videoImgView.hidden = YES;
+        _moviePlayer.view.hidden=NO;
     }
+    else if (self.moviePlayer.playbackState==MPMoviePlaybackStatePaused) {
+        [_loadingAni stopActivity];
+    }
+    else if (self.moviePlayer.playbackState==MPMoviePlaybackStateInterrupted)
+    {
+        [_loadingAni startActivity];
+    }
+    else if (self.moviePlayer.playbackState==MPMoviePlaybackStateStopped)
+    {
+        [_loadingAni stopActivity];
+    }
+    
 }
 
 

@@ -93,6 +93,7 @@
         weakSelf.draftListTableView.backgroundColor = [UIColor colorWithRGBValue:0xE1E1E1];
         weakSelf.draftListTableView.separatorColor = [UIColor clearColor];
         [weakSelf.view addSubview:weakSelf.draftListTableView];
+        weakSelf.draftListTableView.showsVerticalScrollIndicator=NO;
         
         if (_dataSourceArr.count == 0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"还没有草稿哦" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];

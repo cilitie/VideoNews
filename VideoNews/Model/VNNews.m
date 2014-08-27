@@ -36,6 +36,10 @@ static NSString *kClassid = @"classid";
     return [makeSureNotNull([self.basicDict objectForKey:kLike_count]) intValue];
 }
 
+- (void)setLike_count:(int)like_count {
+    [self.basicDict setObject:[NSNumber numberWithInt:like_count] forKey:kLike_count];
+}
+
 - (int)comment_count {
     return [makeSureNotNull([self.basicDict objectForKey:kComment_count]) intValue];
 }
