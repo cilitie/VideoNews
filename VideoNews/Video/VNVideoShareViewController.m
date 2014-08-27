@@ -218,7 +218,7 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CoverDidChanged:) name:@"VNVideoCoverDidChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CoverDidChanged:) name:VNVideoCoverDidChangedNotification object:nil];
     
     self.coverTime = 0;
 }
@@ -231,7 +231,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VNVideoCoverDidChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VNVideoCoverDidChangedNotification object:nil];
     NSLog(@"dealloc ..... :%s",__FUNCTION__);
 }
 
@@ -304,8 +304,13 @@
 - (void)CoverDidChanged:(NSNotification *)not
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-    UIImage *coverImage = [not.userInfo objectForKey:@"coverImg"];
     CGFloat time = [[not.userInfo objectForKey:@"coverTime"] floatValue];
+    
+    if (time == 10000) {
+        return;
+    }
+    UIImage *coverImage = [not.userInfo objectForKey:@"coverImg"];
+    
     [self.videoCoverImgBtn setImage:coverImage forState:UIControlStateNormal];
     self.coverImg = coverImage;
     self.coverTime = time;

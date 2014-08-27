@@ -64,7 +64,7 @@
     GLuint passThroughProgram;
 }
 
-- (void)displayPixelBuffer:(CVImageBufferRef)pixelBuffer;
+- (void)displayPixelBuffer:(CVImageBufferRef)pixelBuffer withDevicePosition:(NSInteger)posType;
 
 @end
 

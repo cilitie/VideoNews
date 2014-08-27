@@ -203,7 +203,7 @@ enum {
 	return normalizedSamplingRect;
 }
 
-- (void)displayPixelBuffer:(CVImageBufferRef)pixelBuffer 
+- (void)displayPixelBuffer:(CVImageBufferRef)pixelBuffer withDevicePosition:(NSInteger)posType
 {    
 	if (frameBufferHandle == 0) {
 		BOOL success = [self initializeBuffers];
@@ -251,11 +251,19 @@ enum {
     // Set the view port to the entire view
     glViewport(0, 0, renderBufferWidth, renderBufferHeight);
 	
-    static const GLfloat squareVertices[] = {
+    static const GLfloat squareVerticesPortrait[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,
         -1.0f,  1.0f,
         1.0f,  1.0f,
+    };
+    
+    static const GLfloat squareVerticesUpsideDown[] = {
+        
+        1.0f, 1.0f,
+        -1.0f, 1.0f,
+        1.0f, -1.0f,
+        -1.0f, -1.0f,
     };
 
 	// The texture vertices are set up such that we flip the texture vertically.
@@ -269,7 +277,12 @@ enum {
 	};
 	
     // Draw the texture on the screen with OpenGL ES 2
-    [self renderWithSquareVertices:squareVertices textureVertices:textureVertices];
+    if (posType == 0) {
+        //portrait
+        [self renderWithSquareVertices:squareVerticesPortrait textureVertices:textureVertices];
+    }else {
+        [self renderWithSquareVertices:squareVerticesUpsideDown textureVertices:textureVertices];
+    }
     
     glBindTexture(CVOpenGLESTextureGetTarget(texture), 0);
     

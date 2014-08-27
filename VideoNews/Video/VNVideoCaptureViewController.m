@@ -32,6 +32,8 @@
 
 @property (nonatomic, strong) NSTimer *durationTimer;
 
+@property (nonatomic, assign) AVCaptureDevicePosition curDevicePosition;
+
 @end
 
 @implementation VNVideoCaptureViewController
@@ -147,6 +149,7 @@ static NSString *videoFilePath;
 - (void) initCaptureSession
 {
     
+    self.curDevicePosition = AVCaptureDevicePositionBack;
     _videoProcessor = [[RosyWriterVideoProcessor alloc] init];
 	_videoProcessor.delegate = self;
     
@@ -475,47 +478,8 @@ static NSString *videoFilePath;
 
 - (void)doChangeTorchStatusTo:(BOOL)isOn
 {
-    //    if (isOn) {
-    //        [self.videoInput.device setTorchMode:AVCaptureTorchModeOn];
-    //    }else {
-    //        [self.videoInput.device setTorchMode:AVCaptureTorchModeOff];
-    //    }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"罢工了先" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-}
-
-- (AVCaptureDevice *)backFacingCamera {
     
-    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    AVCaptureDevice *captureDevice = nil;
-    for (AVCaptureDevice *device in videoDevices)
-    {
-        if (device.position == AVCaptureDevicePositionBack)
-        {
-            captureDevice = device;
-            break;
-        }
-    }
-    
-    [captureDevice lockForConfiguration:nil];
-    
-    return captureDevice;
-}
-
-- (AVCaptureDevice *)frontFacingCamera {
-    
-    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    AVCaptureDevice *captureDevice = nil;
-    for (AVCaptureDevice *device in videoDevices)
-    {
-        if (device.position == AVCaptureDevicePositionFront)
-        {
-            captureDevice = device;
-            break;
-        }
-    }
-    
-    return captureDevice;
+    [self.videoProcessor changeTorchStatusTo:isOn];
 }
 
 /**
@@ -525,23 +489,19 @@ static NSString *videoFilePath;
  */
 - (void)doChangeDeviceTo:(BOOL)isRear
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"罢工了先" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-    //    [self.captureSession removeInput:self.videoInput];
-    //
-    //    if (isRear) {
-    //
-    //        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self backFacingCamera] error:nil];
-    //        [self.overlayView setTorchBtnHidden:NO];
-    //    }else {
-    //
-    //
-    //        self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self frontFacingCamera] error:nil];
-    //
-    //        [self.overlayView setTorchBtnHidden:YES];
-    //    }
-    //    [self.captureSession addInput:self.videoInput];
     
+    if (isRear) {
+
+        [self.overlayView setTorchBtnHidden:NO];
+        self.curDevicePosition = AVCaptureDevicePositionBack;
+        
+    }else {
+
+        [self.overlayView setTorchBtnHidden:YES];
+        self.curDevicePosition = AVCaptureDevicePositionFront;
+        
+    }
+    [self.videoProcessor changeDeviceTo:isRear];
 }
 
 /**
@@ -636,6 +596,7 @@ static NSString *videoFilePath;
  */
 - (void)doSubmitWholeVideo
 {
+
     if (self.videoTotalDuration >= MIN_VIDEO_DURATION) {
         
         [self.overlayView showCombiningMsg];
@@ -702,9 +663,14 @@ static NSString *videoFilePath;
 - (void)pixelBufferReadyForDisplay:(CVPixelBufferRef)pixelBuffer
 {
 	// Don't make OpenGLES calls while in the background.
-
-	if ( [UIApplication sharedApplication].applicationState != UIApplicationStateBackground )
-		[_oglView displayPixelBuffer:pixelBuffer];
+    
+	if ( [UIApplication sharedApplication].applicationState != UIApplicationStateBackground ) {
+        if (self.curDevicePosition == AVCaptureDevicePositionBack) {
+            [_oglView displayPixelBuffer:pixelBuffer withDevicePosition:0];
+        }else {
+            [_oglView displayPixelBuffer:pixelBuffer withDevicePosition:1];
+        }
+    }
 }
 
 @end

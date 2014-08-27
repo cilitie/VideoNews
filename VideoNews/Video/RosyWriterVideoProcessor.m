@@ -64,6 +64,8 @@
 
 @property (nonatomic, strong)NSURL *movieURL;
 
+@property (nonatomic, assign) AVCaptureDevicePosition currDevicePositon;
+
 @end
 
 @implementation RosyWriterVideoProcessor
@@ -410,7 +412,9 @@
 				CMSampleBufferRef sbuf = (CMSampleBufferRef)CMBufferQueueDequeueAndRetain(previewBufferQueue);
 				if (sbuf) {
 					CVImageBufferRef pixBuf = CMSampleBufferGetImageBuffer(sbuf);
+                    
 					[self.delegate pixelBufferReadyForDisplay:pixBuf];
+                    
 					CFRelease(sbuf);
 				}
 			});
@@ -462,8 +466,11 @@
 {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in devices)
-        if ([device position] == position)
+        if ([device position] == position){
+            if (position == AVCaptureDevicePositionBack)
+                [device lockForConfiguration:nil];
             return device;
+        }
     
     return nil;
 }
@@ -497,48 +504,8 @@
     if ([captureSession canSetSessionPreset:AVCaptureSessionPresetMedium]) {
         [captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     }
-    /*
-	 * Create audio connection
-	 */
-    AVCaptureDeviceInput *audioIn = [[AVCaptureDeviceInput alloc] initWithDevice:[self audioDevice] error:nil];
-    if ([captureSession canAddInput:audioIn])
-        [captureSession addInput:audioIn];
-	[audioIn release];
-	
-	AVCaptureAudioDataOutput *audioOut = [[AVCaptureAudioDataOutput alloc] init];
-	dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
-	[audioOut setSampleBufferDelegate:self queue:audioCaptureQueue];
-	dispatch_release(audioCaptureQueue);
-	if ([captureSession canAddOutput:audioOut])
-		[captureSession addOutput:audioOut];
-	audioConnection = [audioOut connectionWithMediaType:AVMediaTypeAudio];
-	[audioOut release];
     
-	/*
-	 * Create video connection
-	 */
-    AVCaptureDeviceInput *videoIn = [[AVCaptureDeviceInput alloc] initWithDevice:[self videoDeviceWithPosition:AVCaptureDevicePositionBack] error:nil];
-    if ([captureSession canAddInput:videoIn])
-        [captureSession addInput:videoIn];
-	[videoIn release];
-    
-	AVCaptureVideoDataOutput *videoOut = [[AVCaptureVideoDataOutput alloc] init];
-	/*
-		RosyWriter prefers to discard late video frames early in the capture pipeline, since its
-		processing can take longer than real-time on some platforms (such as iPhone 3GS).
-		Clients whose image processing is faster than real-time should consider setting AVCaptureVideoDataOutput's
-		alwaysDiscardsLateVideoFrames property to NO. 
-	 */
-	[videoOut setAlwaysDiscardsLateVideoFrames:YES];
-	[videoOut setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-	dispatch_queue_t videoCaptureQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
-	[videoOut setSampleBufferDelegate:self queue:videoCaptureQueue];
-	dispatch_release(videoCaptureQueue);
-	if ([captureSession canAddOutput:videoOut])
-		[captureSession addOutput:videoOut];
-	videoConnection = [videoOut connectionWithMediaType:AVMediaTypeVideo];
-	self.videoOrientation = [videoConnection videoOrientation];
-	[videoOut release];
+    [self changeDeviceTo:YES];
     
 	return YES;
 }
@@ -598,6 +565,83 @@
 		dispatch_release(movieWritingQueue);
 		movieWritingQueue = NULL;
 	}
+}
+
+- (void)changeTorchStatusTo:(BOOL)isOn
+{
+    if (isOn) {
+        [[self videoDeviceWithPosition:self.currDevicePositon] setTorchMode:AVCaptureTorchModeOn];
+    }else {
+        [[self videoDeviceWithPosition:self.currDevicePositon] setTorchMode:AVCaptureTorchModeOff];
+
+    }
+}
+
+- (void)changeDeviceTo:(BOOL)isRear
+{
+    [captureSession stopRunning];
+    /*
+	 * Create audio connection
+	 */
+    
+    for (AVCaptureInput *oldInput in [captureSession inputs]) {
+        [captureSession removeInput:oldInput];
+    }
+    for (AVCaptureOutput *oldOutput in [captureSession outputs]) {
+        [captureSession removeOutput:oldOutput];
+    }
+    
+    AVCaptureDeviceInput *audioIn = [[AVCaptureDeviceInput alloc] initWithDevice:[self audioDevice] error:nil];
+    if ([captureSession canAddInput:audioIn])
+        [captureSession addInput:audioIn];
+	[audioIn release];
+	
+	AVCaptureAudioDataOutput *audioOut = [[AVCaptureAudioDataOutput alloc] init];
+	dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
+	[audioOut setSampleBufferDelegate:self queue:audioCaptureQueue];
+	dispatch_release(audioCaptureQueue);
+	if ([captureSession canAddOutput:audioOut])
+		[captureSession addOutput:audioOut];
+	audioConnection = [audioOut connectionWithMediaType:AVMediaTypeAudio];
+	[audioOut release];
+    
+    if (isRear) {
+        self.currDevicePositon = AVCaptureDevicePositionBack;
+    }else {
+        self.currDevicePositon = AVCaptureDevicePositionFront;
+    }
+	/*
+	 * Create video connection
+	 */
+    AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self videoDeviceWithPosition:self.currDevicePositon] error:nil];
+    if ([captureSession canAddInput:videoInput])
+        [captureSession addInput:videoInput];
+    [videoInput release];
+    
+    
+	AVCaptureVideoDataOutput *videoOut = [[AVCaptureVideoDataOutput alloc] init];
+	/*
+     RosyWriter prefers to discard late video frames early in the capture pipeline, since its
+     processing can take longer than real-time on some platforms (such as iPhone 3GS).
+     Clients whose image processing is faster than real-time should consider setting AVCaptureVideoDataOutput's
+     alwaysDiscardsLateVideoFrames property to NO.
+	 */
+	[videoOut setAlwaysDiscardsLateVideoFrames:YES];
+	[videoOut setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+	dispatch_queue_t videoCaptureQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
+	[videoOut setSampleBufferDelegate:self queue:videoCaptureQueue];
+	dispatch_release(videoCaptureQueue);
+	if ([captureSession canAddOutput:videoOut])
+		[captureSession addOutput:videoOut];
+	videoConnection = [videoOut connectionWithMediaType:AVMediaTypeVideo];
+    
+    self.videoOrientation = [videoConnection videoOrientation];
+    if (!isRear){
+        videoConnection.videoMirrored = YES;
+    }
+	[videoOut release];
+    
+    [captureSession startRunning];
 }
 
 #pragma mark Error Handling

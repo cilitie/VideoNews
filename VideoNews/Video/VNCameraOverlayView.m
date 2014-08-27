@@ -252,6 +252,9 @@
 
 - (void)setTorchBtnHidden:(BOOL)hidden
 {
+    if (self.torchBtn.selected) {
+        self.torchBtn.selected = NO;
+    }
     self.torchBtn.hidden = hidden;
 }
 

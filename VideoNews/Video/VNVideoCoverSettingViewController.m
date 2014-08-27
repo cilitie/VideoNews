@@ -63,11 +63,19 @@
     titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
     [topView addSubview:titleLbl];
     
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 44)];
+    [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
+    [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
+    [topView addSubview:backBtn];
+    
     UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
 //    [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateNormal];
 //    [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateSelected];
     [submitBtn setTitle:@"完成" forState:UIControlStateNormal];
     [submitBtn setTitle:@"完成" forState:UIControlStateSelected];
+    [submitBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateNormal];
+    [submitBtn setTitleColor:[UIColor colorWithRGBValue:0xCE2426] forState:UIControlStateSelected];
     [submitBtn addTarget:self action:@selector(doSubmit) forControlEvents:UIControlEventTouchUpInside];
     [topView addSubview:submitBtn];
     
@@ -107,9 +115,15 @@
 
 #pragma mark - UserInteractionMethods
 
+- (void)doPopBack
+{
+    //没有设置，回去直接dismiss 所以设置时间很长10000,不会达到
+    [[NSNotificationCenter defaultCenter] postNotificationName:VNVideoCoverDidChangedNotification object:nil userInfo:@{@"coverImg":self.videoCoverImgView.image, @"coverTime":[NSNumber numberWithFloat:10000]}];
+}
+
 - (void)doSubmit
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VNVideoCoverDidChangedNotification" object:nil userInfo:@{@"coverImg":self.videoCoverImgView.image, @"coverTime":[NSNumber numberWithFloat:self.coverTime]}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:VNVideoCoverDidChangedNotification object:nil userInfo:@{@"coverImg":self.videoCoverImgView.image, @"coverTime":[NSNumber numberWithFloat:self.coverTime]}];
 }
 
 /**

@@ -103,6 +103,9 @@
 - (void) pauseCaptureSession; // Pausing while a recording is in progress will cause the recording to be stopped and saved.
 - (void) resumeCaptureSession;
 
+- (void) changeTorchStatusTo:(BOOL)isOn;
+- (void) changeDeviceTo:(BOOL)isRear;
+
 @property(readonly, getter=isRecording) BOOL recording;
 
 @end

@@ -495,13 +495,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             
             __weak VNVideoCustomizationController *weakSelf = self;
             
-            AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
-
             [_movieWriter setCompletionBlock:^{
                 [weakSelf.filterLast removeTarget:weakSelf.movieWriter];
                 [weakSelf.movieWriter finishRecording];
 
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:[NSURL fileURLWithPath:filterFilePath] options:nil];
+
                     [tempFilterVideoView removeFromSuperview];
                     [weakSelf combineVideoAndAudioTracks:videoAsset];
                     weakSelf.movieFile = nil;
@@ -753,17 +754,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (void)clearFilter
 {
-//    if (_movieWriter) {
-//        [self.movieWriter cancelRecording];
-//    }
     [self.movieFile removeTarget:_filterFirst];
-//    [self.movieFile endProcessing];
-//    self.movieFile.audioEncodingTarget = nil;
-//
-//    [_filter removeAllTargets];
-//    
-//    _filter = nil;
-//    _movieWriter = nil;
 }
 
 - (void)setFilterBasedOnType
