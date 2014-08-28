@@ -93,7 +93,7 @@
 -(void)playAndCount
 {
     
-    //[self.moviePlayer prepareToPlay];
+    [self.moviePlayer prepareToPlay];
     [self.moviePlayer play];
     //[MobClick event:@"video_play" label:@"porfile"];
 }

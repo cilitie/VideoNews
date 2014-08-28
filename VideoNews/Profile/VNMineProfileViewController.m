@@ -2670,11 +2670,12 @@ static NSString *shareStr;
             //NSString *shareText = [NSString stringWithFormat:@"我在用follow my style看到一个有趣的视频：“%@”，来自@“%@”快来看看吧~ %@", titleString, nickNameString, urlString];
             //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
             NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，欢迎围观~：“%@”",_urlStrToShare];
-            NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
-            
+           // NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
+            NSLog(@"%@",shareText);
             NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
             
             if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
+              //  NSLog(@"%@",shareText);
                 [[UMSocialDataService defaultDataService] postSNSWithTypes:@[UMShareToSina] content:shareText image:shareImageData location:nil urlResource:nil presentedController:weakSelf completion:^(UMSocialResponseEntity * response){
                     if (response.responseCode == UMSResponseCodeSuccess) {
                         NSLog(@"新浪微博分享成功了");
@@ -2685,6 +2686,8 @@ static NSString *shareStr;
                 }];
             }
             if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
+               // NSLog(@"%@",shareText);
+                [UMSocialData defaultData].extConfig.wechatTimelineData.url = _urlStrToShare;
                 [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImageData socialUIDelegate:self];
                 UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
                 NSLog(@"%@", snsPlatform);
