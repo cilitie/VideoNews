@@ -2674,7 +2674,7 @@ static NSString *shareStr;
             //NSString *shareText = [NSString stringWithFormat:@"分享%@的视频：“%@”，快来看看吧~ %@",  nickNameString,titleString,urlString];
             NSString *shareText = [NSString stringWithFormat:@"我用“时尚拍”制作了一段视频，欢迎围观~：“%@”",_urlStrToShare];
            // NSLog(@"upload video info :%@",weakSelf.uploadVideoInfo);
-            NSLog(@"%@",shareText);
+            //NSLog(@"%@",shareText);
             NSData *shareImageData = [weakSelf.uploadVideoInfo objectForKey:@"coverImg"];
             
             if ([[weakSelf.uploadVideoInfo valueForKey:@"isSinaOn"] boolValue]) {
