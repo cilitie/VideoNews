@@ -1406,7 +1406,12 @@ static int pagesize = 10;
 + (NSString *)token {
    // NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     //NSLog(@"%@", originTokenStr);
-    NSString *originTokenStr = [[self timestamp] stringByAppendingString:@"#$@%!*zmy"];
+   // NSString *originTokenStr = [[self timestamp] stringByAppendingString:@"#$@%!*zmy"];
+    NSTimeInterval timestamp=[[self timestamp] doubleValue];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
+    NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"YYYY-MM-dd-HH";
+    NSString * originTokenStr = [[formatter stringFromDate:date] stringByAppendingString:@"#$@%!*zmy"];
     return [originTokenStr md5];
 }
 
