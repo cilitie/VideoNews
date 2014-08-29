@@ -15,5 +15,7 @@
 + (NSString *)getNSCachePath:(NSString *)filenameorpath;
 + (NSString *)timeFormatToDisplay:(NSTimeInterval)timeInterval;
 + (NSString *)countFormatToDisplay:(int)number;
++ (BOOL)validateEmail:(NSString *)email;
++ (BOOL)validatePasswd:(NSString *)passwd;
 
 @end

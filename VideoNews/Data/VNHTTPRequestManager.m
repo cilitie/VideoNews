@@ -1235,6 +1235,52 @@ static int pagesize = 10;
     }];
 }
 
++ (void)loginWithEmail:(NSString *)email passwd:(NSString *)passwd completion:(void (^)(BOOL succeed, NSError *error))completion
+{
+    NSString *URLStr = [VNHost stringByAppendingString:@"oursLogin.php"];
+    NSString *pushToken = [[NSUserDefaults standardUserDefaults] objectForKey:VNPushToken];
+    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp], @"email": email, @"passwd": passwd, @"device": pushToken ? pushToken : @""};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+        BOOL successLogin = NO;
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus) {
+                successLogin = ([[responseObject objectForKey:@"success"] integerValue] == 0)? YES:NO;
+                if (successLogin) {
+                    NSString *userToken = [responseObject objectForKey:@"user_token"];
+                    [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:VNUserToken];
+                    
+                    VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
+                    authUser.openid = [responseObject objectForKey:@"uid"];
+                    authUser.nickname = [responseObject objectForKey:@"screen_name"];
+                    authUser.avatar = [responseObject objectForKey:@"profile_image_url"];
+                    if ([[responseObject objectForKey:@"gender"] intValue] == 1) {
+                        authUser.gender = @"male";
+                    }
+                    else if([[responseObject objectForKey:@"gender"] intValue] == 0) {
+                        authUser.gender = @"female";
+                    }
+                    else {
+                        authUser.gender = @"";
+                    }
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:authUser.basicDict forKey:VNLoginUser];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+            }
+        }
+        if (completion) {
+            completion(successLogin, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(NO, error);
+        }
+    }];
+}
+
+
 #pragma mark - SEL
 
 + (NSString *)timestamp {

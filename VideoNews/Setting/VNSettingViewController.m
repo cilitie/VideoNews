@@ -215,7 +215,8 @@
         /*if (self.navigationController.viewControllers.count > 1) {
             [self.navigationController popToRootViewControllerAnimated:YES];
         }*/
-        [self presentViewController:loginViewController animated:YES completion:nil];
+        UINavigationController *loginNavCtl = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        [self presentViewController:loginNavCtl animated:YES completion:nil];
         
     }
 }

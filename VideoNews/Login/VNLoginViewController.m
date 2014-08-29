@@ -12,13 +12,20 @@
 #import "VNAuthUser.h"
 #import "UMSocial.h"
 #import "VNTabBarViewController.h"
+#import "VNRegisterViewController.h"
+#import "VNForgetPasswdViewController.h"
 
-@interface VNLoginViewController () <WXApiDelegate>
+@interface VNLoginViewController () <WXApiDelegate, UITextFieldDelegate>
 
 - (IBAction)wechatLogin:(id)sender;
 - (IBAction)weiboLogin:(id)sender;
 - (IBAction)qqLogin:(id)sender;
 - (IBAction)dismiss:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UITextField *emailTF;
+@property (weak, nonatomic) IBOutlet UITextField *passwdTF;
+
+@property (weak, nonatomic) IBOutlet UIButton *loginBtn;
 
 @end
 
@@ -28,7 +35,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+
     }
     return self;
 }
@@ -36,14 +43,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    [self.emailTF setLeftViewMode:UITextFieldViewModeAlways];
+    [self.emailTF setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 35)]];
+    self.emailTF.layer.cornerRadius = 2.5;
+    self.emailTF.delegate = self;
+    self.emailTF.keyboardType = UIKeyboardTypeEmailAddress;
+    
+    [self.passwdTF setLeftViewMode:UITextFieldViewModeAlways];
+    [self.passwdTF setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 35)]];
+    self.passwdTF.layer.cornerRadius = 2.5;
+    self.passwdTF.delegate = self;
+    
+    self.loginBtn.layer.cornerRadius = 2.5;
+    
+    self.title = @"登录";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor colorWithRGBValue:0xCE2426]};
     
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 /*
@@ -223,6 +244,91 @@
             }
         }
     }
+}
+
+- (IBAction)doLogin:(UIButton *)sender {
+    
+    //邮箱不能为空
+    if ([self.emailTF.text isEqualToString:@""]) {
+
+        [VNUtility showHUDText:@"邮箱不能为空~" forView:self.view];
+        return;
+    }
+    
+    //密码格式验证
+    if (![VNUtility validatePasswd:self.passwdTF.text]) {
+        
+        [VNUtility showHUDText:@"密码为长度6到20位字符或数字~" forView:self.view];
+        return;
+    }
+    
+    //邮箱格式正确
+    if (![VNUtility validateEmail:self.emailTF.text]) {
+        
+        [VNUtility showHUDText:@"请输入正确邮箱~" forView:self.view];
+        return;
+    }
+    
+    //发起登录请求 post
+    NSLog(@"发起登录请求，post");
+    
+    [VNHTTPRequestManager loginWithEmail:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
+        if (success) {
+            [VNUtility showHUDText:@"登录成功!" forView:self.view];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }else {
+            [VNUtility showHUDText:@"登录失败!" forView:self.view];
+        }
+    }];
+}
+
+- (IBAction)doRegister:(UIButton *)sender {
+    
+    VNRegisterViewController *registerViewCtl = [[VNRegisterViewController alloc] init];
+    [self.navigationController pushViewController:registerViewCtl animated:YES];
+}
+
+- (IBAction)doForgetPasswd:(UIButton *)sender {
+
+}
+
+- (IBAction)doHideKeyboard:(UIControl *)sender {
+    [self hideKeyboard];
+}
+
+- (void)hideKeyboard
+{
+    [self.emailTF resignFirstResponder];
+    [self.passwdTF resignFirstResponder];
+    [UIView animateWithDuration:0.3f animations:^{
+        CGRect frame = self.view.frame;
+        frame.origin.y = 0;
+        self.view.frame = frame;
+    }];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if (textField == self.emailTF) {
+        [UIView animateWithDuration:0.3f animations:^{
+            CGRect frame = self.view.frame;
+            frame.origin.y = -150;
+            self.view.frame = frame;
+        }];
+    }else if (textField == self.passwdTF) {
+        [UIView animateWithDuration:0.3f animations:^{
+            CGRect frame = self.view.frame;
+            frame.origin.y = -150;
+            self.view.frame = frame;
+        }];
+    }
+    return YES;
 }
 
 @end

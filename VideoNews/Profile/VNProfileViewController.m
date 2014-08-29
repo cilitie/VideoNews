@@ -2340,7 +2340,8 @@ static NSString *shareStr;
     }
     else if (buttonIndex == 1) {
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
-        [self presentViewController:loginViewController animated:YES completion:nil];
+        UINavigationController *loginNavCtl = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        [self presentViewController:loginNavCtl animated:YES completion:nil];
     }
 }
 

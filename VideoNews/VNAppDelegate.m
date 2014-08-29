@@ -40,9 +40,10 @@
     {
         UIStoryboard *storyBoard=[UIStoryboard storyboardWithName:@"Main" bundle:nil];
         VNLoginViewController *loginViewController = [storyBoard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
+        UINavigationController *loginNavCtl = [[UINavigationController alloc] initWithRootViewController:loginViewController];
         //[_window addSubview:loginViewController.view];
         VNTabBarViewController *tabBarViewController=(VNTabBarViewController *)self.window.rootViewController;
-        [tabBarViewController presentViewController:loginViewController animated:YES completion:nil];
+        [tabBarViewController presentViewController:loginNavCtl animated:YES completion:nil];
 
     }
 
