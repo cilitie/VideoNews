@@ -2688,6 +2688,7 @@ static NSString *shareStr;
             if ([[weakSelf.uploadVideoInfo valueForKey:@"isWeChatOn"] boolValue]) {
                // NSLog(@"%@",shareText);
                 [UMSocialData defaultData].extConfig.wechatTimelineData.url = _urlStrToShare;
+                shareStr = shareText;
                 [[UMSocialControllerService defaultControllerService] setShareText:shareText shareImage:shareImageData socialUIDelegate:self];
                 UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatTimeline];
                 NSLog(@"%@", snsPlatform);
