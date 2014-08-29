@@ -53,3 +53,5 @@ NSString *const QQAppKey = @"ftKWwKmysaYIQGVd";
 //NSString *const QQAppKey = @"xScM0nFWCPJqVlaD";
 //FIXME: 替换上线后的AppID
 NSString *const AppID = @"907182257";
+
+NSString *const VNCustomErrorDomain = @"kVNCustomErrorDomain";

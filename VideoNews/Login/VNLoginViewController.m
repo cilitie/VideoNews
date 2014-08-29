@@ -270,8 +270,6 @@
     }
     
     //发起登录请求 post
-    NSLog(@"发起登录请求，post");
-    
     [VNHTTPRequestManager loginWithEmail:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
         if (success) {
             [VNUtility showHUDText:@"登录成功!" forView:self.view];
@@ -281,7 +279,18 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [self dismissViewControllerAnimated:YES completion:nil];
         }else {
-            [VNUtility showHUDText:@"登录失败!" forView:self.view];
+            if ([err.domain isEqualToString:VNCustomErrorDomain]) {
+                if (err.code == VNInvalidUserErrorCode) {
+                    [VNUtility showHUDText:@"非注册用户，先注册吧~" forView:self.view];
+                    return ;
+                }
+                if (err.code == VNWrongPasswdErrorCode) {
+                    [VNUtility showHUDText:@"密码错误~" forView:self.view];
+                    return ;
+                }
+            }else {
+                [VNUtility showHUDText:@"登录失败!" forView:self.view];
+            }
         }
     }];
 }
@@ -294,6 +303,8 @@
 
 - (IBAction)doForgetPasswd:(UIButton *)sender {
 
+    VNForgetPasswdViewController *forgetPasswdCtl = [[VNForgetPasswdViewController alloc] init];
+    [self.navigationController pushViewController:forgetPasswdCtl animated:YES];
 }
 
 - (IBAction)doHideKeyboard:(UIControl *)sender {

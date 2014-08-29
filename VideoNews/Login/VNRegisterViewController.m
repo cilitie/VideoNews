@@ -71,6 +71,7 @@
         _registerBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 290, 280, 40)];
         _registerBtn.backgroundColor = [UIColor colorWithRGBValue:0xCE2426];
         _registerBtn.titleLabel.textColor = [UIColor whiteColor];
+        _registerBtn.layer.cornerRadius = 2.5;
         [_registerBtn setTitle:@"注册" forState:UIControlStateNormal];
         [_registerBtn addTarget:self action:@selector(doRegister) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -95,6 +96,14 @@
     self.title = @"注册";
     
     self.view.backgroundColor = [UIColor colorWithRed:226/255.0 green:226/255.0 blue:226/255.0 alpha:1];
+    
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 44)];
+    [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [backBtn setImage:[UIImage imageNamed:@"back_a"] forState:UIControlStateSelected];
+    [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn setShowsTouchWhenHighlighted:TRUE];
+    UIBarButtonItem * backBtnItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+    self.navigationItem.leftBarButtonItem = backBtnItem;
     
     [self initTextField:self.nicknameTF];
     [self initTextField:self.emailTF];
@@ -127,6 +136,11 @@
 }
 
 #pragma mark - UserInteractionMethods
+
+- (void)doPopBack
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void)doRegister
 {
@@ -186,6 +200,13 @@
         return;
     }
     
+    //邮箱格式正确
+    if (![VNUtility validateEmail:self.emailTF.text]) {
+        
+        [VNUtility showHUDText:@"请输入正确邮箱~" forView:self.view];
+        return;
+    }
+    
     //密码格式验证
     if (![VNUtility validatePasswd:self.passwdTF.text]) {
         
@@ -200,15 +221,28 @@
         return;
     }
     
-    //邮箱格式正确
-    if (![VNUtility validateEmail:self.emailTF.text]) {
-        
-        [VNUtility showHUDText:@"请输入正确邮箱~" forView:self.view];
-        return;
-    }
-    
     //发起注册请求
-    NSLog(@"发起注册请求");
+    [VNHTTPRequestManager registerWithNickname:self.nicknameTF.text Email:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
+        if (success) {
+            [VNUtility showHUDText:@"注册成功!" forView:self.view];
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }else {
+            [VNUtility showHUDText:@"注册失败!" forView:self.view];
+        }
+    }];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if (textField == self.nicknameTF) {
+        [self.emailTF becomeFirstResponder];
+    }else if (textField == self.emailTF) {
+    
+    }
+    return YES;
 }
 
 @end

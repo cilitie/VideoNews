@@ -59,6 +59,8 @@
 
 + (void)loginWithUser:(VNAuthUser *)user completion:(void(^)(BOOL succeed, NSError *error))completion;
 + (void)loginWithEmail:(NSString *)email passwd:(NSString *)passwd completion:(void (^)(BOOL succeed, NSError *error))completion;
++ (void)registerWithNickname:(NSString *)nickname Email:(NSString *)email passwd:(NSString *)passwd completion:(void (^)(BOOL succeed, NSError *error))completion;
++ (void)resetPasswdWithEmail:(NSString *)email completion:(void (^)(BOOL succeed, NSError *error))completion;
 
 #pragma mark - Notification
 

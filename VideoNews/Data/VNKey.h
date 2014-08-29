@@ -47,3 +47,12 @@ extern NSString *const QQAppID;
 extern NSString *const QQAppKey;
 
 extern NSString *const AppID;
+
+
+//error related.
+extern NSString *const VNCustomErrorDomain;
+
+typedef NS_ENUM(NSInteger, VNCustomErrorCode) {
+    VNInvalidUserErrorCode          = -10000,
+    VNWrongPasswdErrorCode
+};
