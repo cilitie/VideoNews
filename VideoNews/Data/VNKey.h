@@ -54,5 +54,7 @@ extern NSString *const VNCustomErrorDomain;
 
 typedef NS_ENUM(NSInteger, VNCustomErrorCode) {
     VNInvalidUserErrorCode          = -10000,
-    VNWrongPasswdErrorCode
+    VNWrongPasswdErrorCode,
+    VNRegisterFailed,
+    VNResetPasswdFailed
 };

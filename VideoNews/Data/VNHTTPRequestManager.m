@@ -1241,7 +1241,7 @@ static int pagesize = 10;
     NSString *pushToken = [[NSUserDefaults standardUserDefaults] objectForKey:VNPushToken];
     NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp], @"email": email, @"passwd": passwd, @"device": pushToken ? pushToken : @""};
 
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [[AFHTTPRequestOperationManager manager] POST:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         BOOL successLogin = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
@@ -1255,15 +1255,20 @@ static int pagesize = 10;
                     VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
                     authUser.openid = [responseObject objectForKey:@"uid"];
                     authUser.nickname = [responseObject objectForKey:@"name"];
-                    authUser.avatar = [responseObject objectForKey:@"avatar"];
-                    if ([[responseObject objectForKey:@"sex"] intValue] == 1) {
+                    if ([responseObject objectForKey:@"avatar"] == [NSNull null]) {
+                        authUser.avatar = @"";
+                    }else {
+                        authUser.avatar = [responseObject objectForKey:@"avatar"];
+                    }
+                    if ([responseObject objectForKey:@"sex"] == [NSNull null]) {
+                        authUser.gender = @"";
+                    }else if ([[responseObject objectForKey:@"sex"] intValue] == 1) {
                         authUser.gender = @"male";
                     }
                     else if([[responseObject objectForKey:@"sex"] intValue] == 0) {
                         authUser.gender = @"female";
-                    }
-                    else {
-                        authUser.gender = @"";
+                    }else {
+                        authUser.gender = @"male";
                     }
                     
                     [[NSUserDefaults standardUserDefaults] setObject:authUser.basicDict forKey:VNLoginUser];
@@ -1295,39 +1300,28 @@ static int pagesize = 10;
     //http://182.92.103.134:8080/engine/register.php?name=111&passwd=111&mail=695551328%40qq.com&timestamp=XXXX&token=XXXX
     NSString *URLStr = [VNHost stringByAppendingString:@"register.php"];
     NSString *pushToken = [[NSUserDefaults standardUserDefaults] objectForKey:VNPushToken];
-    NSDictionary *param = @{@"token": [self token], @"timestamp": [self timestamp], @"mail": email, @"passwd": passwd, @"device": pushToken ? pushToken : @""};
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSDictionary *param = @{@"name":nickname,@"token": [self token], @"timestamp": [self timestamp], @"mail": email, @"passwd": passwd, @"device": pushToken ? pushToken : @""};
+
+    [[AFHTTPRequestOperationManager manager] POST:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         BOOL successLogin = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-                successLogin = ([[responseObject objectForKey:@"success"] integerValue] == 0)? YES:NO;
+                successLogin = ([[responseObject objectForKey:@"success"] integerValue] == 1)? YES:NO;
                 if (successLogin) {
-                    NSString *userToken = [responseObject objectForKey:@"user_token"];
-                    [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:VNUserToken];
                     
-                    VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-                    authUser.openid = [responseObject objectForKey:@"uid"];
-                    authUser.nickname = [responseObject objectForKey:@"screen_name"];
-                    authUser.avatar = [responseObject objectForKey:@"profile_image_url"];
-                    if ([[responseObject objectForKey:@"gender"] intValue] == 1) {
-                        authUser.gender = @"male";
-                    }
-                    else if([[responseObject objectForKey:@"gender"] intValue] == 0) {
-                        authUser.gender = @"female";
-                    }
-                    else {
-                        authUser.gender = @"";
-                    }
-                    
-                    [[NSUserDefaults standardUserDefaults] setObject:authUser.basicDict forKey:VNLoginUser];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                 }
             }
         }
+        NSError *err;
+        if ([[responseObject objectForKey:@"success"] integerValue] == 0){
+            //register failed
+            err = [NSError errorWithDomain:VNCustomErrorDomain code:VNRegisterFailed userInfo:nil];
+        }
+        
         if (completion) {
-            completion(successLogin, nil);
+            completion(successLogin, err);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
@@ -1338,40 +1332,28 @@ static int pagesize = 10;
 
 + (void)resetPasswdWithEmail:(NSString *)email completion:(void (^)(BOOL, NSError *))completion
 {
-    NSString *URLStr = [VNHost stringByAppendingString:@"oursLogin.php"];
-    NSDictionary *param = @{@"email": email};
-    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSString *URLStr = [VNHost stringByAppendingString:@"changePasswd.php"];
+    NSDictionary *param = @{@"email": email, @"token": [self token], @"timestamp": [self timestamp]};
+    [[AFHTTPRequestOperationManager manager] POST:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"%@", responseObject);
         BOOL successLogin = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus) {
-                successLogin = ([[responseObject objectForKey:@"success"] integerValue] == 0)? YES:NO;
+                successLogin = ([[responseObject objectForKey:@"success"] integerValue] == 1)? YES:NO;
                 if (successLogin) {
-                    NSString *userToken = [responseObject objectForKey:@"user_token"];
-                    [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:VNUserToken];
                     
-                    VNAuthUser *authUser = [[VNAuthUser alloc] initWithDict:@{}];
-                    authUser.openid = [responseObject objectForKey:@"uid"];
-                    authUser.nickname = [responseObject objectForKey:@"screen_name"];
-                    authUser.avatar = [responseObject objectForKey:@"profile_image_url"];
-                    if ([[responseObject objectForKey:@"gender"] intValue] == 1) {
-                        authUser.gender = @"male";
-                    }
-                    else if([[responseObject objectForKey:@"gender"] intValue] == 0) {
-                        authUser.gender = @"female";
-                    }
-                    else {
-                        authUser.gender = @"";
-                    }
-                    
-                    [[NSUserDefaults standardUserDefaults] setObject:authUser.basicDict forKey:VNLoginUser];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                 }
             }
         }
+        NSError *err;
+        if ([[responseObject objectForKey:@"success"] integerValue] == 0){
+            //register failed
+            err = [NSError errorWithDomain:VNCustomErrorDomain code:VNResetPasswdFailed userInfo:nil];
+        }
+        
         if (completion) {
-            completion(successLogin, nil);
+            completion(successLogin, err);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {

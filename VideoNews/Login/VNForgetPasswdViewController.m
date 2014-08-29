@@ -132,19 +132,23 @@
     }
     
     //发起重置请求
-    [VNHTTPRequestManager resetPasswdWithEmail:self.emailTF.text completion:^(BOOL success, NSError *err) {
-        self.resetBtn.userInteractionEnabled = YES;
-        self.emailTF.userInteractionEnabled = YES;
-        if (success) {
-
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"一个用于重置你密码的链接已发到你邮箱，请查收。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-            [alert show];
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }else {
-            [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
-        }
-    }];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [VNHTTPRequestManager resetPasswdWithEmail:self.emailTF.text completion:^(BOOL success, NSError *err) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.resetBtn.userInteractionEnabled = YES;
+                self.emailTF.userInteractionEnabled = YES;
+                if (success) {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"一个用于重置你密码的链接已发到你邮箱，请查收。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
+                    
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }else {
+                    [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
+                }
+            });
+        }];
+    });
 }
 
 #pragma mark - UITextFieldDelegate

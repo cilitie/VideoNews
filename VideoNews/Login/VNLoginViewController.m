@@ -270,29 +270,36 @@
     }
     
     //发起登录请求 post
-    [VNHTTPRequestManager loginWithEmail:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
-        if (success) {
-            [VNUtility showHUDText:@"登录成功!" forView:self.view];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [VNHTTPRequestManager loginWithEmail:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
             
-            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
-            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }else {
-            if ([err.domain isEqualToString:VNCustomErrorDomain]) {
-                if (err.code == VNInvalidUserErrorCode) {
-                    [VNUtility showHUDText:@"非注册用户，先注册吧~" forView:self.view];
-                    return ;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (success) {
+                    [VNUtility showHUDText:@"登录成功!" forView:self.view];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }else {
+                    if ([err.domain isEqualToString:VNCustomErrorDomain]) {
+                        if (err.code == VNInvalidUserErrorCode) {
+                            [VNUtility showHUDText:@"非注册用户，先注册吧~" forView:self.view];
+                            return ;
+                        }
+                        if (err.code == VNWrongPasswdErrorCode) {
+                            [VNUtility showHUDText:@"密码错误~" forView:self.view];
+                            return ;
+                        }
+                    }else {
+                        [VNUtility showHUDText:@"登录失败!" forView:self.view];
+                    }
                 }
-                if (err.code == VNWrongPasswdErrorCode) {
-                    [VNUtility showHUDText:@"密码错误~" forView:self.view];
-                    return ;
-                }
-            }else {
-                [VNUtility showHUDText:@"登录失败!" forView:self.view];
-            }
-        }
-    }];
+            });
+        }];
+    });
+    
 }
 
 - (IBAction)doRegister:(UIButton *)sender {

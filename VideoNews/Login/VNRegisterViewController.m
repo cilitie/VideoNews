@@ -222,15 +222,23 @@
     }
     
     //发起注册请求
-    [VNHTTPRequestManager registerWithNickname:self.nicknameTF.text Email:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
-        if (success) {
-            [VNUtility showHUDText:@"注册成功!" forView:self.view];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+        [VNHTTPRequestManager registerWithNickname:self.nicknameTF.text Email:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
             
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }else {
-            [VNUtility showHUDText:@"注册失败!" forView:self.view];
-        }
-    }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (success) {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"已经向邮箱发送了激活链接，请激活后登录~" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
+                    
+                    [self.navigationController popViewControllerAnimated:YES];
+                }else {
+                    [VNUtility showHUDText:@"注册失败!" forView:self.view];
+                }
+            });
+        }];
+    });
 }
 
 #pragma mark - UITextFieldDelegate
