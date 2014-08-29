@@ -37,7 +37,7 @@
         _resetBtn.backgroundColor = [UIColor colorWithRGBValue:0xCE2426];
         _resetBtn.titleLabel.textColor = [UIColor whiteColor];
         _resetBtn.layer.cornerRadius = 2.5;
-        [_resetBtn setTitle:@"注册" forState:UIControlStateNormal];
+        [_resetBtn setTitle:@"重置" forState:UIControlStateNormal];
         [_resetBtn addTarget:self action:@selector(doResetPasswd) forControlEvents:UIControlEventTouchUpInside];
     }
     return _resetBtn;

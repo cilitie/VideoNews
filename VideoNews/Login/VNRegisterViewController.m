@@ -248,7 +248,11 @@
     if (textField == self.nicknameTF) {
         [self.emailTF becomeFirstResponder];
     }else if (textField == self.emailTF) {
-    
+        [self.passwdTF becomeFirstResponder];
+    }else if (textField == self.passwdTF) {
+        [self.passwdConfirmTF becomeFirstResponder];
+    }else if (textField == self.passwdConfirmTF){
+        [self doRegister];
     }
     return YES;
 }
