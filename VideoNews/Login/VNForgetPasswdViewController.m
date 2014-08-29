@@ -142,7 +142,7 @@
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"一个用于重置你密码的链接已发到你邮箱，请查收。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                     [alert show];
                     
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [self.navigationController popViewControllerAnimated:YES];
                 }else {
                     [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
                 }

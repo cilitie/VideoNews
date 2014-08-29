@@ -1066,7 +1066,27 @@ static int pagesize = 10;
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
             if (responseStatus&&[[responseObject objectForKey:@"userInfo"]isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *userInfoDict = [responseObject objectForKey:@"userInfo"];
-                userInfo = [[VNUser alloc] initWithDict:userInfoDict];
+                
+                NSMutableDictionary *userInfoMutDic = [userInfoDict mutableCopy];
+                if ([userInfoDict valueForKey:@"avatar"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"" forKey:@"avatar"];
+                }
+                if ([userInfoDict valueForKey:@"birthday"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"" forKey:@"birthday"];
+                }
+                if ([userInfoDict valueForKey:@"constellation"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"" forKey:@"constellation"];
+                }
+                if ([userInfoDict valueForKey:@"description"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"" forKey:@"description"];
+                }
+                if ([userInfoDict valueForKey:@"location"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"" forKey:@"location"];
+                }
+                if ([userInfoDict valueForKey:@"sex"] == [NSNull null]) {
+                    [userInfoMutDic setObject:@"male" forKey:@"sex"];
+                }
+                userInfo = [[VNUser alloc] initWithDict:userInfoMutDic];
                 userInfo.isMineIdol=NO;
             }
         }

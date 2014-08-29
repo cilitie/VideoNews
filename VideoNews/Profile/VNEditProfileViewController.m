@@ -76,6 +76,7 @@ static EditPickerType pickerType = EditPickerTypeGender;
         if (userInfo) {
             self.userInfo = userInfo;
             self.profileInfo = self.userInfo.basicDict;
+            NSLog(@"profile info :%@",self.profileInfo);
             [[NSUserDefaults standardUserDefaults] setObject:self.profileInfo forKey:VNProfileInfo];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [self.editTableView reloadData];
