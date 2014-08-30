@@ -1350,7 +1350,7 @@ static int pagesize = 10;
     }];
 }
 
-+ (void)resetPasswdWithEmail:(NSString *)email completion:(void (^)(BOOL, NSError *))completion
++ (void)resetPasswdWithEmail:(NSString *)email completion:(void (^)(BOOL success, NSError *))completion
 {
     NSString *URLStr = [VNHost stringByAppendingString:@"changePasswd.php"];
     NSDictionary *param = @{@"email": email, @"token": [self token], @"timestamp": [self timestamp]};
