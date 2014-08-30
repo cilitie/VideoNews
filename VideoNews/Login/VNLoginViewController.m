@@ -281,6 +281,7 @@
                     [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
                     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:VNLoginNotification object:nil];
                     [self dismissViewControllerAnimated:YES completion:nil];
                 }else {
                     if ([err.domain isEqualToString:VNCustomErrorDomain]) {

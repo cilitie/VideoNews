@@ -234,7 +234,7 @@
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
-                    [VNUtility showHUDText:@"注册失败!" forView:self.view];
+                    [VNUtility showHUDText:@"该账号已存在，请直接登录!" forView:self.view];
                 }
             });
         }];

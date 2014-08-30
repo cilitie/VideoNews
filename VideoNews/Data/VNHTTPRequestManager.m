@@ -1355,7 +1355,7 @@ static int pagesize = 10;
     NSString *URLStr = [VNHost stringByAppendingString:@"changePasswd.php"];
     NSDictionary *param = @{@"email": email, @"token": [self token], @"timestamp": [self timestamp]};
     [[AFHTTPRequestOperationManager manager] POST:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+        //NSLog(@"%@", responseObject);
         BOOL successLogin = NO;
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
@@ -1376,6 +1376,7 @@ static int pagesize = 10;
             completion(successLogin, err);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+       // NSLog(@"%@",operation);
         if (completion) {
             completion(NO, error);
         }
