@@ -132,6 +132,7 @@
     }
     
     //发起重置请求
+    self.resetBtn.userInteractionEnabled=NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager resetPasswdWithEmail:self.emailTF.text completion:^(BOOL success, NSError *err) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -144,6 +145,7 @@
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
+                    _resetBtn.userInteractionEnabled=YES;
                     [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
                 }
             });

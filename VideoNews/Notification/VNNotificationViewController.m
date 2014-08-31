@@ -68,7 +68,7 @@
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
     //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNNotificationCellDeleteNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userReLogin:) name:VNLoginNotification object:nil];
     [self removeBadgeValue];
 
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
@@ -84,6 +84,8 @@
             authUser = [[VNAuthUser alloc] initWithDict:userInfo];
         }
         user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+        _openUid=authUser.openid;
+        _user_token=user_token;
     }
     else {
         return;
@@ -108,15 +110,15 @@
         //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             //zmy add
-            VNAuthUser *authUser = nil;
+            /*VNAuthUser *authUser = nil;
             NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
             if (userInfo.count) {
                 authUser = [[VNAuthUser alloc] initWithDict:userInfo];
             }
-           NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+           NSString * user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];*/
             //
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-            [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
+            [VNHTTPRequestManager messageListForUser:_openUid userToken:_user_token timestamp:refreshTimeStamp completion:^(NSArray *messageArr, NSError *error) {
                 if (error) {
                     NSLog(@"error:%@", error.localizedDescription);
                 }
@@ -145,7 +147,7 @@
             moreTimeStamp = [VNHTTPRequestManager timestamp];
         }
         
-        [VNHTTPRequestManager messageListForUser:authUser.openid userToken:user_token timestamp:moreTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
+        [VNHTTPRequestManager messageListForUser:_openUid userToken:_user_token timestamp:moreTimeStamp completion:^(NSArray *commemtArr, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
@@ -264,6 +266,7 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self name:VNNotificationCellDeleteNotification object:nil ];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:VNLoginNotification object:nil ];
 }
 
 - (void)didReceiveMemoryWarning
@@ -419,6 +422,20 @@
         [self.messageTableView deleteRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationLeft];
     }
 }
+
+-(void)userReLogin:(NSNotification *)notification
+{
+    VNAuthUser *authUser = nil;
+    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+    if (userInfo.count) {
+        authUser = [[VNAuthUser alloc] initWithDict:userInfo];
+    }
+    _openUid=authUser.openid;
+    _user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+    [_messageArr removeAllObjects];
+    [_messageTableView reloadData];
+}
+
 
 - (CGFloat)cellHeightFor:(VNMessage *)message {
     __block CGFloat cellHeight = 120.0;

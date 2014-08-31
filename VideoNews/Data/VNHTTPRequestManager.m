@@ -378,7 +378,8 @@ static int pagesize = 10;
         uid = @"1";
         user_token = @"";
     }
-    
+    if(!reply_uid)
+    {reply_uid=@"1";}
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"reply_uid": reply_uid, @"text": content, @"type": @"reply", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {

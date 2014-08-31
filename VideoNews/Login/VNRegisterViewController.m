@@ -222,6 +222,7 @@
     }
     
     //发起注册请求
+    _registerBtn.userInteractionEnabled=NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
         [VNHTTPRequestManager registerWithNickname:self.nicknameTF.text Email:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
@@ -234,6 +235,7 @@
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
+                    _registerBtn.userInteractionEnabled=YES;
                     [VNUtility showHUDText:@"该账号已存在，请直接登录!" forView:self.view];
                 }
             });

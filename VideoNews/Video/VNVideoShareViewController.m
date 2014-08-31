@@ -173,8 +173,8 @@
     
     UISwitch *shareWeiboSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(240, 5, 50, 30)];
     shareWeiboSwitch.tag = 9100;
-    [shareWeiboSwitch setOn:YES];
-    self.shareSina = YES;
+    [shareWeiboSwitch setOn:NO];
+    self.shareSina = NO;
     if (![UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
         [shareWeiboSwitch setOn:NO];
         self.shareSina = NO;
