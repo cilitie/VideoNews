@@ -133,11 +133,11 @@
     
     //发起重置请求
     self.resetBtn.userInteractionEnabled=NO;
+    self.emailTF.userInteractionEnabled = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager resetPasswdWithEmail:self.emailTF.text completion:^(BOOL success, NSError *err) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.resetBtn.userInteractionEnabled = YES;
-                self.emailTF.userInteractionEnabled = YES;
+                
                 if (success) {
                     
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"一个用于重置你密码的链接已发到你邮箱，请查收。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -146,7 +146,16 @@
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
                     _resetBtn.userInteractionEnabled=YES;
-                    [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
+                    _emailTF.userInteractionEnabled=YES;
+                    //[VNUtility showHUDText:@"没有这个用户" forView:self.view];
+                    if ([err.domain isEqualToString:VNCustomErrorDomain]) {
+                        if (err.code == VNResetPasswdFailed) {
+                            [VNUtility showHUDText:@"没有这个用户" forView:self.view];
+                            return ;
+                        }
+                    }else {
+                        [VNUtility showHUDText:@"发送邮件失败!" forView:self.view];
+                    }
                 }
             });
         }];
