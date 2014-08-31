@@ -139,12 +139,12 @@
                 self.emailTF.userInteractionEnabled = YES;
                 if (success) {
                     
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"一个用于重置你密码的链接已发到你邮箱，请查收。" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"已经向该邮箱发了修改链接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                     [alert show];
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
-                    [VNUtility showHUDText:@"重置密码邮件发送失败.." forView:self.view];
+                    [VNUtility showHUDText:@"没有这个用户" forView:self.view];
                 }
             });
         }];
