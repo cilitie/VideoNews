@@ -222,11 +222,18 @@
     }
     
     //发起注册请求
+    self.nicknameTF.userInteractionEnabled = NO;
+    self.emailTF.userInteractionEnabled = NO;
+    self.passwdTF.userInteractionEnabled = NO;
+    self.passwdConfirmTF.userInteractionEnabled = NO;
+    self.registerBtn.userInteractionEnabled = NO;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
         [VNHTTPRequestManager registerWithNickname:self.nicknameTF.text Email:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                
                 if (success) {
                     
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"已经向邮箱发送了激活链接，请激活后登录~" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -234,8 +241,23 @@
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
-                    [VNUtility showHUDText:@"该账号已存在，请直接登录!" forView:self.view];
+                    
+                    if ([err.domain isEqualToString:VNCustomErrorDomain]) {
+                        if (err.code == VNRegisterFailed) {
+                            [VNUtility showHUDText:@"该账号已存在，请直接登录!" forView:self.view];
+                            return ;
+                        }
+                    }else {
+                        [VNUtility showHUDText:@"注册失败!" forView:self.view];
+                    }
                 }
+                
+                self.nicknameTF.userInteractionEnabled = YES;
+                self.emailTF.userInteractionEnabled = YES;
+                self.passwdTF.userInteractionEnabled = YES;
+                self.passwdConfirmTF.userInteractionEnabled = YES;
+                self.registerBtn.userInteractionEnabled = YES;
+                
             });
         }];
     });

@@ -112,13 +112,9 @@
 
 - (void)doResetPasswd
 {
-    self.resetBtn.userInteractionEnabled = NO;
-    self.emailTF.userInteractionEnabled = NO;
     //邮箱不能为空
     if ([self.emailTF.text isEqual:@""]) {
         [VNUtility showHUDText:@"邮箱不能为空" forView:self.view];
-        self.resetBtn.userInteractionEnabled = YES;
-        self.emailTF.userInteractionEnabled = YES;
         return;
     }
     
@@ -126,17 +122,17 @@
     if (![VNUtility validateEmail:self.emailTF.text]) {
         
         [VNUtility showHUDText:@"请输入正确邮箱~" forView:self.view];
-        self.resetBtn.userInteractionEnabled = YES;
-        self.emailTF.userInteractionEnabled = YES;
         return;
     }
     
     //发起重置请求
+    self.emailTF.userInteractionEnabled = NO;
+    self.resetBtn.userInteractionEnabled = NO;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager resetPasswdWithEmail:self.emailTF.text completion:^(BOOL success, NSError *err) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.resetBtn.userInteractionEnabled = YES;
-                self.emailTF.userInteractionEnabled = YES;
+
                 if (success) {
                     
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"已经向该邮箱发了修改链接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -144,8 +140,19 @@
                     
                     [self.navigationController popViewControllerAnimated:YES];
                 }else {
-                    [VNUtility showHUDText:@"没有这个用户" forView:self.view];
+                    
+                    if ([err.domain isEqualToString:VNCustomErrorDomain]) {
+                        if (err.code == VNResetPasswdFailed) {
+                            [VNUtility showHUDText:@"没有这个用户" forView:self.view];
+                            return ;
+                        }
+                    }else {
+                        [VNUtility showHUDText:@"发送邮件失败!" forView:self.view];
+                    }
                 }
+                
+                self.emailTF.userInteractionEnabled = YES;
+                self.resetBtn.userInteractionEnabled = YES;
             });
         }];
     });
