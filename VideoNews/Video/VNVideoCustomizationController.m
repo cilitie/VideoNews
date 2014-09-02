@@ -769,35 +769,54 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeSepiaTone:
         {
             
-            _filterFirst = [[GPUImageSepiaFilter alloc] init];
+           /* _filterFirst = [[GPUImageSepiaFilter alloc] init];
             [(GPUImageSepiaFilter *)_filterFirst setIntensity:0.8];  //强度
-            /*
+            
             GPUImageToneCurveFilter *tmpFilter = [[GPUImageToneCurveFilter alloc] init];
             [tmpFilter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
             
             _filterLast = [[GPUImageTiltShiftFilter alloc] init];
             [(GPUImageTiltShiftFilter *)_filterLast setTopFocusLevel:0.3];
             [(GPUImageTiltShiftFilter *)_filterLast setBottomFocusLevel:0.5];
-            */
+            
             GPUImageVignetteFilter *tmpFilter = [[GPUImageVignetteFilter alloc] init];
             [tmpFilter setVignetteEnd:0.9];
+            */
+            _filterFirst=[[GPUImageVignetteFilter alloc]init];
             
-            _filterLast=[[GPUImageMissEtikateFilter alloc]init];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.2];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
+            //_filterLast=[[GPUImageMissEtikateFilter alloc]init];
+            _filterLast=[[GPUImageSepiaFilter alloc] init];
+            [(GPUImageSepiaFilter *)_filterLast setIntensity:0.8];
 
-            [_filterFirst addTarget:tmpFilter];
-            [tmpFilter addTarget:_filterLast];
+            //[_filterFirst addTarget:tmpFilter];
+            //[tmpFilter addTarget:_filterLast];
+            [_filterFirst addTarget:_filterLast];
         }
             break;
         case VNVideoFilterTypeToneCureve:
         {
-            _filterFirst = [[GPUImageToneCurveFilter alloc] init];
+            /*_filterFirst = [[GPUImageToneCurveFilter alloc] init];
             [(GPUImageToneCurveFilter *)_filterFirst setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
-            _filterLast = _filterFirst;
+            _filterLast = _filterFirst;*/
+            _filterFirst=[[GPUImageVignetteFilter alloc]init];
+            
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.4];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
+            _filterLast=[[GPUImageMissEtikateFilter alloc]init];
+            
+            
+            //[_filterFirst addTarget:tmpFilter];
+            //[tmpFilter addTarget:_filterLast];
+            [_filterFirst addTarget:_filterLast];
+
         }
             break;
         case VNVideoFilterTypeSoftElegance:
         {
             _filterFirst = [[GPUImageSoftEleganceFilter alloc] init];
+            //[_filterFirst addTarget:_filterLast];
             _filterLast = _filterFirst;
         }
             break;
@@ -809,37 +828,75 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             break;
         case VNVideoFilterTypeTiltShift:
         {
-            _filterFirst = [[GPUImageTiltShiftFilter alloc] init];
+            /*_filterFirst = [[GPUImageTiltShiftFilter alloc] init];
             [(GPUImageTiltShiftFilter *)_filterFirst setTopFocusLevel:0.3];
-            [(GPUImageTiltShiftFilter *)_filterFirst setBottomFocusLevel:0.5];
+            [(GPUImageTiltShiftFilter *)_filterFirst setBottomFocusLevel:0.5];*/
+            _filterFirst = [[GPUImageVignetteFilter alloc] init];
+            //[(GPUImageVignetteFilter *)_filterFirst setVignetteCenter:CGPointMake(0.0, 0.0)];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.3];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteColor:(GPUVector3){ 1.0f, 1.0f, 1.0f }];
             _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeVignette:
         {
-            _filterFirst = [[GPUImageVignetteFilter alloc] init];
-            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.5];
-            _filterLast = _filterFirst;
+            /*_filterFirst = [[GPUImageVignetteFilter alloc] init];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:1.0];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.0];*/
+            _filterLast=[[GPUImageSepiaFilter alloc] init];
+            _filterFirst=[[GPUImageVignetteFilter alloc]init];
+            
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.4];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteColor:(GPUVector3){ 1.0f, 1.0f, 1.0f }];
+            [(GPUImageSepiaFilter *)_filterLast setIntensity:0.4];
+            //_filterLast = _filterFirst;
+            [_filterFirst addTarget:_filterLast];
+            
+            
         }
             break;
         case VNVideoFilterTypeGaussianSelectiveBlur:
         {
-            _filterFirst = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
-            [(GPUImageGaussianSelectiveBlurFilter*)_filterFirst setExcludeCircleRadius:40.0/320.0];
-            _filterLast = _filterFirst;
+            //Vignette+饱和度
+            /*_filterFirst = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
+            [(GPUImageGaussianSelectiveBlurFilter*)_filterFirst setExcludeCircleRadius:170.0/320.0];
+            //[(GPUImageGaussianSelectiveBlurFilter *)_filterFirst setExcludeBlurSize:0.5];
+            [(GPUImageGaussianSelectiveBlurFilter *)_filterFirst setBlurRadiusInPixels:20];
+            */
+            _filterFirst = [[GPUImageVignetteFilter alloc] init];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.3];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteColor:(GPUVector3){ 1.0f, 1.0f, 1.0f }];
+
+            _filterLast=[[GPUImageSaturationFilter alloc] init];
+            [(GPUImageSaturationFilter *)_filterLast setSaturation:2];
+            //_filterLast = _filterFirst;
+           [_filterFirst addTarget:_filterLast];
+            
         }
             break;
         case VNVideoFilterTypeSaturation:
-        {
+        {//饱和度+MissEtikate
             _filterFirst = [[GPUImageSaturationFilter alloc] init];
             [(GPUImageSaturationFilter *)_filterFirst setSaturation:2];
-            _filterLast = _filterFirst;
+            _filterLast=[[GPUImageMissEtikateFilter alloc]init];
+            [_filterFirst addTarget:_filterLast];
+            //_filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeMissEtikate:
         {
-            _filterFirst = [[GPUImageMissEtikateFilter alloc] init];
-            _filterLast = _filterFirst;
+            //饱和度+softElegance
+            _filterFirst = [[GPUImageSaturationFilter alloc] init];
+            [(GPUImageSaturationFilter *)_filterFirst setSaturation:2];
+            _filterLast=[[GPUImageSoftEleganceFilter alloc]init];
+           // [(GPUImageSoftEleganceFilter *)_filterLast setSaturation:2];
+            [_filterFirst addTarget:_filterLast];
+
+            //_filterFirst = [[GPUImageMissEtikateFilter alloc] init];
+            //_filterLast = _filterFirst;
         }
             break;
         default:
