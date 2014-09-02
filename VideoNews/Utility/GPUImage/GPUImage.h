@@ -33,7 +33,7 @@
 #import "GPUImageBrightnessFilter.h"
 #import "GPUImageLevelsFilter.h"
 //#import "GPUImageSharpenFilter.h"
-//#import "GPUImageGammaFilter.h"
+#import "GPUImageGammaFilter.h"
 //#import "GPUImageSobelEdgeDetectionFilter.h"
 //#import "GPUImageSketchFilter.h"
 //#import "GPUImageToonFilter.h"

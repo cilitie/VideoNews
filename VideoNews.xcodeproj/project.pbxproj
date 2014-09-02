@@ -71,6 +71,7 @@
 		14A5DF7119B5B31C00CC167E /* GPUImageContrastFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7019B5B31C00CC167E /* GPUImageContrastFilter.m */; };
 		14A5DF7619B5B36800CC167E /* GPUImageAmatorkaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */; };
 		14A5DF7719B5B36800CC167E /* GPUImageLevelsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */; };
+		14A5DF7A19B5B8BF00CC167E /* GPUImageGammaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7919B5B8BF00CC167E /* GPUImageGammaFilter.m */; };
 		14A620AC19B04D2200CCB8DB /* VNRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */; };
 		14A620AF19B04D3500CCB8DB /* VNForgetPasswdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AE19B04D3500CCB8DB /* VNForgetPasswdViewController.m */; };
 		14B0325C19A04A1400DE42EB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B0325B19A04A1400DE42EB /* QuartzCore.framework */; };
@@ -336,6 +337,8 @@
 		14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageAmatorkaFilter.m; sourceTree = "<group>"; };
 		14A5DF7419B5B36800CC167E /* GPUImageLevelsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageLevelsFilter.h; sourceTree = "<group>"; };
 		14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageLevelsFilter.m; sourceTree = "<group>"; };
+		14A5DF7819B5B8BF00CC167E /* GPUImageGammaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageGammaFilter.h; sourceTree = "<group>"; };
+		14A5DF7919B5B8BF00CC167E /* GPUImageGammaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageGammaFilter.m; sourceTree = "<group>"; };
 		14A620AA19B04D2200CCB8DB /* VNRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNRegisterViewController.h; sourceTree = "<group>"; };
 		14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNRegisterViewController.m; sourceTree = "<group>"; };
 		14A620AD19B04D3500CCB8DB /* VNForgetPasswdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNForgetPasswdViewController.h; sourceTree = "<group>"; };
@@ -628,6 +631,8 @@
 		142FAFD419A055EC00F8ECCF /* GPUImage */ = {
 			isa = PBXGroup;
 			children = (
+				14A5DF7819B5B8BF00CC167E /* GPUImageGammaFilter.h */,
+				14A5DF7919B5B8BF00CC167E /* GPUImageGammaFilter.m */,
 				14A5DF7219B5B36800CC167E /* GPUImageAmatorkaFilter.h */,
 				14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */,
 				14A5DF7419B5B36800CC167E /* GPUImageLevelsFilter.h */,
@@ -1412,6 +1417,7 @@
 				2695320919AB9D7B009BCCA0 /* GPLoadingButton.m in Sources */,
 				142FB02419A055EC00F8ECCF /* GPUImagePicture.m in Sources */,
 				D68CB50519862E0B00236517 /* VNSettingViewController.m in Sources */,
+				14A5DF7A19B5B8BF00CC167E /* GPUImageGammaFilter.m in Sources */,
 				142FB01519A055EC00F8ECCF /* GLProgram.m in Sources */,
 				142FB04119A056F800F8ECCF /* GPUImageTwoPassFilter.m in Sources */,
 				26A584C81987411500C34461 /* QiniuResumableUploader.m in Sources */,
