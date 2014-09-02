@@ -68,6 +68,9 @@
 		144BF54B1984F58000A6C6B7 /* VNVideoFramesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */; };
 		144BF54C1984F58000A6C6B7 /* VNVideoShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */; };
 		14658BF619A052300026A8DD /* VNVideoCustomizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 144BF53B1984F58000A6C6B7 /* VNVideoCustomizationController.m */; };
+		14A5DF7119B5B31C00CC167E /* GPUImageContrastFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7019B5B31C00CC167E /* GPUImageContrastFilter.m */; };
+		14A5DF7619B5B36800CC167E /* GPUImageAmatorkaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */; };
+		14A5DF7719B5B36800CC167E /* GPUImageLevelsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */; };
 		14A620AC19B04D2200CCB8DB /* VNRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */; };
 		14A620AF19B04D3500CCB8DB /* VNForgetPasswdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AE19B04D3500CCB8DB /* VNForgetPasswdViewController.m */; };
 		14B0325C19A04A1400DE42EB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B0325B19A04A1400DE42EB /* QuartzCore.framework */; };
@@ -327,6 +330,12 @@
 		144BF53D1984F58000A6C6B7 /* VNVideoFramesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFramesView.m; sourceTree = "<group>"; };
 		144BF53E1984F58000A6C6B7 /* VNVideoShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoShareViewController.h; sourceTree = "<group>"; };
 		144BF53F1984F58000A6C6B7 /* VNVideoShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoShareViewController.m; sourceTree = "<group>"; };
+		14A5DF6F19B5B31C00CC167E /* GPUImageContrastFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageContrastFilter.h; sourceTree = "<group>"; };
+		14A5DF7019B5B31C00CC167E /* GPUImageContrastFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageContrastFilter.m; sourceTree = "<group>"; };
+		14A5DF7219B5B36800CC167E /* GPUImageAmatorkaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageAmatorkaFilter.h; sourceTree = "<group>"; };
+		14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageAmatorkaFilter.m; sourceTree = "<group>"; };
+		14A5DF7419B5B36800CC167E /* GPUImageLevelsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageLevelsFilter.h; sourceTree = "<group>"; };
+		14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageLevelsFilter.m; sourceTree = "<group>"; };
 		14A620AA19B04D2200CCB8DB /* VNRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNRegisterViewController.h; sourceTree = "<group>"; };
 		14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNRegisterViewController.m; sourceTree = "<group>"; };
 		14A620AD19B04D3500CCB8DB /* VNForgetPasswdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNForgetPasswdViewController.h; sourceTree = "<group>"; };
@@ -619,6 +628,12 @@
 		142FAFD419A055EC00F8ECCF /* GPUImage */ = {
 			isa = PBXGroup;
 			children = (
+				14A5DF7219B5B36800CC167E /* GPUImageAmatorkaFilter.h */,
+				14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */,
+				14A5DF7419B5B36800CC167E /* GPUImageLevelsFilter.h */,
+				14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */,
+				14A5DF6F19B5B31C00CC167E /* GPUImageContrastFilter.h */,
+				14A5DF7019B5B31C00CC167E /* GPUImageContrastFilter.m */,
 				14E7E1E419B58CF700ED8A59 /* GPUImageMaskFilter.h */,
 				14E7E1E519B58CF700ED8A59 /* GPUImageMaskFilter.m */,
 				14E7E1E119B58CD000ED8A59 /* GPUImageBrightnessFilter.h */,
@@ -1423,6 +1438,7 @@
 				D6676F89197806CE00F484FE /* VNProfileViewController.m in Sources */,
 				14A620AC19B04D2200CCB8DB /* VNRegisterViewController.m in Sources */,
 				269EF32019A06825009C1528 /* VNNotificationNewUserTableViewCell.m in Sources */,
+				14A5DF7119B5B31C00CC167E /* GPUImageContrastFilter.m in Sources */,
 				142FB02E19A055EC00F8ECCF /* GPUImageToneCurveFilter.m in Sources */,
 				142FB03219A055EC00F8ECCF /* GPUImageVignetteFilter.m in Sources */,
 				D6676F8C1979114300F484FE /* VNMineProfileViewController.m in Sources */,
@@ -1468,6 +1484,7 @@
 				142FB04419A0572300F8ECCF /* GPUImageLookupFilter.m in Sources */,
 				144BF5481984F58000A6C6B7 /* VNProgressViewForAlbum.m in Sources */,
 				143D98BF199DE34500A64389 /* VNVideoCoverSettingViewController.m in Sources */,
+				14A5DF7619B5B36800CC167E /* GPUImageAmatorkaFilter.m in Sources */,
 				26A584CA1987411500C34461 /* QiniuUtils.m in Sources */,
 				D6FED79F195C121D00AD10E0 /* VNMedia.m in Sources */,
 				D6676F801976AD5C00F484FE /* BMNavigationController.m in Sources */,
@@ -1476,6 +1493,7 @@
 				D66F7A9E1963D78500EA72BC /* VNComment.m in Sources */,
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */,
+				14A5DF7719B5B36800CC167E /* GPUImageLevelsFilter.m in Sources */,
 				14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */,
 				14E7E1E619B58CF700ED8A59 /* GPUImageMaskFilter.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
