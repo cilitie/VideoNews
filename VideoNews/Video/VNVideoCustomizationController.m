@@ -899,6 +899,45 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             //_filterLast = _filterFirst;
         }
             break;
+        case VNVideoFilterTypeMask:
+        {}
+            break;
+        case VNVideoFilterTypeBrightness:
+        {
+            _filterFirst =[[GPUImageBrightnessFilter alloc]init];
+            [(GPUImageBrightnessFilter *)_filterFirst setBrightness:0.5];
+            _filterLast=_filterFirst;
+        }
+            break;
+        case VNVideoFilterTypeAmatorka:
+        {
+            _filterFirst=[[GPUImageAmatorkaFilter alloc]init];
+            _filterLast = _filterFirst;
+        }
+            break;
+        case VNVideoFilterTypeContrast:
+        {
+            _filterFirst=[[GPUImageContrastFilter alloc]init];
+            [(GPUImageContrastFilter *)_filterFirst setContrast:2];
+            _filterLast = _filterFirst;
+        }
+            break;
+        case VNVideoFilterTypeGamma:
+        {
+            //_filterFirst=[gpuimageg]
+        }
+            break;
+        case VNVideoFilterTypeLevels:
+        {
+            //_filterFirst=[[GPUImageLevelsFilter alloc]init];
+            
+        }
+            break;
+        case VNVideoFilterTypeUIElement:
+        {
+            //_filterFirst=[[GPUImageUIElement alloc]init];
+        }
+            break;
         default:
             break;
     }

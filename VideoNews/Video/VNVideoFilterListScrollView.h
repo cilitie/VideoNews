@@ -18,7 +18,14 @@ typedef NS_ENUM(NSInteger, VNVideoFilterType) {
     VNVideoFilterTypeVignette,
     VNVideoFilterTypeGaussianSelectiveBlur,
     VNVideoFilterTypeSaturation,
-    VNVideoFilterTypeMissEtikate
+    VNVideoFilterTypeMissEtikate,
+    VNVideoFilterTypeMask,
+    VNVideoFilterTypeBrightness,
+    VNVideoFilterTypeGamma,
+    VNVideoFilterTypeContrast,
+    VNVideoFilterTypeLevels,
+    VNVideoFilterTypeAmatorka,
+    VNVideoFilterTypeUIElement
 };
 
 @protocol VNVideoFilterListScrollViewDataSource
