@@ -769,14 +769,19 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             
             _filterFirst = [[GPUImageSepiaFilter alloc] init];
             [(GPUImageSepiaFilter *)_filterFirst setIntensity:0.8];  //强度
-            
+            /*
             GPUImageToneCurveFilter *tmpFilter = [[GPUImageToneCurveFilter alloc] init];
             [tmpFilter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.8)], [NSValue valueWithCGPoint:CGPointMake(1.0, 0.75)], nil]];
             
             _filterLast = [[GPUImageTiltShiftFilter alloc] init];
             [(GPUImageTiltShiftFilter *)_filterLast setTopFocusLevel:0.3];
             [(GPUImageTiltShiftFilter *)_filterLast setBottomFocusLevel:0.5];
+            */
+            GPUImageVignetteFilter *tmpFilter = [[GPUImageVignetteFilter alloc] init];
+            [tmpFilter setVignetteEnd:0.9];
             
+            _filterLast=[[GPUImageMissEtikateFilter alloc]init];
+
             [_filterFirst addTarget:tmpFilter];
             [tmpFilter addTarget:_filterLast];
         }
