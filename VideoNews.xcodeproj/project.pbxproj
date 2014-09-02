@@ -77,6 +77,8 @@
 		14B0326419A04A3C00DE42EB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B0326319A04A3C00DE42EB /* CoreMedia.framework */; };
 		14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B8951F198A3F22006244D9 /* VNAudioListController.m */; };
 		14E2D2F9199F533500B6B56A /* VNVideoFilterListScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E2D2F8199F533500B6B56A /* VNVideoFilterListScrollView.m */; };
+		14E7E1E319B58CD000ED8A59 /* GPUImageBrightnessFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E7E1E219B58CD000ED8A59 /* GPUImageBrightnessFilter.m */; };
+		14E7E1E619B58CF700ED8A59 /* GPUImageMaskFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E7E1E519B58CF700ED8A59 /* GPUImageMaskFilter.m */; };
 		2695320919AB9D7B009BCCA0 /* GPLoadingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2695320819AB9D7B009BCCA0 /* GPLoadingButton.m */; };
 		26962048196E4AF600EA06B3 /* VNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 26962047196E4AF600EA06B3 /* VNMessage.m */; };
 		2696204C196E75DF00EA06B3 /* VNNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2696204B196E75DF00EA06B3 /* VNNotificationViewController.m */; };
@@ -338,6 +340,10 @@
 		14B8951F198A3F22006244D9 /* VNAudioListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNAudioListController.m; sourceTree = "<group>"; };
 		14E2D2F7199F533500B6B56A /* VNVideoFilterListScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNVideoFilterListScrollView.h; sourceTree = "<group>"; };
 		14E2D2F8199F533500B6B56A /* VNVideoFilterListScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNVideoFilterListScrollView.m; sourceTree = "<group>"; };
+		14E7E1E119B58CD000ED8A59 /* GPUImageBrightnessFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBrightnessFilter.h; sourceTree = "<group>"; };
+		14E7E1E219B58CD000ED8A59 /* GPUImageBrightnessFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBrightnessFilter.m; sourceTree = "<group>"; };
+		14E7E1E419B58CF700ED8A59 /* GPUImageMaskFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageMaskFilter.h; sourceTree = "<group>"; };
+		14E7E1E519B58CF700ED8A59 /* GPUImageMaskFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageMaskFilter.m; sourceTree = "<group>"; };
 		2695320719AB9D7B009BCCA0 /* GPLoadingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPLoadingButton.h; sourceTree = "<group>"; };
 		2695320819AB9D7B009BCCA0 /* GPLoadingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPLoadingButton.m; sourceTree = "<group>"; };
 		26962046196E4AF600EA06B3 /* VNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMessage.h; sourceTree = "<group>"; };
@@ -613,6 +619,10 @@
 		142FAFD419A055EC00F8ECCF /* GPUImage */ = {
 			isa = PBXGroup;
 			children = (
+				14E7E1E419B58CF700ED8A59 /* GPUImageMaskFilter.h */,
+				14E7E1E519B58CF700ED8A59 /* GPUImageMaskFilter.m */,
+				14E7E1E119B58CD000ED8A59 /* GPUImageBrightnessFilter.h */,
+				14E7E1E219B58CD000ED8A59 /* GPUImageBrightnessFilter.m */,
 				142FB04519A0575000F8ECCF /* GPUImageAlphaBlendFilter.h */,
 				142FB04619A0575000F8ECCF /* GPUImageAlphaBlendFilter.m */,
 				142FB04219A0572300F8ECCF /* GPUImageLookupFilter.h */,
@@ -1467,10 +1477,12 @@
 				D66F7A4219619EFE00EA72BC /* VNNewsDetailViewController.m in Sources */,
 				144BF5471984F58000A6C6B7 /* VNProgressView.m in Sources */,
 				14B89520198A3F22006244D9 /* VNAudioListController.m in Sources */,
+				14E7E1E619B58CF700ED8A59 /* GPUImageMaskFilter.m in Sources */,
 				D6E8589A1963E9FF0055C603 /* VNCommentTableViewCell.m in Sources */,
 				D64296C51964FB05004E218C /* VNResultViewController.m in Sources */,
 				D6FED784195BC50000AD10E0 /* VNTabBarViewController.m in Sources */,
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
+				14E7E1E319B58CD000ED8A59 /* GPUImageBrightnessFilter.m in Sources */,
 				D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */,
 				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
 				142FB01E19A055EC00F8ECCF /* GPUImageGaussianSelectiveBlurFilter.m in Sources */,
@@ -1555,7 +1567,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Manyu Zhu (XJ5U6SEM4F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: qifen cen (6BQ92HAZL2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1594,7 +1606,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Manyu Zhu (XJ5U6SEM4F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: qifen cen (6BQ92HAZL2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1642,7 +1654,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "547F02D3-E929-4304-B30B-D4E999EE9C35";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1677,7 +1689,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "547F02D3-E929-4304-B30B-D4E999EE9C35";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

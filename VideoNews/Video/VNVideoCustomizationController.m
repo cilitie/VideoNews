@@ -160,17 +160,19 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     //generate images of video
     
-    CGFloat framesY,framesH, btnY, lblY;
+    CGFloat framesY,framesH, btnY, lblY, filterY;
     if (screenH == 568) {
         framesY = 535;
         framesH = 30;
         btnY = 400;
         lblY = 435;
+        filterY = 483;
     }else {
         framesY = 450;
         framesH = 26;
         btnY = 395;
         lblY = 430;
+        filterY = 450;
     }
     
     UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, 30, 30)];
@@ -215,7 +217,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
     [self playVideoWithSound:YES];
         
-    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, 483, 320, 70)];
+    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, filterY, 320, 70)];
     filterListView.dataSource = self;
     filterListView.delegate = self;
     [self.view addSubview:filterListView];
