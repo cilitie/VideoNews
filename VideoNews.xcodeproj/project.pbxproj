@@ -72,6 +72,7 @@
 		14A5DF7619B5B36800CC167E /* GPUImageAmatorkaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7319B5B36800CC167E /* GPUImageAmatorkaFilter.m */; };
 		14A5DF7719B5B36800CC167E /* GPUImageLevelsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */; };
 		14A5DF7A19B5B8BF00CC167E /* GPUImageGammaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A5DF7919B5B8BF00CC167E /* GPUImageGammaFilter.m */; };
+		14A5DF7C19B5BD8100CC167E /* lookup_amatorka.png in Resources */ = {isa = PBXBuildFile; fileRef = 14A5DF7B19B5BD8100CC167E /* lookup_amatorka.png */; };
 		14A620AC19B04D2200CCB8DB /* VNRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */; };
 		14A620AF19B04D3500CCB8DB /* VNForgetPasswdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A620AE19B04D3500CCB8DB /* VNForgetPasswdViewController.m */; };
 		14B0325C19A04A1400DE42EB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B0325B19A04A1400DE42EB /* QuartzCore.framework */; };
@@ -339,6 +340,7 @@
 		14A5DF7519B5B36800CC167E /* GPUImageLevelsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageLevelsFilter.m; sourceTree = "<group>"; };
 		14A5DF7819B5B8BF00CC167E /* GPUImageGammaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageGammaFilter.h; sourceTree = "<group>"; };
 		14A5DF7919B5B8BF00CC167E /* GPUImageGammaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageGammaFilter.m; sourceTree = "<group>"; };
+		14A5DF7B19B5BD8100CC167E /* lookup_amatorka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lookup_amatorka.png; sourceTree = "<group>"; };
 		14A620AA19B04D2200CCB8DB /* VNRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNRegisterViewController.h; sourceTree = "<group>"; };
 		14A620AB19B04D2200CCB8DB /* VNRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNRegisterViewController.m; sourceTree = "<group>"; };
 		14A620AD19B04D3500CCB8DB /* VNForgetPasswdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNForgetPasswdViewController.h; sourceTree = "<group>"; };
@@ -716,6 +718,7 @@
 				142FB00F19A055EC00F8ECCF /* GPUImageView.m */,
 				142FB01019A055EC00F8ECCF /* GPUImageVignetteFilter.h */,
 				142FB01119A055EC00F8ECCF /* GPUImageVignetteFilter.m */,
+				14A5DF7B19B5BD8100CC167E /* lookup_amatorka.png */,
 				142FB01219A055EC00F8ECCF /* lookup_miss_etikate.png */,
 				142FB01319A055EC00F8ECCF /* lookup_soft_elegance_1.png */,
 				142FB01419A055EC00F8ECCF /* lookup_soft_elegance_2.png */,
@@ -1300,6 +1303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14A5DF7C19B5BD8100CC167E /* lookup_amatorka.png in Resources */,
 				269755CF19712580005DEDEE /* VNNotificationUserTableViewCell.xib in Resources */,
 				D63311911994B377005E5758 /* UMSCommentDetailController.xib in Resources */,
 				142FB03519A055EC00F8ECCF /* lookup_soft_elegance_2.png in Resources */,
