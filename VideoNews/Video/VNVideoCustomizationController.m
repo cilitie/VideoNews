@@ -156,7 +156,11 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                            [NSNumber numberWithInteger:VNVideoFilterTypeVignette],
                            [NSNumber numberWithInteger:VNVideoFilterTypeGaussianSelectiveBlur],
                            [NSNumber numberWithInteger:VNVideoFilterTypeSaturation],
-                           [NSNumber numberWithInteger:VNVideoFilterTypeMissEtikate]];
+                           [NSNumber numberWithInteger:VNVideoFilterTypeMissEtikate],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeGamma],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeContrast],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeBrightness],
+                           [NSNumber numberWithInteger:VNVideoFilterTypeAmatorka]];
     
     //generate images of video
     
@@ -682,6 +686,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeGaussianSelectiveBlur:  title = @"gaussian";        break;
         case VNVideoFilterTypeSaturation:             title = @"saturation";      break;
         case VNVideoFilterTypeMissEtikate:            title = @"miss etikate";    break;
+        case VNVideoFilterTypeGamma:                  title = @"Gamma";           break;
+        case VNVideoFilterTypeBrightness:             title = @"Brightness";      break;
+        case VNVideoFilterTypeContrast:               title = @"Contrast";        break;
+        case VNVideoFilterTypeAmatorka:               title = @"Amatorka";        break;
         default:
             break;
     }
@@ -900,7 +908,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
             break;
         case VNVideoFilterTypeMask:
-        {}
+        {
+            //_filterFirst=[[GPUImageMaskFilter alloc]init];
+        }
             break;
         case VNVideoFilterTypeBrightness:
         {
@@ -924,7 +934,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             break;
         case VNVideoFilterTypeGamma:
         {
-            //_filterFirst=[gpuimageg]
+            _filterFirst=[[GPUImageGammaFilter alloc]init];
+            [(GPUImageGammaFilter *)_filterFirst setGamma:2.0];
+            _filterLast=_filterFirst;
+            
         }
             break;
         case VNVideoFilterTypeLevels:
