@@ -155,8 +155,9 @@
 }
 
 - (NSString *)LoginToken {
-    NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
+    //NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     //NSLog(@"%@", originTokenStr);
+    NSString * originTokenStr=[[self timestamp] stringByAppendingString:@"#$@%!*zmy"];
     return [originTokenStr md5];
 }
 
