@@ -139,7 +139,9 @@
     else if (indexPath.section == 2) {
         switch (indexPath.row) {
             case 0: {
+                //commented by zx 20140903
                 [MobClick checkUpdate];
+//                [MobClick checkUpdateWithDelegate:self selector:@selector(checkUpdateFinished:)];
             }
                 break;
             case 1: {
@@ -186,6 +188,33 @@
         [alert show];
         
     }
+}
+
+//- (void)checkUpdateFinished:(NSDictionary *)info
+//{
+//    {
+//        "current_version" = "1.01";
+//        update = NO;
+//    }
+//    NSDictionary * infoDictionary = [[NSBundle mainBundle] infoDictionary];
+//    NSString * localVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+//    
+//    NSString *onlineVersion = [info objectForKey:@"current_version"];
+//    
+//    BOOL update = [[info objectForKey:@"update"] boolValue];
+//    if (update) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"有新版本%@可以更新",onlineVersion] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+//        [alert show];
+//    }else {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"当前已经是最新版本了" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+//        [alert show];
+//    }
+//    NSLog(@"info :%@",info);
+//}
+
+- (void)appUpdate:(NSDictionary *)appInfo
+{
+    NSLog(@"appinfo :%@",appInfo);
 }
 
 #pragma mark - SEL

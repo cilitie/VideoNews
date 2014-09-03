@@ -1596,7 +1596,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: qifen cen (6BQ92HAZL2)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: qifen cen (6BQ92HAZL2)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1682,7 +1682,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "547F02D3-E929-4304-B30B-D4E999EE9C35";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1717,7 +1717,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "547F02D3-E929-4304-B30B-D4E999EE9C35";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
