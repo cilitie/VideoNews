@@ -829,7 +829,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
             break;
         case VNVideoFilterTypeGrayscale:
-        {
+        {//黑白效果
             _filterFirst = [[GPUImageGrayscaleFilter alloc] init];
             _filterLast = _filterFirst;
         }
@@ -913,9 +913,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
             break;
         case VNVideoFilterTypeBrightness:
-        {
+        {//晨光效果
             _filterFirst =[[GPUImageBrightnessFilter alloc]init];
-            [(GPUImageBrightnessFilter *)_filterFirst setBrightness:0.5];
+            [(GPUImageBrightnessFilter *)_filterFirst setBrightness:0.2];
             _filterLast=_filterFirst;
         }
             break;
@@ -923,20 +923,31 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         {
             _filterFirst=[[GPUImageAmatorkaFilter alloc]init];
             _filterLast = _filterFirst;
+            
         }
             break;
         case VNVideoFilterTypeContrast:
-        {
+        {//卡带效果
             _filterFirst=[[GPUImageContrastFilter alloc]init];
-            [(GPUImageContrastFilter *)_filterFirst setContrast:2];
+            [(GPUImageContrastFilter *)_filterFirst setContrast:1.8];
             _filterLast = _filterFirst;
         }
             break;
         case VNVideoFilterTypeGamma:
         {
             _filterFirst=[[GPUImageGammaFilter alloc]init];
-            [(GPUImageGammaFilter *)_filterFirst setGamma:2.0];
-            _filterLast=_filterFirst;
+            [(GPUImageGammaFilter *)_filterFirst setGamma:0.5];
+            //_filterLast=[[GPUImageBrightnessFilter alloc]init];
+            //[(GPUImageBrightnessFilter *)_filterLast setBrightness:-0.2];
+            _filterLast=[[GPUImageSaturationFilter alloc] init];
+            [(GPUImageSaturationFilter *)_filterLast setSaturation:1.5];
+            
+            GPUImageBrightnessFilter *tmpfilter=[[GPUImageBrightnessFilter alloc]init];
+            [tmpfilter setBrightness:-0.3];
+            
+            [_filterFirst addTarget:tmpfilter];
+            [tmpfilter addTarget:_filterLast];
+            //_filterLast=_filterFirst;
             
         }
             break;
