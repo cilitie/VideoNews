@@ -667,7 +667,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 - (UIImage *)imageForComponentAtIndex:(NSInteger)index
 {
-    return [UIImage imageNamed:@"camera"];
+    return [UIImage imageNamed:[NSString stringWithFormat:@"videoFilterSampleImg_%d",index]];
 }
 
 - (NSString *)titleForComponentAtIndex:(NSInteger)index
@@ -908,11 +908,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             //_filterLast = _filterFirst;
         }
             break;
+            /*
         case VNVideoFilterTypeMask:
         {
             //_filterFirst=[[GPUImageMaskFilter alloc]init];
         }
             break;
+             */
         case VNVideoFilterTypeBrightness:
         {//晨光效果
             _filterFirst =[[GPUImageBrightnessFilter alloc]init];
@@ -952,6 +954,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             
         }
             break;*/
+            /*
         case VNVideoFilterTypeLevels:
         {
             //_filterFirst=[[GPUImageLevelsFilter alloc]init];
@@ -963,6 +966,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             //_filterFirst=[[GPUImageUIElement alloc]init];
         }
             break;
+             */
         default:
             break;
     }
