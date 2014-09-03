@@ -169,10 +169,10 @@
                                             <action selector="sendComment:" destination="pds-Bb-2jX" eventType="touchUpInside" id="q8u-Tc-feW"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZj-f9-ir2">
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZj-f9-ir2">
                                         <rect key="frame" x="10" y="7" width="30" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="60-60emoji">
+                                        <state key="normal" backgroundImage="40-40emoji">
                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -2040,7 +2040,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="150-150weibo" width="75" height="75"/>
         <image name="25-25Male" width="12" height="12"/>
         <image name="40-40Settings" width="20" height="20"/>
-        <image name="60-60emoji" width="30" height="30"/>
+        <image name="40-40emoji" width="20" height="20"/>
         <image name="60-60send" width="30" height="30"/>
         <image name="Add" width="20" height="20"/>
         <image name="Home" width="20" height="20"/>

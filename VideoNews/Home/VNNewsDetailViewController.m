@@ -1134,7 +1134,7 @@ static NSString *shareStr;
 - (IBAction)switchEmoji:(id)sender {
     if (isDefaultKeyboard) {
         //[self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
-        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60keyboard"] forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"40-40keyboard"] forState:UIControlStateNormal];
         if (!self.emojiKeyboardView) {
             self.emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 216) dataSource:self isStandard:NO];
             self.emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -1145,7 +1145,7 @@ static NSString *shareStr;
     }
     else {
         //[self.keyboardToggleBtn setTitle:@"表情" forState:UIControlStateNormal];
-        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"60-60emoji"] forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"40-40emoji"] forState:UIControlStateNormal];
         [self.inputTextView  setInputView:nil];
         [self.inputTextView  becomeFirstResponder];
     }
