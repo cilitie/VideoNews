@@ -124,7 +124,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(50, 20, 220, 44)];
     titleLbl.backgroundColor = [UIColor clearColor];
-    titleLbl.text = @"设置封面";
+    //titleLbl.text = @"设置封面";
     titleLbl.textColor = [UIColor colorWithRGBValue:0xCE2426];
     titleLbl.textAlignment = NSTextAlignmentCenter;
     titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
@@ -152,12 +152,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                            [NSNumber numberWithInteger:VNVideoFilterTypeToneCureve],
                            [NSNumber numberWithInteger:VNVideoFilterTypeSoftElegance],
                            [NSNumber numberWithInteger:VNVideoFilterTypeGrayscale],
-                           [NSNumber numberWithInteger:VNVideoFilterTypeTiltShift],
-                           [NSNumber numberWithInteger:VNVideoFilterTypeVignette],
+                           //[NSNumber numberWithInteger:VNVideoFilterTypeTiltShift],
+                           //[NSNumber numberWithInteger:VNVideoFilterTypeVignette],
                            [NSNumber numberWithInteger:VNVideoFilterTypeGaussianSelectiveBlur],
                            [NSNumber numberWithInteger:VNVideoFilterTypeSaturation],
                            [NSNumber numberWithInteger:VNVideoFilterTypeMissEtikate],
-                           [NSNumber numberWithInteger:VNVideoFilterTypeGamma],
+                           //[NSNumber numberWithInteger:VNVideoFilterTypeGamma],
                            [NSNumber numberWithInteger:VNVideoFilterTypeContrast],
                            [NSNumber numberWithInteger:VNVideoFilterTypeBrightness],
                            [NSNumber numberWithInteger:VNVideoFilterTypeAmatorka]];
@@ -681,12 +681,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeToneCureve:             title = @"tone curve";      break;
         case VNVideoFilterTypeSoftElegance:           title = @"soft elegance";   break;
         case VNVideoFilterTypeGrayscale:              title = @"grayscale";       break;
-        case VNVideoFilterTypeTiltShift:              title = @"tilt shift";      break;
-        case VNVideoFilterTypeVignette:               title = @"vignette";        break;
+        //case VNVideoFilterTypeTiltShift:              title = @"tilt shift";      break;
+        //case VNVideoFilterTypeVignette:               title = @"vignette";        break;
         case VNVideoFilterTypeGaussianSelectiveBlur:  title = @"gaussian";        break;
         case VNVideoFilterTypeSaturation:             title = @"saturation";      break;
         case VNVideoFilterTypeMissEtikate:            title = @"miss etikate";    break;
-        case VNVideoFilterTypeGamma:                  title = @"Gamma";           break;
+       // case VNVideoFilterTypeGamma:                  title = @"Gamma";           break;
         case VNVideoFilterTypeBrightness:             title = @"Brightness";      break;
         case VNVideoFilterTypeContrast:               title = @"Contrast";        break;
         case VNVideoFilterTypeAmatorka:               title = @"Amatorka";        break;
@@ -834,11 +834,11 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             _filterLast = _filterFirst;
         }
             break;
-        case VNVideoFilterTypeTiltShift:
-        {
-            /*_filterFirst = [[GPUImageTiltShiftFilter alloc] init];
-            [(GPUImageTiltShiftFilter *)_filterFirst setTopFocusLevel:0.3];
-            [(GPUImageTiltShiftFilter *)_filterFirst setBottomFocusLevel:0.5];*/
+      /*  case VNVideoFilterTypeTiltShift:
+        {//去除
+//            _filterFirst = [[GPUImageTiltShiftFilter alloc] init];
+//            [(GPUImageTiltShiftFilter *)_filterFirst setTopFocusLevel:0.3];
+//            [(GPUImageTiltShiftFilter *)_filterFirst setBottomFocusLevel:0.5];
             _filterFirst = [[GPUImageVignetteFilter alloc] init];
             //[(GPUImageVignetteFilter *)_filterFirst setVignetteCenter:CGPointMake(0.0, 0.0)];
             [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.3];
@@ -846,12 +846,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [(GPUImageVignetteFilter *)_filterFirst setVignetteColor:(GPUVector3){ 1.0f, 1.0f, 1.0f }];
             _filterLast = _filterFirst;
         }
-            break;
-        case VNVideoFilterTypeVignette:
-        {
-            /*_filterFirst = [[GPUImageVignetteFilter alloc] init];
-            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:1.0];
-            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.0];*/
+            break;*/
+      /*  case VNVideoFilterTypeVignette:
+        {//去除
+//            _filterFirst = [[GPUImageVignetteFilter alloc] init];
+//            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:1.0];
+//            [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.0];
             _filterLast=[[GPUImageSepiaFilter alloc] init];
             _filterFirst=[[GPUImageVignetteFilter alloc]init];
             
@@ -864,7 +864,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             
             
         }
-            break;
+            break;*/
         case VNVideoFilterTypeGaussianSelectiveBlur:
         {
             //Vignette+饱和度
@@ -874,7 +874,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             [(GPUImageGaussianSelectiveBlurFilter *)_filterFirst setBlurRadiusInPixels:20];
             */
             _filterFirst = [[GPUImageVignetteFilter alloc] init];
-            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.3];
+            [(GPUImageVignetteFilter *)_filterFirst setVignetteStart:0.5];
             [(GPUImageVignetteFilter *)_filterFirst setVignetteEnd:0.9];
             [(GPUImageVignetteFilter *)_filterFirst setVignetteColor:(GPUVector3){ 1.0f, 1.0f, 1.0f }];
 
@@ -886,7 +886,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         }
             break;
         case VNVideoFilterTypeSaturation:
-        {//饱和度+MissEtikate
+        {
+            //饱和度+MissEtikate
             _filterFirst = [[GPUImageSaturationFilter alloc] init];
             [(GPUImageSaturationFilter *)_filterFirst setSaturation:2];
             _filterLast=[[GPUImageMissEtikateFilter alloc]init];
@@ -929,12 +930,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeContrast:
         {//卡带效果
             _filterFirst=[[GPUImageContrastFilter alloc]init];
-            [(GPUImageContrastFilter *)_filterFirst setContrast:1.8];
+            [(GPUImageContrastFilter *)_filterFirst setContrast:1.5];
             _filterLast = _filterFirst;
         }
             break;
-        case VNVideoFilterTypeGamma:
-        {
+       /* case VNVideoFilterTypeGamma:
+        {//去除
             _filterFirst=[[GPUImageGammaFilter alloc]init];
             [(GPUImageGammaFilter *)_filterFirst setGamma:0.5];
             //_filterLast=[[GPUImageBrightnessFilter alloc]init];
@@ -950,7 +951,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
             //_filterLast=_filterFirst;
             
         }
-            break;
+            break;*/
         case VNVideoFilterTypeLevels:
         {
             //_filterFirst=[[GPUImageLevelsFilter alloc]init];

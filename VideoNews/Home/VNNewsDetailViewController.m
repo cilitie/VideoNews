@@ -783,7 +783,7 @@ static NSString *shareStr;
             [[NSNotificationCenter defaultCenter] postNotificationName:VNCategoryCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeMineProfileVideo:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileVideoCellDeleteNotification object:_indexPath];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileVideoCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeNotification:
             [[NSNotificationCenter defaultCenter] postNotificationName:VNNotificationCellDeleteNotification object:_indexPath];
@@ -792,7 +792,7 @@ static NSString *shareStr;
             [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileCellDeleteNotification object:_indexPath];
             break;
         case SourceViewControllerTypeMineProfileFavourite:
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:_indexPath];
+           /* [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:_indexPath];*/
             break;
             
         default:
@@ -1399,7 +1399,24 @@ static NSString *shareStr;
                                     //[VNUtility showHUDText:@"删除评论成功!" forView:self.view];
                                 }
                                 else {
-                                    [VNUtility showHUDText:@"删除失败或该评论已删除!" forView:self.view];
+                                    [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
+                                    [self.commentTableView reloadData];
+                                    if (comment_count>10000) {
+                                        weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                    }
+                                    else
+                                    {
+                                        weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                    }
+
+//                                    if (weakSelf.curIndexPath.row == 0) {
+//                                        [self.commentTableView reloadData];
+//                                    }
+//                                    else {
+//                                        [self.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+//                                    }
+//
+                                    [VNUtility showHUDText:@"该评论已删除!" forView:self.view];
                                 }
                             }];
 
@@ -1592,6 +1609,8 @@ static NSString *shareStr;
                 [weakSelf.commentArrNotify addObjectsFromArray:comment];
                 NSLog(@"%@",weakSelf.commentArrNotify);
                 if (weakSelf.commentArrNotify.count==0) {
+                    //fix me 刷新header的评论数
+                    //weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d", ([weakSelf.headerView.commentLabel.text intValue]-1)];
                     [VNUtility showHUDText:@"该评论已被删除！" forView:weakSelf.view];
                 }
                 else
@@ -1702,7 +1721,10 @@ static NSString *shareStr;
                          }
                          else if(succeed)
                          {
-                             [self deleteCellAndPop:1];
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self deleteCellAndPop:1];
+                             });
+                             
                          }
                          else
                          {
