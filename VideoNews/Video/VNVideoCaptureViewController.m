@@ -34,6 +34,8 @@
 
 @property (nonatomic, assign) AVCaptureDevicePosition curDevicePosition;
 
+@property (nonatomic, assign) BOOL needToShowPixelBuf;
+
 @end
 
 @implementation VNVideoCaptureViewController
@@ -136,6 +138,7 @@ static NSString *videoFilePath;
             __weak VNVideoCaptureViewController *weakSelf = self;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf.videoProcessor pauseCaptureSession];
                 VNVideoCustomizationController *coverSettingCtl = [[VNVideoCustomizationController alloc] init];
                 coverSettingCtl.videoPath = cropFilePath;
                 [weakSelf.navigationController pushViewController:coverSettingCtl animated:NO];
@@ -187,6 +190,7 @@ static NSString *videoFilePath;
 {
     [super viewDidAppear:animated];
     
+    self.needToShowPixelBuf = YES;
     [self performSelector:@selector(generateOglView) withObject:nil afterDelay:0.1];
 }
 
@@ -206,8 +210,8 @@ static NSString *videoFilePath;
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
     [self.videoProcessor pauseCaptureSession];
+    self.needToShowPixelBuf = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -217,6 +221,7 @@ static NSString *videoFilePath;
 
 - (void)dealloc
 {
+    _videoProcessor.delegate = nil;
     self.overlayView.delegate = nil;
 }
 
@@ -350,7 +355,7 @@ static NSString *videoFilePath;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
         AVAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:combinedPath] options:nil];
-        
+
         AVAssetTrack *clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         
         //create a video composition and preset some settings
@@ -571,23 +576,25 @@ static NSString *videoFilePath;
     
     if ([_videoProcessor isRecording]) {
         [_videoProcessor stopRecording];
-    }
-    NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
-    [self.videoPathArr addObject:currVideoPath];
-    
-    self.videoPieceCount++;
-    if (self.videoPieceCount > 0)
-        [self.overlayView setTrashBtnEnabled:YES];
-    
-    [self.videoTimePointArr addObject:[NSNumber numberWithFloat:self.videoTotalDuration]];
-    
-    [self.overlayView setProgressTimeArr:self.videoTimePointArr];
-    
-    //get current video file duration.
-    //video duration array stores video files' duration data, for process bar
-    
-    if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
-        [self doSubmitWholeVideo];
+        
+        NSString *currVideoPath = [videoFilePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Clips/%@%d.mov",TEMP_VIDEO_NAME_PREFIX,self.videoPieceCount+1]];
+        [self.videoPathArr addObject:currVideoPath];
+        
+        self.videoPieceCount++;
+        if (self.videoPieceCount > 0)
+            [self.overlayView setTrashBtnEnabled:YES];
+        
+        [self.videoTimePointArr addObject:[NSNumber numberWithFloat:self.videoTotalDuration]];
+        
+        [self.overlayView setProgressTimeArr:self.videoTimePointArr];
+        
+        //get current video file duration.
+        //video duration array stores video files' duration data, for process bar
+        
+        if (self.videoTotalDuration >= MAX_VIDEO_DURATION) {
+            [self doSubmitWholeVideo];
+        }
+        
     }
 }
 
@@ -664,7 +671,8 @@ static NSString *videoFilePath;
 {
 	// Don't make OpenGLES calls while in the background.
     
-	if ( [UIApplication sharedApplication].applicationState != UIApplicationStateBackground ) {
+	if ( [UIApplication sharedApplication].applicationState != UIApplicationStateBackground && self.needToShowPixelBuf) {
+        
         if (self.curDevicePosition == AVCaptureDevicePositionBack) {
             [_oglView displayPixelBuffer:pixelBuffer withDevicePosition:0];
         }else {

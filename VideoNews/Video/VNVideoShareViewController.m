@@ -351,18 +351,11 @@
     
     NSDictionary *userInfoDic = @{@"title":titleText,@"tags":tagsText,@"coverTime":[NSNumber numberWithFloat:self.coverTime],@"videoPath":self.videoPath,@"isSinaOn":[NSNumber numberWithBool:self.shareSina],@"isWeChatOn":[NSNumber numberWithBool:self.shareWeixin],@"isFromDraft":[NSNumber numberWithBool:self.fromDraft],@"coverImg":imgData};
     
-    __weak VNVideoShareViewController *weakSelf = self;
-    
-    [weakSelf dismissViewControllerAnimated:YES completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileUploadVideoNotifiction object:nil userInfo:userInfoDic];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileUploadVideoNotifiction object:nil userInfo:userInfoDic];
-            
-        });
     }];
-    
-
     
 }
 

@@ -114,7 +114,7 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     if (self.headerViewArr.count) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([VNHTTPRequestManager isReachable]) {
@@ -474,12 +474,12 @@ static NSString *shareStr;
     self.favouriteTableView.tableHeaderView = favHeaderView;
     self.followTableView.tableHeaderView = followHeaderView;
     self.fansTableView.tableHeaderView = fansHeaderView;
-    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
+    NSLog(@"videoHeaderView frame :%@", NSStringFromCGRect(videoHeaderView.frame));
     
     [self.followTableView setTableFooterView:[[UIView alloc] init]];
     [self.fansTableView setTableFooterView:[[UIView alloc] init]];
     [self.view addSubview:self.progressView];
-    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
+    NSLog(@"videoHeaderView  frame:%@", NSStringFromCGRect(videoHeaderView.frame));
     
     _videoTableView.showsVerticalScrollIndicator=NO;
     _favouriteTableView.showsVerticalScrollIndicator=NO;
@@ -1370,10 +1370,11 @@ static NSString *shareStr;
 
 - (void)uploadVideoFile:(NSNotification *)not
 {
-    
+    NSLog(@"in .........:%s",__FUNCTION__);
     if (self.navigationController.viewControllers.count > 1) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
+    
     self.uploadVideoInfo = not.userInfo;
     
     VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
