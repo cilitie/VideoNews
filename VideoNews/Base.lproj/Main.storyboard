@@ -158,10 +158,11 @@
                                             <outlet property="delegate" destination="pds-Bb-2jX" id="tpg-YS-76B"/>
                                         </connections>
                                     </textView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVE-DA-JFJ">
-                                        <rect key="frame" x="280" y="7" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVE-DA-JFJ">
+                                        <rect key="frame" x="273" y="7" width="40" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" image="60-60send">
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <state key="normal" title="Send">
                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -169,10 +170,10 @@
                                             <action selector="sendComment:" destination="pds-Bb-2jX" eventType="touchUpInside" id="q8u-Tc-feW"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZj-f9-ir2">
-                                        <rect key="frame" x="10" y="7" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZj-f9-ir2">
+                                        <rect key="frame" x="14" y="11" width="22" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="40-40emoji">
+                                        <state key="normal" backgroundImage="44-44emoji">
                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -180,7 +181,7 @@
                                             <action selector="switchEmoji:" destination="pds-Bb-2jX" eventType="touchUpInside" id="Nr1-D1-8cu"/>
                                         </connections>
                                     </button>
-                                    <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I25-ay-Tie">
+                                    <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I25-ay-Tie">
                                         <rect key="frame" x="277" y="-8" width="33" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
@@ -194,15 +195,12 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="centerY" secondItem="OZj-f9-ir2" secondAttribute="centerY" id="0Yg-2P-gRq"/>
-                                    <constraint firstItem="OZj-f9-ir2" firstAttribute="leading" secondItem="EIB-Sv-f98" secondAttribute="leading" constant="10" id="9nC-AZ-5EV"/>
                                     <constraint firstAttribute="trailing" secondItem="I25-ay-Tie" secondAttribute="trailing" constant="10" id="GIe-eq-U47"/>
                                     <constraint firstItem="qT7-HV-W6S" firstAttribute="top" secondItem="EIB-Sv-f98" secondAttribute="top" constant="7" id="Jyo-Ih-Y1i"/>
                                     <constraint firstItem="aVE-DA-JFJ" firstAttribute="top" secondItem="I25-ay-Tie" secondAttribute="bottom" id="SPM-a9-wah"/>
                                     <constraint firstAttribute="trailing" secondItem="qT7-HV-W6S" secondAttribute="trailing" constant="50" id="SWS-3L-QIr"/>
                                     <constraint firstAttribute="centerY" secondItem="aVE-DA-JFJ" secondAttribute="centerY" id="j2Z-ri-eby"/>
                                     <constraint firstAttribute="height" constant="44" id="oB1-hM-dNP"/>
-                                    <constraint firstAttribute="trailing" secondItem="aVE-DA-JFJ" secondAttribute="trailing" constant="10" id="rxd-GQ-mUM"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -2040,8 +2038,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="150-150weibo" width="75" height="75"/>
         <image name="25-25Male" width="12" height="12"/>
         <image name="40-40Settings" width="20" height="20"/>
-        <image name="40-40emoji" width="20" height="20"/>
-        <image name="60-60send" width="30" height="30"/>
+        <image name="44-44emoji" width="22" height="22"/>
         <image name="Add" width="20" height="20"/>
         <image name="Home" width="20" height="20"/>
         <image name="Notification" width="20" height="20"/>

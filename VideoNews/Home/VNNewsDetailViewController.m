@@ -1134,7 +1134,7 @@ static NSString *shareStr;
 - (IBAction)switchEmoji:(id)sender {
     if (isDefaultKeyboard) {
         //[self.keyboardToggleBtn setTitle:@"键盘" forState:UIControlStateNormal];
-        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"40-40keyboard"] forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"44-44keyboard"] forState:UIControlStateNormal];
         if (!self.emojiKeyboardView) {
             self.emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 216) dataSource:self isStandard:NO];
             self.emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -1145,7 +1145,7 @@ static NSString *shareStr;
     }
     else {
         //[self.keyboardToggleBtn setTitle:@"表情" forState:UIControlStateNormal];
-        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"40-40emoji"] forState:UIControlStateNormal];
+        [self.keyboardToggleBtn setBackgroundImage:[UIImage imageNamed:@"44-44emoji"] forState:UIControlStateNormal];
         [self.inputTextView  setInputView:nil];
         [self.inputTextView  becomeFirstResponder];
     }
@@ -1614,7 +1614,8 @@ static NSString *shareStr;
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     [self.commentBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
-    
+    [self.keyboardToggleBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-15.0, -15.0, -15.0, -15.0)];
+
     isKeyboardShowing = YES;
     
     if (self.moviePlayer && isPlaying) {
