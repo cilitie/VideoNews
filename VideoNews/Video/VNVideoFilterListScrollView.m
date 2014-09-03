@@ -24,9 +24,17 @@
     NSInteger numberOfComponents = [self.dataSource numberOfComponentsInFilterList];
     for (int i = 0; i < numberOfComponents; i++) {
         UIImage *img = [self.dataSource imageForComponentAtIndex:i];
-        NSString *title = [self.dataSource titleForComponentAtIndex:i];
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 70 + 10, 10, 60, 60)];
-        [btn setTitle:title forState:UIControlStateNormal];
+        //NSString *title = [self.dataSource titleForComponentAtIndex:i];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 70 + 10, 18, 60, 60)];
+        UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(i * 70 + 10, 83, 60, 10)];
+        titleLabel.text=[self.dataSource titleForComponentAtIndex:i];;
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = [UIColor colorWithRGBValue:0x606366];
+        titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:9];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:titleLabel];
+        
+        //[btn setTitle:title forState:UIControlStateNormal];
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:8];
         btn.backgroundColor = [UIColor colorWithRGBValue:0xCE2426];

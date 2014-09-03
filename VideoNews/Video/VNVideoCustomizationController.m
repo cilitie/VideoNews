@@ -122,13 +122,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     [backBtn addTarget:self action:@selector(doPopBack) forControlEvents:UIControlEventTouchUpInside];
     [topView addSubview:backBtn];
     
-    UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(50, 20, 220, 44)];
-    titleLbl.backgroundColor = [UIColor clearColor];
+   // UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(50, 20, 220, 44)];
+    //titleLbl.backgroundColor = [UIColor clearColor];
     //titleLbl.text = @"设置封面";
-    titleLbl.textColor = [UIColor colorWithRGBValue:0xCE2426];
-    titleLbl.textAlignment = NSTextAlignmentCenter;
-    titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
-    [topView addSubview:titleLbl];
+    //titleLbl.textColor = [UIColor colorWithRGBValue:0xCE2426];
+    //titleLbl.textAlignment = NSTextAlignmentCenter;
+    //titleLbl.font = [UIFont fontWithName:@"STHeitiSC-Medium" size:17];
+    //[topView addSubview:titleLbl];
     
     UIButton *submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(260, 20, 60, 44)];
     [submitBtn setImage:[UIImage imageNamed:@"video_next"] forState:UIControlStateNormal];
@@ -164,19 +164,24 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     //generate images of video
     
-    CGFloat framesY,framesH, btnY, lblY, filterY;
+    CGFloat framesY,framesH, btnY, lblY, filterY,TitleY;
     if (screenH == 568) {
         framesY = 535;
         framesH = 30;
         btnY = 400;
         lblY = 435;
-        filterY = 483;
+        //filterY = 483;
+        //btnY = 395;
+        //lblY = 430;
+        filterY = 465;
+        TitleY=425;
     }else {
         framesY = 450;
         framesH = 26;
         btnY = 395;
         lblY = 430;
         filterY = 450;
+        TitleY = 395;
     }
     
     UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, 30, 30)];
@@ -220,10 +225,19 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
                                                object:_videoPlayerItem];
 
     [self playVideoWithSound:YES];
+    
+    UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, TitleY, 80, 40)];
+    titleLabel.backgroundColor=[UIColor colorWithRGBValue:0xc6c6c6];
+    titleLabel.textColor = [UIColor colorWithRGBValue:0x606366];
+    titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:15];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.text = @"选择滤镜";
+    [self.view addSubview:titleLabel];
         
-    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, filterY, 320, 70)];
+    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, filterY, 320, 103)];
     filterListView.dataSource = self;
     filterListView.delegate = self;
+    filterListView.backgroundColor=[UIColor colorWithRGBValue:0xc6c6c6];
     [self.view addSubview:filterListView];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [filterListView loadData];
@@ -676,7 +690,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
     NSString *title;
     switch (filterT) {
-        case VNVideoFilterTypeNone:                   title = @"无";              break;
+        /*case VNVideoFilterTypeNone:                   title = @"无";              break;
         case VNVideoFilterTypeSepiaTone:              title = @"sepia tone";      break;
         case VNVideoFilterTypeToneCureve:             title = @"tone curve";      break;
         case VNVideoFilterTypeSoftElegance:           title = @"soft elegance";   break;
@@ -690,6 +704,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         case VNVideoFilterTypeBrightness:             title = @"Brightness";      break;
         case VNVideoFilterTypeContrast:               title = @"Contrast";        break;
         case VNVideoFilterTypeAmatorka:               title = @"Amatorka";        break;
+         */
+        case VNVideoFilterTypeNone:                    title = @"无";              break;
+        case VNVideoFilterTypeSepiaTone:               title = @"sepia";       break;
+        case VNVideoFilterTypeToneCureve:              title = @"MissEtikate";      break;
+        case VNVideoFilterTypeSoftElegance:            title = @"Elegance";    break;
+        case VNVideoFilterTypeGrayscale:               title = @"黑白";        break;
+        case VNVideoFilterTypeGaussianSelectiveBlur:   title = @"Gorgeous";        break;
+        case VNVideoFilterTypeSaturation:              title = @"阿宝";       break;
+        case VNVideoFilterTypeMissEtikate:             title = @"哥特";       break;
+        case VNVideoFilterTypeBrightness:              title = @"清晨";       break;
+        case VNVideoFilterTypeContrast:                title = @"馥馥";       break;
+        case VNVideoFilterTypeAmatorka:                title = @"Amatorka";   break;
         default:
             break;
     }
