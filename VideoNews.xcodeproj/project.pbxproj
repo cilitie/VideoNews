@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02F297BE7E804D8DA6632605 /* libPods-VideoNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E00FF5A8750C4FA0814704DC /* libPods-VideoNews.a */; };
 		14001291198E69AD00D4A057 /* VNUploadVideoProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */; };
+		1417B0EB19B73AAF00D21BDD /* 111@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1417B0EA19B73AAF00D21BDD /* 111@2x.png */; };
 		141ECEAF19A72DDA00E42D86 /* RosyWriterVideoProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEAC19A72DDA00E42D86 /* RosyWriterVideoProcessor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		141ECEB019A72DDA00E42D86 /* RosyWriterPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEAE19A72DDA00E42D86 /* RosyWriterPreviewView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		141ECEB319A72FFD00E42D86 /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 141ECEB119A72FFD00E42D86 /* ShaderUtilities.c */; };
@@ -218,6 +219,7 @@
 /* Begin PBXFileReference section */
 		1400128F198E69AD00D4A057 /* VNUploadVideoProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNUploadVideoProgressView.h; sourceTree = "<group>"; };
 		14001290198E69AD00D4A057 /* VNUploadVideoProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNUploadVideoProgressView.m; sourceTree = "<group>"; };
+		1417B0EA19B73AAF00D21BDD /* 111@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "111@2x.png"; sourceTree = "<group>"; };
 		141ECEAB19A72DDA00E42D86 /* RosyWriterVideoProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosyWriterVideoProcessor.h; sourceTree = "<group>"; };
 		141ECEAC19A72DDA00E42D86 /* RosyWriterVideoProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RosyWriterVideoProcessor.m; sourceTree = "<group>"; };
 		141ECEAD19A72DDA00E42D86 /* RosyWriterPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosyWriterPreviewView.h; sourceTree = "<group>"; };
@@ -1097,6 +1099,7 @@
 				D6FED75D195AC1C100AD10E0 /* VNAppDelegate.m */,
 				D6FED782195BC50000AD10E0 /* VNTabBarViewController.h */,
 				D6FED783195BC50000AD10E0 /* VNTabBarViewController.m */,
+				1417B0EA19B73AAF00D21BDD /* 111@2x.png */,
 				D6FED75F195AC1C100AD10E0 /* Main.storyboard */,
 				D6FED765195AC1C100AD10E0 /* Images.xcassets */,
 				D6FED754195AC1C100AD10E0 /* Supporting Files */,
@@ -1321,6 +1324,7 @@
 				D6FED766195AC1C100AD10E0 /* Images.xcassets in Resources */,
 				D63311961994B377005E5758 /* UMSLoginViewController.xib in Resources */,
 				142FB03319A055EC00F8ECCF /* lookup_miss_etikate.png in Resources */,
+				1417B0EB19B73AAF00D21BDD /* 111@2x.png in Resources */,
 				D63311981994B377005E5758 /* UMSShareListController.xib in Resources */,
 				D6E8589B1963E9FF0055C603 /* VNCommentTableViewCell.xib in Resources */,
 				D63311971994B377005E5758 /* UMSnsAccountViewController.xib in Resources */,
