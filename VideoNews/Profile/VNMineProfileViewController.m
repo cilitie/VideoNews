@@ -474,12 +474,12 @@ static NSString *shareStr;
     self.favouriteTableView.tableHeaderView = favHeaderView;
     self.followTableView.tableHeaderView = followHeaderView;
     self.fansTableView.tableHeaderView = fansHeaderView;
-    NSLog(@"videoHeaderView frame :%@", NSStringFromCGRect(videoHeaderView.frame));
+    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
     
     [self.followTableView setTableFooterView:[[UIView alloc] init]];
     [self.fansTableView setTableFooterView:[[UIView alloc] init]];
     [self.view addSubview:self.progressView];
-    NSLog(@"videoHeaderView  frame:%@", NSStringFromCGRect(videoHeaderView.frame));
+    NSLog(@"%@", NSStringFromCGRect(videoHeaderView.frame));
     
     _videoTableView.showsVerticalScrollIndicator=NO;
     _favouriteTableView.showsVerticalScrollIndicator=NO;
@@ -1370,7 +1370,6 @@ static NSString *shareStr;
 
 - (void)uploadVideoFile:(NSNotification *)not
 {
-    NSLog(@"in .........:%s",__FUNCTION__);
     if (self.navigationController.viewControllers.count > 1) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
