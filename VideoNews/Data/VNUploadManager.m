@@ -35,8 +35,8 @@
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *key=[NSString stringWithFormat:@"thumbnail-%@-%@.jpeg",uid,[self timestamp]];
-    
-    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSString *timestamp=[self timestamp];
+    NSDictionary *parameters =@{@"key":key,@"uid":uid,@"token":[self LoginToken:timestamp], @"timestamp": timestamp};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuImageToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
@@ -70,7 +70,8 @@
     NSString *key=[NSString stringWithFormat:@"video-%@-%@.mp4",uid,[self timestamp]];
     
     //NSDictionary *parameters =@{@"key":key,@"uid":uid,@"title":title,@"tags":tags,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
-    NSDictionary *parameters =@{@"key":key,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSString *timestamp=[self timestamp];
+    NSDictionary *parameters =@{@"key":key,@"thumbnailTime": [NSNumber numberWithFloat:thumbnailTime],@"token":[self LoginToken:timestamp], @"timestamp": timestamp};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
@@ -106,8 +107,8 @@
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *key=[NSString stringWithFormat:@"video-%@-%@-thumbnail.jpg",uid,timestamp];
-    
-    NSDictionary *parameters =@{@"key":key,@"token":[self LoginToken], @"timestamp": [self timestamp]};
+    NSString *timestamp1=[self timestamp];
+    NSDictionary *parameters =@{@"key":key,@"token":[self LoginToken:timestamp1], @"timestamp": timestamp1};
     NSString *URLStr = [VNHost stringByAppendingString:@"qiniuVideoThumbnailToken.php"];
     [manager POST:URLStr parameters:parameters
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
@@ -154,10 +155,10 @@
     }
 }
 
-- (NSString *)LoginToken {
+- (NSString *)LoginToken:(NSString *)timestamp {
     //NSString *originTokenStr = [[NSString stringFromDate:[NSDate date]] stringByAppendingString:@"#$@%!*zmy"];
     //NSLog(@"%@", originTokenStr);
-    NSString * originTokenStr=[[self timestamp] stringByAppendingString:@"#$@%!*zmy"];
+    NSString * originTokenStr=[timestamp stringByAppendingString:@"#$@%!*zmy"];
     return [originTokenStr md5];
 }
 
