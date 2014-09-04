@@ -511,7 +511,7 @@ static int pagesize = 10;
     NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"token": [self token], @"timestamp": [self timestamp]};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //        NSLog(@"%@", responseObject);
+        NSLog(@"oneNews:%@", responseObject);
         VNNews *news = nil;
         VNMedia *media = nil;
         BOOL responseStatus=NO;

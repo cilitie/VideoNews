@@ -495,49 +495,73 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    self.navigationController.navigationBarHidden = YES;
-    [VNHTTPRequestManager getOneNews:_news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        else if(succeed && news!=nil)
-        {
-            _news=news;
-            _headerView.commentLabel.text= [NSString stringWithFormat:@"%d",news.comment_count ];
-            _headerView.likeNumLabel.text=[NSString stringWithFormat:@"%d",news.like_count];
-            //已收藏判断
-            NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-            if (userInfo && userInfo.count) {
-                NSString *uid = [userInfo objectForKey:@"openid"];
-                NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
-                if (uid && user_token) {
-                    [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
-                        if (error) {
-                            NSLog(@"%@", error.localizedDescription);
-                        }
-                        if (favouriteNewsArr.count) {
-                            NSLog(@"%@", favouriteNewsArr);
-                            for (NSDictionary *dic in favouriteNewsArr) {
-                                if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
-                                    [self.favouriteBtn setSelected:YES];
-                                    [self.headerView.likeBtn setSelected:YES];
-                                    [self.headerView likeStatus:YES];
-                                    break;
-                                }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [VNHTTPRequestManager getOneNews:_news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+            dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else if(succeed && news!=nil)
+            {
+                _news=news;
+                _headerView.commentLabel.text= [NSString stringWithFormat:@"%d",news.comment_count ];
+                _headerView.likeNumLabel.text=[NSString stringWithFormat:@"%d",news.like_count];
+            }
+            else
+            {
+                [VNUtility showHUDText:@"该视频已删除!" forView:self.view];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+            });
+            
+        }];
+        });
+        
+        //已收藏判断
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+        if (userInfo && userInfo.count) {
+            NSString *uid = [userInfo objectForKey:@"openid"];
+            NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+            if (uid && user_token) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    if (favouriteNewsArr.count) {
+                        NSLog(@"%@", favouriteNewsArr);
+                        for (NSDictionary *dic in favouriteNewsArr) {
+                            if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
+                                [self.favouriteBtn setSelected:YES];
+                                [self.headerView.likeBtn setSelected:YES];
+                                [self.headerView likeStatus:YES];
+                                break;
                             }
                         }
-                    }];
-                }
+                    }
+                    });
+                }];
+                });
             }
         }
-        else
-        {
-            [VNUtility showHUDText:@"该视频已删除!" forView:self.view];
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-        
-    }];
 
+//        [VNHTTPRequestManager newsListFromTime:refreshTimeStamp completion:^(NSArray *newsArr, NSError *error) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                if (error) {
+//                    NSLog(@"%@", error.localizedDescription);
+//                }
+//                else {
+//                    [weakSelf.newsArr removeAllObjects];
+//                    [weakSelf.newsArr addObjectsFromArray:newsArr];
+//                    [weakQuiltView reloadData];
+//                }
+//                [weakQuiltView.pullToRefreshView stopAnimating];
+//            });
+//        }];
+    
+
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1606,7 +1630,7 @@ static NSString *shareStr;
     if(response.responseCode == UMSResponseCodeSuccess) {
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
-        [VNUtility showHUDText:@"分享成功!" forView:self.view];
+       // [VNUtility showHUDText:@"分享成功!" forView:self.view];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
                 //isNewsDeleted=YES;

@@ -2494,7 +2494,7 @@ static NSString *shareStr;
     if(response.responseCode == UMSResponseCodeSuccess) {
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
-        [VNUtility showHUDText:@"分享成功!" forView:self.view];
+        //[VNUtility showHUDText:@"分享成功!" forView:self.view];
         [VNHTTPRequestManager commentNews:self.shareNews.nid content:shareStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
