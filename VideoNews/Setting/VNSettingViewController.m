@@ -236,7 +236,7 @@
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNPushToken];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNUserToken];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNProfileInfo];
-        [[NSUserDefaults standardUserDefaults]removeObjectForKey:VNIsWiFiAutoPlay];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:VNIsWiFiAutoPlay];
         [[NSUserDefaults standardUserDefaults] synchronize];
         VNLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNLoginViewController"];
         loginViewController.controllerType=SourceVCTypeMineProfile;

@@ -122,7 +122,6 @@ static NSString *shareStr;
         _loadingAni.center = _headerView.newsImageView.center;
         _loadingAni.rotatorColor = [UIColor whiteColor];
        // _loadingAni.rotatorColor = [UIColor colorWithRGBValue:0xCE2426];
-        [_loadingAni startActivity];
         [self.headerView addSubview:_loadingAni];
         //_loadingAni = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 37, 37)];
         // _loadingAni.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
@@ -333,6 +332,7 @@ static NSString *shareStr;
     self.playBtn.center = self.headerView.newsImageView.center;
     if ([VNHTTPRequestManager isReachableViaWiFi] && isAutoPlayOption) {
         //[self.moviePlayer play];
+        [self.loadingAni startActivity];
         [self playAndCount];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
         isPlaying = YES;
