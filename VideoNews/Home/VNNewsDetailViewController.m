@@ -1014,6 +1014,7 @@ static NSString *shareStr;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
                         //isNewsDeleted=YES;
+                        //succeed=NO;
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
                         }

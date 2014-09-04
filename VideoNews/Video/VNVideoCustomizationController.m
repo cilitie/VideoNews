@@ -164,7 +164,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     //generate images of video
     
-    CGFloat framesY,framesH, btnY, lblY, filterY,TitleY;
+    CGFloat framesY,framesH, btnY, lblY, filterY,TitleY,btnH,filterH,TitleH;
     if (screenH == 568) {
         framesY = 535;
         framesH = 30;
@@ -175,16 +175,25 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         //lblY = 430;
         filterY = 465;
         TitleY=425;
+        btnH=30;
+        filterH=103;
+        TitleH=40;
+        
     }else {
         framesY = 450;
         framesH = 26;
-        btnY = 395;
-        lblY = 430;
-        filterY = 450;
-        TitleY = 395;
+        //btnY = 395;
+        btnY = 386;
+        //lblY = 430;
+        //filterY = 450;
+        filterY = 408;
+        TitleY = 386;
+        btnH=20;
+        filterH=72;
+        TitleH=20;
     }
     
-    UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, 30, 30)];
+    UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, btnH, btnH)];
     addMusicBtn.backgroundColor = [UIColor clearColor];
     [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateNormal];
     [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateSelected];
@@ -197,9 +206,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     addMusicLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:10];
     addMusicLbl.textAlignment = NSTextAlignmentCenter;
     addMusicLbl.text = @"添加音乐";
-    [self.view addSubview:addMusicLbl];
+    if (screenH == 568)
+    {
+        [self.view addSubview:addMusicLbl];
+    }
     
-    UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, btnY, 30, 30)];
+    UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, btnY, btnH, btnH)];
     soundBtn.backgroundColor = [UIColor clearColor];
     [soundBtn setImage:[UIImage imageNamed:@"audio_on"] forState:UIControlStateNormal];
     [soundBtn setImage:[UIImage imageNamed:@"audio_off"] forState:UIControlStateSelected];
@@ -213,8 +225,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     soundLbl.font = [UIFont fontWithName:@"STHeitiSC-Light" size:10];
     soundLbl.textAlignment = NSTextAlignmentCenter;
     soundLbl.text = @"原声关闭";
-    [self.view addSubview:soundLbl];
-    
+    if (screenH==568) {
+        [self.view addSubview:soundLbl];
+    }
+    //[self.view addSubview:soundLbl];
     NSURL *videoUrl = [NSURL fileURLWithPath:self.videoPath];
     AVURLAsset* asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     _videoPlayerItem = [AVPlayerItem playerItemWithAsset:asset];
@@ -226,7 +240,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
     [self playVideoWithSound:YES];
     
-    UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, TitleY, 80, 40)];
+    UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, TitleY, 80, TitleH)];
     titleLabel.backgroundColor=[UIColor colorWithRGBValue:0xc6c6c6];
     titleLabel.textColor = [UIColor colorWithRGBValue:0x606366];
     titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:15];
@@ -234,11 +248,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     titleLabel.text = @"选择滤镜";
     [self.view addSubview:titleLabel];
         
-    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, filterY, 320, 103)];
+    VNVideoFilterListScrollView *filterListView = [[VNVideoFilterListScrollView alloc] initWithFrame:CGRectMake(0, filterY, 320, filterH)];
     filterListView.dataSource = self;
     filterListView.delegate = self;
     filterListView.backgroundColor=[UIColor colorWithRGBValue:0xc6c6c6];
     [self.view addSubview:filterListView];
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [filterListView loadData];
     });
