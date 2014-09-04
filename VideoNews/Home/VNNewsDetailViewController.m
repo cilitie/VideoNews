@@ -479,6 +479,9 @@ static NSString *shareStr;
     _curComment=_commentArr[row-KReplyButton];
     //NSLog(@"nid:%@",_curComment.author.uid);
     VNUser *user = _curComment.author;
+    if ([user.uid isEqualToString:@"1"]) {
+        return;
+    }
     NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
     if (mineUid && [mineUid isEqualToString:user.uid]) {
         VNMineProfileViewController *mineProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNMineProfileViewController"];
