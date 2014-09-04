@@ -496,6 +496,48 @@ static NSString *shareStr;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 //    self.navigationController.navigationBarHidden = YES;
+    [VNHTTPRequestManager getOneNews:_news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        else if(succeed && news!=nil)
+        {
+            _news=news;
+            _headerView.commentLabel.text= [NSString stringWithFormat:@"%d",news.comment_count ];
+            _headerView.likeNumLabel.text=[NSString stringWithFormat:@"%d",news.like_count];
+            //已收藏判断
+            NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
+            if (userInfo && userInfo.count) {
+                NSString *uid = [userInfo objectForKey:@"openid"];
+                NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
+                if (uid && user_token) {
+                    [VNHTTPRequestManager favouriteNewsListFor:uid userToken:user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        if (favouriteNewsArr.count) {
+                            NSLog(@"%@", favouriteNewsArr);
+                            for (NSDictionary *dic in favouriteNewsArr) {
+                                if ([[dic objectForKey:@"nid"] isEqualToString:[NSString stringWithFormat:@"%d", self.news.nid]]) {
+                                    [self.favouriteBtn setSelected:YES];
+                                    [self.headerView.likeBtn setSelected:YES];
+                                    [self.headerView likeStatus:YES];
+                                    break;
+                                }
+                            }
+                        }
+                    }];
+                }
+            }
+        }
+        else
+        {
+            [VNUtility showHUDText:@"该视频已删除!" forView:self.view];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        
+    }];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1611,7 +1653,7 @@ static NSString *shareStr;
                 NSLog(@"%@",weakSelf.commentArrNotify);
                 if (weakSelf.commentArrNotify.count==0) {
                     //fix me 刷新header的评论数
-                    //weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d", ([weakSelf.headerView.commentLabel.text intValue]-1)];
+                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d", ([weakSelf.headerView.commentLabel.text intValue]-1)];
                     [VNUtility showHUDText:@"该评论已被删除！" forView:weakSelf.view];
                 }
                 else
