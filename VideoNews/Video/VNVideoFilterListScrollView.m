@@ -23,7 +23,7 @@
 - (void)loadData
 {
     NSInteger numberOfComponents = [self.dataSource numberOfComponentsInFilterList];
-    float filterY,titleY,titleH;
+    float filterY,titleY,titleH,titleFont;
     for (int i = 0; i < numberOfComponents; i++) {
         UIImage *img = [self.dataSource imageForComponentAtIndex:i];
         //NSString *title = [self.dataSource titleForComponentAtIndex:i];
@@ -31,19 +31,21 @@
             filterY=18;
             titleY=83;
             titleH=10;
+            titleFont=9;
         }
         else
         {
-            filterY=1;
-            titleY=63;
+            filterY=2;
+            titleY=64;
             titleH=8;
+            titleFont=7;
         }
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(i * 70 + 10, filterY, 60, 60)];
         UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(i * 70 + 10, titleY, 60, titleH)];
         titleLabel.text=[self.dataSource titleForComponentAtIndex:i];;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor colorWithRGBValue:0x606366];
-        titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:9];
+        titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:titleFont];
         titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:titleLabel];
         

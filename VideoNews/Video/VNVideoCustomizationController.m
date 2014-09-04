@@ -164,7 +164,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     //generate images of video
     
-    CGFloat framesY,framesH, btnY, lblY, filterY,TitleY,btnH,filterH,TitleH;
+    CGFloat framesY,framesH, btnY, lblY, filterY,TitleY,btnH,filterH,TitleH,TitleFont;
     NSString *musicImage,*sound_on,*sound_off;
     if (screenH == 568) {
         framesY = 535;
@@ -182,6 +182,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         musicImage=@"video_music";
         sound_on=@"audio_on";
         sound_off=@"audio_off";
+        TitleFont=15;
         
     }else {
         framesY = 450;
@@ -191,13 +192,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         //lblY = 430;
         //filterY = 450;
         filterY = 408;
-        TitleY = 386;
+        TitleY = 384;
         btnH=20;
         filterH=72;
         TitleH=22;
-        musicImage=@"video_music40_40";
-        sound_on=@"audio_on40_40";
-        sound_off=@"audio_off40_40";
+        musicImage=@"video_music40-40";
+        sound_on=@"audio_on40-40";
+        sound_off=@"audio_off40-40";
+        TitleFont=13;
     }
     
     UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, btnH, btnH)];
@@ -250,7 +252,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     UILabel *titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, TitleY, 80, TitleH)];
     titleLabel.backgroundColor=[UIColor colorWithRGBValue:0xc6c6c6];
     titleLabel.textColor = [UIColor colorWithRGBValue:0x606366];
-    titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:15];
+    titleLabel.font = [UIFont fontWithName:@"STHeitiSC-Light" size:TitleFont];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.text = @"选择滤镜";
     [self.view addSubview:titleLabel];
