@@ -66,18 +66,24 @@
     __weak typeof(self) weakSelf = self;
     [newsQuiltView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (![VNHTTPRequestManager isReachable]) {
+            [VNUtility showHUDText:@"请检查您的网络!" forView:weakSelf.view];
+            [weakQuiltView.pullToRefreshView stopAnimating];
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
             [VNHTTPRequestManager newsListFromTime:refreshTimeStamp completion:^(NSArray *newsArr, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                else {
-                    [weakSelf.newsArr removeAllObjects];
-                    [weakSelf.newsArr addObjectsFromArray:newsArr];
-                    [weakQuiltView reloadData];
-                }
-                [weakQuiltView.pullToRefreshView stopAnimating];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    else {
+                        [weakSelf.newsArr removeAllObjects];
+                        [weakSelf.newsArr addObjectsFromArray:newsArr];
+                        [weakQuiltView reloadData];
+                    }
+                    [weakQuiltView.pullToRefreshView stopAnimating];
+                });
             }];
         });
     }];
@@ -109,7 +115,10 @@
             }];
         }
     }];
-    [newsQuiltView triggerPullToRefresh];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [newsQuiltView triggerPullToRefresh];
+    });
     
     [self.view addSubview:newsQuiltView];
 }

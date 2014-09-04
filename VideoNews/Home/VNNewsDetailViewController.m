@@ -119,10 +119,10 @@ static NSString *shareStr;
     //[[UIColor colorWithRed:225 green:225 blue:225 alpha:0]CGColor];
     if (!_loadingAni) {
         _loadingAni = [[GPLoadingButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
-        _loadingAni.center=_headerView.newsImageView.center;
+        _loadingAni.center = _headerView.newsImageView.center;
         _loadingAni.rotatorColor = [UIColor whiteColor];
        // _loadingAni.rotatorColor = [UIColor colorWithRGBValue:0xCE2426];
-        //[_loadingAni startActivity];
+        [_loadingAni startActivity];
         [self.headerView addSubview:_loadingAni];
         //_loadingAni = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 37, 37)];
         // _loadingAni.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
@@ -1103,7 +1103,7 @@ static NSString *shareStr;
         // [_moviePlayer play];
     }
     if(self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK){
-        [_loadingAni stopActivity];
+
     }
     if(self.moviePlayer.loadState == MPMovieLoadStateStalled){
         //网络不好，开始缓冲了
@@ -1114,7 +1114,7 @@ static NSString *shareStr;
 -(void)MoviePlayerPlaybackStateDidChange:(NSNotification *)notification
 {
     if (self.moviePlayer.playbackState==MPMoviePlaybackStatePlaying) {
-        [_loadingAni stopActivity];
+//        [_loadingAni stopActivity];
         _moviePlayer.view.hidden=NO;
     }
     else if (self.moviePlayer.playbackState==MPMoviePlaybackStatePaused) {
