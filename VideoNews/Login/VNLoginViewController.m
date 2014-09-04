@@ -334,16 +334,23 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+
+    CGFloat oriY = 0;
+    if ([[UIScreen mainScreen] bounds].size.height == 568) {
+        oriY = -150;
+    }else {
+        oriY = -200;
+    }
     if (textField == self.emailTF) {
         [UIView animateWithDuration:0.3f animations:^{
             CGRect frame = self.view.frame;
-            frame.origin.y = -150;
+            frame.origin.y = oriY;
             self.view.frame = frame;
         }];
     }else if (textField == self.passwdTF) {
         [UIView animateWithDuration:0.3f animations:^{
             CGRect frame = self.view.frame;
-            frame.origin.y = -150;
+            frame.origin.y = oriY;
             self.view.frame = frame;
         }];
     }

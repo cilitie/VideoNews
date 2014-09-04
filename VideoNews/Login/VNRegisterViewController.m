@@ -95,7 +95,11 @@
     
     self.title = @"注册";
     
-    self.view.backgroundColor = [UIColor colorWithRed:226/255.0 green:226/255.0 blue:226/255.0 alpha:1];
+    UIControl *control = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    control.backgroundColor = [UIColor colorWithRed:226/255.0 green:226/255.0 blue:226/255.0 alpha:1];
+    [control addTarget:self
+                action:@selector(hideKeyboard) forControlEvents:UIControlEventTouchDown];
+    self.view = control;
     
     UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 44)];
     [backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
@@ -127,6 +131,14 @@
     [textF setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 35)]];
     textF.layer.cornerRadius = 2.5;
     textF.delegate = self;
+}
+
+- (void)hideKeyboard
+{
+    [self.nicknameTF resignFirstResponder];
+    [self.emailTF resignFirstResponder];
+    [self.passwdTF resignFirstResponder];
+    [self.passwdConfirmTF resignFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
