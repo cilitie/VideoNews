@@ -23,6 +23,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *commentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UIButton *replyBtn;
-@property (strong,nonatomic)id<VNCommentTableViewCellDelegate> delegate;
+@property (weak, nonatomic)id<VNCommentTableViewCellDelegate> delegate;
 
 @end

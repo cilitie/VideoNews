@@ -270,20 +270,24 @@
     }
     
     //发起登录请求 post
+    self.loginBtn.userInteractionEnabled = NO;
     
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [VNHTTPRequestManager loginWithEmail:self.emailTF.text passwd:[self.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
+        [VNHTTPRequestManager loginWithEmail:weakSelf.emailTF.text passwd:[weakSelf.passwdTF.text md5] completion:^(BOOL success, NSError *err) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (success) {
+                    weakSelf.loginBtn.userInteractionEnabled = YES;
                     [VNUtility showHUDText:@"登录成功!" forView:self.view];
                     
                     [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:isLogin];
                     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:VNLoginDate];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter]postNotificationName:VNLoginNotification object:nil];
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [weakSelf dismissViewControllerAnimated:YES completion:nil];
                 }else {
+                    weakSelf.loginBtn.userInteractionEnabled = YES;
                     if ([err.domain isEqualToString:VNCustomErrorDomain]) {
                         if (err.code == VNInvalidUserErrorCode) {
                             [VNUtility showHUDText:@"非注册用户，先注册吧~" forView:self.view];
