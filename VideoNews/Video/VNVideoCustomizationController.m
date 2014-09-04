@@ -165,6 +165,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     //generate images of video
     
     CGFloat framesY,framesH, btnY, lblY, filterY,TitleY,btnH,filterH,TitleH;
+    NSString *musicImage,*sound_on,*sound_off;
     if (screenH == 568) {
         framesY = 535;
         framesH = 30;
@@ -178,6 +179,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         btnH=30;
         filterH=103;
         TitleH=40;
+        musicImage=@"video_music";
+        sound_on=@"audio_on";
+        sound_off=@"audio_off";
         
     }else {
         framesY = 450;
@@ -190,13 +194,16 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
         TitleY = 386;
         btnH=20;
         filterH=72;
-        TitleH=20;
+        TitleH=22;
+        musicImage=@"video_music40_40";
+        sound_on=@"audio_on40_40";
+        sound_off=@"audio_off40_40";
     }
     
     UIButton *addMusicBtn = [[UIButton alloc] initWithFrame:CGRectMake(185, btnY, btnH, btnH)];
     addMusicBtn.backgroundColor = [UIColor clearColor];
-    [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateNormal];
-    [addMusicBtn setImage:[UIImage imageNamed:@"video_music"] forState:UIControlStateSelected];
+    [addMusicBtn setImage:[UIImage imageNamed:musicImage] forState:UIControlStateNormal];
+    [addMusicBtn setImage:[UIImage imageNamed:musicImage] forState:UIControlStateSelected];
     [addMusicBtn addTarget:self action:@selector(selectMusic) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:addMusicBtn];
     
@@ -213,8 +220,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
     
     UIButton *soundBtn = [[UIButton alloc] initWithFrame:CGRectMake(265, btnY, btnH, btnH)];
     soundBtn.backgroundColor = [UIColor clearColor];
-    [soundBtn setImage:[UIImage imageNamed:@"audio_on"] forState:UIControlStateNormal];
-    [soundBtn setImage:[UIImage imageNamed:@"audio_off"] forState:UIControlStateSelected];
+    [soundBtn setImage:[UIImage imageNamed:sound_on] forState:UIControlStateNormal];
+    [soundBtn setImage:[UIImage imageNamed:sound_off] forState:UIControlStateSelected];
     [soundBtn addTarget:self action:@selector(soundSetting:) forControlEvents:UIControlEventTouchUpInside];
     soundBtn.selected = NO;   //on-sound off-nosound
     [self.view addSubview:soundBtn];
