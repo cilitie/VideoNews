@@ -492,66 +492,12 @@ static NSString *shareStr;
 -(void)userReLogin:(NSNotification *)notification
 {
     [self reload];
-    if (self.mineVideoArr.count) {
-        for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
-            if (cell.isPlaying) {
-                [cell startOrPausePlaying:NO];
-            }
-        }
-    }
-    if (self.favVideoArr.count) {
-        for (VNProfileVideoTableViewCell *cell in [self.favouriteTableView visibleCells]) {
-            if (cell.isPlaying) {
-                [cell startOrPausePlaying:NO];
-            }
-        }
-    }
-    for (VNMineProfileHeaderView *headView in self.headerViewArr) {
-        [headView reloadTabStatus:0];
-    }
-            self.videoTableView.hidden = NO;
-            self.favouriteTableView.hidden = YES;
-            self.followTableView.hidden = YES;
-            self.fansTableView.hidden = YES;
-            //[weakSelf.videoTableView triggerPullToRefresh];
-            [self reloadAutoPlayStatus];
-            // FIXME: Hard code
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [VNHTTPRequestManager favouriteNewsListFor:self.uid userToken:_user_token completion:^(NSArray *favouriteNewsArr, NSError *error) {
-                    if (error) {
-                        NSLog(@"%@", error.localizedDescription);
-                    }
-                    else if (favouriteNewsArr.count) {
-                        [self.favouriteNewsArr removeAllObjects];
-                        [self.favouriteNewsArr addObjectsFromArray:favouriteNewsArr];
-                        // NSLog(@"%d", favouriteNewsArr.count);
-                    }
-                    else if (favouriteNewsArr.count==0)
-                    {
-                        [self.favouriteNewsArr removeAllObjects];
-                    }
-                    NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
-                    [VNHTTPRequestManager videoListForUser:self.uid type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
-                        if (error) {
-                            //  NSLog(@"%@", error.localizedDescription);
-                        }
-                        else {
-                            [self.mineVideoArr removeAllObjects];
-                            [self.mineVideoArr addObjectsFromArray:videoArr];
-                            //NSLog(@"%d", weakSelf.mineVideoArr.count);
-                            [self.videoTableView reloadData];
-                        }
-                        mineVideofirstLoading = YES;
-                        //zmy add 刷新头
-                      //  [weakSelf reloadHeaderView];
-                        //
-                        
-                    }];
-                }];
-            });
-    //[self.followTableView setTableFooterView:[[UIView alloc] init]];
-    //[self.fansTableView setTableFooterView:[[UIView alloc] init]];
-    //[self.view addSubview:self.progressView];
+    [_headerViewArr[0] reloadTabStatus:0];
+    self.videoTableView.hidden = NO;
+    self.favouriteTableView.hidden = YES;
+    self.followTableView.hidden = YES;
+    self.fansTableView.hidden = YES;
+    [self reloadAutoPlayStatus];
 }
 //zmy add
 - (void)reload {
