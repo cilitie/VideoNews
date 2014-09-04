@@ -67,6 +67,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
     //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
+    _messageTableView.showsVerticalScrollIndicator=NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeCellForNewsDeleted:) name:VNNotificationCellDeleteNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userReLogin:) name:VNLoginNotification object:nil];
     [self removeBadgeValue];

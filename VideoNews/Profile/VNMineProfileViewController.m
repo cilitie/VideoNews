@@ -2554,6 +2554,8 @@ static NSString *shareStr;
                         }
                          else
                          {
+                             NSLog(@"succeed:%d",succeed);
+                             NSLog(@"news_count:%d",news_count);
                              [VNUtility showHUDText:@"该视频已被删除！" forView:self.view];
                          }
                      }];

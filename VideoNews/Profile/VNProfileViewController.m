@@ -2195,7 +2195,7 @@ static NSString *shareStr;
         NSLog(@"%@", [UMSocialSnsPlatformManager sharedInstance].allSnsValuesArray);
         NSString *shareURL = self.shareNews.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
-            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d",self.shareNews.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/ssp.php?id=%d",self.shareNews.nid];
         }
         NSString *snsName = nil;
         switch (buttonIndex) {

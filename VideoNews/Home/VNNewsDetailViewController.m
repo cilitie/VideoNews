@@ -1086,6 +1086,7 @@ static NSString *shareStr;
                             });
                         }
                         else {
+                            NSLog(@"%d",comment_count);
                             [VNUtility showHUDText:@"评论失败!" forView:self.view];
                         }
                         self.commentBtn.enabled = YES;
@@ -1258,7 +1259,7 @@ static NSString *shareStr;
         //NSLog(@"%@", self.news.url);
         NSString *shareURL = self.news.url;
         if (!shareURL || [shareURL isEqualToString:@""]) {
-            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/view.php?id=%d",self.news.nid];
+            shareURL = [[NSString alloc]initWithFormat:@"http://www.shishangpai.com.cn/ssp.php?id=%d",self.news.nid];
             //NSLog(@"url:%@",shareURL);
         }
         NSString *snsName = nil;
@@ -1653,7 +1654,7 @@ static NSString *shareStr;
                 NSLog(@"%@",weakSelf.commentArrNotify);
                 if (weakSelf.commentArrNotify.count==0) {
                     //fix me 刷新header的评论数
-                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d", ([weakSelf.headerView.commentLabel.text intValue]-1)];
+                    //weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d", ([weakSelf.headerView.commentLabel.text intValue]-1)];
                     [VNUtility showHUDText:@"该评论已被删除！" forView:weakSelf.view];
                 }
                 else
@@ -1771,6 +1772,8 @@ static NSString *shareStr;
                          }
                          else
                          {
+                             NSLog(@"succeed:%d",succeed);
+                             NSLog(@"news_count:%d",news_count);
                              [VNUtility showHUDText:@"删除视频失败" forView:self.view];
                          }
                      }];

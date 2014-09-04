@@ -294,7 +294,7 @@ static int pagesize = 10;
     NSDictionary *param = @{@"nid": [NSNumber numberWithInt:nid], @"uid": uid, @"user_token": user_token, @"token": [self token], @"timestamp": [self timestamp]};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"%@", operation);
+        NSLog(@"deletenews:%@", responseObject);
         BOOL operationSuccess = NO;
         //BOOL isNewsDeleted=NO;
         int news_count=0;
@@ -335,8 +335,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"text": content, @"type": @"pub", @"token": [self token], @"timestamp": [self timestamp],@"user_token":user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"%@", operation);
-        //NSLog(@"%@",responseObject);
+        NSLog(@"commentnews:%@", operation);
+        NSLog(@"commentnews:%@",responseObject);
         VNComment *comment = nil;
         BOOL commentSuccess = NO;
         BOOL isNewsDeleted=NO;
@@ -360,7 +360,7 @@ static int pagesize = 10;
             completion(commentSuccess,isNewsDeleted, comment, comment_count,nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation);
+        NSLog(@"commentnews:%@", operation);
         if (completion) {
             completion(NO, NO,nil,0, error);
         }
@@ -424,8 +424,8 @@ static int pagesize = 10;
     NSDictionary *param = @{@"uid": uid, @"nid": [NSString stringWithFormat:@"%d", nid], @"pid": [NSString stringWithFormat:@"%d", cid], @"type": @"del", @"token": [self token], @"timestamp": [self timestamp], @"user_token": user_token};
     
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"%@", responseObject);
-        //NSLog(@"%@",operation);
+        NSLog(@"deletecomment:%@", responseObject);
+        NSLog(@"deletecomment:%@",operation);
         BOOL deleteSuccess = NO;
         BOOL isNewsDeleted =NO;
         int comment_count=0;
