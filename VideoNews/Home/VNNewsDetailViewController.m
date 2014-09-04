@@ -122,7 +122,6 @@ static NSString *shareStr;
         _loadingAni.center = _headerView.newsImageView.center;
         _loadingAni.rotatorColor = [UIColor whiteColor];
        // _loadingAni.rotatorColor = [UIColor colorWithRGBValue:0xCE2426];
-        [_loadingAni startActivity];
         [self.headerView addSubview:_loadingAni];
         //_loadingAni = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 37, 37)];
         // _loadingAni.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
@@ -333,6 +332,7 @@ static NSString *shareStr;
     self.playBtn.center = self.headerView.newsImageView.center;
     if ([VNHTTPRequestManager isReachableViaWiFi] && isAutoPlayOption) {
         //[self.moviePlayer play];
+        [self.loadingAni startActivity];
         [self playAndCount];
         [self.playBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
         isPlaying = YES;
@@ -568,6 +568,8 @@ static NSString *shareStr;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
+    
+    NSLog(@"dealloc....:%s",__FUNCTION__);
 }
 
 /*
@@ -741,6 +743,7 @@ static NSString *shareStr;
     }
     
     if (button.isSelected) {
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"remove" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
                 //isNewsDeleted=YES;
@@ -750,33 +753,35 @@ static NSString *shareStr;
                 else if(isNewsDeleted)
                 {
                     //pop，并且发通知
-                    [self deleteCellAndPop:0];
+                    [weakSelf deleteCellAndPop:0];
                 }
                 else if (succeed) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [button setSelected:NO];
-                        self.curLikeCount -= 1;
-                        [self.headerView.likeBtn setSelected:NO];
-                        [self.headerView likeStatus:NO];
-                        self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
+                        weakSelf.curLikeCount -= 1;
+                        [weakSelf.headerView.likeBtn setSelected:NO];
+                        [weakSelf.headerView likeStatus:NO];
+                        weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
                     });
                     //[VNUtility showHUDText:@"已取消!" forView:self.view];
-                    if (self.controllerType == SourceViewControllerTypeMineProfileFavourite) {
+                    if (weakSelf.controllerType == SourceViewControllerTypeMineProfileFavourite) {
                         //[[NSNotificationCenter defaultCenter] postNotificationName:VNMineProfileFavouriteCellDeleteNotification object:self.indexPath];
                     }
-                    else if(_controllerType==SourceViewControllerTypeMineProfileVideo||_controllerType==SourceViewControllerTypeProfile)
+                    else if(weakSelf.controllerType==SourceViewControllerTypeMineProfileVideo||weakSelf.controllerType==SourceViewControllerTypeProfile)
                     {
                       //  NSDictionary *dic=@{@"operate":@"remove",@"index":self.indexPath};
                       //  [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
                     }
                 }
                 else {
-                    [VNUtility showHUDText:@"取消点赞失败或视频已删除!" forView:self.view];
+                    [VNUtility showHUDText:@"取消点赞失败或视频已删除!" forView:weakSelf.view];
                 }
             }];
         });
     }
     else {
+        __weak typeof(self) weakSelf = self;
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [VNHTTPRequestManager favouriteNews:self.news.nid operation:@"add" userID:authUser.openid user_token:user_token completion:^(BOOL succeed,BOOL isNewsDeleted, int like_count,int user_like_count,NSError *error) {
                 if (error) {
@@ -785,18 +790,18 @@ static NSString *shareStr;
                 else if (isNewsDeleted)
                 {
                     //pop，并且发通知
-                    [self deleteCellAndPop:0];
+                    [weakSelf deleteCellAndPop:0];
                     
                 }
                 else if (succeed) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [button setSelected:YES];
-                        [self.headerView.likeBtn setSelected:YES];
-                        [self.headerView likeStatus:YES];
-                        self.curLikeCount += 1;
-                        self.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", self.curLikeCount];
+                        [weakSelf.headerView.likeBtn setSelected:YES];
+                        [weakSelf.headerView likeStatus:YES];
+                        weakSelf.curLikeCount += 1;
+                        weakSelf.headerView.likeNumLabel.text = [NSString stringWithFormat:@"%d", weakSelf.curLikeCount];
                     });
-                    if(_controllerType==SourceViewControllerTypeMineProfileVideo||_controllerType==SourceViewControllerTypeProfile)
+                    if(weakSelf.controllerType==SourceViewControllerTypeMineProfileVideo||weakSelf.controllerType==SourceViewControllerTypeProfile)
                     {
                       /*  NSDictionary *dic=@{@"operate":@"add",@"index":self.indexPath};
                         [[NSNotificationCenter defaultCenter] postNotificationName:VNProfileVideoLikeHandlerNotification object:dic];
@@ -807,7 +812,7 @@ static NSString *shareStr;
                     //[VNUtility showHUDText:@"点赞成功!" forView:self.view];
                 }
                 else {
-                    [VNUtility showHUDText:@"已点赞或视频已删除!" forView:self.view];
+                    [VNUtility showHUDText:@"已点赞或视频已删除!" forView:weakSelf.view];
                 }
             }];
         });
@@ -854,7 +859,7 @@ static NSString *shareStr;
 - (IBAction)share:(id)sender {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [VNHTTPRequestManager isNewsDeleted:self.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
+        [VNHTTPRequestManager isNewsDeleted:weakSelf.news.nid completion:^(BOOL isNewsDeleted,NSError *error)
          {
              //isNewsDeleted=YES;
              if (error) {
@@ -958,14 +963,14 @@ static NSString *shareStr;
                  */
                  __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [VNHTTPRequestManager replyComment:self.curComment.cid replyUser:self.curComment.author.uid replyNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, int comment_count,NSError *error) {
+                    [VNHTTPRequestManager replyComment:weakSelf.curComment.cid replyUser:weakSelf.curComment.author.uid replyNews:weakSelf.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted,BOOL isCommentDeleted, VNComment *comment, int comment_count,NSError *error) {
                         //isCommentDeleted=YES;
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
                         }
                         else if (isNewsDeleted) {
                             dispatch_async(dispatch_get_main_queue(),^{
-                                [self deleteCellAndPop:0];
+                                [weakSelf deleteCellAndPop:0];
                             });
                             
                         }
@@ -973,16 +978,16 @@ static NSString *shareStr;
                         {
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [weakSelf.commentArr removeObjectAtIndex:_curIndexPath.row];
-                                if (_curIndexPath.row == 0) {
+                                if (weakSelf.curIndexPath.row == 0) {
                                     [weakSelf.commentTableView reloadData];
                                 }
                                 else {
-                                    [weakSelf.commentTableView deleteRowsAtIndexPaths:@[_curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                    [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                 }
                                 
                                 weakSelf.inputTextView.text=@"";
-                                self.inputBarHeightLC.constant = 44.0;
-                                self.inputTextViewHeightLC.constant = 30.0;
+                                weakSelf.inputBarHeightLC.constant = 44.0;
+                                weakSelf.inputTextViewHeightLC.constant = 30.0;
                                 [weakSelf.inputTextView resignFirstResponder];
                                 [VNUtility showHUDText:@"该评论已被删除!" forView:self.view];
                             
@@ -992,28 +997,28 @@ static NSString *shareStr;
                         else if (succeed) {
                             //[VNUtility showHUDText:@"回复成功!" forView:self.view];
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                self.inputTextView.text = @"";
-                                self.inputBarHeightLC.constant = 44.0;
-                                self.inputTextViewHeightLC.constant = 30.0;
-                                [self.inputTextView resignFirstResponder];
+                                weakSelf.inputTextView.text = @"";
+                                weakSelf.inputBarHeightLC.constant = 44.0;
+                                weakSelf.inputTextViewHeightLC.constant = 30.0;
+                                [weakSelf.inputTextView resignFirstResponder];
                                 if (comment) {
-                                    [self.commentArr insertObject:comment atIndex:0];
-                                    [self.commentTableView reloadData];
+                                    [weakSelf.commentArr insertObject:comment atIndex:0];
+                                    [weakSelf.commentTableView reloadData];
                                 }
                                 if (comment_count>10000) {
-                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                                 }
                                 else
                                 {
-                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
                                 }
                             });
                             
                         }
                         else {
-                            [VNUtility showHUDText:@"回复失败!" forView:self.view];
+                            [VNUtility showHUDText:@"回复失败!" forView:weakSelf.view];
                         }
-                        self.commentBtn.enabled = YES;
+                        weakSelf.commentBtn.enabled = YES;
                     }];
                 });
             }
@@ -1053,8 +1058,10 @@ static NSString *shareStr;
                     self.commentBtn.enabled = YES;
                 }];
                  */
+                
+                __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [VNHTTPRequestManager commentNews:self.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
+                    [VNHTTPRequestManager commentNews:weakSelf.news.nid content:commentStr completion:^(BOOL succeed,BOOL isNewsDeleted, VNComment *comment, int comment_count,NSError *error) {
                         //isNewsDeleted=YES;
                         //succeed=NO;
                         if (error) {
@@ -1063,33 +1070,33 @@ static NSString *shareStr;
                         else if (isNewsDeleted)
                         {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [self deleteCellAndPop:0];
+                                [weakSelf deleteCellAndPop:0];
                             });
                         }
                         else if (succeed) {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                self.inputTextView.text = @"";
-                                self.inputBarHeightLC.constant = 44.0;
-                                self.inputTextViewHeightLC.constant = 30.0;
-                                [self.inputTextView resignFirstResponder];
+                                weakSelf.inputTextView.text = @"";
+                                weakSelf.inputBarHeightLC.constant = 44.0;
+                                weakSelf.inputTextViewHeightLC.constant = 30.0;
+                                [weakSelf.inputTextView resignFirstResponder];
                                 if (comment) {
-                                    [self.commentArr insertObject:comment atIndex:0];
-                                    [self.commentTableView reloadData];
+                                    [weakSelf.commentArr insertObject:comment atIndex:0];
+                                    [weakSelf.commentTableView reloadData];
                                 }
                                 if (comment_count>10000) {
-                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                                 }
                                 else
                                 {
-                                    self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                    weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
                                 }
                             });
                         }
                         else {
                             NSLog(@"%d",comment_count);
-                            [VNUtility showHUDText:@"评论失败!" forView:self.view];
+                            [VNUtility showHUDText:@"评论失败!" forView:weakSelf.view];
                         }
-                        self.commentBtn.enabled = YES;
+                        weakSelf.commentBtn.enabled = YES;
                     }];
 
                 });
@@ -1332,17 +1339,19 @@ static NSString *shareStr;
                         NSString *uid = [userInfo objectForKey:@"openid"];
                         NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                         if (uid && user_token) {
+                            
+                            __weak typeof(self) weakSelf = self;
                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.news.nid] type:@"reportNews" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                                [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", weakSelf.news.nid] type:@"reportNews" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
                                     if (error) {
                                         NSLog(@"%@", error.localizedDescription);
                                     }
                                     else if (succeed) {
-                                        [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                        self.inputTextView.text = @"";
+                                        [VNUtility showHUDText:@"举报成功!" forView:weakSelf.view];
+                                        weakSelf.inputTextView.text = @"";
                                     }
                                     else {
-                                        [VNUtility showHUDText:@"您已举报该视频" forView:self.view];
+                                        [VNUtility showHUDText:@"您已举报该视频" forView:weakSelf.view];
                                     }
                                 }];
 
@@ -1411,23 +1420,23 @@ static NSString *shareStr;
                     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                     if (uid && user_token) {
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                            [VNHTTPRequestManager deleteComment:self.curComment.cid news:self.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, BOOL isNewsDeleted,int comment_count,NSError *error) {
+                            [VNHTTPRequestManager deleteComment:weakSelf.curComment.cid news:weakSelf.news.nid userID:uid userToken:user_token completion:^(BOOL succeed, BOOL isNewsDeleted,int comment_count,NSError *error) {
                                 if (error) {
                                     NSLog(@"%@", error.localizedDescription);
                                 }
                                 else if(isNewsDeleted)
                                 {
-                                    [self deleteCellAndPop:0];
+                                    [weakSelf deleteCellAndPop:0];
                                 }
                                 else if (succeed) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                        self.inputTextView.text = @"";
+                                        weakSelf.inputTextView.text = @"";
                                         [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
                                         if (weakSelf.curIndexPath.row == 0) {
-                                            [self.commentTableView reloadData];
+                                            [weakSelf.commentTableView reloadData];
                                         }
                                         else {
-                                            [self.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                                            [weakSelf.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
                                         }
                                         if (comment_count>10000) {
                                             weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
@@ -1444,7 +1453,7 @@ static NSString *shareStr;
                                 }
                                 else {
                                     [weakSelf.commentArr removeObjectAtIndex:weakSelf.curIndexPath.row];
-                                    [self.commentTableView reloadData];
+                                    [weakSelf.commentTableView reloadData];
                                     if (comment_count>10000) {
                                         weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                                     }
@@ -1460,7 +1469,7 @@ static NSString *shareStr;
 //                                        [self.commentTableView deleteRowsAtIndexPaths:@[weakSelf.curIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
 //                                    }
 //
-                                    [VNUtility showHUDText:@"该评论已删除!" forView:self.view];
+                                    [VNUtility showHUDText:@"该评论已删除!" forView:weakSelf.view];
                                 }
                             }];
 
@@ -1492,18 +1501,20 @@ static NSString *shareStr;
                     NSString *uid = [userInfo objectForKey:@"openid"];
                     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                     if (uid && user_token) {
+                        
+                        __weak typeof(self) weakSelf = self;
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.curComment.cid] type:@"reportComment" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", weakSelf.curComment.cid] type:@"reportComment" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
                                 if (error) {
                                     NSLog(@"%@", error.localizedDescription);
                                 }
                                 else if (succeed) {
-                                    [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                    self.inputTextView.text = @"";
-                                    [self.commentTableView triggerPullToRefresh];
+                                    [VNUtility showHUDText:@"举报成功!" forView:weakSelf.view];
+                                    weakSelf.inputTextView.text = @"";
+                                    [weakSelf.commentTableView triggerPullToRefresh];
                                 }
                                 else {
-                                    [VNUtility showHUDText:@"您已举报该评论" forView:self.view];
+                                    [VNUtility showHUDText:@"您已举报该评论" forView:weakSelf.view];
                                 }
                             }];
 
@@ -1559,17 +1570,18 @@ static NSString *shareStr;
                     NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
                     if (uid && user_token) {
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", self.curComment.cid] type:@"reportComment" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
+                            __weak typeof(self) weakSelf = self;
+                            [VNHTTPRequestManager report:[NSString stringWithFormat:@"%d", weakSelf.curComment.cid] type:@"reportComment" userID:uid userToken:user_token completion:^(BOOL succeed, NSError *error) {
                                 if (error) {
                                     NSLog(@"%@", error.localizedDescription);
                                 }
                                 else if (succeed) {
-                                    [VNUtility showHUDText:@"举报成功!" forView:self.view];
-                                    self.inputTextView.text = @"";
-                                    [self.commentTableView triggerPullToRefresh];
+                                    [VNUtility showHUDText:@"举报成功!" forView:weakSelf.view];
+                                    weakSelf.inputTextView.text = @"";
+                                    [weakSelf.commentTableView triggerPullToRefresh];
                                 }
                                 else {
-                                    [VNUtility showHUDText:@"您已举报该评论" forView:self.view];
+                                    [VNUtility showHUDText:@"您已举报该评论" forView:weakSelf.view];
                                 }
                             }];
                         });
@@ -1607,27 +1619,29 @@ static NSString *shareStr;
         //得到分享到的微博平台名
         NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
         [VNUtility showHUDText:@"分享成功!" forView:self.view];
+        
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [VNHTTPRequestManager commentNews:self.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
+            [VNHTTPRequestManager commentNews:weakSelf.news.nid content:shareStr completion:^(BOOL succeed, BOOL isNewsDeleted,VNComment *comment, int comment_count,NSError *error) {
                 //isNewsDeleted=YES;
                 if (error) {
                     NSLog(@"%@", error.localizedDescription);
                 }
                 else if (isNewsDeleted)
                 {
-                    [self deleteCellAndPop:0];
+                    [weakSelf deleteCellAndPop:0];
                 }
                 else if (succeed) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (comment) {
-                            [self.commentArr insertObject:comment atIndex:0];
-                            [self.commentTableView reloadData];
+                            [weakSelf.commentArr insertObject:comment atIndex:0];
+                            [weakSelf.commentTableView reloadData];
                             if (comment_count>10000) {
-                                self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
+                                weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d万",comment_count/10000];
                             }
                             else
                             {
-                                self.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
+                                weakSelf.headerView.commentLabel.text=[NSString stringWithFormat:@"%d",comment_count];
                             }
                         }
 
@@ -1757,8 +1771,9 @@ static NSString *shareStr;
             NSString *mineUid = [[[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser] objectForKey:@"openid"];
             NSString *user_token = [[NSUserDefaults standardUserDefaults] objectForKey:VNUserToken];
             if (mineUid && user_token) {
+                __weak typeof(self) weakSelf = self;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [VNHTTPRequestManager deleteNews:_news.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,int news_count,NSError *error)
+                    [VNHTTPRequestManager deleteNews:weakSelf.news.nid userID:mineUid userToken:user_token completion:^(BOOL succeed,int news_count,NSError *error)
                      {
                          if (error) {
                              NSLog(@"%@", error.localizedDescription);
@@ -1766,15 +1781,19 @@ static NSString *shareStr;
                          else if(succeed)
                          {
                              dispatch_async(dispatch_get_main_queue(), ^{
-                                 [self deleteCellAndPop:1];
+                                 [weakSelf deleteCellAndPop:1];
                              });
                              
                          }
                          else
                          {
+<<<<<<< HEAD
                              NSLog(@"succeed:%d",succeed);
                              NSLog(@"news_count:%d",news_count);
                              [VNUtility showHUDText:@"删除视频失败" forView:self.view];
+=======
+                             [VNUtility showHUDText:@"删除视频失败" forView:weakSelf.view];
+>>>>>>> 菊花是否在wifi下自动播放判断加载，优化部分内存
                          }
                      }];
                 });
