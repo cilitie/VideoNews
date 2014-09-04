@@ -1787,13 +1787,9 @@ static NSString *shareStr;
                          }
                          else
                          {
-<<<<<<< HEAD
                              NSLog(@"succeed:%d",succeed);
                              NSLog(@"news_count:%d",news_count);
-                             [VNUtility showHUDText:@"删除视频失败" forView:self.view];
-=======
                              [VNUtility showHUDText:@"删除视频失败" forView:weakSelf.view];
->>>>>>> 菊花是否在wifi下自动播放判断加载，优化部分内存
                          }
                      }];
                 });
