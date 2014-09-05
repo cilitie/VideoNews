@@ -1273,9 +1273,6 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Manyu Zhu";
 				TargetAttributes = {
-					D6FED749195AC1C100AD10E0 = {
-						DevelopmentTeam = XJ5U6SEM4F;
-					};
 					D6FED76A195AC1C100AD10E0 = {
 						TestTargetID = D6FED749195AC1C100AD10E0;
 					};
@@ -1616,7 +1613,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
+				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1651,7 +1648,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
+				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1664,7 +1661,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1686,7 +1683,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
+				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1699,7 +1696,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1721,7 +1718,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
+				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
