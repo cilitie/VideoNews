@@ -46,16 +46,33 @@ static NSString *kBirthday = @"birthday";
     return makeSureNotNull([self.basicDict objectForKey:kFans_count]);
 }
 
+-(void)setFans_count:(NSString *)fans_count{
+    [self.basicDict setObject:fans_count forKey:kFans_count];
+}
+
 - (NSString *)video_count {
     return makeSureNotNull([self.basicDict objectForKey:kVideo_count]);
+}
+
+-(void)setVideo_count:(NSString *)video_count{
+    [self.basicDict setObject:video_count forKey:kVideo_count];
+
 }
 
 - (NSString *)like_count {
     return makeSureNotNull([self.basicDict objectForKey:kLike_count]);
 }
 
+- (void)setLike_count:(NSString *)like_count{
+    [self.basicDict setObject:like_count forKey:kLike_count];
+}
+
 - (NSString *)idol_count {
     return makeSureNotNull([self.basicDict objectForKey:kIdol_count]);
+}
+
+-(void)setIdol_count:(NSString *)idol_count{
+    [self.basicDict setObject:idol_count forKey:kIdol_count];
 }
 
 - (NSString *)userDescription {

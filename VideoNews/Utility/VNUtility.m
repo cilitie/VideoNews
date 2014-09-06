@@ -72,8 +72,12 @@
 
 +(NSString *)countFormatToDisplay:(int)number
 {
+    if (number>1000 && number<=10000) {
+        NSString *str=[NSString stringWithFormat:@"%dk",number/1000];
+        return str;
+    }
     if (number>10000) {
-        NSString *str=[NSString stringWithFormat:@"%d万",number/10000];
+        NSString *str=[NSString stringWithFormat:@"%dw",number/10000];
         return  str;
     }
     

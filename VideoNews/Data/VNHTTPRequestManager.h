@@ -85,7 +85,9 @@
 #pragma mark - Upload
 //上传相关
 //+(void)uploadImage:(NSData *)imageData Uid:(NSString *)uid Delegate:(id *)delegate completion:(void(^)(bool succeed,NSError *error))completion;
-
+#pragma mark - optimization
++(void)updateVideoListForUser:(NSString *)uid pageTime:(NSString *)pageTime pageSize:(int)pagesize completion:(void(^)(BOOL succeed,NSArray *newVideo, NSArray *list, NSError *error))completion;
++(void)updateFavListForUser:(NSString *)uid userToken:(NSString *)user_token pageTime:(NSString *)pageTime pageSize:(int)pagesize completion:(void(^)(BOOL succeed,NSArray *newVideo, NSArray *list, NSError *error))completion;
 
 #pragma mark - Utility
 

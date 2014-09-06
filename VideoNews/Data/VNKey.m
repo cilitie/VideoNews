@@ -10,7 +10,7 @@
 
 //NSString *const VNHost = @"http://zmysp.sinaapp.com/";
 //NSString *const VNHost = @"http://182.92.103.134:8080/engine/";
-NSString *const VNHost = @"http://182.92.103.134:8080/engine_1.01/";
+NSString *const VNHost = @"http://182.92.103.134:8080/engine_1.0.2/";
 //SearchHistory
 NSString *const kArchivingHistoryWord = @"kArchivingHistoryWord";
 NSString *const VNHistoryDidAddNotification = @"kVNHistoryDidAddNotification";

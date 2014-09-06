@@ -24,6 +24,7 @@ static NSString *kMedia = @"media";
 static NSString *kImgMedia = @"imgMedia";
 static NSString *kVedioMedia = @"vedioMedia";
 static NSString *kTimestamp = @"timestamp";
+static NSString *kLikeTimestamp=@"like_timestamp";
 static NSString *kClassid = @"classid";
 
 @implementation VNNews
@@ -42,6 +43,11 @@ static NSString *kClassid = @"classid";
 
 - (int)comment_count {
     return [makeSureNotNull([self.basicDict objectForKey:kComment_count]) intValue];
+}
+
+-(void)setComment_count:(int)comment_count{
+    [self.basicDict setObject:[NSNumber numberWithInt:comment_count] forKey:kComment_count];
+
 }
 
 - (NSString *)date {
@@ -106,6 +112,10 @@ static NSString *kClassid = @"classid";
 
 - (NSString *)timestamp {
     return makeSureNotNull([self.basicDict objectForKey:kTimestamp]);
+}
+
+- (NSString *)like_timestamp {
+    return makeSureNotNull([self.basicDict objectForKey:kLikeTimestamp]);
 }
 
 - (NSString *)classid {

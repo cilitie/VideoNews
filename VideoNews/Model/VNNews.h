@@ -15,7 +15,7 @@
 
 @property (assign, nonatomic, readonly) int nid;
 //@property (assign, nonatomic, readonly) int like_count;
-@property (assign, nonatomic, readonly) int comment_count;
+@property (assign, nonatomic) int comment_count;
 @property (strong, nonatomic, readonly) NSString *date;
 @property (strong, nonatomic, readonly) NSString *title;
 @property (strong, nonatomic, readonly) NSString *name;
@@ -30,5 +30,6 @@
 @property (strong, nonatomic) VNMedia *videoMedia;
 @property (strong, nonatomic, readonly) NSString *timestamp;
 @property (strong, nonatomic, readonly) NSString *classid;
+@property (strong, nonatomic, readonly) NSString *like_timestamp;
 
 @end

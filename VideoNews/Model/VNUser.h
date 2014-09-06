@@ -13,10 +13,10 @@
 @property (assign, nonatomic, readonly) NSString *uid;
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSString *avatar;
-@property (strong, nonatomic, readonly) NSString *fans_count;
-@property (strong, nonatomic, readonly) NSString *video_count;
-@property (strong, nonatomic, readonly) NSString *like_count;
-@property (strong, nonatomic, readonly) NSString *idol_count;
+@property (strong, nonatomic) NSString *fans_count;
+@property (strong, nonatomic) NSString *video_count;
+@property (strong, nonatomic) NSString *like_count;
+@property (strong, nonatomic) NSString *idol_count;
 @property (strong, nonatomic, readonly) NSString *timestamp;
 @property (strong, nonatomic, readonly) NSString *userDescription;
 //for comment author

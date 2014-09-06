@@ -88,7 +88,7 @@ static int pagesize = 10;
         else {
             [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 //NSLog(@"%@", responseObject);
-               //NSLog(@"%@", operation);
+               NSLog(@"%@", operation);
                 VNNews *news = nil;
                 VNMedia *media = nil;
                 NSMutableArray *newsArr = [NSMutableArray array];
@@ -494,7 +494,7 @@ static int pagesize = 10;
     NSString *timestamp=[self timestamp];
     NSDictionary *param = @{@"uid": uid, @"token": [self token:timestamp], @"timestamp": timestamp, @"user_token": user_token};
     [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+       // NSLog(@"%@", responseObject);
         NSMutableArray *favouriteNewsArr = [NSMutableArray array];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
@@ -1417,6 +1417,101 @@ static int pagesize = 10;
         }
     }];
 }
+
++(void)updateVideoListForUser:(NSString *)uid pageTime:(NSString *)pageTime pageSize:(int)pagesize completion:(void(^)(BOOL succeed,NSArray *newVideo,NSArray *list,NSError *error))completion{
+    NSString *URLStr = [VNHost stringByAppendingString:@"updateVideoList.php"];
+    NSString *timestamp=[self timestamp];
+    NSDictionary *param = @{@"token": [self token:timestamp], @"timestamp": timestamp, @"uid": uid, @"pagetime": pageTime,@"pagesize": [NSNumber numberWithInt:pagesize ]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", operation);
+        BOOL success = NO;
+        NSArray *listArr=nil;
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus &&[[responseObject objectForKey:@"list"]isKindOfClass:[NSArray class]]) {
+                listArr = responseObject[@"list"];
+            }
+            if (responseStatus &&[[responseObject objectForKey:@"newVideo"]isKindOfClass:[NSArray class]]) {
+                NSArray * videoArr = responseObject[@"newVideo"];
+                for (NSDictionary *newsDic in videoArr) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        if (completion) {
+            completion(success,newsArr,listArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", operation);
+        if (completion) {
+            completion(NO, nil,nil,error);
+        }
+    }];
+}
+
++(void)updateFavListForUser:(NSString *)uid userToken:(NSString *)user_token pageTime:(NSString *)pageTime pageSize:(int)pagesize completion:(void(^)(BOOL succeed,NSArray *newVideo,NSArray *list,NSError *error))completion{
+    NSString *URLStr = [VNHost stringByAppendingString:@"updatefavList.php"];
+    NSString *timestamp=[self timestamp];
+    NSDictionary *param = @{@"token": [self token:timestamp], @"timestamp": timestamp, @"uid": uid, @"user_token":user_token, @"pagetime": pageTime, @"pagesize": [NSNumber numberWithInt:pagesize ]};
+    [[AFHTTPRequestOperationManager manager] GET:URLStr parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", operation);
+        BOOL success = NO;
+        NSArray *listArr=nil;
+        VNNews *news = nil;
+        VNMedia *media = nil;
+        NSMutableArray *newsArr = [NSMutableArray array];
+        if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            BOOL responseStatus = [[responseObject objectForKey:@"status"] boolValue];
+            if (responseStatus &&[[responseObject objectForKey:@"list"]isKindOfClass:[NSArray class]]) {
+                listArr = responseObject[@"list"];
+            }
+            if (responseStatus &&[[responseObject objectForKey:@"newVideo"]isKindOfClass:[NSArray class]]) {
+                NSArray * videoArr = responseObject[@"newVideo"];
+                for (NSDictionary *newsDic in videoArr) {
+                    news = [[VNNews alloc] initWithDict:newsDic];
+                    
+                    NSDictionary *userDic = [newsDic objectForKey:@"author"];
+                    news.author = [[VNUser alloc] initWithDict:userDic];
+                    
+                    NSArray *mediaArr = [newsDic objectForKey:@"media"];
+                    NSMutableArray *mediaMutableArr = [NSMutableArray array];
+                    for (NSDictionary *mediaDic in mediaArr) {
+                        media = [[VNMedia alloc] initWithDict:mediaDic];
+                        [mediaMutableArr addObject:media];
+                    }
+                    news.mediaArr = mediaMutableArr;
+                    
+                    [newsArr addObject:news];
+                }
+            }
+        }
+        if (completion) {
+            completion(success,newsArr,listArr, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", operation);
+        if (completion) {
+            completion(NO, nil,nil,error);
+        }
+    }];
+}
+
 
 #pragma mark - SEL
 
