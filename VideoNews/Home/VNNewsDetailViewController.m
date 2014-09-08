@@ -20,6 +20,7 @@
 #import "VNProfileViewController.h"
 #import "VNMineProfileViewController.h"
 #import "GPLoadingButton.h"
+//#import "VNMoviePlayer.h"
 
 @interface VNNewsDetailViewController () <UITextViewDelegate, UIActionSheetDelegate, UMSocialUIDelegate, UIAlertViewDelegate, VNCommentTableViewCellDelegate, AGEmojiKeyboardViewDelegate, AGEmojiKeyboardViewDataSource> {
     BOOL isKeyboardShowing;
@@ -257,12 +258,6 @@ static NSString *shareStr;
                  [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];
              }
          }];
-        /*UIActionSheet *actionSheet = nil;
-        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
-        NSString *mineID = [userInfo objectForKey:@"openid"];
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"微信朋友圈", @"微信好友",  @"新浪微博", @"QQ空间", @"QQ好友", @"腾讯微博", @"人人网", @"复制链接", [weakSelf.news.author.uid isEqualToString:mineID] ? @"删除" : @"举报", nil];
-        actionSheet.tag = kTagNews;
-        [actionSheet showFromTabBar:weakSelf.tabBarController.tabBar];*/
     };
     
     [self.news.mediaArr enumerateObjectsUsingBlock:^(VNMedia *obj, NSUInteger idx, BOOL *stop){
@@ -315,6 +310,7 @@ static NSString *shareStr;
     NSURL *url = [NSURL URLWithString:self.vedioMedia.url];
     //NSURL *url = [NSURL URLWithString:@"http://cloud.video.taobao.com//play/u/320975160/p/1/e/2/t/1/12378629.M3u8"];
     self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:url];
+    //self.moviePlayer.contentURL=url;
     self.moviePlayer.controlStyle = MPMovieControlStyleNone;
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [self.moviePlayer.view setFrame:self.headerView.newsImageView.frame];
@@ -322,6 +318,10 @@ static NSString *shareStr;
     self.moviePlayer.view.layer.masksToBounds=YES;
     self.moviePlayer.view.layer.cornerRadius=5;
     [self.moviePlayer.view setBackgroundColor:[UIColor clearColor]];
+     /*
+    [VNMoviePlayer shareMoviePlayer].contentURL=url;
+    [[VNMoviePlayer shareMoviePlayer].view setFrame:self.headerView.newsImageView.frame];
+      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoFinishedPlayCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
@@ -340,6 +340,7 @@ static NSString *shareStr;
     else {
         [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
         self.moviePlayer.view.hidden = YES;
+        //[VNMoviePlayer shareMoviePlayer].view.hidden=YES;
         isPlaying = NO;
     }
     [self.headerView addSubview:self.playBtn];
@@ -391,7 +392,7 @@ static NSString *shareStr;
 //                                                 name:@"replyCommentFromNotification"
 //                                               object:nil];
 //
-    [VNHTTPRequestManager commentListForNews:self.news.nid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error) {
+    [VNHTTPRequestManager commentListForNews:weakSelf.news.nid timestamp:[VNHTTPRequestManager timestamp] completion:^(NSArray *commemtArr, BOOL isNewsDeleted,NSError *error) {
         //isNewsDeleted=YES;
         if (error) {
             NSLog(@"%@", error.localizedDescription);
@@ -573,6 +574,7 @@ static NSString *shareStr;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.moviePlayer stop];
+   // [[VNMoviePlayer shareMoviePlayer] stop];
     switch (self.controllerType) {
         case SourceViewControllerTypeCategory:
             break;
@@ -595,9 +597,26 @@ static NSString *shareStr;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"replyCommentFromNotification" object:nil];
     //销毁播放通知
+    /*
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
+     */
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
+    
+    if (self.moviePlayer) {
+        [_moviePlayer.view removeFromSuperview];
+        [_moviePlayer stop];
+        _moviePlayer=nil;
+    }
+     /*
+    if ([VNMoviePlayer shareMoviePlayer]) {
+        [[VNMoviePlayer shareMoviePlayer] stop];
+        [[VNMoviePlayer shareMoviePlayer].view removeFromSuperview];
+    }
+      */
 }
 
 /*
@@ -735,12 +754,15 @@ static NSString *shareStr;
 
 - (void)stopVideoWhenScrollOut {
     if (self.moviePlayer && isPlaying) {
+    //if ([VNMoviePlayer shareMoviePlayer] && isPlaying) {
+        //CGRect convertFrame = [self.moviePlayer.view convertRect:self.headerView.frame toView:self.view.window];
         CGRect convertFrame = [self.moviePlayer.view convertRect:self.headerView.frame toView:self.view.window];
         //FIXME: hard code
         convertFrame.size.height -= 180.0;
 //        NSLog(@"%@", NSStringFromCGRect(self.moviePlayer.view.frame));
 //        NSLog(@"%@,%@", NSStringFromCGRect(convertFrame), NSStringFromCGRect(self.view.frame));
         if (!CGRectIntersectsRect(convertFrame, self.view.frame)) {
+            //[self.moviePlayer pause];
             [self.moviePlayer pause];
             [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
             [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
@@ -1163,6 +1185,8 @@ static NSString *shareStr;
     [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
     isPlaying = NO;
     [_loadingAni stopActivity];
+    [self.moviePlayer stop];
+    //[VNMoviePlayer shareMoviePlayer]=nil;
     NSLog(@"视频播放完成");
 }
 - (void) MoviePlayerLoadStateDidChange:(NSNotification*)notification
@@ -1191,7 +1215,7 @@ static NSString *shareStr;
 {
     if (self.moviePlayer.playbackState==MPMoviePlaybackStatePlaying) {
 //        [_loadingAni stopActivity];
-        _moviePlayer.view.hidden=NO;
+        self.moviePlayer.view.hidden=NO;
     }
     else if (self.moviePlayer.playbackState==MPMoviePlaybackStatePaused) {
         [_loadingAni stopActivity];

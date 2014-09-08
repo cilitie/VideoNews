@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 typedef void(^ClickEventHandler)();
 
@@ -17,6 +18,7 @@ typedef void(^ClickEventHandler)();
 @property (weak, nonatomic) IBOutlet UILabel *favouriteLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *likeImg;
 @property (assign, nonatomic) BOOL isFavouriteNews;
+@property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
 @property (copy, nonatomic) ClickEventHandler likeHandler;
 @property (copy, nonatomic) ClickEventHandler moreHandler;
 @property (copy, nonatomic) ClickEventHandler commentHandler;

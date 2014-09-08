@@ -7,7 +7,7 @@
 //
 
 #import "VNProfileVideoTableViewCell.h"
-#import <MediaPlayer/MediaPlayer.h>
+
 #import "GPLoadingButton.h"
 
 @interface VNProfileVideoTableViewCell ()
@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentNumLabel;
-@property (strong, nonatomic) MPMoviePlayerController *moviePlayer;
+
 @property (strong, nonatomic) UIButton *playBtn;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (strong, nonatomic)GPLoadingButton *loadingAni;
@@ -114,6 +114,8 @@
     [self.playBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.playBtn addTarget:self action:@selector(playVideo) forControlEvents:UIControlEventTouchUpInside];
     self.isPlaying = NO;
+    [self.moviePlayer stop];
+    //self.moviePlayer=nil;
     NSLog(@"videoFinishedPlayCallback");
     NSLog(@"视频播放完成");
     [_loadingAni stopActivity];

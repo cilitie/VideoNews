@@ -123,7 +123,7 @@ static NSString *shareStr;
 //请求喜欢列表和关注列表
     __weak typeof(self)weakSelf=self;
     if (self.headerViewArr.count) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if ([VNHTTPRequestManager isReachable]) {
                 [VNHTTPRequestManager userInfoForUser:weakSelf.uid completion:^(VNUser *userInfo, NSError *error) {
                     if (error) {
@@ -389,18 +389,20 @@ static NSString *shareStr;
     if (self.mineVideoArr.count) {
         if (!self.videoTableView.hidden) {
             for (VNProfileVideoTableViewCell *cell in [self.videoTableView visibleCells]) {
-                if (cell.isPlaying) {
+                //if (cell.isPlaying) {
                     [cell startOrPausePlaying:NO];
-                }
+                    [cell.moviePlayer stop];
+               // }
             }
         }
     }
     if (self.favVideoArr.count) {
         if (!self.favouriteTableView.hidden) {
             for (VNProfileVideoTableViewCell *cell in [self.favouriteTableView visibleCells]) {
-                if (cell.isPlaying) {
+               // if (cell.isPlaying) {
                     [cell startOrPausePlaying:NO];
-                }
+                    [cell.moviePlayer stop];
+               // }
             }
         }
     }
@@ -570,14 +572,16 @@ static NSString *shareStr;
                             }*/
                             NSString *refreshTimeStamp = [VNHTTPRequestManager timestamp];
                             [VNHTTPRequestManager videoListForUser:weakSelf.uid type:@"video" fromTime:refreshTimeStamp completion:^(NSArray *videoArr, NSError *error) {
-                                if (error) {
-                                }
-                                else {
-                                    [weakSelf.mineVideoArr removeAllObjects];
-                                    [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
-                                    [weakSelf.videoTableView reloadData];
-                                }
-                                mineVideofirstLoading = YES;
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if (error) {
+                                    }
+                                    else {
+                                        [weakSelf.mineVideoArr removeAllObjects];
+                                        [weakSelf.mineVideoArr addObjectsFromArray:videoArr];
+                                        [weakSelf.videoTableView reloadData];
+                                    }
+                                    mineVideofirstLoading = YES;
+                                });
                               //  [weakSelf reloadHeaderView:(VNMineProfileHeaderView *)weakSelf.videoTableView.tableHeaderView];
                             }];
                         //}];
@@ -1098,7 +1102,7 @@ static NSString *shareStr;
     NSData *videoData = [NSData dataWithContentsOfFile:videoPath];
     
     __weak VNMineProfileViewController *weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [uploadManager uploadVideo:videoData Uid:uid Title:titleString Tags:tagsString ThumbnailTime:coverTime completion:^(bool success, NSError *err){
             if (err) {
                 NSLog(@"%@", err.localizedDescription);
@@ -1136,7 +1140,7 @@ static NSString *shareStr;
     
     VNUploadManager *uploadManager=[VNUploadManager sharedInstance];
     uploadManager.delegate = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [uploadManager uploadVideoThumbnail:imageData Uid:uid timestamp:timestamp completion:^(bool success, NSError *err){
             if (err) {
                 NSLog(@"%@", err.localizedDescription);
@@ -1348,7 +1352,14 @@ static NSString *shareStr;
             cell.backgroundColor = [UIColor clearColor];
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
             label.font = [UIFont systemFontOfSize:15.0];
-            label.text = @"赶快分享你的第一段视频吧～";
+            if ([self.mineInfo.video_count isEqualToString:@"0"]) {
+                label.text = @"赶快分享你的第一段视频吧～";
+            }
+            else
+            {
+                label.text = @"加载中...";
+            }
+            //label.text = @"赶快分享你的第一段视频吧～";
             label.textColor = [UIColor colorWithRGBValue:0x474747];
             label.textAlignment = NSTextAlignmentCenter;
             [cell addSubview:label];
@@ -1421,7 +1432,14 @@ static NSString *shareStr;
             cell.backgroundColor = [UIColor clearColor];
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
             label.font = [UIFont systemFontOfSize:15.0];
-            label.text = @"你还没有喜欢的视频哦～";
+            if ([self.mineInfo.like_count isEqualToString:@"0"]) {
+                label.text = @"你还没有喜欢的视频哦～";
+            }
+            else
+            {
+                label.text = @"加载中...";
+            }
+           //label.text = @"你还没有喜欢的视频哦～";
             label.textColor = [UIColor colorWithRGBValue:0x474747];
             label.textAlignment = NSTextAlignmentCenter;
             [cell addSubview:label];
@@ -1437,7 +1455,7 @@ static NSString *shareStr;
             [cell reload];
             __weak typeof(cell) weakCell = cell;
             cell.followHandler = ^(){
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [VNHTTPRequestManager followIdol:user.uid follower:weakSelf.uid userToken:weakSelf.user_token operation:@"add" completion:^(BOOL succeed, int fans_count,int idol_count,NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1469,7 +1487,14 @@ static NSString *shareStr;
             cell.backgroundColor = [UIColor clearColor];
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
             label.font = [UIFont systemFontOfSize:15.0];
-            label.text = @"你还没有关注的人～";
+            if ([self.mineInfo.idol_count isEqualToString:@"0"]) {
+                label.text = @"你还没有关注的人～";
+            }
+            else
+            {
+                label.text = @"加载中...";
+            }
+            //label.text = @"你还没有关注的人～";
             label.textColor = [UIColor colorWithRGBValue:0x474747];
             label.textAlignment = NSTextAlignmentCenter;
             [cell addSubview:label];
@@ -1485,7 +1510,7 @@ static NSString *shareStr;
             [cell reload];
             __weak typeof(cell) weakCell = cell;
             cell.followHandler = ^(){
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [VNHTTPRequestManager followIdol:user.uid follower:weakSelf.uid userToken:weakSelf.user_token operation:@"add" completion:^(BOOL succeed,int fans_count, int idol_count,NSError *error) {
                         if (error) {
                             NSLog(@"%@", error.localizedDescription);
@@ -1517,7 +1542,14 @@ static NSString *shareStr;
             cell.backgroundColor = [UIColor clearColor];
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 145.0, 300, 20)];
             label.font = [UIFont systemFontOfSize:15.0];
-            label.text = @"你还有没有粉丝哦～";
+            if ([self.mineInfo.fans_count isEqualToString:@"0"]) {
+                label.text = @"你还有没有粉丝哦～";
+            }
+            else
+            {
+                label.text = @"加载中...";
+            }
+            //label.text = @"你还有没有粉丝哦～";
             label.textColor = [UIColor colorWithRGBValue:0x474747];
             label.textAlignment = NSTextAlignmentCenter;
             [cell addSubview:label];

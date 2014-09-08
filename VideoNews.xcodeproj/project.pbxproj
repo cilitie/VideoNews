@@ -96,6 +96,7 @@
 		269910FB19A4DF0A000251B2 /* VNCheckOutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269910FA19A4DF0A000251B2 /* VNCheckOutViewController.m */; };
 		269910FF19A4ECF9000251B2 /* VNCheckOutTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269910FD19A4ECF9000251B2 /* VNCheckOutTableViewCell.m */; };
 		2699110019A4ECF9000251B2 /* VNCheckOutTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269910FE19A4ECF9000251B2 /* VNCheckOutTableViewCell.xib */; };
+		269A3FA319BB067400240C59 /* VNMoviePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A3FA219BB067400240C59 /* VNMoviePlayer.m */; };
 		269B0827197DF96400CF4ADC /* OSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 269B0826197DF96400CF4ADC /* OSSClient.m */; };
 		269EF32019A06825009C1528 /* VNNotificationNewUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269EF31E19A06825009C1528 /* VNNotificationNewUserTableViewCell.m */; };
 		269EF32119A06825009C1528 /* VNNotificationNewUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 269EF31F19A06825009C1528 /* VNNotificationNewUserTableViewCell.xib */; };
@@ -379,6 +380,8 @@
 		269910FC19A4ECF9000251B2 /* VNCheckOutTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNCheckOutTableViewCell.h; sourceTree = "<group>"; };
 		269910FD19A4ECF9000251B2 /* VNCheckOutTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNCheckOutTableViewCell.m; sourceTree = "<group>"; };
 		269910FE19A4ECF9000251B2 /* VNCheckOutTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VNCheckOutTableViewCell.xib; sourceTree = "<group>"; };
+		269A3FA119BB067400240C59 /* VNMoviePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNMoviePlayer.h; sourceTree = "<group>"; };
+		269A3FA219BB067400240C59 /* VNMoviePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VNMoviePlayer.m; sourceTree = "<group>"; };
 		269B0825197DF96400CF4ADC /* OSSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSClient.h; sourceTree = "<group>"; };
 		269B0826197DF96400CF4ADC /* OSSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSClient.m; sourceTree = "<group>"; };
 		269EF31D19A06825009C1528 /* VNNotificationNewUserTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VNNotificationNewUserTableViewCell.h; sourceTree = "<group>"; };
@@ -1194,6 +1197,8 @@
 				D6FED791195C030D00AD10E0 /* VNKey.m */,
 				26A584CB19875D5100C34461 /* VNUploadManager.h */,
 				26A584CC19875D5100C34461 /* VNUploadManager.m */,
+				269A3FA119BB067400240C59 /* VNMoviePlayer.h */,
+				269A3FA219BB067400240C59 /* VNMoviePlayer.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1513,6 +1518,7 @@
 				D6FED7A2195D1BD400AD10E0 /* VNQuiltViewCell.m in Sources */,
 				14E7E1E319B58CD000ED8A59 /* GPUImageBrightnessFilter.m in Sources */,
 				D68CB5001982503F00236517 /* VNEditContentViewController.m in Sources */,
+				269A3FA319BB067400240C59 /* VNMoviePlayer.m in Sources */,
 				D6676F69196E81BB00F484FE /* VNUtility.m in Sources */,
 				142FB01E19A055EC00F8ECCF /* GPUImageGaussianSelectiveBlurFilter.m in Sources */,
 				142FB01D19A055EC00F8ECCF /* GPUImageFramebufferCache.m in Sources */,
@@ -1613,7 +1619,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
+				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1648,7 +1654,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
+				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1683,7 +1689,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
+				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1718,7 +1724,7 @@
 					"$(PROJECT_DIR)/VideoNews/Utility/GPUImage",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "37a71b2a-b0c9-4c97-a3c4-d718f867b42f";
+				PROVISIONING_PROFILE = "bbf79655-9ed0-4f17-89fa-77c17a31640c";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

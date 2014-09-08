@@ -35,6 +35,7 @@
     CGPoint previousScrollOffset;
     BOOL isToBottom;
     BOOL isTabBarHidden;
+    BOOL firstLoad;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *messageTableView;
@@ -46,6 +47,8 @@
 @property (strong,nonatomic)NSString *openUid;
 
 @property (strong,nonatomic)NSString *user_token;
+
+@property (strong,nonatomic)UILabel *label;
 
 - (IBAction)clearMessage:(id)sender;
 @end
@@ -65,6 +68,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    firstLoad=YES;
     // Do any additional setup after loading the VNNotificationTableViewCell.xib
     //[self uploadImage:@"/image/test.txt" Bucket:@"fashion-test"];
     _messageTableView.showsVerticalScrollIndicator=NO;
@@ -75,6 +79,7 @@
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationReplyTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationReplyTableViewCellIdentifier"];
     //[self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
     [self.messageTableView registerNib:[UINib nibWithNibName:@"VNNotificationUserTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"VNNotificationUserTableViewCellIdentifier"];
+    
 
   //zmy add
     VNAuthUser *authUser = nil;
@@ -93,6 +98,7 @@
     }
     //
     __weak typeof(self) weakSelf = self;
+    _label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 218, 300, 20)];
 //    _openUid=authUser.openid;
 //    _user_token=user_token;
 //
@@ -109,7 +115,7 @@
     [self.messageTableView addPullToRefreshWithActionHandler:^{
         // FIXME: Hard code
         //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             //zmy add
             /*VNAuthUser *authUser = nil;
             NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -124,12 +130,16 @@
                     NSLog(@"error:%@", error.localizedDescription);
                 }
                 else {
+                    
                     [weakSelf.messageArr removeAllObjects];
                     [weakSelf.messageArr addObjectsFromArray:messageArr];
                     [weakSelf.messageTableView reloadData];
                     [self removeBadgeValue];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    if (messageArr.count==0) {
+                        weakSelf.label.text=@"你尚无任何通知";
+                    }
                     [weakSelf.messageTableView.pullToRefreshView stopAnimating];
                 });
             }];
@@ -137,7 +147,7 @@
     }];
     
     [self.messageTableView addInfiniteScrollingWithActionHandler:^{
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *moreTimeStamp = nil;
         if (weakSelf.messageArr.count) {
             VNMessage *lastMessage = [weakSelf.messageArr lastObject];
@@ -162,7 +172,7 @@
         }];
         });
     }];
-//    [self.messageTableView triggerPullToRefresh];
+    [self.messageTableView triggerPullToRefresh];
     
     [self.messageTableView setTableFooterView:[[UIView alloc] init]];
 }
@@ -187,9 +197,13 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (firstLoad) {
+        firstLoad=NO;
+        return;
+    }
     //[self.messageTableView triggerPullToRefresh];
     __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //zmy add
         VNAuthUser *authUser = nil;
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:VNLoginUser];
@@ -204,10 +218,20 @@
                 NSLog(@"error:%@", error.localizedDescription);
             }
             else {
-                [weakSelf.messageArr removeAllObjects];
-                [weakSelf.messageArr addObjectsFromArray:messageArr];
-                [weakSelf.messageTableView reloadData];
+                
                 [self removeBadgeValue];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if (messageArr.count==0) {
+                        weakSelf.label.text=@"你尚无任何通知";
+                    }
+                    else
+                    {
+                        [weakSelf.messageArr removeAllObjects];
+                        [weakSelf.messageArr addObjectsFromArray:messageArr];
+                        [weakSelf.messageTableView reloadData];
+                    }
+                });
             }
         }];
     });
@@ -294,7 +318,7 @@
             cellIdentifier = @"VNNotificationReplyTableViewCellIdentifier";
         }
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-        
+        __weak typeof (self)weakSelf=self;
         if (cell) {
             if ([message.type isEqualToString: @"user"]) {
                 VNNotificationUserTableViewCell *userCell = (VNNotificationUserTableViewCell *)cell;
@@ -302,10 +326,10 @@
                 userCell.message = message;
                 __weak typeof(userCell) weakUserCell = userCell;
                 userCell.tapHandler = ^(){
-                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
                     VNUser *user = weakUserCell.message.sender;
                     profileViewController.uid = user.uid;
-                    [self.navigationController pushViewController:profileViewController animated:YES];
+                    [weakSelf.navigationController pushViewController:profileViewController animated:YES];
                 };
                 [userCell reload];
             }
@@ -313,10 +337,10 @@
                 VNNotificationReplyTableViewCell *replyCell = (VNNotificationReplyTableViewCell *)cell;
                 __weak typeof(replyCell) weakReplyCell = replyCell;
                 replyCell.tapHandler = ^(){
-                    VNProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
+                    VNProfileViewController *profileViewController = [weakSelf.storyboard instantiateViewControllerWithIdentifier:@"VNProfileViewController"];
                     VNUser *user = weakReplyCell.message.sender;
                     profileViewController.uid = user.uid;
-                    [self.navigationController pushViewController:profileViewController animated:YES];
+                    [weakSelf.navigationController pushViewController:profileViewController animated:YES];
                 };
                 replyCell.message = message;
                 [replyCell reload];
@@ -328,12 +352,12 @@
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor clearColor];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 218, 300, 20)];
-        label.font = [UIFont systemFontOfSize:15.0];
-        label.text = @"你尚无任何通知~";
-        label.textColor = [UIColor colorWithRGBValue:0x474747];
-        label.textAlignment = NSTextAlignmentCenter;
-        [cell addSubview:label];
+        
+        _label.font = [UIFont systemFontOfSize:15.0];
+        _label.text = @"加载中...";
+        _label.textColor = [UIColor colorWithRGBValue:0x474747];
+        _label.textAlignment = NSTextAlignmentCenter;
+        [cell addSubview:_label];
         return cell;
     }
 }
@@ -388,23 +412,27 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self)weakSelf=self;
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         if (self.messageArr.count) {
-            //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            VNMessage *message = [self.messageArr objectAtIndex:indexPath.row];
-            [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                VNMessage *message = [weakSelf.messageArr objectAtIndex:indexPath.row];
+                [VNHTTPRequestManager deleteMessage:[NSString stringWithFormat:@"%d", message.mid] completion:^(BOOL succeed, NSError *error) {
+                    
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.messageArr removeObjectAtIndex:indexPath.row];
+                if (indexPath.row == 0) {
+                    [weakSelf.messageTableView reloadData];
                 }
-            }];
-            [self.messageArr removeObjectAtIndex:indexPath.row];
-            if (indexPath.row == 0) {
-                [self.messageTableView reloadData];
-            }
-            else {
-                [self.messageTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-            }
-          //  });
+                else {
+                    [weakSelf.messageTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                }
+                });
+            });
         }
     }
 }
@@ -572,15 +600,16 @@
         return;
     }
     else if (buttonIndex == 1) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __weak typeof(self)weakSelf=self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager deleteMessage:@"" completion:^(BOOL succeed, NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             }
             else if (succeed) {
-                [VNUtility showHUDText:@"清空成功!" forView:self.view];
-                [self.messageArr removeAllObjects];
-                [self.messageTableView reloadData];
+                [VNUtility showHUDText:@"清空成功!" forView:weakSelf.view];
+                [weakSelf.messageArr removeAllObjects];
+                [weakSelf.messageTableView reloadData];
             }
         }];
         });
