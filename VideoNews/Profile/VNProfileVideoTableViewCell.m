@@ -145,8 +145,10 @@
         
         self.timeLabel.text=[NSString stringWithFormat:@"上传于 %@",[VNUtility timeFormatToDisplay:[self.news.timestamp doubleValue]]];
 
-        self.commentNumLabel.text = [NSString stringWithFormat:@"%d", self.news.comment_count];
-        self.favouriteLabel.text = [NSString stringWithFormat:@"%d", self.news.like_count];
+        self.commentNumLabel.text =[VNUtility countFormatToDisplay:self.news.comment_count];
+        //[NSString stringWithFormat:@"%d", self.news.comment_count];
+        self.favouriteLabel.text =[VNUtility countFormatToDisplay:self.news.like_count];
+        //[NSString stringWithFormat:@"%d", self.news.like_count];
         if (self.isFavouriteNews) {
             [self.likeImg setImage:[UIImage imageNamed:@"30-30heart_a"]];
         }
