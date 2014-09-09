@@ -27,6 +27,7 @@
     CGFloat keyboardHeight;
     BOOL isPlaying;
     BOOL isDefaultKeyboard;
+    BOOL firstLoad;
     
     BOOL isAutoPlayOption;
 }
@@ -85,6 +86,7 @@ static NSString *shareStr;
         _commentArrNotify=[NSMutableArray arrayWithCapacity:0];
         isAutoPlayOption = [[[NSUserDefaults standardUserDefaults] objectForKey:VNIsWiFiAutoPlay] boolValue];
         _curLikeCount = 0;
+        firstLoad=YES;
     }
     return self;
 }
@@ -536,7 +538,10 @@ static NSString *shareStr;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    if (firstLoad) {
+        firstLoad=NO;
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [VNHTTPRequestManager getOneNews:weakSelf.news.nid completion:^(BOOL succeed,VNNews *news,NSError *error){
