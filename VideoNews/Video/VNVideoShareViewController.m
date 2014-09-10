@@ -17,7 +17,7 @@
 #import "WXApi.h"
 #import "VNVideoCoverSettingViewController.h"
 
-@interface VNVideoShareViewController () <UIGestureRecognizerDelegate>
+@interface VNVideoShareViewController () <UIGestureRecognizerDelegate,UITextFieldDelegate>
 
 @property (nonatomic, copy) NSString *videoPath;
 @property (nonatomic, strong) UIImage *coverImg;
@@ -47,6 +47,8 @@
         
         _titleTF = [[UITextField alloc] initWithFrame:CGRectMake(10, 175, 300, 45)];
         [self customizeTextField:_titleTF WithPlaceholderText:@"添加标题"];
+        _titleTF.returnKeyType=UIReturnKeyDone;
+        _titleTF.delegate=self;
         
     }
     return _titleTF;
@@ -57,6 +59,8 @@
     if (!_tagsTF) {
         _tagsTF = [[UITextField alloc] initWithFrame:CGRectMake(10, 230, 300, 45)];
         [self customizeTextField:_tagsTF WithPlaceholderText:@"添加标签"];
+        _tagsTF.returnKeyType=UIReturnKeyDone;
+        _tagsTF.delegate=self;
     }
     return _tagsTF;
 }
@@ -221,6 +225,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CoverDidChanged:) name:VNVideoCoverDidChangedNotification object:nil];
     
     self.coverTime = 0;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [_titleTF becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -392,6 +401,13 @@
 {
     [self.titleTF resignFirstResponder];
     [self.tagsTF resignFirstResponder];
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 @end
